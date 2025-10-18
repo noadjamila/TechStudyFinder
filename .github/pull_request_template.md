@@ -10,8 +10,7 @@ Explain what has been changed and why these changes are necessary.
 - [ ] Tests have been written or updated  
 - [ ] All tests pass locally  
 - [ ] No sensitive data or secrets are included  
-- [ ] Documentation (README, comments) has been updated if necessary
-- [ ]   
+- [ ] Documentation (README, comments) has been updated if necessary 
 
 ## Reviewer Notes
 
