@@ -1,0 +1,11 @@
+{
+    "name": "my-fullstack-app",
+    "private": true,
+    "workspaces": ["client", "server"],
+    "scripts": {
+        "dev": "concurrently \"npm start --workspace server\" \"npm start --workspace client\""
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.0"
+    }
+}
