@@ -1,21 +1,21 @@
-require('dotenv').config();
-const path = require('path');
+require("dotenv").config();
+const path = require("path");
 
 const app = express();
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
+app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
 // Test-Route
 app.get("/api/hello", (_req, res) => {
   res.json({ message: "Hallo vom Backend!" });
 });
-app.get('*', (req, res, next) => {
-    if (req.url.startsWith('/api/')) {
-        return next(); 
-    }
-  
-    res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
+app.get("*", (req, res, next) => {
+  if (req.url.startsWith("/api/")) {
+    return next();
+  }
+
+  res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
 });
 // 404 Handler
 app.use((_req, res) => {
@@ -43,4 +43,3 @@ process.on("uncaughtException", (error) => {
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
 });
-

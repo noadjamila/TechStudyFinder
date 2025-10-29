@@ -1,4 +1,4 @@
-import './App.css';
+import "./App.css";
 import { useState, useEffect } from "react";
 
 function App() {
@@ -6,12 +6,12 @@ function App() {
 
   useEffect(() => {
     fetch("/api/hello")
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         console.log("Backend Response:", data);
         setMsg(data.message);
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   }, []);
 
   return (
