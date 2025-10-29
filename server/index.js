@@ -10,7 +10,13 @@ app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
 app.get("/api/hello", (_req, res) => {
   res.json({ message: "Hallo vom Backend!" });
 });
-
+app.get('*', (req, res, next) => {
+    if (req.url.startsWith('/api/')) {
+        return next(); 
+    }
+  
+    res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
+});
 // 404 Handler
 app.use((_req, res) => {
   res.status(404).json({ error: "Route nicht gefunden" });
