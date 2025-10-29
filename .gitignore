@@ -43,3 +43,4 @@ Thumbs.db       # Windows
 *.ntvs*
 *.njsproj
 *.sln
+/.idea/
