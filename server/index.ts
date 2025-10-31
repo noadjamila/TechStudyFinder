@@ -1,15 +1,17 @@
-require("dotenv").config();
-const path = require("path");
+import express, { Request, Response, NextFunction, ErrorRequestHandler } from 'express';import 'dotenv/config';
+import path from 'path';
 
 const app = express();
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
-// Test-Route
+// Test route
 app.get("/api/hello", (_req, res) => {
-  res.json({ message: "Hallo vom Backend!" });
+  res.json({ message: "Hallo from the backend!👋" });
 });
+
+// Fallback route for SPA
 app.get("*", (req, res, next) => {
   if (req.url.startsWith("/api/")) {
     return next();
@@ -17,26 +19,31 @@ app.get("*", (req, res, next) => {
 
   res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
 });
+
 // 404 Handler
 app.use((_req, res) => {
   res.status(404).json({ error: "Route nicht gefunden" });
 });
 
 // Error Handler
-app.use((err, _req, res, _next) => {
-  console.error("Server-Fehler:", err);
-  res.status(500).json({ error: "Interner Server-Fehler" });
-});
+app.use(((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  console.error("Server error:", err);
+  const statusCode = (err as any).status || 500;
+  res.status(statusCode).json({
+    error: "Interner Server-Fehler",
+    message: err.message
+  });
+}) as ErrorRequestHandler);
 
 const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => {
-  console.log(`Backend läuft auf http://localhost:${PORT}`);
+  console.log(`Backend running on http://localhost:${PORT}`);
 });
 
-// Fehler-Behandlung für den Server selbst
+// Error handling for the server
 process.on("uncaughtException", (error) => {
-  console.error("Uncatchte Exception:", error);
+  console.error("Uncaught Exception:", error);
   process.exit(1);
 });
 
