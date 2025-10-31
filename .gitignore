@@ -44,3 +44,4 @@ Thumbs.db       # Windows
 *.njsproj
 *.sln
 /.idea/
+/server/dist/
