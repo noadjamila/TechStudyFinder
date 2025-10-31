@@ -3,6 +3,8 @@ import path from 'path';
 
 const app = express();
 
+const unusedVariable = "This will fail the linter";
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
