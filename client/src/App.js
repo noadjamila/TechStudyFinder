@@ -18,7 +18,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <div>
-          <h1>Backend-Nachricht:</h1>
+          <h1>Backend test message:</h1>
           <p>{msg}</p>
         </div>
       </header>
