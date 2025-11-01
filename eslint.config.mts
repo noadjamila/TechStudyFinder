@@ -1,21 +1,42 @@
-import * as globals from "globals";
+import * as typescriptPlugin from '@typescript-eslint/eslint-plugin';
+import globals from "globals";
 import {defineConfig} from "eslint/config";
-import * as reactPlugin from 'eslint-plugin-react';
+import reactPlugin from 'eslint-plugin-react';
 import * as reactHooksPlugin from 'eslint-plugin-react-hooks';
 import * as prettierPlugin from "eslint-plugin-prettier";
+import js from "@eslint/js";
+import prettierConfig from "eslint-config-prettier";
+import * as typescriptEslintParser from '@typescript-eslint/parser';
 
 export default defineConfig([
+  prettierConfig,
+
   {
     files: ["server/**/*.{js,mjs,ts,mts}"],
+    extends: [js.configs.recommended],
+
     languageOptions: {
+      parser: typescriptEslintParser,
       globals: { ...globals.node, ...globals.es2021 },
       parserOptions: {
         project: "server/tsconfig.json",
       },
     },
+
+    plugins: {
+      "@typescript-eslint": typescriptPlugin,
+      prettier: prettierPlugin,
+    } as any,
+
     rules: {
       "no-undef": "off",
       "no-console": "warn",
+      "prettier/prettier": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_" }
+      ],
+      "no-unused-vars": "off",
     },
   },
   {
@@ -23,8 +44,11 @@ export default defineConfig([
     plugins: {
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
+      prettier: prettierPlugin,
     } as any,
-    extends: ["js/recommended", "plugin:prettier/recommended"],
+
+    extends: [js.configs.recommended],
+
     languageOptions: {
       globals: { ...globals.browser },
       parserOptions: {
@@ -38,15 +62,6 @@ export default defineConfig([
     rules: {
       ...reactPlugin.configs.recommended.rules,
       ...reactHooksPlugin.configs.recommended.rules,
-    },
-  },
-  {
-    files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-    plugins: {
-      prettier: prettierPlugin,
-    } as any,
-    extends: ["plugin:prettier/recommended"],
-    rules: {
       "prettier/prettier": "error",
     },
   },
