@@ -1,17 +1,20 @@
-import express, { Request, Response, NextFunction, ErrorRequestHandler } from 'express';import 'dotenv/config';
-import path from 'path';
+import express, {
+  Request,
+  Response,
+  NextFunction,
+  ErrorRequestHandler,
+} from "express";
+import "dotenv/config";
+import path from "path";
+import testRouter from "./src/routes/health.route";
 
 const app = express();
-
-const unusedVariable = "This will fail the linter";
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
 // Test route
-app.get("/api/hello", (_req, res) => {
-  res.json({ message: "Hallo from the backend!👋" });
-});
+app.use("/api", testRouter);
 
 // Fallback route for SPA
 app.get("*", (req, res, next) => {
@@ -33,7 +36,7 @@ app.use(((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   const statusCode = (err as any).status || 500;
   res.status(statusCode).json({
     error: "Interner Server-Fehler",
-    message: err.message
+    message: err.message,
   });
 }) as ErrorRequestHandler);
 
