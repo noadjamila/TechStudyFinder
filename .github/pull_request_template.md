@@ -2,8 +2,8 @@
 Please describe the purpose of this Pull Request.  
 Explain what has been changed and why these changes are necessary.
 
-> **Reminder:** The Jira ticket **must be linked in the PR title**  
-> Example: `GI-21: Implement user login flow`
+> **Reminder:** The Jira ticket **must be linked**  
+> Example: `GI-21: Implement user login flow` & `Jira Ticket: https://techstudyfinder.atlassian.net/browse/GI-21`
 
 ## Author Checklist
 - [ ] Code follows project coding standards and conventions  
