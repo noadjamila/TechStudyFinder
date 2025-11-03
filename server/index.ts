@@ -7,6 +7,7 @@ import express, {
 import "dotenv/config";
 import path from "path";
 import testRouter from "./src/routes/health.route";
+import deployRouter from "./src/routes/deploy.route";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
 // Test route
 app.use("/api", testRouter);
+app.use("deploy", deployRouter);
 
 // Fallback route for SPA
 app.get("*", (req, res, next) => {
