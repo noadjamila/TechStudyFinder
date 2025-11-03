@@ -1,0 +1,47 @@
+# ======================
+# Node / Server
+# ======================
+node_modules/
+server/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ======================
+# Frontend / React
+# ======================
+client/node_modules/
+client/.pnp
+client/.pnp.js
+client/coverage/
+client/build/
+client/npm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
+
+# ======================
+# Environment / Secrets
+# ======================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ======================
+# OS / IDE / Misc
+# ======================
+.DS_Store       # macOS
+Thumbs.db       # Windows
+.vscode/        # VSCode Projektkonfiguration
+.idea/          # JetBrains IDEs
+*.bak
+*.swp
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+/.idea/
+/server/dist/
