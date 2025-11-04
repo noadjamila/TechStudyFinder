@@ -1,20 +1,40 @@
 # TechStudyFinder
 
-**TechStudyFinder** is a web application designed to help young people discover Informatics study programs that align with their **interests, hobbies, and personality**.
+**TechStudyFinder** is a progressive web application designed to help young people discover Informatics study programs that align with their **interests, hobbies, and personality**.
 
-Many young people never consider studying Informatics because they assume it’s only about programming or math. This project aims to change that by showing how diverse and creative IT can be and how it connects to things people already care about.
+Many young people, especially **FLINTA** (women, lesbian, inter, non-binary, trans, and agender individuals), never consider studying Informatics because they assume it’s only about programming or math. This project aims to change that by showing how diverse and creative IT can be and how it connects to things people already care about.
+
+**Disclaimer:**  
+This application is not intended to provide professional career or psychological advice. It’s meant for general informational purposes only and shouldn’t replace guidance from qualified professionals.
 
 ---
 
 ## Project Overview
 
 The app helps users explore how their personal interests can relate to Informatics and related study programs.  
-It’s meant to **inspire** and **guide**, not test technical skills.
+It’s meant to **inspire** and **guide**, not test technical skills. Both bachelor's and master's programmes are included in the application. The user may filter for their desired degree.
 
 **Planned user flow:**
 1. Users enter their interests, hobbies, or personal values.
 2. The system suggests Informatics study programs that fit those inputs.
 
+---
+
+## Getting Started
+
+Run the application locally with the following steps:
+
+1. **Clone the repository**  
+   ```bash
+   git clone https://github.com/noadjamila/TechStudyFinder.git
+   cd TechStudyFinder
+2. **Install dependencies**
+    ```bash
+    npm install
+3. **Start the frontend and backend**
+    ```bash
+    npm start --prefix client
+    npm start --prefix server 
 ---
 
 ## Tech Stack

@@ -47,7 +47,7 @@ Write clear, concise commit messages:
 - Reference related issue numbers, for example: Fixes #123
 
 ## Pull request process
-- Link the relevant issue or provide necessary context in the PR description.
+- Link the relevant issue by adding "Closes #<issue number>" and providing necessary context in the PR description.
 - Describe the changes and the reasoning behind them.
 - Ensure all tests and CI checks pass.
 - Be responsive to review feedback. Maintain a constructive tone.
