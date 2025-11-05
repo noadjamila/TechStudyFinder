@@ -24,17 +24,26 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 
 Run the application locally with the following steps:
 
-1. **Clone the repository**  
+
+1. **Install requirements**
+    Run the following commands to ensure that you run the correct Node.js version.
+    `nvm install 20`
+    `nvm use 20` 
+2. **Clone the repository**  
    ```bash
    git clone https://github.com/noadjamila/TechStudyFinder.git
    cd TechStudyFinder
-2. **Install dependencies**
+3. **Install dependencies**
     ```bash
+    # Install root dependencies (concurrently, husky, etc.)
     npm install
-3. **Start the frontend and backend**
+    # Install backend dependencies (Express, ts-node, etc.)
+    npm install --workspace server
+    # Install frontend dependencies (React, etc.)
+    npm install --workspace client
+4. **Start the frontend and backend**
     ```bash
-    npm start --prefix client
-    npm start --prefix server 
+    npm run dev 
 ---
 
 ## Tech Stack
