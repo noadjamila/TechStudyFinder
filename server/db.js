@@ -9,4 +9,6 @@ const pool = new Pool({
     database: process.env.DB_NAME,
 });
 
+console.log("Verbinde mit Datenbank auf Port:", process.env.DB_PORT);
+
 module.exports = pool;

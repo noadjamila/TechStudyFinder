@@ -10,7 +10,7 @@ app.get('/test-db', async (req, res) => {
         res.json({ success: true, time: result.rows[0].now });
     } catch (err) {
         console.error('Datenbankfehler:', err);
-        res.status(500).json({ success: false, error: err.message });
+        res.status(500).json({ success: false, error: err.message || err });
     }
 });
 
