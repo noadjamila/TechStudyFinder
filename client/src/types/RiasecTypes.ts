@@ -1,3 +1,11 @@
+/**
+ * Enumeration representing the six RIASEC personality types
+ * used in the Holland occupational interest model.
+ *
+ * @enum {string}
+ * @example
+ * const type: RiasecType = RiasecType.R; // "R"
+ */
 export enum RiasecType {
   R = "R",
   I = "I",
@@ -7,6 +15,19 @@ export enum RiasecType {
   C = "C",
 }
 
+/**
+ * The initial score state for all RIASEC types.
+ * 
+ * Used as a baseline when initializing quiz results.
+ * Each type starts with a score of `0` and is incremented
+ * or decremented as the user answers quiz questions.
+ *
+ * @constant
+ * @type {Record<RiasecType, number>}
+ * @example
+ * const scores = { ...initialScores };
+ * // { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 }
+ */
 export const initialScores: Record<RiasecType, number> = {
   [RiasecType.R]: 0,
   [RiasecType.I]: 0,

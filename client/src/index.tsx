@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import Quiz_L2 from "./pages/Quiz_L2";
+import Quiz_L2 from "./pages/QuizPage_L2";
 
 const rootElement = document.getElementById("root");
 
