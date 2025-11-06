@@ -1,20 +1,27 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import Quiz_L2 from "./pages/Quiz_L2";
 
 const rootElement = document.getElementById("root");
 
 if (!rootElement) {
-    throw new Error("Root element not found in the DOM.");
+  throw new Error("Root element not found in the DOM.");
 }
 
 const root = ReactDOM.createRoot(rootElement);
 
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/quiz/level2" element={<Quiz_L2 />} />
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>,
 );
 
@@ -23,14 +30,15 @@ root.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-            .then(registration => {
-                console.log('Service worker registered:', registration);
-            })
-            .catch(error => {
-                console.error('Service worker registration failed:', error);
-            });
-    });
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/service-worker.js")
+      .then((registration) => {
+        console.log("Service worker registered:", registration);
+      })
+      .catch((error) => {
+        console.error("Service worker registration failed:", error);
+      });
+  });
 }

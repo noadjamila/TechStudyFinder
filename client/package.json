@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.5",
     "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -30,5 +31,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^4.7.0",
+    "vite": "^7.1.12",
+    "vite-plugin-pwa": "^1.1.0"
   }
 }

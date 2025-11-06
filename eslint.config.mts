@@ -1,12 +1,12 @@
-import * as typescriptPlugin from '@typescript-eslint/eslint-plugin';
+import * as typescriptPlugin from "@typescript-eslint/eslint-plugin";
 import globals from "globals";
-import {defineConfig} from "eslint/config";
-import reactPlugin from 'eslint-plugin-react';
-import * as reactHooksPlugin from 'eslint-plugin-react-hooks';
+import { defineConfig } from "eslint/config";
+import reactPlugin from "eslint-plugin-react";
+import * as reactHooksPlugin from "eslint-plugin-react-hooks";
 import * as prettierPlugin from "eslint-plugin-prettier";
 import js from "@eslint/js";
 import prettierConfig from "eslint-config-prettier";
-import * as typescriptEslintParser from '@typescript-eslint/parser';
+import * as typescriptEslintParser from "@typescript-eslint/parser";
 
 export default defineConfig([
   prettierConfig,
@@ -34,7 +34,7 @@ export default defineConfig([
       "prettier/prettier": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
-        { argsIgnorePattern: "^_" }
+        { argsIgnorePattern: "^_" },
       ],
       "no-unused-vars": "off",
     },
@@ -52,7 +52,7 @@ export default defineConfig([
     languageOptions: {
       globals: { ...globals.browser },
       parserOptions: {
-        ecmaFeatures: {jsx: true},
+        ecmaFeatures: { jsx: true },
         project: "client/tsconfig.json",
       },
     },
