@@ -1,6 +1,7 @@
 {
   "name": "tech-study-finder",
   "private": true,
+  "type": "module",
   "workspaces": [
     "client",
     "server"
@@ -47,6 +48,8 @@
     ]
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
+    "pg": "^8.16.3",
     "react-scripts": "^5.0.1"
   }
 }
