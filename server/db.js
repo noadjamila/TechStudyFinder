@@ -1,3 +1,6 @@
+//creates and exports a reusable PostgreSQL connection pool
+// using the pg library and environment variables loaded via dotenv
+
 const { Pool } = require('pg');
 require('dotenv').config();
 

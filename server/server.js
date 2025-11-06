@@ -1,3 +1,5 @@
+//Minimal Express server exposing a /test-db endpoint to verify PostgreSQL connectivity by running SELECT NOW()
+
 const express = require('express');
 require('dotenv').config();
 const pool = require('./db.js');
