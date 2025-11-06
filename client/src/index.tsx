@@ -19,7 +19,7 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/quiz/level2" element={<Quiz_L2 />} />
+        <Route path="/quiz/level/2" element={<Quiz_L2 />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,
