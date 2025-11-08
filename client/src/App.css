@@ -1,4 +1,32 @@
-.App {
+/* Colors definitions */
+:root {
+  --gi-blau: #003366; /* Primary color */
+  --hellblau: #0076B6; /* Akcent color */
+  --dunkelgrau: #333333; /* Text color */
+  --mittelgrau: #666666; /* Secondry text color */
+  --hellgrau: #F5F5F5; /* Background color */
+  --weiß: #FFFFFF; /* White */
+  --akzentgelb: #F7B500; /* Accent color for Highlits */
+}
+
+/* background color */
+body {
+  background-color: var(--hellgrau);
+  font-family: 'Open Sans', sans-serif;
+  color: var(--dunkelgrau);
+  margin: 0;
+  padding: 0;
+}
+
+.App-header {
+  background-color: var(--gi-blau);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: var(--weiß);
   text-align: center;
 }
 
@@ -13,26 +41,64 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
 .App-link {
-  color: #61dafb;
+  color: var(--hellblau);
+  font-size: 1.2rem;
+  text-decoration: none;
+}
+.App-link:hover {
+  text-decoration: underline;
 }
 
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
-  to {
+  to{
     transform: rotate(360deg);
   }
 }
+
+.btn-primary {
+  background-color: var(--gi-blau);
+  color: var(--weiß);
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+}
+.btn-primary:hover {
+  background-color: var(--hellblau);
+}
+
+.btn-secondary {
+  background-color: var(--weiß);
+  color: var(--gi-blau);
+  border: 1px solid var(--gi-blau);
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.btn-secondary:hover {
+  background-color: var(--gi-blau);
+  color: var(--weiß);
+}
+
+.btn-link{
+  color: var(--gi-blau);
+  text-decoration: none;
+}
+.btn-link:hover{
+  color: var(--hellgrau);
+  text-decoration: underline;
+}
+
+@media (min-width: 769px) {
+  .container {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+
