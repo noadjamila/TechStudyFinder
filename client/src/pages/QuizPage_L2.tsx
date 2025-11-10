@@ -31,6 +31,7 @@ const TOTAL_QUESTIONS = questions.length;
  */
 const QuizPage_L2: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [response, setResponse] = useState<{ type: string; score: number }[]>([]);
   
   const [scores, setScores] =
     useState<Record<RiasecType, number>>(initialScores);
@@ -86,6 +87,7 @@ const QuizPage_L2: React.FC = () => {
       if (currentIndex === TOTAL_QUESTIONS - 1) {
         const topScores = getTopThreeScores(newScores);
         setHighestScores(topScores);
+        sendData(topScores)
       }
 
       return newScores;
@@ -94,6 +96,24 @@ const QuizPage_L2: React.FC = () => {
     setTimeout(() => {
       if (currentIndex < TOTAL_QUESTIONS) next();
     }, 300);
+  };
+
+  const sendData = async (topScores:{ type: RiasecType; score: number }[] ) => {
+    try {
+      const res = await fetch("http://localhost:5001/api/quiz/level/2", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ highestScores: topScores }),
+      });
+
+      const result = await res.json();
+      setResponse(result.scores);
+      console.log("Antwort vom Server:", result.scores);
+    } catch (err) {
+      console.error("Fehler beim Senden:", err);
+    }
   };
 
   return (
@@ -125,6 +145,16 @@ const QuizPage_L2: React.FC = () => {
               </div>
             ))}
           </div>
+          {response.length > 0 && (
+            <div>
+              <h3>Server-Antwort:</h3>
+              {response.map((item, index) => (
+                <div key={index}>
+                  {item.type}: {item.score}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
