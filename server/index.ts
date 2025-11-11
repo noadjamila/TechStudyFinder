@@ -7,6 +7,7 @@ import express, {
 import "dotenv/config";
 import path from "path";
 import testRouter from "./src/routes/health.route";
+import { pool } from "./db";
 
 const app = express();
 
@@ -54,4 +55,18 @@ process.on("uncaughtException", (error) => {
 
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
+});
+
+
+//test api for data base call
+app.get("/api/test-db", async (_req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.json({ success: true, time: (result.rows?.[0] as any)?.now });
+  } catch (err: any) {
+    console.error("Datenbankfehler:", err);
+    res
+      .status(500)
+      .json({ success: false, error: err?.message || String(err) });
+  }
 });
