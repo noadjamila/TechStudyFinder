@@ -30,5 +30,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.22",
+    "caniuse-lite": "^1.0.30001754",
+    "postcss": "^8.5.6",
+    "postcss-loader": "^8.2.0"
   }
 }
