@@ -17,6 +17,19 @@ app.use(express.static(path.join(__dirname, "..", "client", "build")));
 // Test route
 app.use("/api", testRouter);
 
+//test api for data base call
+app.get("/api/test-db", async (_req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.json({ success: true, time: (result.rows?.[0] as any)?.now });
+  } catch (err: any) {
+    console.error("Datenbankfehler:", err);
+    res
+      .status(500)
+      .json({ success: false, error: err?.message || String(err) });
+  }
+});
+
 // Fallback route for SPA
 app.get("*", (req, res, next) => {
   if (req.url.startsWith("/api/")) {
@@ -55,18 +68,4 @@ process.on("uncaughtException", (error) => {
 
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
-});
-
-
-//test api for data base call
-app.get("/api/test-db", async (_req, res) => {
-  try {
-    const result = await pool.query("SELECT NOW()");
-    res.json({ success: true, time: (result.rows?.[0] as any)?.now });
-  } catch (err: any) {
-    console.error("Datenbankfehler:", err);
-    res
-      .status(500)
-      .json({ success: false, error: err?.message || String(err) });
-  }
 });
