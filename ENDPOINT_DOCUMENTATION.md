@@ -29,5 +29,5 @@
 ## DELETE
 | Endpoint | Description                                   |
 |----------|-----------------------------------------------|
-| /api/users/favorites/:id | Remove a study programme from a user's list of favorites |
+| /api/users/favorites/:programmeId | Remove a study programme (by programmeId) from a user's list of favorites |
 | /api/users/me | Delete the authenticated user's account       |
