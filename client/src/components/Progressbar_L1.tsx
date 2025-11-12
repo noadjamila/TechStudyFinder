@@ -51,6 +51,10 @@ const Progressbar_L1: React.FC<ProgressbarProps> = ({ current, total }) => {
                 }}
             >
                 <div
+                    role="progressbar"
+                    aria-valuenow={safeCurrent}
+                    aria-valuemin={0}
+                    aria-valuemax={total}
                     style={{
                         height: "100%",
                         width: `${percent}%`,
@@ -58,8 +62,9 @@ const Progressbar_L1: React.FC<ProgressbarProps> = ({ current, total }) => {
                         transition: "width 0.3s ease",
                     }}
                 />
+
             </div>
-            <div style={{ fontSize: 14, color: "#444", marginTop: 6 }}>
+            <div style={{fontSize: 14, color: "#444", marginTop: 6}}>
                 Frage {safeCurrent} von {total}
             </div>
         </div>
