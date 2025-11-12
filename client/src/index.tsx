@@ -7,7 +7,7 @@ import reportWebVitals from "./reportWebVitals";
 const rootElement = document.getElementById("root");
 
 if (!rootElement) {
-    throw new Error("Root element not found in the DOM.");
+  throw new Error("Root element not found in the DOM.");
 }
 
 const root = ReactDOM.createRoot(rootElement);
@@ -23,14 +23,15 @@ root.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-            .then(registration => {
-                console.log('Service worker registered:', registration);
-            })
-            .catch(error => {
-                console.error('Service worker registration failed:', error);
-            });
-    });
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/service-worker.js")
+      .then((registration) => {
+        console.log("Service worker registered:", registration);
+      })
+      .catch((error) => {
+        console.error("Service worker registration failed:", error);
+      });
+  });
 }
