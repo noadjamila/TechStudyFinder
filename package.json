@@ -1,6 +1,7 @@
 {
   "name": "tech-study-finder",
   "private": true,
+  "type": "module",
   "workspaces": [
     "client",
     "server"
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
+    "@types/pg": "^8.15.6",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "concurrently": "^8.2.0",
@@ -47,6 +49,8 @@
     ]
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
+    "pg": "^8.16.3",
     "react-scripts": "^5.0.1"
   }
 }
