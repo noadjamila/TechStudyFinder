@@ -17,17 +17,17 @@
 | /api/auth/register | Register a new user                                           |
 | /api/auth/login | User login                                                    |
 | /api/auth/logout | User logout                                                   |
-| /api/users/favorites | Add a studyprogramme to a user's list of favorites            |
+| /api/users/favorites | Add a study programme to a user's list of favorites           |
 | /api/quiz/filter/progress | Filter quiz questions based on user progress after each level |
-| /deploy/webhook | Webhook for deployment triggers                              |
+| /deploy/webhook | Webhook for deployment triggers                               |
 
 ## PUT
-| Endpoint | Description                                   |
-|----------|-----------------------------------------------|
-|  |  |
+| Endpoint | Description |
+|----------|-------------|
+| tbd      | tbd         |
 
 ## DELETE
 | Endpoint | Description                                   |
 |----------|-----------------------------------------------|
-| /api/users/favorites/:id | Remove a studyprogramme from a user's list of favorites
+| /api/users/favorites/:id | Remove a study programme from a user's list of favorites |
 | /api/users/me | Delete the authenticated user's account       |
