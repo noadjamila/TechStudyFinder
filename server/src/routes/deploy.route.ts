@@ -1,10 +1,15 @@
-import { Router } from "express";
-import { exec } from "child_process";
+import { Router, Request, Response } from "express";
+import { handleDeployWebhook } from "../services/deployment.service";
 
-const router = Router();
+const deployRouter = Router();
 
-router.post("/webhook", (req, res) => {
-
+deployRouter.post("/webhook", async (req: Request, res: Response) => {
+  try {
+    await handleDeployWebhook(req, res);
+  } catch (error) {
+    console.error("Error handling deploy webhook:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
-export default router;
+export default deployRouter;
