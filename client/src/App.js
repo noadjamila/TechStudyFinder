@@ -1,34 +1,37 @@
+import React from "react";
 import "./App.css";
-import { useState, useEffect } from "react";
-import './App.css';
+import { Button, Typography, IconButton } from "@mui/material";
+import { Home } from "@mui/icons-material";
 
 function App() {
-  const [msg, setMsg] = useState("");
-
-  useEffect(() => {
-    fetch("/api/hello")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Backend Response:", data);
-        setMsg(data.message);
-      })
-      .catch((err) => console.error(err));
-  }, []);
-
   return (
-    <div className="App">
-      <header className="App-header">
-          <img src="/logo.png" className="App-logo" alt="logo" />
-          <h1>Tech Study Finder</h1>
-          <p>Finde den Studiengang, der zu dir passt!</p>
-          <p>{msg}</p>
-          <button className="btn-primary">Quiz starten</button>
-          <a href="https://reactjs.org/" className="btn-link" target="_blank" rel="noopener noreferrer">Erkunde React</a>
-        <div>
-          <h1>Backend test message:</h1>
-          <p>{msg}</p>
-        </div>
-      </header>
+    <div className="App-header">
+      {/* Logo */}
+      <img src="/logo.png" alt="TechStudyFinder Logo" className="App-logo" />
+
+      {/* Title */}
+      <Typography variant="h1" gutterBottom>
+        Tech Study Finder
+      </Typography>
+
+      {/* Description  */}
+      <Typography variant="body1">
+        Finde den Studiengang, der zu dir passt!
+      </Typography>
+
+      {/* Primary Button */}
+      <Button className="btn-primary">Primary Button</Button>
+
+      {/* Secondary Button */}
+      <Button className="btn-secondary" style={{ marginLeft: "16px" }}>
+        Secondary Button
+      </Button>
+
+      {/* Icon Button */}
+      <IconButton className="btn-primary" style={{ marginLeft: "16px" }}>
+        <Home />
+      </IconButton>
+
     </div>
   );
 }

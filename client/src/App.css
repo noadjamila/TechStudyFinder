@@ -1,38 +1,116 @@
 /* Colors definitions */
 :root {
   --gi-blau: #003366; /* Primary color */
-  --hellblau: #0076B6; /* Akcent color */
+  --hellblau: #0076b6; /* Accent color */
   --dunkelgrau: #333333; /* Text color */
-  --mittelgrau: #666666; /* Secondry text color */
-  --hellgrau: #F5F5F5; /* Background color */
-  --weiß: #FFFFFF; /* White */
-  --akzentgelb: #F7B500; /* Accent color for Highlits */
+  --mittelgrau: #666666; /* Secondary text color */
+  --hellgrau: #f5f5f5; /* Background color */
+  --weiß: #ffffff; /* White */
+  --akzentgelb: #f7b500; /* Accent color for Highlights */
 }
 
-/* background color */
+/* Basic styling */
 body {
-  background-color: var(--hellgrau);
-  font-family: 'Open Sans', sans-serif;
-  color: var(--dunkelgrau);
+  background-color: var(--hellgrau); /* Background color */
+  font-family: "Open Sans", sans-serif; /* Font family */
+  color: var(--dunkelgrau); /* Default text color */
   margin: 0;
   padding: 0;
 }
 
+/* App Header */
 .App-header {
-  background-color: var(--gi-blau);
-  min-height: 100vh;
+  background-color: var(--gi-blau); /* Primary background */
+  min-height: 100vh; /* Full height */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: var(--weiß);
+  color: var(--weiß); /* White text */
   text-align: center;
 }
 
+/* Logo styling */
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+/* Hover effects on links */
+.App-link {
+  color: var(--hellblau); /* Accent color */
+  font-size: 1.2rem;
+  text-decoration: none;
+}
+
+.App-link:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+
+/* Button Styles */
+
+/* Primary button */
+.btn-primary {
+  background-color: var(--gi-blau); /* Primary background */
+  color: var(--weiß); /* White text */
+  border-radius: 4px; /* Rounded corners */
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: var(--hellblau); /* Change to light blue on hover */
+}
+
+/* Secondary button */
+.btn-secondary {
+  background-color: var(--weiß); /* White background */
+  color: var(--gi-blau); /* Primary text color */
+  border: 1px solid var(--gi-blau); /* Blue border */
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background-color: var(--gi-blau); /* Blue background on hover */
+  color: var(--weiß); /* White text */
+}
+
+/* Link button */
+.btn-link {
+  color: var(--gi-blau); /* Blue text */
+  text-decoration: none;
+}
+
+.btn-link:hover {
+  color: var(--hellgrau); /* Grey text on hover */
+  text-decoration: underline; /* Underline on hover */
+}
+
+/* Media queries for responsiveness */
+@media (min-width: 769px) {
+  .container {
+    display: grid;
+    grid-template-columns: repeat(
+      12,
+      1fr
+    ); /* 12-column grid for larger screens */
+  }
+}
+
+/* Animations */
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -40,65 +118,3 @@ body {
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
-.App-link {
-  color: var(--hellblau);
-  font-size: 1.2rem;
-  text-decoration: none;
-}
-.App-link:hover {
-  text-decoration: underline;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to{
-    transform: rotate(360deg);
-  }
-}
-
-.btn-primary {
-  background-color: var(--gi-blau);
-  color: var(--weiß);
-  border-radius: 4px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
-}
-.btn-primary:hover {
-  background-color: var(--hellblau);
-}
-
-.btn-secondary {
-  background-color: var(--weiß);
-  color: var(--gi-blau);
-  border: 1px solid var(--gi-blau);
-  border-radius: 4px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
-.btn-secondary:hover {
-  background-color: var(--gi-blau);
-  color: var(--weiß);
-}
-
-.btn-link{
-  color: var(--gi-blau);
-  text-decoration: none;
-}
-.btn-link:hover{
-  color: var(--hellgrau);
-  text-decoration: underline;
-}
-
-@media (min-width: 769px) {
-  .container {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-  }
-}
-
