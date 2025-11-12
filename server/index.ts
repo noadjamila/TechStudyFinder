@@ -20,9 +20,9 @@ app.use(
 );
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
-// Test route
+// Routers
 app.use("/api", testRouter);
-app.use("deploy", deployRouter);
+app.use("/deploy", deployRouter);
 
 // Fallback route for SPA
 app.get("*", (req, res, next) => {
