@@ -1,38 +1,40 @@
-import { getRawBody } from '../middlewares/rawBody.middleware';
-import * as crypto from 'crypto';
-import { Buffer } from 'buffer';
+import { getRawBody, RawBodyRequest } from "../middlewares/rawBody.middleware";
+import * as crypto from "crypto";
+import { Buffer } from "buffer";
+import { Request, Response } from "express";
 
-export const handleDeployWebhook = async (
-    req: Request,
-    res: Response,
-): Promise<void> => {
-    const rawBody = getRawBody(req);
+export const handleDeployWebhook = async (req: Request, res: Response) => {
+  const signature = req.headers["x-hub-signature-256"] as string | undefined;
+  const rawBody = getRawBody(req as RawBodyRequest);
 
-    /*
-    * Perform security check
-    */
-    if (!verifySignature(req.headers['x-hub-signature-256'] as string, rawBody)) {
-        console.warn('Webhook signature verification failed');
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
+  if (!signature) {
+    console.warn("No signature provided in webhook request");
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 
-      /*
-       * Validate event type and branch
-       */
-      const githubEvent = req.headers['x-github-event'];
-      const branch = req.body.ref;
+  /*
+   * Perform security check
+   */
+  if (!verifySignature(req.headers["x-hub-signature-256"] as string, rawBody)) {
+    console.warn("Webhook signature verification failed");
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 
-      if (githubEvent !== "push" || branch !== 'refs/heads/main') {
-        return res.status(200).json({ message: 'No deployment needed' });
-    }
+  /*
+   * Validate event type and branch
+   */
+  const githubEvent = req.headers["x-github-event"];
+  const branch = req.body.ref;
 
-      res.status(200).json({ message: 'Webhook received, deployment started' });
+  if (githubEvent !== "push" || branch !== "refs/heads/main") {
+    return res.status(200).json({ message: "No deployment needed" });
+  }
 
-      try {
-        await runDeploymentScript();
-      } catch (error) {
-        console.error('Deployment script failed:', error);
-      }
+  res.status(200).json({ message: "Webhook received, deployment started" });
+
+  runDeploymentScript().catch((error: any) => {
+    console.error("Deployment script failed:", error);
+  });
 };
 
 /**
@@ -41,27 +43,30 @@ export const handleDeployWebhook = async (
  * @param rawBody The raw request body
  * @returns boolean indicating if the signature is valid
  */
-const verifySignature = (signature: string, rawBody: Buffer): boolean {
-  if (!signature || !GITHUB_WEBHOOK_SECRET) {
+const verifySignature = (signature: string, rawBody: Buffer): boolean => {
+  const GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET;
+
+  if (!GITHUB_WEBHOOK_SECRET) {
+    console.error("[verifySignature] GITHUB_WEBHOOK_SECRET is missing");
     return false;
   }
 
   const [algorithm, githubHash] = signature.split("=");
-  if (algorithm !== 'sha256') {
-      console.warn('[verifySignature] Unknown signature algorithm:', algorithm);
+  if (algorithm !== "sha256") {
+    console.warn("[verifySignature] Unknown signature algorithm:", algorithm);
     return false;
   }
 
   const hmac = crypto.createHmac(algorithm, GITHUB_WEBHOOK_SECRET);
   hmac.update(rawBody);
-  const calculatedHash = hmac.digest('hex');
+  const calculatedHash = hmac.digest("hex");
 
-  const calculatedHashBuffer = Buffer.from(calculatedHash, 'hex');
-  const githubHashBuffer = Buffer.from(githubHash, 'hex');
+  const calculatedHashBuffer = Buffer.from(calculatedHash, "hex");
+  const githubHashBuffer = Buffer.from(githubHash, "hex");
 
   if (calculatedHashBuffer.length !== githubHashBuffer.length) {
     return false;
   }
 
-    return crypto.timingSafeEqual(calculatedHashBuffer, githubHashBuffer);
+  return crypto.timingSafeEqual(calculatedHashBuffer, githubHashBuffer);
 };
