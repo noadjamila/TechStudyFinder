@@ -1,34 +1,56 @@
+/**
+ * Question2_L1 Component
+ * ----------------------
+ * Updated version:
+ * Asks the user which degree program they are interested in:
+ * "Bachelor", "Master", or "Diploma".
+ *
+ * - Displays three radio options.
+ * - Validates that one option is selected.
+ * - Includes optional "Back" navigation.
+ */
+
 import React, { useState } from "react";
 
 interface Props {
-    onNext: (answer: "Ja" | "Nein") => void;
+    onNext: (answer: "Bachelor" | "Master" | "Diploma") => void;
     onBack?: () => void;
 }
 
 const Question2_L1: React.FC<Props> = ({ onNext, onBack }) => {
-    const [answer, setAnswer] = useState<"Ja" | "Nein" | null>(null);
+    // User's selected degree type
+    const [answer, setAnswer] = useState<"Bachelor" | "Master" | "Diploma" | null>(null);
+    // Error message for validation
     const [error, setError] = useState("");
 
+    /** Validate and proceed to the next question */
     const handleNext = () => {
-        if (!answer) return setError("Bitte wähle eine Antwort.");
+        if (!answer) return setError("Bitte wähle einen Abschluss.");
         onNext(answer);
     };
 
     return (
         <div>
             <h2>Frage 2</h2>
-            <p>Wärst du bereit für ein Praktikum während des Studiums?</p>
+            <p>Möchtest du einen Bachelor-, Master- oder Diplom-Studiengang machen?</p>
 
-            <div style={{ display: "flex", gap: 12, margin: "16px 0" }}>
+            {/* Degree options */}
+            <div style={{ display: "flex", gap: 16, margin: "16px 0" }}>
                 <label>
-                    <input type="radio" name="q2" onChange={() => setAnswer("Ja")} /> Ja
+                    <input type="radio" name="q2" onChange={() => setAnswer("Bachelor")} /> Bachelor
                 </label>
                 <label>
-                    <input type="radio" name="q2" onChange={() => setAnswer("Nein")} /> Nein
+                    <input type="radio" name="q2" onChange={() => setAnswer("Master")} /> Master
+                </label>
+                <label>
+                    <input type="radio" name="q2" onChange={() => setAnswer("Diploma")} /> Diploma
                 </label>
             </div>
 
+            {/* Error message */}
             {error && <div style={{ color: "crimson", marginBottom: 8 }}>{error}</div>}
+
+            {/* Navigation buttons */}
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 {onBack && <button onClick={onBack}>Zurück</button>}
                 <button onClick={handleNext}>Weiter</button>
