@@ -31,7 +31,6 @@ function App() {
       <IconButton className="btn-primary" style={{ marginLeft: "16px" }}>
         <Home />
       </IconButton>
-
     </div>
   );
 }
