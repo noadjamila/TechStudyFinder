@@ -7,7 +7,7 @@
 | /api/quiz/level/:levelId | Fetch questions for a specific quiz level |
 | /api/quiz/results/:resultId | Show results for a specific quiz attempt |
 | /api/users/favorites | Retrieve a user's favorite study programmes |
-| /api/users/results | Retrieve a user's recent complete list of results |
+| /api/users/results | Retrieve a user's complete list of recent results |
 | /api/auth/verify | Verify user authentication token |
 | /api/studyprogrammes/:id | Fetch details of a specific study programme by ID |
 
