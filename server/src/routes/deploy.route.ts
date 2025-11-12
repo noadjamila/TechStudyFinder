@@ -1,15 +1,8 @@
-import { Router, Request, Response } from "express";
-import { handleDeployWebhook } from "../services/deployment.service";
+import { Router } from "express";
+import { handleWebhook } from "../controllers/deploy.controller";
 
 const deployRouter = Router();
 
-deployRouter.post("/webhook", async (req: Request, res: Response) => {
-  try {
-    await handleDeployWebhook(req, res);
-  } catch (error) {
-    console.error("Error handling deploy webhook:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+deployRouter.post("/webhook", handleWebhook);
 
 export default deployRouter;
