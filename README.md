@@ -15,6 +15,7 @@ The app helps users explore how their personal interests can relate to Informati
 It’s meant to **inspire** and **guide**, not test technical skills. Both bachelor's and master's programmes are included in the application. The user may filter for their desired degree.
 
 **Planned user flow:**
+
 1. Users enter their interests, hobbies, or personal values.
 2. The system suggests Informatics study programs that fit those inputs.
 
@@ -24,26 +25,29 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 
 Run the application locally with the following steps:
 
-
 1. **Install requirements**
-    Run the following commands to ensure that you run the correct Node.js version.
-    `nvm install 20`
-    `nvm use 20` 
-2. **Clone the repository**  
+   Run the following commands to ensure that you run the correct Node.js version.
+   `nvm install 20`
+   `nvm use 20`
+2. **Clone the repository**
    ```bash
    git clone https://github.com/noadjamila/TechStudyFinder.git
    cd TechStudyFinder
+   ```
 3. **Install dependencies**
-    ```bash
-    # Install root dependencies (concurrently, husky, etc.)
-    npm install
-    # Install backend dependencies (Express, ts-node, etc.)
-    npm install --workspace server
-    # Install frontend dependencies (React, etc.)
-    npm install --workspace client
+   ```bash
+   # Install root dependencies (concurrently, husky, etc.)
+   npm install
+   # Install backend dependencies (Express, ts-node, etc.)
+   npm install --workspace server
+   # Install frontend dependencies (React, etc.)
+   npm install --workspace client
+   ```
 4. **Start the frontend and backend**
-    ```bash
-    npm run dev 
+   ```bash
+   npm run dev
+   ```
+
 ---
 
 ## Tech Stack
@@ -61,8 +65,8 @@ Run the application locally with the following steps:
 
 ## Purpose
 
-- Make Informatics more **approachable and inclusive**.  
-- Encourage **FLINTA youth** to see themselves in IT fields.  
+- Make Informatics more **approachable and inclusive**.
+- Encourage **FLINTA youth** to see themselves in IT fields.
 - Combine **technology, psychology, and design** to support informed, confident study choices.
 
 ---
