@@ -1,39 +1,67 @@
-import React, { useState }from "react";
-import "../HomeScreen.css";
+import React, { useState } from 'react';
+import './HomeScreen.css'; // Import CSS
+import { Button, Typography, IconButton, Collapse } from '@mui/material';
+import { Menu as MenuIcon } from '@mui/icons-material';
 
+const HomeScreen: React.FC = () => {
+    const [menuOpen, setMenuOpen] = useState(false); // State for collapsing the menu
 
-const HomeScreen = () => {
-
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const handleOpenMenu = () => setIsMenuOpen(true);
-    const handleCloseMenu = () => setIsMenuOpen(false);
+    const toggleMenu = () => {
+        setMenuOpen(!menuOpen); // Toggle menu visibility
+    };
 
     return (
-        <div className="App">
-        <header className="App-header">
-            <img src="/logo.png" className="Tech Study Finder Logo" alt="logo" />
-            <h1>Tech Study Finder</h1>
-            <p>Finde den Studiengang, der zu dir passt!</p>
+        <div className="HomeScreen">
+            {/* GI Logo */}
+            <div className="logo">
+                <img src="/logo.png" alt="TechStudyFinder Logo" className="App-logo" />
+            </div>
 
-            <div className="menu-icon" onClick={handleOpenMenu}></div>
+            {/* Main Text: Tech Study Finder */}
+            <div className="main-text">
+                <Typography variant="h3" gutterBottom>
+                    Tech Study Finder
+                </Typography>
+                <Typography variant="body1" paragraph>
+                    Finde den Studiengang, der zu dir passt!
+                </Typography>
+            </div>
 
-            {isMenuOpen && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <button className="close-btn" onClick={handleCloseMenu}></button>
-                        <ul>
-                            <li><a href="/impressum">Impressum</a></li>
-                            <li><a href="/login">Einloggen</a></li>
+            {/* Info Text about the Quiz */}
+            <div className="quiz-info">
+                <Typography variant="h6" gutterBottom>
+                    Wie lange wird das Quiz dauern?
+                </Typography>
+                <Typography variant="body2" paragraph>
+                    Das Quiz dauert ungefähr 15 Minuten. Beantworte ein paar Fragen, und wir werden dir Studienprogramme vorschlagen, die zu deinen Interessen passen!
+                </Typography>
+            </div>
 
-                        </ul>
+            {/* Quiz Button */}
+            <Button variant="contained" color="primary" className="quiz-button">
+                Quiz Starten
+            </Button>
+
+            {/* Collapsible Menu for Impressum and Login */}
+            <div className="menu">
+                <IconButton onClick={toggleMenu}>
+                    <MenuIcon />
+                </IconButton>
+                <Collapse in={menuOpen}>
+                    <div className="menu-items">
+                        <Typography variant="body2" className="menu-item">
+                            Impressum
+                        </Typography>
+                        <Typography variant="body2" className="menu-item">
+                            Einloggen
+                        </Typography>
                     </div>
-                </div>
-            )}
-
-            <button className="btn-primary">Quiz starten</button>
-
-        </header>
+                </Collapse>
+            </div>
         </div>
     );
-};
+}
+
 export default HomeScreen;
+
+
