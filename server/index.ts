@@ -8,6 +8,7 @@ import "dotenv/config";
 import path from "path";
 import testRouter from "./src/routes/health.route";
 import quizRoutes from "./src/routes/quizRoutes";
+import { pool } from "./db";
 
 const app = express();
 
@@ -17,6 +18,19 @@ app.use(express.static(path.join(__dirname, "..", "client", "build")));
 // Test route
 app.use("/api", testRouter);
 app.use("/api", quizRoutes);
+
+//test api for data base call
+app.get("/api/test-db", async (_req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.json({ success: true, time: (result.rows?.[0] as any)?.now });
+  } catch (err: any) {
+    console.error("Datenbankfehler:", err);
+    res
+      .status(500)
+      .json({ success: false, error: err?.message || String(err) });
+  }
+});
 
 // Fallback route for SPA
 app.get("*", (req, res, next) => {
