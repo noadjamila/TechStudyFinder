@@ -2,6 +2,7 @@ import { getRawBody, RawBodyRequest } from "../middlewares/rawBody.middleware";
 import * as crypto from "crypto";
 import { Buffer } from "buffer";
 import { Request, Response } from "express";
+import {runDeploymentScript} from "./deployment.utils";
 
 export const handleDeployWebhook = async (req: Request, res: Response) => {
   const signature = req.headers["x-hub-signature-256"] as string | undefined;
