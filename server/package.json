@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "main": "index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "npx ts-node index.ts",
     "dev": "nodemon index.ts",
     "build": "tsc",
@@ -20,6 +20,10 @@
     "express": "^4.19.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "@types/jest": "^30.0.0",
+    "@types/supertest": "^6.0.3",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5"
   }
 }
