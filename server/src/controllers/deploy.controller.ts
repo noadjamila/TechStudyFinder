@@ -1,7 +1,8 @@
-import { handleDeployWebhook } from "../services/deployment.service";
-import { Request, Response } from "express";
+import handleDeployWebhook from "../services/deployment.service";
+import { Response } from "express";
+import { RawBodyRequest } from "../types/deployment.types";
 
-export const handleWebhook = async (req: Request, res: Response) => {
+export const handleWebhook = async (req: RawBodyRequest, res: Response) => {
   try {
     await handleDeployWebhook(req, res);
   } catch (error) {
