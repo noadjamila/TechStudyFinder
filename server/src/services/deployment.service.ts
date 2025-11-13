@@ -1,22 +1,23 @@
-import { getRawBody, RawBodyRequest } from "../middlewares/rawBody.middleware";
+import { getRawBody } from "../middlewares/rawBody.middleware";
 import * as crypto from "crypto";
 import { Buffer } from "buffer";
 import { Request, Response } from "express";
-import {runDeploymentScript} from "./deployment.utils";
+import { runDeploymentScript } from "./deployment.utils";
+import { RawBodyRequest } from "../types/deployment.types";
 
-export const handleDeployWebhook = async (req: Request, res: Response) => {
+const handleDeployWebhook = async (req: Request, res: Response) => {
   const signature = req.headers["x-hub-signature-256"] as string | undefined;
   const rawBody = getRawBody(req as RawBodyRequest);
 
-  if (!signature) {
-    console.warn("No signature provided in webhook request");
+  if (!signature || !rawBody) {
+    console.warn("No signature or body provided in webhook request");
     return res.status(401).json({ error: "Unauthorized" });
   }
 
   /*
    * Perform security check
    */
-  if (!verifySignature(req.headers["x-hub-signature-256"] as string, rawBody)) {
+  if (!verifySignature(signature, rawBody)) {
     console.warn("Webhook signature verification failed");
     return res.status(401).json({ error: "Unauthorized" });
   }
@@ -44,7 +45,10 @@ export const handleDeployWebhook = async (req: Request, res: Response) => {
  * @param rawBody The raw request body
  * @returns boolean indicating if the signature is valid
  */
-const verifySignature = (signature: string, rawBody: Buffer): boolean => {
+export const verifySignature = (
+  signature: string,
+  rawBody: Buffer,
+): boolean => {
   const GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET;
 
   if (!GITHUB_WEBHOOK_SECRET) {
@@ -71,3 +75,5 @@ const verifySignature = (signature: string, rawBody: Buffer): boolean => {
 
   return crypto.timingSafeEqual(calculatedHashBuffer, githubHashBuffer);
 };
+
+export default handleDeployWebhook;
