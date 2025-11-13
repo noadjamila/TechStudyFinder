@@ -1,10 +1,6 @@
-import { Request } from "express";
+import { RawBodyRequest } from "../types/deployment.types";
 
 /*
  * Intercept incoming HTTP requests to capture the raw body
  */
-export interface RawBodyRequest extends Request {
-  rawBody: Buffer;
-}
-
 export const getRawBody = (req: RawBodyRequest): Buffer => req.rawBody;
