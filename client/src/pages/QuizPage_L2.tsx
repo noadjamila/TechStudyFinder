@@ -1,37 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import QuizCard from "../components/quiz/QuizCard_L2";
 import QuizLayout from "../layouts/QuizLayout";
 import { RiasecType, initialScores } from "../types/RiasecTypes";
 
-/* TODO: Load questions from the backend */
-const questions = [
-  { question: "R: Magst du das?", type: RiasecType.R },
-  { question: "I: Magst du das?", type: RiasecType.I },
-  { question: "R: Magst du das?", type: RiasecType.R },
-  { question: "S: Magst du das?", type: RiasecType.S },
-];
-const TOTAL_QUESTIONS = questions.length;
-
 /**
  * `QuizPage_L2` is the page-component for the second level of the quiz.
- * It manages quiz state (current question, user responses, and scoring)
- * and renders the corresponding `QuizCard` and `QuizLayout` components.
+ * It fetches level 2 questions, manages quiz state (current question, 
+ * user responses, and scoring), renders the corresponding `QuizCard` and 
+ * `QuizLayout` components and sends the top three RIASEC scores to the backend.
  *
  * The component calculates a RIASEC score based on user answers as well as 
  * the three highest scores at the end of the quiz. 
  * It also displays a debug summary of all scores and the top three results when the quiz ends.
  *
  * @description
+ * - Fetches level 2 questions from the backend on mount.
  * - Uses local state to track the current question index and score per RIASEC type.
  * - Increments or decrements scores depending on user selection ("yes", "no", or "skip").
  * - Displays the current quiz question using `QuizCard`.
+ * - Sends the top three RIASEC scores to the backend when the quiz is completed.
  * - Shows final results (debug view) when all questions are answered.
  *
  * @returns {JSX.Element} A rendered quiz interface with progress tracking and scoring.
  */
 const QuizPage_L2: React.FC = () => {
+  const [questions, setQuestions] = useState<{ question: string; type: RiasecType }[]>([]);
+  const TOTAL_QUESTIONS = questions.length;
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [response, setResponse] = useState<{ type: string; score: number }[]>([]);
+  const [response, setResponse] = useState<{ studyId: number; }[]>([]);
   
   const [scores, setScores] =
     useState<Record<RiasecType, number>>(initialScores);
@@ -98,6 +94,10 @@ const QuizPage_L2: React.FC = () => {
     }, 300);
   };
 
+  /**
+   * Sends the top three scores to the backend server.
+   * @param topScores The top three RIASEC scores to send. 
+   */
   const sendData = async (topScores:{ type: RiasecType; score: number }[] ) => {
     try {
       const res = await fetch("http://localhost:5001/api/quiz/level/2", {
@@ -109,12 +109,30 @@ const QuizPage_L2: React.FC = () => {
       });
 
       const result = await res.json();
-      setResponse(result.scores);
-      console.log("Antwort vom Server:", result.scores);
+      setResponse(result.studyIds);
+      console.log("Antwort vom Server:", result.studyIds);
     } catch (err) {
       console.error("Fehler beim Senden:", err);
     }
   };
+
+  /**
+   * Fetches the questions of level 2 from the backend when the component mounts.
+   */
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const res = await fetch("/api/quiz/level/2");
+        const data = await res.json();
+        console.log("Backend Response:", data);
+        if (data.questions) setQuestions(data.questions);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchQuestions();
+  }, []);
 
   return (
     <div>
@@ -150,7 +168,7 @@ const QuizPage_L2: React.FC = () => {
               <h3>Server-Antwort:</h3>
               {response.map((item, index) => (
                 <div key={index}>
-                  {item.type}: {item.score}
+                  {item.studyId}
                 </div>
               ))}
             </div>
