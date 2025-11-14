@@ -5,11 +5,16 @@ import { Request, Response } from "express";
 import { runDeploymentScript } from "./deployment.utils";
 import { RawBodyRequest } from "../types/deployment.types";
 
-const handleDeployWebhook = async (req: Request, res: Response) => {
+export const handleDeployWebhook = async (req: Request, res: Response) => {
   const signature = req.headers["x-hub-signature-256"] as string | undefined;
-  const rawBody = getRawBody(req as RawBodyRequest);
+  const raw = (req as Partial<RawBodyRequest>).rawBody;
+  if (!raw) {
+    console.error("Raw body missing (middleware misconfiguration?)");
+    return res.status(400).json({ error: "Missing raw body" });
+  }
 
-  if (!signature || !rawBody) {
+
+  if (!signature || !raw) {
     console.warn("No signature or body provided in webhook request");
     return res.status(401).json({ error: "Unauthorized" });
   }
@@ -17,7 +22,7 @@ const handleDeployWebhook = async (req: Request, res: Response) => {
   /*
    * Perform security check
    */
-  if (!verifySignature(signature, rawBody)) {
+  if (!verifySignature(signature, raw)) {
     console.warn("Webhook signature verification failed");
     return res.status(401).json({ error: "Unauthorized" });
   }
@@ -32,11 +37,11 @@ const handleDeployWebhook = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "No deployment needed" });
   }
 
-  res.status(200).json({ message: "Webhook received, deployment started" });
-
   runDeploymentScript().catch((error: any) => {
     console.error("Deployment script failed:", error);
   });
+
+  res.status(200).json({ message: "Deployment finished" });
 };
 
 /**
@@ -62,7 +67,7 @@ export const verifySignature = (
     return false;
   }
 
-  const hmac = crypto.createHmac(algorithm, GITHUB_WEBHOOK_SECRET);
+  const hmac = crypto.createHmac("sha256", GITHUB_WEBHOOK_SECRET);
   hmac.update(rawBody);
   const calculatedHash = hmac.digest("hex");
 
@@ -75,5 +80,3 @@ export const verifySignature = (
 
   return crypto.timingSafeEqual(calculatedHashBuffer, githubHashBuffer);
 };
-
-export default handleDeployWebhook;
