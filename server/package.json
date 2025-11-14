@@ -6,6 +6,7 @@
   "scripts": {
     "main": "index.ts",
     "test": "jest",
+    "test:integration": "npm run test:integration --workspace server",
     "start": "npx ts-node index.ts",
     "dev": "nodemon index.ts",
     "build": "tsc",
