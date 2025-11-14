@@ -24,7 +24,7 @@ jobs:
         run: npm install
 
       - name: Run Unit Tests
-        run: npm test
+        run: CI=true npm test --workspace client
 
       - name: Run Integration Tests
         run: npm run test:integration
