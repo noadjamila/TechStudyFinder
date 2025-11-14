@@ -1,4 +1,4 @@
-import handleDeployWebhook from "../services/deployment.service";
+import { handleDeployWebhook } from "../services/deployment.service";
 import { Response } from "express";
 import { RawBodyRequest } from "../types/deployment.types";
 
