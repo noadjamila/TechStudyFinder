@@ -14,5 +14,5 @@
     "types": ["jest"],
   },
   "include": ["./**/*.ts", "./**/*.mts"],
-  "exclude": ["node_modules", "client", "__tests__", "**/*.test.ts"]
+  "exclude": ["node_modules", "client", "**/*.test.ts"]
 }
