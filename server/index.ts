@@ -9,8 +9,10 @@ import path from "path";
 import testRouter from "./src/routes/health.route";
 import deployRouter from "./src/routes/deploy.route";
 import { pool } from "./db";
+import "express-async-errors";
 
 const app = express();
+const PORT = process.env.PORT || 5001;
 
 app.use(
   express.json({
@@ -25,7 +27,7 @@ app.use(express.static(path.join(__dirname, "..", "client", "build")));
 app.use("/api", testRouter);
 app.use("/deploy", deployRouter);
 
-//test api for data base call
+// Test api for data base call
 app.get("/api/test-db", async (_req, res) => {
   try {
     const result = await pool.query("SELECT NOW()");
@@ -40,7 +42,7 @@ app.get("/api/test-db", async (_req, res) => {
 
 // Fallback route for SPA
 app.get("*", (req, res, next) => {
-  if (req.url.startsWith("/api/")) {
+  if (req.url.startsWith("/api/") || req.url.startsWith("/deploy")) {
     return next();
   }
 
@@ -49,7 +51,7 @@ app.get("*", (req, res, next) => {
 
 // 404 Handler
 app.use((_req, res) => {
-  res.status(404).json({ error: "Route nicht gefunden" });
+  res.status(404).json({ error: "Route not found" });
 });
 
 // Error Handler
@@ -57,16 +59,10 @@ app.use(((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error("Server error:", err);
   const statusCode = (err as any).status || 500;
   res.status(statusCode).json({
-    error: "Interner Server-Fehler",
+    error: "Internal server error",
     message: err.message,
   });
 }) as ErrorRequestHandler);
-
-const PORT = process.env.PORT || 5001;
-
-app.listen(PORT, () => {
-  console.log(`Backend running on http://localhost:${PORT}`);
-});
 
 // Error handling for the server
 process.on("uncaughtException", (error) => {
@@ -78,4 +74,13 @@ process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
 });
 
+let server: import("http").Server | null = null;
+
+if (require.main === module) {
+  server = app.listen(PORT, () => {
+    console.log(`Backend running on http://localhost:${PORT}`);
+  });
+}
+
 export default app;
+export { server, pool };
