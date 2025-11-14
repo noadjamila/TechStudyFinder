@@ -1,3 +1,0 @@
-// Placeholder file for our middlewares layer to ensure the directory is tracked by git
-// E.g. authentication, logging, error handling middlewares
-// This file can be removed once actual middleware implementations are added to this directory

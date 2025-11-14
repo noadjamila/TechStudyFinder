@@ -10,8 +10,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "types": ["jest"],
   },
   "include": ["./**/*.ts", "./**/*.mts"],
-  "exclude": ["node_modules", "client"]
+  "exclude": ["node_modules", "client", "**/*.test.ts"]
 }
