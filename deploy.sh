@@ -9,7 +9,7 @@ DEPLOY_DIR="/home/local/projects/TechStudyFinder"
 
 echo "--- Start deployment $(date) ---"
 
-cd $DEPLOY_DIR
+cd "$DEPLOY_DIR"
 
 echo "Starting git pull..."
 git pull origin main
