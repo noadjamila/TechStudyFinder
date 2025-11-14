@@ -1,0 +1,182 @@
+import { jest } from "@jest/globals";
+import { Buffer } from "buffer";
+import * as crypto from "crypto";
+import { RawBodyRequest } from "../types/deployment.types";
+import { Response } from "express";
+import * as rawBodyMiddleware from "../middlewares/rawBody.middleware";
+import * as deploymentUtils from "./deployment.utils";
+import {
+  handleDeployWebhook,
+  verifySignature,
+} from "./deployment.service";
+import * as deploymentService from "./deployment.service";
+
+type RunDeploymentScriptType = typeof deploymentUtils.runDeploymentScript;
+
+jest.mock("../middlewares/rawBody.middleware");
+jest.mock("./deployment.utils");
+
+const mockGetRawBody = rawBodyMiddleware.getRawBody as jest.Mock;
+const mockRunDeploymentScript =
+  deploymentUtils.runDeploymentScript as jest.Mock<RunDeploymentScriptType>;
+
+const MOCK_SECRET = "mock-secret";
+const MOCK_RAW_BODY = Buffer.from('{"ref": "refs/heads/main", "after": "sha"}');
+const calculatedHash = crypto
+  .createHmac("sha256", MOCK_SECRET)
+  .update(MOCK_RAW_BODY)
+  .digest("hex");
+const MOCK_HASH = `sha256=${calculatedHash}`;
+
+let mockVerifySignature: jest.Mock;
+
+const createMockRequest = (
+  signature?: string,
+  body: any = { ref: "refs/heads/main" },
+  event: string = "push",
+): RawBodyRequest => {
+  return {
+    headers: {
+      "x-hub-signature-256": signature,
+      "x-github-event": event,
+    },
+    body,
+    rawBody: MOCK_RAW_BODY,
+  } as unknown as RawBodyRequest;
+};
+
+const mockRes = () =>
+  ({
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn().mockReturnThis(),
+  }) as unknown as Response;
+
+beforeAll(() => {
+  mockVerifySignature = jest.spyOn(deploymentService, "verifySignature") as jest.Mock;
+});
+
+beforeEach(() => {
+  process.env.GITHUB_WEBHOOK_SECRET = MOCK_SECRET;
+  mockGetRawBody.mockReturnValue(MOCK_RAW_BODY);
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
+afterAll(() => {
+  mockVerifySignature.mockRestore();
+  delete process.env.GITHUB_WEBHOOK_SECRET;
+});
+
+describe("verifySignature", () => {
+  beforeEach(() => {
+    mockVerifySignature.mockRestore();
+  });
+  afterEach(() => {
+    mockVerifySignature = jest.spyOn(deploymentService, "verifySignature") as jest.Mock;
+    jest.clearAllMocks();
+  });
+
+  it("should return true for a valid signature", () => {
+    const isValid = verifySignature(MOCK_HASH, MOCK_RAW_BODY);
+    expect(isValid).toBe(true);
+  });
+
+  it("should return false if the signature hash is invalid", () => {
+    const isValid = verifySignature("sha256=invalid-hash", MOCK_RAW_BODY);
+    expect(isValid).toBe(false);
+  });
+
+  it("should return false if GITHUB_WEBHOOK_SECRET is missing", () => {
+    const originalSecret = process.env.GITHUB_WEBHOOK_SECRET;
+    delete process.env.GITHUB_WEBHOOK_SECRET;
+    const isValid = verifySignature(MOCK_HASH, MOCK_RAW_BODY);
+    expect(isValid).toBe(false);
+    process.env.GITHUB_WEBHOOK_SECRET = originalSecret;
+  });
+
+  it("should return false for an algorithm that is not SHA-256", () => {
+    const invalidAlgorithm = "invalidalgo=some-algorithm";
+    const isValid = verifySignature(invalidAlgorithm, MOCK_RAW_BODY);
+    expect(isValid).toBe(false);
+  });
+});
+
+describe("handleDeployWebhook", () => {
+  beforeEach(() => {
+    mockGetRawBody.mockReturnValue(MOCK_RAW_BODY);
+    mockRunDeploymentScript.mockResolvedValue(undefined);
+    mockVerifySignature.mockReturnValue(true);
+  });
+
+  it("should return status 200 and perform deployment for valid push to main", async () => {
+    const req = createMockRequest();
+    const res = mockRes();
+
+    await handleDeployWebhook(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({ message: "Deployment finished" });
+    expect(mockRunDeploymentScript).toHaveBeenCalled();
+  });
+
+  it("should return status 401 if the signature is missing", async () => {
+    const req = createMockRequest(undefined);
+    const res = mockRes();
+
+    mockGetRawBody.mockReturnValue(undefined);
+
+    await handleDeployWebhook(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({ error: "Unauthorized" });
+    expect(mockRunDeploymentScript).not.toHaveBeenCalled();
+
+    mockGetRawBody.mockReturnValue(MOCK_RAW_BODY);
+  });
+
+  it("should return status 401 if the signature verification fails", async () => {
+    mockVerifySignature.mockReturnValueOnce(false);
+
+    const invalidSignature = "sha256=invalid-signature";
+    const req = createMockRequest(invalidSignature);
+    const res = mockRes();
+
+    await handleDeployWebhook(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({ error: "Unauthorized" });
+    expect(mockRunDeploymentScript).not.toHaveBeenCalled();
+  });
+
+  it("should return status 200 and not deploy if the GitHub event is not `push`", async () => {
+    const req = createMockRequest(
+      MOCK_HASH,
+      { ref: "refs/heads/main" },
+      "pull_request",
+    );
+    const res = mockRes();
+
+    await handleDeployWebhook(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({ message: "No deployment needed" });
+    expect(mockRunDeploymentScript).not.toHaveBeenCalled();
+  });
+
+  it("should return status 200 and not deploy when pushing on non-main branch", async () => {
+    const req = createMockRequest(
+      MOCK_HASH,
+      { ref: "refs/heads/some-branch" },
+      "push",
+    );
+    const res = mockRes();
+
+    await handleDeployWebhook(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({ message: "No deployment needed" });
+    expect(mockRunDeploymentScript).not.toHaveBeenCalled();
+  });
+});
