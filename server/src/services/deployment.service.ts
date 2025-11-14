@@ -1,4 +1,3 @@
-import { getRawBody } from "../middlewares/rawBody.middleware";
 import * as crypto from "crypto";
 import { Buffer } from "buffer";
 import { Request, Response } from "express";
@@ -12,7 +11,6 @@ export const handleDeployWebhook = async (req: Request, res: Response) => {
     console.error("Raw body missing (middleware misconfiguration?)");
     return res.status(400).json({ error: "Missing raw body" });
   }
-
 
   if (!signature || !raw) {
     console.warn("No signature or body provided in webhook request");
