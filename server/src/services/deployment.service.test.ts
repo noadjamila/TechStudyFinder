@@ -125,15 +125,13 @@ describe("handleDeployWebhook", () => {
     const req = createMockRequest(undefined);
     const res = mockRes();
 
-    mockGetRawBody.mockReturnValue(undefined);
+    req.rawBody = undefined;
 
     await handleDeployWebhook(req, res);
 
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith({ error: "Unauthorized" });
     expect(mockRunDeploymentScript).not.toHaveBeenCalled();
-
-    mockGetRawBody.mockReturnValue(MOCK_RAW_BODY);
   });
 
   it("should return status 401 if the signature verification fails", async () => {
