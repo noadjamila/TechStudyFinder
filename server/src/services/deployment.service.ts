@@ -35,11 +35,13 @@ export const handleDeployWebhook = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "No deployment needed" });
   }
 
-  runDeploymentScript().catch((error: any) => {
+  try {
+    await runDeploymentScript();
+    res.status(200).json({ message: "Deployment finished" });
+  } catch (error: any) {
     console.error("Deployment script failed:", error);
-  });
-
-  res.status(200).json({ message: "Deployment finished" });
+    res.status(500).json({ error: "Deployment failed" });
+  }
 };
 
 /**
