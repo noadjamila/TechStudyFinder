@@ -3,6 +3,6 @@ import { handleWebhook } from "../controllers/deploy.controller";
 
 const deployRouter = Router();
 
-deployRouter.post("/webhook", handleWebhook as unknown as RequestHandler);
+deployRouter.post("/webhook", handleWebhook);
 
 export default deployRouter;
