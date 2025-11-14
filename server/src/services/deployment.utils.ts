@@ -16,7 +16,7 @@ export function runDeploymentScript(): Promise<void> {
       if (stderr) {
         console.error(`[Deployment Script] Stderr: ${stderr}`);
       }
-      console.log(`[Deployment Script] Deplyoment successful: ${stdout}`);
+      console.log(`[Deployment Script] Deployment successful: ${stdout}`);
       resolve();
     });
   });
