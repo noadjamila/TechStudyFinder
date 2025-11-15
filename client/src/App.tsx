@@ -1,5 +1,5 @@
 import React from 'react';
-import Homescreen from './pages/Homescreen';  // Importiere die Homescreen-Komponente
+import Homescreen from './pages/Homescreen';
 
 const App: React.FC = () => {
     return (

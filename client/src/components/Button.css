@@ -2,8 +2,9 @@
     background-color: #f7f7f7; /* Gray background color */
     color: #2E2E2E; /* Dark gray text color */
     font-family: 'Poppins', sans-serif; /* Font style */
-    border-radius: 20px; /* Rounded corners */
-    padding: 10px 20px; /* Padding inside the button */
+    padding: 12px 30px; /* Padding */
+    font-size: 1.2rem; /* Schriftgröße */
+    border-radius: 25px; /* Abgerundete Ecken */
     border: 1px solid #ddd; /* Light gray border */
     transition: background-color 0.3s ease; /* Smooth transition for hover effect */
     cursor: pointer; /* Indicates the button is clickable */

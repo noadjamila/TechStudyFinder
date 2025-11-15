@@ -1,10 +1,10 @@
 import React from 'react';
-import './Button.css';
+import './Button.css';  // Importiere die Button-spezifischen Stile
 
 const Button: React.FC = () => {
     return (
         <button className="custom-button">
-            Button
+            Quiz Starten
         </button>
     );
 };

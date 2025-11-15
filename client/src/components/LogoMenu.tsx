@@ -20,7 +20,8 @@ const LogoMenu: React.FC = () => {
             <Toolbar style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 {/* Logo */}
                 <Typography variant="h6">
-                    <img src="/assets/logo.png" alt="Logo" className="logo" />
+                    <img src="/logo.png" alt="Logo" className="logo" />
+
                 </Typography>
 
                 {/* Menu */}

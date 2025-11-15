@@ -1,12 +1,12 @@
 import React from 'react';
-import { Button, Typography } from '@mui/material';
+import {Typography } from '@mui/material';
 import LogoMenu from '../components/LogoMenu';
+import Button from '../components/Button';
 import './Homescreen.css';
 
 const Homescreen: React.FC = () => {
     return (
         <div className="homescreen-container">
-            {/* Verwende die LogoMenu-Komponente */}
             <LogoMenu />
 
             {/* Main Content */}
@@ -25,14 +25,13 @@ const Homescreen: React.FC = () => {
                     </Typography>
                 </div>
 
-                {/* Start Quiz Button */}
-                <Button variant="contained" color="primary" className="quiz-button">
-                    Quiz Starten
-                </Button>
+                {/* Quiz Starten Button */}
+                <Button /> {/* Hier wird der Button verwendet */}
             </div>
         </div>
     );
 };
 
 export default Homescreen;
+
 
