@@ -38,7 +38,7 @@ export default defineConfig([
 
     rules: {
       "no-undef": "off",
-      "no-console": "warn",
+      "no-console": ["warn", { allow: ["warn", "error"] }],
       "prettier/prettier": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
@@ -58,6 +58,7 @@ export default defineConfig([
     extends: [js.configs.recommended],
 
     languageOptions: {
+      parser: typescriptEslintParser,
       globals: { ...globals.browser },
       parserOptions: {
         ecmaFeatures: { jsx: true },
