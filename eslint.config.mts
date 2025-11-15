@@ -17,6 +17,10 @@ export default defineConfig([
 
   {
     files: ["server/**/*.{js,mjs,ts,mts}"],
+    ignores: [
+      "server/**/*.config.js",
+      "server/**/*.config.ts"
+    ],
     extends: [js.configs.recommended],
 
     languageOptions: {
