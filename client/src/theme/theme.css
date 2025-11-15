@@ -1,0 +1,9 @@
+body {
+    background-color: #f0f0f0; /* Light gray background */
+    font-family: 'Poppins', sans-serif; /* Global font */
+    color: #2E2E2E; /* Text color */
+}
+
+h1, h2, h3 {
+    font-family: 'Open Sans', sans-serif;
+}
