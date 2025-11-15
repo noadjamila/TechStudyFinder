@@ -57,12 +57,17 @@ export default defineConfig([
       },
     },
     settings: {
-      react: { version: "detect" },
+      react: {
+        version: "detect",
+        runtime: "automatic"
+      },
     },
     rules: {
       ...reactPlugin.configs.recommended.rules,
       ...reactHooksPlugin.configs.recommended.rules,
       "prettier/prettier": "error",
+      "react/react-in-jsx-scope": "off",
+      "no-console": ["warn", { allow: ["warn", "error"] }],
     },
   },
 ]);
