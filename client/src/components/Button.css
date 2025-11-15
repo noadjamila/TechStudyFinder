@@ -12,5 +12,6 @@
 
 .custom-button:hover {
     background-color: #b9a5ff; /* Background color when hovering */
+    border-color: #b9a5ff; /* Change border color on hover to match the background */
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* Darker and stronger shadow on hover */
 }
