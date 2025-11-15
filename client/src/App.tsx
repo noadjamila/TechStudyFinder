@@ -1,15 +1,13 @@
 import React from 'react';
-import Button from './components/Button';
+import Homescreen from './pages/Homescreen';  // Importiere die Homescreen-Komponente
 
 const App: React.FC = () => {
     return (
-        <div style={{ backgroundColor: '#f0f0f0', minHeight: '100vh' }}> {/* Set light gray background */}
-            <div style={{ padding: '20px' }}>
-                <h1>Welcome to my Project!</h1>
-                <Button />
-            </div>
+        <div>
+            <Homescreen />  {/* Zeige die Homescreen-Komponente hier an */}
         </div>
     );
 };
 
 export default App;
+

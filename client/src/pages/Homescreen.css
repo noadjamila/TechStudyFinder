@@ -1,0 +1,63 @@
+.homescreen-container {
+    background-color: #f1e1ff; /* Pastellfarbe für den Hintergrund */
+    min-height: 100vh; /* Stellt sicher, dass die Seite immer den gesamten Bildschirm einnimmt */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Der Inhalt wird oben ausgerichtet */
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Titel des Homescreens */
+.title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #2E2E2E; /* Dunkelgrau für den Titel */
+    margin-top: 50px;
+}
+
+/* Untertitel */
+.subtitle {
+    font-size: 1.2rem;
+    color: #2E2E2E;
+    margin-bottom: 30px;
+}
+
+/* Info-Text über das Quiz */
+.info-text {
+    max-width: 500px;
+    margin: 20px;
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Button "Quiz Starten" */
+.quiz-button {
+    background-color: #b9a5ff; /* Sanfte Pastell-Lila Farbe */
+    color: #fff;
+    padding: 12px 30px;
+    font-size: 1.2rem;
+    border-radius: 25px;
+    transition: background-color 0.3s ease; /* Sanfter Übergang bei Hover */
+    margin-top: 20px;
+}
+
+.quiz-button:hover {
+    background-color: #d1c6f2; /* Hover-Effekt für den Button */
+}
+
+/* Für die mobile Ansicht, wenn der Button kleiner werden soll */
+@media (max-width: 600px) {
+    .title {
+        font-size: 2rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .quiz-button {
+        padding: 10px 20px;
+    }
+}
