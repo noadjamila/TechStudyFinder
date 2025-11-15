@@ -10,7 +10,7 @@
     "dev": "concurrently \"npm start --workspace server\" \"npm start --workspace client\"",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "prepare": "npx husky install",
+    "prepare": "husky install",
     "build": "npm run build --workspace server && npm run build --workspace client",
     "test": "npm test --workspaces",
     "test:integration": "npm run test:integration --workspace server"
