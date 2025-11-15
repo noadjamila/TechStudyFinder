@@ -24,7 +24,7 @@ import { RiasecType, initialScores } from "../types/RiasecTypes";
  * @returns {JSX.Element} A rendered quiz interface with progress tracking and scoring.
  */
 const QuizPage_L2: React.FC = () => {
-  const [questions, setQuestions] = useState<{ question: string; type: RiasecType }[]>([]);
+  const [questions, setQuestions] = useState<{ text: string; riasec_type: RiasecType }[]>([]);
   const TOTAL_QUESTIONS = questions.length;
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [response, setResponse] = useState<{ studyId: number; }[]>([]);
@@ -63,7 +63,7 @@ const QuizPage_L2: React.FC = () => {
    * @param {"yes" | "no" | "skip"} option - The selected answer option.
    */
   const handleSelect = (option: string) => {
-    const currentType = currentQuestion.type;
+    const currentType = currentQuestion.riasec_type;
 
     const pointsMap: Record<string, number> = {
       yes: 1,
@@ -83,6 +83,7 @@ const QuizPage_L2: React.FC = () => {
       if (currentIndex === TOTAL_QUESTIONS - 1) {
         const topScores = getTopThreeScores(newScores);
         setHighestScores(topScores);
+        console.log("Höchste Drei:", topScores);
         sendData(topScores)
       }
 
@@ -142,7 +143,7 @@ const QuizPage_L2: React.FC = () => {
           questionsTotal={TOTAL_QUESTIONS}
         >
           <QuizCard
-                question={currentQuestion.question}
+                question={currentQuestion.text}
                 onSelect={(option) => handleSelect(option)}
               />
         </QuizLayout>
