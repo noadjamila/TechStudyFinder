@@ -13,5 +13,3 @@ export const pool = new Pool({
   database: process.env.DB_NAME,
   // ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
-
-console.log("Verbinde mit Datenbank auf Port:", process.env.DB_PORT);
