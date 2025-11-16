@@ -119,9 +119,15 @@ describe("verifySignature", () => {
   });
 
   it("should return false for an algorithm that is not SHA-256", () => {
+    const consoleWarnSpy = jest
+      .spyOn(console, "warn")
+      .mockImplementation(() => {});
+
     const invalidAlgorithm = "invalidalgo=some-algorithm";
     const isValid = verifySignature(invalidAlgorithm, MOCK_RAW_BODY);
     expect(isValid).toBe(false);
+
+    consoleWarnSpy.mockRestore();
   });
 });
 
