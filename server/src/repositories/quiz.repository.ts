@@ -1,15 +1,14 @@
-import { pool } from '../../db';
+import { pool } from "../../db";
 
 /**
  * Retrieves filtered study programme IDs for level 1 based on the provided study type.
- * 
+ *
  * @param studientyp the type of study programme (grundständig or weiterführend)
  * @returns filtered study programme IDs
  */
 export async function getFilteredResultsLevel1(
-  studientyp?: 'grundständig' | 'weiterführend' // optional
+  studientyp?: "grundständig" | "weiterführend", // optional
 ): Promise<number[]> {
-
   let query = `SELECT id FROM studiengang_raw_data_simulation`;
   let params: string[] = [];
 
