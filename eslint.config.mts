@@ -16,7 +16,6 @@ export default defineConfig([
 
   {
     files: ["server/**/*.{js,mjs,ts,mts}"],
-    ignores: ["server/jest.config.js", "server/webpack.config.js"],
     extends: [js.configs.recommended],
 
     languageOptions: {
