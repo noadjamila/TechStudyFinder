@@ -12,8 +12,7 @@
     "format": "prettier --write .",
     "prepare": "husky install",
     "build": "npm run build --workspace server && npm run build --workspace client",
-    "test": "npm test --workspaces",
-    "test:integration": "npm run test:integration --workspace server"
+    "test": "npm test --workspaces"
   },
   "overrides": {
     "nth-check": "^2.0.1",
