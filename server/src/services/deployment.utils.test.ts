@@ -1,5 +1,9 @@
 import request, { Response, Test } from "supertest";
 import app, { server } from "../../index";
+import { jest } from "@jest/globals";
+import { afterAll } from "jest-circus";
+import { beforeEach, describe, it } from "node:test";
+import expect from "expect";
 
 jest.mock("../../db");
 jest.mock("./deployment.utils", () => ({
@@ -24,11 +28,9 @@ const supertestEnd = (request: Test): Promise<Response> => {
 afterAll(async () => {
   if (server) {
     await new Promise<void>((resolve) => {
-      if (server) {
-        server.close(() => {
-          resolve();
-        });
-      }
+      server?.close(() => {
+        resolve();
+      });
     });
   }
 }, 10000);
@@ -39,9 +41,7 @@ beforeEach(() => {
 
 describe("integration test POST /deploy/webhook", () => {
   it("should return 200 when deployment is successful", async () => {
-    require("./deployment.service").verifySignature.mockReturnValueOnce(
-      true,
-    );
+    require("./deployment.service").verifySignature.mockReturnValueOnce(true);
 
     const payload = {
       ref: "refs/heads/main",
@@ -62,9 +62,7 @@ describe("integration test POST /deploy/webhook", () => {
   }, 1000);
 
   it("should return 401 when the signature check fails", async () => {
-    require("./deployment.service").verifySignature.mockReturnValueOnce(
-      false,
-    );
+    require("./deployment.service").verifySignature.mockReturnValueOnce(false);
 
     const payload = { ref: "refs/heads/main" };
 
