@@ -15,7 +15,7 @@ export const handleDeployWebhook = async (req: Request, res: Response) => {
 
   if (!signature) {
     console.warn("No signature provided in webhook request");
-    return res.status(400).json({ error: "Missing raw body" });
+    return res.status(400).json({ error: "Missing signature" });
   }
 
   /*
