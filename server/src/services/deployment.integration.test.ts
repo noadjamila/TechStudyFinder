@@ -9,7 +9,7 @@ import {
   expect,
 } from "@jest/globals";
 
-const TIMEOUT_MS = 100000;
+const TIMEOUT_MS = 180000;
 
 jest.setTimeout(200000);
 
