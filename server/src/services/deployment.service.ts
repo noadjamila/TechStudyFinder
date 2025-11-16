@@ -2,11 +2,12 @@ import * as crypto from "crypto";
 import { Buffer } from "buffer";
 import { Request, Response } from "express";
 import { runDeploymentScript } from "./deployment.utils";
+import { getRawBody } from "../middlewares/rawBody.middleware";
 import { RawBodyRequest } from "../types/deployment.types";
 
 export const handleDeployWebhook = async (req: Request, res: Response) => {
   const signature = req.headers["x-hub-signature-256"] as string | undefined;
-  const raw = (req as Partial<RawBodyRequest>).rawBody;
+  const raw = getRawBody(req as RawBodyRequest);
   if (!raw) {
     console.error("Raw body missing (middleware misconfiguration?)");
     return res.status(400).json({ error: "Missing raw body" });
