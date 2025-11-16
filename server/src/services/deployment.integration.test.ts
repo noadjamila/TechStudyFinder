@@ -1,5 +1,5 @@
 import request, { Response, Test } from "supertest";
-import app, { server } from "../../index";
+import app, { server, pool } from "../../index";
 import {
   jest,
   afterAll,
@@ -41,6 +41,8 @@ afterAll(async () => {
       });
     });
   }
+
+  await pool.end();
 }, TIMEOUT_MS);
 
 beforeEach(() => {
