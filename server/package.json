@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "main": "index.ts",
+    "test": "npm run test:unit",
     "test:unit": "jest --testMatch='**/*.test.ts' --testPathIgnorePatterns='integration\\.test\\.ts$' --passWithNoTests",
     "test:integration": "jest --testMatch='**/*.integration.test.ts' --passWithNoTests",
     "start": "npx ts-node index.ts",
