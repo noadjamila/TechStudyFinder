@@ -7,7 +7,7 @@ const config: Config.InitialOptions = {
 
   preset: "ts-jest",
 
-  testMatch: ["**/*.integration.ts"],
+  testMatch: ["**/*.integration.test.ts"],
 
   testPathIgnorePatterns: ["/node_modules/"],
 
