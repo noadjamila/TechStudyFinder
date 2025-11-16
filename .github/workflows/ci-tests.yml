@@ -23,11 +23,14 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Run Unit Tests
-        run: CI=true npm test --workspaces
+      - name: Run Unit Tests Client
+        run: CI=true npm test --workspace=client
+
+      - name: Run Unit Tests Server
+        run: CI=true npm test:unit --workspace=server
 
       - name: Run Integration Tests
-        run: npm run test:integration
+        run: npm run test:integration --workspace=server
 
       - name: Build Project
         run: npm run build
