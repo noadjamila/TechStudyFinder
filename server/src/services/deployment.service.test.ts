@@ -17,15 +17,15 @@ import { handleDeployWebhook, verifySignature } from "./deployment.service";
 import * as deploymentService from "./deployment.service";
 import { afterEach } from "node:test";
 
-type RunDeploymentScriptType = typeof deploymentUtils.runDeploymentScript;
-
 jest.mock("../middlewares/rawBody.middleware");
 jest.mock("./deployment.utils");
 
 const mockGetRawBody = rawBodyMiddleware.getRawBody as jest.Mock;
 const mockRunDeploymentScript =
-  deploymentUtils.runDeploymentScript as jest.Mock<RunDeploymentScriptType>;
-
+  deploymentUtils.runDeploymentScript as unknown as jest.Mock<
+    Promise<void>,
+    []
+  >;
 const MOCK_SECRET = "mock-secret";
 const MOCK_RAW_BODY = Buffer.from('{"ref": "refs/heads/main", "after": "sha"}');
 const calculatedHash = crypto
@@ -61,7 +61,7 @@ beforeAll(() => {
   mockVerifySignature = jest.spyOn(
     deploymentService,
     "verifySignature",
-  ) as jest.Mock;
+  ) as unknown as jest.Mock;
 });
 
 beforeEach(() => {
@@ -86,7 +86,7 @@ describe("verifySignature", () => {
     mockVerifySignature = jest.spyOn(
       deploymentService,
       "verifySignature",
-    ) as jest.Mock;
+    ) as unknown as jest.Mock;
     jest.clearAllMocks();
   });
 
@@ -137,7 +137,7 @@ describe("handleDeployWebhook", () => {
     const req = createMockRequest(undefined);
     const res = mockRes();
 
-    req.rawBody = undefined;
+    (req as { rawBody: Buffer | undefined }).rawBody = undefined;
 
     await handleDeployWebhook(req, res);
 
