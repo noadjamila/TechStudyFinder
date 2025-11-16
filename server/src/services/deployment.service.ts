@@ -30,6 +30,18 @@ export const handleDeployWebhook = async (req: Request, res: Response) => {
    * Validate event type and branch
    */
   const githubEvent = req.headers["x-github-event"];
+
+  if (
+    !req.body ||
+    typeof req.body !== "object" ||
+    typeof req.body.ref !== "string"
+  ) {
+    console.warn("Malformed webhook payload: missing or invalid 'ref'");
+    return res
+      .status(400)
+      .json({ error: "Malformed payload: missing or invalid 'ref'" });
+  }
+
   const branch = req.body.ref;
 
   if (githubEvent !== "push" || branch !== "refs/heads/main") {
