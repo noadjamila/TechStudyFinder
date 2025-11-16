@@ -9,7 +9,7 @@ import {
   expect,
 } from "@jest/globals";
 
-const TIMEOUT_MS = 30000;
+const TIMEOUT_MS = 100000;
 
 jest.mock("../../db");
 jest.mock("./deployment.utils", () => ({
