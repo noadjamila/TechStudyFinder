@@ -5,10 +5,7 @@ import { RawBodyRequest } from "../types/deployment.types";
 import { Response } from "express";
 import * as rawBodyMiddleware from "../middlewares/rawBody.middleware";
 import * as deploymentUtils from "./deployment.utils";
-import {
-  handleDeployWebhook,
-  verifySignature,
-} from "./deployment.service";
+import { handleDeployWebhook, verifySignature } from "./deployment.service";
 import * as deploymentService from "./deployment.service";
 
 type RunDeploymentScriptType = typeof deploymentUtils.runDeploymentScript;
@@ -52,7 +49,10 @@ const mockRes = () =>
   }) as unknown as Response;
 
 beforeAll(() => {
-  mockVerifySignature = jest.spyOn(deploymentService, "verifySignature") as jest.Mock;
+  mockVerifySignature = jest.spyOn(
+    deploymentService,
+    "verifySignature",
+  ) as jest.Mock;
 });
 
 beforeEach(() => {
@@ -74,7 +74,10 @@ describe("verifySignature", () => {
     mockVerifySignature.mockRestore();
   });
   afterEach(() => {
-    mockVerifySignature = jest.spyOn(deploymentService, "verifySignature") as jest.Mock;
+    mockVerifySignature = jest.spyOn(
+      deploymentService,
+      "verifySignature",
+    ) as jest.Mock;
     jest.clearAllMocks();
   });
 

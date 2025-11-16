@@ -5,7 +5,9 @@ import { RawBodyRequest } from "../types/deployment.types";
  */
 export const getRawBody = (req: RawBodyRequest): Buffer => {
   if (!req.rawBody) {
-    throw new Error("Raw body is missing from the request. Ensure the raw body middleware is configured correctly.");
+    throw new Error(
+      "Raw body is missing from the request. Ensure the raw body middleware is configured correctly.",
+    );
   }
   return req.rawBody;
 };

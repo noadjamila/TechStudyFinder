@@ -11,7 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "sourceMap": true,
-    "types": ["jest"],
+    "types": ["jest"]
   },
   "include": ["./**/*.ts", "./**/*.mts"],
   "exclude": ["node_modules", "client"]
