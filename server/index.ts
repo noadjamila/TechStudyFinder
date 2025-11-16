@@ -7,7 +7,7 @@ import express, {
 import "dotenv/config";
 import path from "path";
 import testRouter from "./src/routes/health.route";
-import quizRoutes from "./src/routes/quizRoutes";
+import quizRoutes from "./src/routes/quiz.route";
 import { pool } from "./db";
 
 const app = express();

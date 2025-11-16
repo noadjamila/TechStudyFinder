@@ -21,8 +21,6 @@ function App() {
           <h1>Backend test message:</h1>
           <p>{msg}</p>
         </div>
-        <button id="submitBtn">Antworten absenden</button>
-        <pre id="response"></pre>
       </header>
     </div>
   );
