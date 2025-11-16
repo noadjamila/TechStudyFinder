@@ -134,6 +134,10 @@ describe("handleDeployWebhook", () => {
   });
 
   it("should return status 400 if the signature is missing", async () => {
+    const consoleWarnSpy = jest
+      .spyOn(console, "warn")
+      .mockImplementation(() => {});
+
     const req = createMockRequest(undefined);
     const res = mockRes();
 
@@ -144,9 +148,15 @@ describe("handleDeployWebhook", () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ error: "Missing raw body" });
     expect(mockRunDeploymentScript).not.toHaveBeenCalled();
+
+    consoleWarnSpy.mockRestore();
   });
 
   it("should return status 401 if the signature verification fails", async () => {
+    const consoleWarnSpy = jest
+      .spyOn(console, "warn")
+      .mockImplementation(() => {});
+
     mockVerifySignature.mockReturnValueOnce(false);
 
     const invalidSignature = "sha256=invalid-signature";
@@ -158,6 +168,8 @@ describe("handleDeployWebhook", () => {
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith({ error: "Unauthorized" });
     expect(mockRunDeploymentScript).not.toHaveBeenCalled();
+
+    consoleWarnSpy.mockRestore();
   });
 
   it("should return status 200 and not deploy if the GitHub event is not `push`", async () => {
