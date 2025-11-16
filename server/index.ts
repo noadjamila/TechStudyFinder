@@ -12,7 +12,6 @@ import { pool } from "./db";
 import "express-async-errors";
 
 const app = express();
-const PORT = process.env.PORT || 5001;
 
 app.use(
   express.json({
