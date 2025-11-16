@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, "..", "client", "build")));
 app.use("/api", testRouter);
 app.use("/deploy", deployRouter);
 
-// Test api for data base call
+// Test api for database call
 app.get("/api/test-db", async (_req, res) => {
   try {
     const result = await pool.query("SELECT NOW()");
@@ -63,6 +63,13 @@ app.use(((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     message: err.message,
   });
 }) as ErrorRequestHandler);
+
+const PORT = process.env.PORT || 5001;
+
+app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
+  console.log(`Backend running on http://localhost:${PORT}`);
+});
 
 // Error handling for the server
 process.on("uncaughtException", (error) => {

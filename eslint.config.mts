@@ -9,6 +9,9 @@ import prettierConfig from "eslint-config-prettier";
 import * as typescriptEslintParser from "@typescript-eslint/parser";
 
 export default defineConfig([
+  {
+    ignores: ["**/jest.config.js", "**/webpack.config.js"],
+  },
   prettierConfig,
 
   {
@@ -30,7 +33,7 @@ export default defineConfig([
 
     rules: {
       "no-undef": "off",
-      "no-console": "warn",
+      "no-console": ["warn", { allow: ["warn", "error"] }],
       "prettier/prettier": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
@@ -50,6 +53,7 @@ export default defineConfig([
     extends: [js.configs.recommended],
 
     languageOptions: {
+      parser: typescriptEslintParser,
       globals: { ...globals.browser },
       parserOptions: {
         ecmaFeatures: { jsx: true },
@@ -57,12 +61,17 @@ export default defineConfig([
       },
     },
     settings: {
-      react: { version: "detect" },
+      react: {
+        version: "detect",
+        runtime: "automatic",
+      },
     },
     rules: {
       ...reactPlugin.configs.recommended.rules,
       ...reactHooksPlugin.configs.recommended.rules,
       "prettier/prettier": "error",
+      "react/react-in-jsx-scope": "off",
+      "no-console": ["warn", { allow: ["warn", "error"] }],
     },
   },
 ]);
