@@ -1,5 +1,5 @@
 import React from 'react';
-import {Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import LogoMenu from '../components/LogoMenu';
 import Button from '../components/Button';
 import './Homescreen.css';
@@ -9,8 +9,9 @@ const Homescreen: React.FC = () => {
         <div className="homescreen-container">
             <LogoMenu />
 
-            {/* Main Content */}
-            <div className="content">
+
+            <div className="card">
+                {/* Main Content */}
                 <Typography variant="h4" className="title">
                     Tech Study Finder
                 </Typography>
@@ -18,7 +19,7 @@ const Homescreen: React.FC = () => {
                     Finde den Studiengang, der zu dir passt!
                 </Typography>
 
-                {/* Info text about quiz */}
+
                 <div className="info-text">
                     <Typography variant="body1">
                         Das Quiz dauert etwa 5 Minuten. Es wird dir helfen, den Studiengang zu finden, der am besten zu dir passt!
@@ -26,12 +27,10 @@ const Homescreen: React.FC = () => {
                 </div>
 
                 {/* Quiz Starten Button */}
-                <Button /> {/* Hier wird der Button verwendet */}
+                <Button /> {/* Der Button wird hier verwendet */}
             </div>
         </div>
     );
 };
 
 export default Homescreen;
-
-

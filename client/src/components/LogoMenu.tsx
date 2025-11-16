@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import './LogoMenu.css';  // Optional: für zusätzliche Styles
+import './LogoMenu.css';
 
 const LogoMenu: React.FC = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -25,7 +25,7 @@ const LogoMenu: React.FC = () => {
                 </Typography>
 
                 {/* Menu */}
-                <IconButton edge="end" color="inherit" onClick={handleMenuClick}>
+                <IconButton edge="end" onClick={handleMenuClick}>
                     <MenuIcon />
                 </IconButton>
                 <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>

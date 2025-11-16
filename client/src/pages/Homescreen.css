@@ -1,6 +1,6 @@
 .homescreen-container {
-    background: linear-gradient(135deg, #f1e1ff, #ccfbff, #f6d5f7);
-    min-height: 100vh; /* Ensures that the page always takes up the entire screen */
+    background: linear-gradient(135deg, #ccfbff, #f1e1ff, #FDF2D2);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;/* The content is aligned at the top */
@@ -9,13 +9,28 @@
     padding: 20px;
 }
 
+.card {
+    background: transparent; /* No background color for the card */
+    padding: 40px 30px; /* Padding inside the card */
+    border-radius: 15px; /* Rounded corners */
+    width: 45%; /* Card width */
+    backdrop-filter: blur(10px); /* Blur effect for the background */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Soft shadow around the card */
+    display: flex;
+    flex-direction: column; /* Align content vertically inside the card */
+    justify-content: flex-start; /* Vertically center the content */
+    align-items: center; /* Horizontally center the content */
+    text-align: center; /* Center align all text */
+}
+
+
 
 .title {
     font-size: 4rem;
     font-weight: bold;
     color: #2E2E2E;
    /* margin-top: 40px;*/
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 
@@ -23,7 +38,7 @@
     font-size: 1.2rem;
     color: #2E2E2E;
     margin-top: 20px;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 
@@ -32,20 +47,22 @@
     margin: 20px;
     font-size: 1rem;
     color: #333;
-    margin-bottom: 60px;
+    margin-bottom: 40px;
 }
 
 /* for the mobile view */
 @media (max-width: 600px) {
+    .card {
+        width: 80%; /* Increase card width on smaller screens */
+    }
     .title {
         font-size: 2rem;
     }
-
     .subtitle {
         font-size: 1rem;
     }
-
     .quiz-button {
-        padding: 10px 20px;
+        padding: 10px 25px;
+        font-size: 1rem;
     }
 }
