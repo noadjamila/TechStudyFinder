@@ -1,8 +1,12 @@
 import { handleDeployWebhook } from "../services/deployment.service";
-import { Response } from "express";
+import { NextFunction, Response } from "express";
 import { RawBodyRequest } from "../types/deployment.types";
 
-export const handleWebhook = async (req: RawBodyRequest, res: Response) => {
+export const handleWebhook = async (
+  req: RawBodyRequest,
+  res: Response,
+  _next: NextFunction,
+) => {
   try {
     await handleDeployWebhook(req, res);
   } catch (error) {
