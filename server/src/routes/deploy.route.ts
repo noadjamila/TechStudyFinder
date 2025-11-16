@@ -1,3 +1,4 @@
+import rateLimit from "express-rate-limit";
 import { Router } from "express";
 import { handleWebhook } from "../controllers/deploy.controller";
 import { RawBodyRequest } from "../types/deployment.types";
