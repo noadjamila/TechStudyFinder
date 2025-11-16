@@ -7,5 +7,7 @@ module.exports = {
   transformIgnorePatterns: ["/node_modules/"],
   moduleFileExtensions: ["ts", "js", "json", "node"],
   modulePathIgnorePatterns: ["<rootDir>/dist/", "<rootDir>/node_modules/"],
-  modulePaths: ["<rootDir>"],
+  transform: {
+    "^.+\\.(ts|tsx)$": "ts-jest",
+  },
 };
