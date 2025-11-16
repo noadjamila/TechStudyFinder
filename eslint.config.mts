@@ -18,8 +18,8 @@ export default defineConfig([
   {
     files: ["server/**/*.{js,mjs,ts,mts}"],
     ignores: [
-      "server/**/*.config.js",
-      "server/**/*.config.ts"
+      "server/jest.config.js",
+      "server/webpack.config.js"
     ],
     extends: [js.configs.recommended],
 
