@@ -101,11 +101,17 @@ describe("verifySignature", () => {
   });
 
   it("should return false if GITHUB_WEBHOOK_SECRET is missing", () => {
+    const consoleWarnSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
     const originalSecret = process.env.GITHUB_WEBHOOK_SECRET;
     delete process.env.GITHUB_WEBHOOK_SECRET;
     const isValid = verifySignature(MOCK_HASH, MOCK_RAW_BODY);
     expect(isValid).toBe(false);
     process.env.GITHUB_WEBHOOK_SECRET = originalSecret;
+
+    consoleWarnSpy.mockRestore();
   });
 
   it("should return false for an algorithm that is not SHA-256", () => {
