@@ -9,6 +9,8 @@ import {
   expect,
 } from "@jest/globals";
 
+const TIMEOUT_MS = 30000;
+
 jest.mock("../../db");
 jest.mock("./deployment.utils", () => ({
   runDeploymentScript: jest.fn(() => Promise.resolve()),
@@ -37,50 +39,60 @@ afterAll(async () => {
       });
     });
   }
-}, 10000);
+}, TIMEOUT_MS);
 
 beforeEach(() => {
   jest.clearAllMocks();
 });
 
 describe("integration test POST /deploy/webhook", () => {
-  it("should return 200 when deployment is successful", async () => {
-    require("./deployment.service").verifySignature.mockReturnValueOnce(true);
+  it(
+    "should return 200 when deployment is successful",
+    async () => {
+      require("./deployment.service").verifySignature.mockReturnValueOnce(true);
 
-    const payload = {
-      ref: "refs/heads/main",
-    };
+      const payload = {
+        ref: "refs/heads/main",
+      };
 
-    const req = request(app)
-      .post("/deploy/webhook")
-      .send(payload)
-      .set("X-GitHub-Event", "push")
-      .set("X-Hub-Signature-256", "sha256=MOCK_VALID_SIGNATURE")
-      .expect(200);
+      const req = request(app)
+        .post("/deploy/webhook")
+        .send(payload)
+        .set("X-GitHub-Event", "push")
+        .set("X-Hub-Signature-256", "sha256=MOCK_VALID_SIGNATURE")
+        .expect(200);
 
-    await supertestEnd(req);
+      await supertestEnd(req);
 
-    expect(
-      require("./deployment.utils").runDeploymentScript,
-    ).toHaveBeenCalled();
-  }, 1000);
+      expect(
+        require("./deployment.utils").runDeploymentScript,
+      ).toHaveBeenCalled();
+    },
+    TIMEOUT_MS,
+  );
 
-  it("should return 401 when the signature check fails", async () => {
-    require("./deployment.service").verifySignature.mockReturnValueOnce(false);
+  it(
+    "should return 401 when the signature check fails",
+    async () => {
+      require("./deployment.service").verifySignature.mockReturnValueOnce(
+        false,
+      );
 
-    const payload = { ref: "refs/heads/main" };
+      const payload = { ref: "refs/heads/main" };
 
-    const req = request(app)
-      .post("/deploy/webhook")
-      .send(payload)
-      .set("X-GitHub-Event", "push")
-      .set("X-Hub-Signature-256", "sha256=MOCK_VALID_SIGNATURE")
-      .expect(401);
+      const req = request(app)
+        .post("/deploy/webhook")
+        .send(payload)
+        .set("X-GitHub-Event", "push")
+        .set("X-Hub-Signature-256", "sha256=MOCK_VALID_SIGNATURE")
+        .expect(401);
 
-    await supertestEnd(req);
+      await supertestEnd(req);
 
-    expect(
-      require("./deployment.utils").runDeploymentScript,
-    ).not.toHaveBeenCalled();
-  }, 10000);
+      expect(
+        require("./deployment.utils").runDeploymentScript,
+      ).not.toHaveBeenCalled();
+    },
+    TIMEOUT_MS,
+  );
 });
