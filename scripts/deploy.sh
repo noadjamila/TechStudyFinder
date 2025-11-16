@@ -15,7 +15,7 @@ echo "Starting git pull..."
 git pull origin main
 
 echo "Install node dependencies..."
-npm install
+npm ci
 
 echo "Rebuild frontend and backend..."
 npm run build
