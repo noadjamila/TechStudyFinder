@@ -20,6 +20,8 @@ import { afterEach } from "node:test";
 jest.mock("../middlewares/rawBody.middleware");
 jest.mock("./deployment.utils");
 
+process.env.GITHUB_WEBHOOK_SECRET = "test-secret";
+
 const mockGetRawBody = rawBodyMiddleware.getRawBody as jest.Mock;
 const mockRunDeploymentScript =
   deploymentUtils.runDeploymentScript as unknown as jest.Mock<
