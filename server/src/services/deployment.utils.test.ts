@@ -1,9 +1,13 @@
 import request, { Response, Test } from "supertest";
 import app, { server } from "../../index";
-import { jest } from "@jest/globals";
-import { afterAll } from "jest-circus";
-import { beforeEach, describe, it } from "node:test";
-import expect from "expect";
+import {
+  jest,
+  afterAll,
+  beforeEach,
+  describe,
+  it,
+  expect,
+} from "@jest/globals";
 
 jest.mock("../../db");
 jest.mock("./deployment.utils", () => ({
