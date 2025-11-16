@@ -1,5 +1,6 @@
 import {
   afterAll,
+  afterEach,
   beforeAll,
   beforeEach,
   describe,
@@ -15,12 +16,9 @@ import * as rawBodyMiddleware from "../middlewares/rawBody.middleware";
 import * as deploymentUtils from "./deployment.utils";
 import { handleDeployWebhook, verifySignature } from "./deployment.service";
 import * as deploymentService from "./deployment.service";
-import { afterEach } from "node:test";
 
 jest.mock("../middlewares/rawBody.middleware");
 jest.mock("./deployment.utils");
-
-process.env.GITHUB_WEBHOOK_SECRET = "test-secret";
 
 const mockGetRawBody = rawBodyMiddleware.getRawBody as jest.Mock;
 const mockRunDeploymentScript =
@@ -125,7 +123,7 @@ describe("handleDeployWebhook", () => {
   });
 
   it("should return status 200 and perform deployment for valid push to main", async () => {
-    const req = createMockRequest();
+    const req = createMockRequest(MOCK_HASH);
     const res = mockRes();
 
     await handleDeployWebhook(req, res);
