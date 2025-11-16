@@ -8,7 +8,6 @@ function App() {
     fetch("/api/hello")
       .then((res) => res.json())
       .then((data) => {
-        console.log("Backend Response:", data);
         setMsg(data.message);
       })
       .catch((err) => console.error(err));
