@@ -5,8 +5,8 @@
   "main": "index.ts",
   "scripts": {
     "main": "index.ts",
-    "test": "jest --passWithNoTests",
-    "test:integration": "jest --config jest.integration.config.ts --passWithNoTests",
+    "test:unit": "jest --testMatch='**/*.test.ts' --testPathIgnorePatterns='integration\\.test\\.ts$' --passWithNoTests",
+    "test:integration": "jest --testMatch='**/*.integration.test.ts' --passWithNoTests",
     "start": "npx ts-node index.ts",
     "dev": "nodemon index.ts",
     "build": "tsc",
