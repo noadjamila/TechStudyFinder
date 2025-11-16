@@ -9,8 +9,8 @@ Hast du Lust mit großen Maschinen zu arbeiten?
 Interessiert es dich, wie du einen Computer schneller machen kannst?
 
 - Interessieren dich virtuelle Simulationen?
-- Findest du es cool, eine Bewässerungsanlage für ein Feld zu entwerfen?
-- Faszinieren dich elektrische Anlagen und Stromkreise?
+  Findest du es cool, eine Bewässerungsanlage für ein Feld zu entwerfen?
+  Faszinieren dich elektrische Anlagen und Stromkreise?
 
 I – Investigative
 Analytische, forschende, wissenschaftliche Tätigkeiten; komplexe Probleme lösen
