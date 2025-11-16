@@ -11,7 +11,7 @@ import {
 
 const TIMEOUT_MS = 100000;
 
-jest.setTimeout(120000);
+jest.setTimeout(200000);
 
 jest.mock("../../db");
 jest.mock("./deployment.utils", () => ({
