@@ -12,6 +12,9 @@ import { pool } from "./db";
 import "express-async-errors";
 
 const app = express();
+const PORT = process.env.PORT || 5001;
+
+let server: import("http").Server | null = null;
 
 app.use(
   express.json({
@@ -63,12 +66,12 @@ app.use(((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   });
 }) as ErrorRequestHandler);
 
-const PORT = process.env.PORT || 5001;
-
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Backend running on http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  server = app.listen(PORT, () => {
+    // eslint-disable-next-line no-console
+    console.log(`Backend running on http://localhost:${PORT}`);
+  });
+}
 
 // Error handling for the server
 process.on("uncaughtException", (error) => {
@@ -79,14 +82,6 @@ process.on("uncaughtException", (error) => {
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
 });
-
-let server: import("http").Server | null = null;
-
-if (require.main === module) {
-  server = app.listen(PORT, () => {
-    console.log(`Backend running on http://localhost:${PORT}`);
-  });
-}
 
 export default app;
 export { server, pool };
