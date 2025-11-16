@@ -4,7 +4,7 @@ import Homescreen from './pages/Homescreen';
 const App: React.FC = () => {
     return (
         <div>
-            <Homescreen />  {/* Zeige die Homescreen-Komponente hier an */}
+            <Homescreen />  {/* Display the Home Screen component here */}
         </div>
     );
 };

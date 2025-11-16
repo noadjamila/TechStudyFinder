@@ -1,24 +1,24 @@
 .homescreen-container {
-    background: linear-gradient(135deg, #f1e1ff, #ccfbff, #f6d5f7); /* Pastellfarbe für den Hintergrund */
-    min-height: 100vh; /* Stellt sicher, dass die Seite immer den gesamten Bildschirm einnimmt */
+    background: linear-gradient(135deg, #f1e1ff, #ccfbff, #f6d5f7);
+    min-height: 100vh; /* Ensures that the page always takes up the entire screen */
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Der Inhalt wird oben ausgerichtet */
+    justify-content: flex-start;/* The content is aligned at the top */
     align-items: center;
     text-align: center;
     padding: 20px;
 }
 
-/* Titel des Homescreens */
+
 .title {
     font-size: 4rem;
     font-weight: bold;
-    color: #2E2E2E; /* Dunkelgrau für den Titel */
+    color: #2E2E2E;
    /* margin-top: 40px;*/
     margin-bottom: 30px;
 }
 
-/* Untertitel */
+
 .subtitle {
     font-size: 1.2rem;
     color: #2E2E2E;
@@ -26,7 +26,7 @@
     margin-bottom: 40px;
 }
 
-/* Info-Text über das Quiz */
+
 .info-text {
     max-width: 500px;
     margin: 20px;
@@ -35,7 +35,7 @@
     margin-bottom: 60px;
 }
 
-/* Für die mobile Ansicht, wenn der Button kleiner werden soll */
+/* for the mobile view */
 @media (max-width: 600px) {
     .title {
         font-size: 2rem;
