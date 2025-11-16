@@ -47,6 +47,7 @@
     ]
   },
   "dependencies": {
+    "express-async-error": "^0.0.2",
     "express-rate-limit": "^8.2.1"
   }
 }
