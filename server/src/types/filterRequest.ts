@@ -1,5 +1,5 @@
-interface FilterRequest {
+export interface FilterRequest {
   level: 1 | 2 | 3;
-  newAnswers: any[];
+  answers: any[];
   studyProgrammeIds?: number[];
 }

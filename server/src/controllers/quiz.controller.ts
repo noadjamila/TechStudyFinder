@@ -1,27 +1,31 @@
 import { Request, Response } from 'express';
-import { filterLevel1 } from '../services/quiz.service';
-import { filterLevel2 } from '../services/quiz.service';
-import { filterLevel3 } from '../services/quiz.service';
+import { filterLevel1, filterLevel2, filterLevel3 } from '../services/quiz.service';
+import { FilterRequest } from '../types/filterRequest';
 
+/**
+ * Handles filtering based on the quiz level.
+ * 
+ * @param req request as FilterRequest object
+ * @param res response object
+ * @returns status and (if successful) filtered ids
+ */
 export async function filterLevel(
   req: Request<{}, {}, FilterRequest>,
   res: Response
 ) {
-  const { level, newAnswers, studyProgrammeIds } = req.body;
-
-  console.log("Payload:", { level, newAnswers, studyProgrammeIds });
+  const { level, answers, studyProgrammeIds } = req.body;
 
   try {
     let result;
 
     if (level === 1) {
-      result = await filterLevel1(newAnswers);
+      result = await filterLevel1(answers);
     } 
     else if (level === 2) {
-      result = await filterLevel2(studyProgrammeIds, newAnswers);
+      result = await filterLevel2(studyProgrammeIds, answers);
     } 
     else if (level === 3) {
-      result = await filterLevel3(studyProgrammeIds, newAnswers);
+      result = await filterLevel3(studyProgrammeIds, answers);
     }
 
     return res.status(200).json({
@@ -29,36 +33,11 @@ export async function filterLevel(
       ids: result
     });
   } catch (err) {
-    return res.status(500).json({ error: "Filter error" });
+    console.error("Filter error:", err);
+    return res.status(500).json({ 
+      success: false,
+      error: "Filter error" 
+    });
   }
 }
 
-// export async function filterLevel1(req: Request, res: Response) {
-//   try {
-//     const answers = req.body;
-//     console.log("Empfangene Antworten:", answers);
-
-//     const filteredResults = await filterResults(answers);
-//     console.log("Gefilterte Ergebnisse:", filteredResults);
-
-//     // Erfolgreich → Status 200 (OK)
-//     res
-//       .status(200)
-//       .json({
-//         success: true,
-//         data: filteredResults,
-//         message: "Ergebnisse erfolgreich gefiltert"
-//       });
-//   } catch (error) {
-//     console.error(error);
-
-//     // Fehler → Status 500 (Internal Server Error)
-//     res
-//       .status(500)
-//       .json({
-//         success: false,
-//         message: "Fehler beim Filtern der Ergebnisse",
-//         error: (error as Error).message
-//       });
-//   }
-// }
