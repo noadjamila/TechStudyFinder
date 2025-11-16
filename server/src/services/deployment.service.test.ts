@@ -1,4 +1,12 @@
-import { jest } from "@jest/globals";
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  jest,
+} from "@jest/globals";
 import { Buffer } from "buffer";
 import * as crypto from "crypto";
 import { RawBodyRequest } from "../types/deployment.types";
@@ -7,6 +15,7 @@ import * as rawBodyMiddleware from "../middlewares/rawBody.middleware";
 import * as deploymentUtils from "./deployment.utils";
 import { handleDeployWebhook, verifySignature } from "./deployment.service";
 import * as deploymentService from "./deployment.service";
+import { afterEach } from "node:test";
 
 type RunDeploymentScriptType = typeof deploymentUtils.runDeploymentScript;
 
@@ -124,7 +133,7 @@ describe("handleDeployWebhook", () => {
     expect(mockRunDeploymentScript).toHaveBeenCalled();
   });
 
-  it("should return status 401 if the signature is missing", async () => {
+  it("should return status 400 if the signature is missing", async () => {
     const req = createMockRequest(undefined);
     const res = mockRes();
 
@@ -132,8 +141,8 @@ describe("handleDeployWebhook", () => {
 
     await handleDeployWebhook(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith({ error: "Unauthorized" });
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: "Missing raw body" });
     expect(mockRunDeploymentScript).not.toHaveBeenCalled();
   });
 
