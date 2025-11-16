@@ -1,0 +1,42 @@
+/* Corporate Card + Playful Animations */
+
+.card {
+    background: #ffffff;
+    padding: 2.2rem;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    text-align: center;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.text {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #222;
+    line-height: 1.4;
+}
+
+.button {
+    background: #0177fd;
+    color: white;
+    border: none;
+    padding: 0.9rem 1.4rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-decoration: underline;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.button:hover {
+    transform: scale(1.04);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+}
