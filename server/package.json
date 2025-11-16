@@ -5,12 +5,8 @@
   "main": "index.ts",
   "scripts": {
     "main": "index.ts",
-<<<<<<< HEAD
-    "test": "jest",
-=======
     "test": "jest --passWithNoTests",
     "test:integration": "jest --config jest.integration.config.ts --passWithNoTests",
->>>>>>> c8095d9 (GI-124: Set up GH actions workflow for CI (#15))
     "start": "npx ts-node index.ts",
     "dev": "nodemon index.ts",
     "build": "tsc",
@@ -27,20 +23,13 @@
     "pg": "^8.16.3"
   },
   "devDependencies": {
-<<<<<<< HEAD
-    "@types/jest": "^30.0.0",
+    "@types/jest": "^29.0.0",
     "@types/supertest": "^6.0.3",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.4",
-    "ts-jest": "^29.4.5",
-    "@types/pg": "^8.15.6"
-=======
-    "@types/jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
     "@types/pg": "^8.15.6",
     "jest": "^29.0.0",
-    "nodemon": "^3.1.10",
-    "ts-jest": "^29.0.0",
     "ts-node": "^10.9.2"
->>>>>>> c8095d9 (GI-124: Set up GH actions workflow for CI (#15))
   }
 }
