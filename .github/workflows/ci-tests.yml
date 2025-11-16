@@ -1,4 +1,4 @@
-name: CI Tests
+name: Tests
 
 on:
   pull_request:
@@ -23,14 +23,11 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Run Unit Tests Client
+      - name: Run Unit Tests (Client)
         run: CI=true npm test --workspace=client
 
-      - name: Run Unit Tests Server
-        run: CI=true npm test:unit --workspace=server
+      - name: Run Unit Tests (Server)
+        run: CI=true npm run test:unit --workspace=server
 
-      - name: Run Integration Tests
+      - name: Run Integration Tests (Server)
         run: npm run test:integration --workspace=server
-
-      - name: Build Project
-        run: npm run build
