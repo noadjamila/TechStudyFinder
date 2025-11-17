@@ -92,7 +92,7 @@ export const verifySignature = (
   const calculatedHash = hmac.digest("hex");
 
   return crypto.timingSafeEqual(
-    Buffer.from(calculatedHash, "utf8"),
-    Buffer.from(githubHash, "utf8"),
+    Buffer.from(calculatedHash, "hex"),
+    Buffer.from(githubHash, "hex"),
   );
 };
