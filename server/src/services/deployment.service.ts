@@ -13,6 +13,7 @@ export const handleDeployWebhook = async (req: Request, res: Response) => {
     raw = getRawBody(req as RawBodyRequest);
   } catch (err) {
     console.error("Raw body missing (middleware misconfiguration?):", err);
+    return res.status(400).json({ error: "Missing raw body for verification" });
   }
 
   if (!signature) {
