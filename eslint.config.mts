@@ -10,13 +10,22 @@ import * as typescriptEslintParser from "@typescript-eslint/parser";
 
 export default defineConfig([
   {
-    ignores: ["**/jest.config.js", "**/webpack.config.js", "**/babel.config.js"],
+    ignores: [
+      "**/jest.config.js",
+      "**/webpack.config.js",
+      "**/babel.config.js",
+    ],
   },
   prettierConfig,
 
   {
     files: ["server/**/*.{js,mjs,ts,mts}"],
-    ignores: ["**/*.test.ts", "**/__tests__/**", "jest.*.js", "**/jest.integration.config.js"],
+    ignores: [
+      "**/*.test.ts",
+      "**/__tests__/**",
+      "jest.*.js",
+      "**/jest.integration.config.js",
+    ],
     extends: [js.configs.recommended],
 
     languageOptions: {
