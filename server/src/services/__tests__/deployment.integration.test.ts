@@ -41,15 +41,28 @@ afterAll(async () => {
   delete process.env.GITHUB_WEBHOOK_SECRET;
 
   if (server) {
-    await new Promise<void>((resolve) => {
-      server?.close(() => {
+    await new Promise<void>((resolve, _reject) => {
+      server?.close((err) => {
+        if (err) {
+          console.error("ERROR closing server:", err);
+          return resolve();
+        }
         resolve();
       });
     });
+  } else {
+    console.warn("WARNING: Server object not available to close in afterAll.");
   }
 
-  await pool.end();
+  // 2. DATENBANK-POOL BEENDEN:
+  if (pool && typeof pool.end === "function") {
+    await pool.end();
+  }
 }, TIMEOUT_MS);
+
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
 beforeEach(() => {
   jest.clearAllMocks();
