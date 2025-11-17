@@ -9,6 +9,12 @@ DEPLOY_DIR="${DEPLOY_DIR:-/home/local/projects/TechStudyFinder}"
 
 echo "--- Start deployment $(date) ---"
 
+#echo "Verifying commit signature..."
+#git verify-commit HEAD || {
+#  echo "Error: Commit signature verification failed"
+#  exit 1
+#}
+
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [ "$CURRENT_BRANCH" != "main" ]; then
   echo "Error: Not on main branch. Current branch: $CURRENT_BRANCH"
