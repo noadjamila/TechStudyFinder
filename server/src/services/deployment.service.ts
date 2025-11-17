@@ -58,10 +58,14 @@ export const handleDeployWebhook = async (req: Request, res: Response) => {
 };
 
 /**
- * Check the GitHub webhook signature
- * @param signature The signature from the webhook header 'x-hub-signature-256'
- * @param rawBody The raw request body
+ * Verifies the GitHub webhook signature using HMAC SHA-256.
+ * Uses timing-safe comparison to prevent timing attacks.
+ * @param signature The signature from the webhook header 'x-hub-signature-256' (format: 'sha256=<hash>')
+ * @param rawBody The raw request body as a Buffer
  * @returns boolean indicating if the signature is valid
+ * @environment GITHUB_WEBHOOK_SECRET - Required secret for signature verification.
+ * @security The security of this function depends on the secrecy and correctness of the GITHUB_WEBHOOK_SECRET environment variable.
+ * If the secret is leaked or misconfigured, attackers may be able to forge webhook requests.
  */
 export const verifySignature = (
   signature: string,
