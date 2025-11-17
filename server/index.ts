@@ -11,6 +11,11 @@ import deployRouter from "./src/routes/deploy.route";
 import { pool } from "./db";
 import "express-async-errors";
 
+if (!process.env.GITHUB_WEBHOOK_SECRET) {
+  console.error("FATAL: GITHUB_WEBHOOK_SECRET environment variable is not set");
+  process.exit(1);
+}
+
 const app = express();
 const PORT = process.env.PORT || 5001;
 
