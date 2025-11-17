@@ -25,11 +25,6 @@ let server: import("http").Server | null = null;
 // Standard JSON parsing for most routes
 app.use(express.json());
 
-// Routers
-app.use("/api", testRouter);
-app.use("/deploy", deployRouter);
-app.use("/api/quiz", quizRoutes);
-
 // Raw body parsing for deployment webhook route
 app.use(
   "/deploy/webhook",
@@ -39,6 +34,12 @@ app.use(
     },
   }),
 );
+
+// Routers
+app.use("/api", testRouter);
+app.use("deploy", deployRouter);
+app.use("/api/quiz", quizRoutes);
+
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
 // Test route
