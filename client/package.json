@@ -2,6 +2,9 @@
   "name": "study_finder",
   "version": "0.1.0",
   "private": true,
+  "overrides": {
+    "glob": "^11.0.4"
+  },
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
