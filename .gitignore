@@ -10,6 +10,14 @@ package-lock.json
 yarn.lock
 
 # ======================
+# Testing
+# ======================
+coverage/
+server/coverage/
+client/coverage/
+*.lcov
+
+# ======================
 # Frontend / React
 # ======================
 client/node_modules/

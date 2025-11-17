@@ -35,6 +35,7 @@ export async function filterLevel(
       ids: result,
     });
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.error("Filter error:", err);
     return res.status(500).json({
       success: false,
