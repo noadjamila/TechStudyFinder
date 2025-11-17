@@ -1,20 +1,17 @@
-__QUESTION_DOCUMENTATION.md__
+**QUESTION_DOCUMENTATION.md**
 
+**R – Realistic**  
+_Praktische, handwerkliche, technische, mechanische oder landwirtschaftliche Tätigkeiten mit sichtbaren Ergebnissen_
 
-__R – Realistic__  
-*Praktische, handwerkliche, technische, mechanische oder landwirtschaftliche Tätigkeiten mit sichtbaren Ergebnissen*
-
-
-- Würdest du gern mal ein Gerät reparieren?  
+- Würdest du gern mal ein Gerät reparieren?
 - Hast du Lust mit großen Maschinen zu arbeiten?
 - Interessiert es dich, wie du einen Computer schneller machen kannst?
 - Interessieren dich virtuelle Simulationen \*
 - Findest du es cool, eine Bewässerungsanlage für ein Feld zu entwerfen?
 - Faszinieren dich elektrische Anlagen und Stromkreise?
 
-__I – Investigative__  
-*Analytische, forschende, wissenschaftliche Tätigkeiten; komplexe oder theoretische Probleme lösen*
-
+**I – Investigative**  
+_Analytische, forschende, wissenschaftliche Tätigkeiten; komplexe oder theoretische Probleme lösen_
 
 - Interessiert es dich, an neuen Medikamenten für Krankheiten zu forschen?
 - Löst du gerne Rätsel durch logisches Denken?
@@ -23,9 +20,8 @@ __I – Investigative__
 - Interessieren dich chemische Reaktionen oder das Testen neuer Materialien?
 - Hast du Lust, herauszufinden, wie ein Social Media Algorithmus funktioniert?
 
-
-__A – Artistic__  
-*Kreativer Ausdruck durch Kunst, Musik, Sprache, Gestaltung*
+**A – Artistic**  
+_Kreativer Ausdruck durch Kunst, Musik, Sprache, Gestaltung_
 
 - Hast du ein Auge für gutes Design?
 - Interessiert es dich, anderen Menschen zu beschreiben, wie man ein Gerät benutzt?
@@ -34,9 +30,8 @@ __A – Artistic__
 - Möchtest du im musikalischen Bereich arbeiten?
 - Interessiert dich die Arbeit mit Fotografie oder Video?
 
-
-__S – Social__  
-*Helfen, lehren, beraten, soziale Interaktion, Empathie*
+**S – Social**  
+_Helfen, lehren, beraten, soziale Interaktion, Empathie_
 
 - Hast du Lust, andere zu unterrichten?
 - Hast du Interesse daran, die persönliche Entwicklung anderer Menschen zu fördern?
@@ -45,9 +40,8 @@ __S – Social__
 - Würdest du gerne ein Unternehmen beraten und dadurch verbessern?
 - Interessiert es dich, für die Zufriedenheit der Mitarbeitenden in einem Unternehmen zu sorgen?
 
-
-__E – Enterprising__  
-*Führen, überzeugen, verkaufen, organisieren, unternehmerisch handeln*
+**E – Enterprising**  
+_Führen, überzeugen, verkaufen, organisieren, unternehmerisch handeln_
 
 - Hältst du gerne Vorträge?
 - Verhandelst du gerne?
@@ -56,9 +50,8 @@ __E – Enterprising__
 - Würdest du gern ein Budget planen und die Finanzen kontrollieren? \*
 - Findest du es spannend, ein neues Produkt auf den Markt zu bringen?
 
-
-__C – Conventional__  
-*Strukturierte, bürokratische, organisatorische Tätigkeiten mit klaren Vorgaben*
+**C – Conventional**  
+_Strukturierte, bürokratische, organisatorische Tätigkeiten mit klaren Vorgaben_
 
 - Magst du es, deine Woche zu strukturieren und genau zu planen?
 - Findest du es spannend, Kunden und Kundinnen bei Problemen zu unterstützen?
