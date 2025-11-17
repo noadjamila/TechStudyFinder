@@ -10,8 +10,10 @@
     "dev": "concurrently \"npm start --workspace server\" \"npm start --workspace client\"",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "prepare": "npx husky install",
-    "build": "npm run build --workspace server && npm run build --workspace client"
+    "prepare": "husky install",
+    "build": "npm run build --workspace server && npm run build --workspace client",
+    "test": "npm test --workspaces",
+    "test:integration": "npm run test:integration --workspace server"
   },
   "overrides": {
     "nth-check": "^2.0.1",
@@ -35,13 +37,11 @@
   "lint-staged": {
     "server/**/*.{js,ts,jsx,tsx}": [
       "eslint --fix",
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ],
     "client/**/*.{js,ts,jsx,tsx}": [
       "eslint --fix",
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   }
 }

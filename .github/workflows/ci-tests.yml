@@ -1,0 +1,33 @@
+name: CI Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+jobs:
+  test_suite:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Unit Tests
+        run: CI=true npm test --workspaces
+
+      - name: Run Integration Tests
+        run: npm run test:integration
+
+      - name: Build Project
+        run: npm run build
