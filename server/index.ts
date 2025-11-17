@@ -16,7 +16,12 @@ const PORT = process.env.PORT || 5001;
 
 let server: import("http").Server | null = null;
 
+// Standard JSON parsing for most routes
+app.use(express.json());
+
+// Raw body parsing for deployment webhook route
 app.use(
+  "/deploy/webhook",
   express.json({
     verify: (req, res, buf) => {
       (req as any).rawBody = buf;
