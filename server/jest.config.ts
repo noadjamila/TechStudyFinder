@@ -8,6 +8,7 @@ const config: Config.InitialOptions = {
   testMatch: ["**/__tests__/**/*.test.ts", "**/?(*.)+(spec|test).ts"],
   transformIgnorePatterns: ["/node_modules/"],
   moduleFileExtensions: ["ts", "js", "json", "node"],
+  modulePathIgnorePatterns: ["<rootDir>/dist/", "<rootDir>/node_modules/"],
   collectCoverageFrom: [
     "src/**/*.ts",
     "!src/**/__tests__/**",
