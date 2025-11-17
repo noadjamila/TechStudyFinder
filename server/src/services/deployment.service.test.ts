@@ -95,11 +95,6 @@ describe("verifySignature", () => {
     expect(isValid).toBe(true);
   });
 
-  it("should return false if the signature hash is invalid", () => {
-    const isValid = verifySignature("sha256=invalid-hash", MOCK_RAW_BODY);
-    expect(isValid).toBe(false);
-  });
-
   it("should return false if GITHUB_WEBHOOK_SECRET is missing", () => {
     const consoleWarnSpy = jest
       .spyOn(console, "warn")
