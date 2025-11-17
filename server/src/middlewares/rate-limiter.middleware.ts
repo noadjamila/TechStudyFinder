@@ -7,7 +7,7 @@ import rateLimit from "express-rate-limit";
  */
 const webhookRateLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
-  limit: 5, // max 5 deployments per windowMs
+  limit: 3, // max 5 deployments per windowMs
   message: "Too many deployment requests from this IP, please try again later.",
   standardHeaders: true,
   legacyHeaders: false,
