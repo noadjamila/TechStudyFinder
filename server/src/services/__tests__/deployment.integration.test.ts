@@ -7,6 +7,9 @@ const TIMEOUT_MS = 180000;
 jest.setTimeout(200000);
 jest.useRealTimers();
 
+const MOCK_SECRET = "test-secret-for-env";
+process.env.GITHUB_WEBHOOK_SECRET = MOCK_SECRET;
+
 jest.mock("../../../db");
 jest.mock("../deployment.utils", () => ({
   runDeploymentScript: jest.fn(() => Promise.resolve()),
@@ -15,10 +18,16 @@ jest.mock("../deployment.utils", () => ({
 var mockHandleDeployWebhook = jest.fn(() => Promise.resolve());
 var mockVerifySignature = jest.fn(() => true);
 
-jest.mock("../deployment.service", () => ({
-  handleDeployWebhook: mockHandleDeployWebhook,
-  verifySignature: mockVerifySignature,
-}));
+jest.mock("../deployment.service", () => {
+  return {
+    get handleDeployWebhook() {
+      return mockHandleDeployWebhook;
+    },
+    get verifySignature() {
+      return mockVerifySignature;
+    },
+  };
+});
 
 const supertestEnd = (request: Test): Promise<Response> => {
   return new Promise<Response>((resolve, reject) => {
@@ -32,6 +41,8 @@ const supertestEnd = (request: Test): Promise<Response> => {
 };
 
 afterAll(async () => {
+  delete process.env.GITHUB_WEBHOOK_SECRET;
+
   if (server) {
     await new Promise<void>((resolve) => {
       server?.close(() => {
@@ -49,7 +60,7 @@ beforeEach(() => {
 
 describe("integration test POST /deploy/webhook", () => {
   it("should return 200 when deployment is successful", async () => {
-    require("../deployment.service").verifySignature.mockReturnValueOnce(true);
+    mockVerifySignature.mockReturnValueOnce(true);
 
     const payload = {
       ref: "refs/heads/main",
@@ -70,7 +81,7 @@ describe("integration test POST /deploy/webhook", () => {
   });
 
   it("should return 401 when the signature check fails", async () => {
-    require("../deployment.service").verifySignature.mockReturnValueOnce(false);
+    mockVerifySignature.mockReturnValueOnce(false);
 
     const payload = { ref: "refs/heads/main" };
 

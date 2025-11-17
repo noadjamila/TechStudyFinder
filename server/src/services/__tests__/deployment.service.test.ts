@@ -1,13 +1,3 @@
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  jest,
-} from "@jest/globals";
 import { Buffer } from "buffer";
 import * as crypto from "crypto";
 import { RawBodyRequest } from "../../types/deployment.types";
@@ -170,7 +160,8 @@ describe("handleDeployWebhook", () => {
 
     mockVerifySignature.mockReturnValueOnce(false);
 
-    const invalidSignature = "sha256=invalid-signature";
+    const invalidSignature =
+      "sha256=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
     const req = createMockRequest(invalidSignature);
     const res = mockRes();
 
