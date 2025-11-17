@@ -84,12 +84,8 @@ export const verifySignature = (
   hmac.update(rawBody);
   const calculatedHash = hmac.digest("hex");
 
-  const calculatedHashBuffer = Buffer.from(calculatedHash, "hex");
-  const githubHashBuffer = Buffer.from(githubHash, "hex");
-
-  if (calculatedHashBuffer.length !== githubHashBuffer.length) {
-    return false;
-  }
-
-  return crypto.timingSafeEqual(calculatedHashBuffer, githubHashBuffer);
+  return crypto.timingSafeEqual(
+    Buffer.from(calculatedHash, "utf8"),
+    Buffer.from(githubHash, "utf8"),
+  );
 };
