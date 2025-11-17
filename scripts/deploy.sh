@@ -9,6 +9,12 @@ DEPLOY_DIR="${DEPLOY_DIR:-/home/local/projects/TechStudyFinder}"
 
 echo "--- Start deployment $(date) ---"
 
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$CURRENT_BRANCH" != "main" ]; then
+  echo "Error: Not on main branch. Current branch: $CURRENT_BRANCH"
+  exit 1
+fi
+
 cd "$DEPLOY_DIR"
 
 echo "Starting git pull..."
