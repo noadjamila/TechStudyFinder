@@ -1,8 +1,4 @@
 import { afterAll, beforeEach, describe, it } from "@jest/globals";
-
-const MOCK_SECRET = "test-secret-for-env";
-process.env.GITHUB_WEBHOOK_SECRET = MOCK_SECRET;
-
 import request, { Response, Test } from "supertest";
 import app, { server, pool } from "../../../index";
 

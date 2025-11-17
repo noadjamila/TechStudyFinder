@@ -12,13 +12,24 @@ import quizRoutes from "./src/routes/quiz.route";
 import { pool } from "./db";
 import "express-async-errors";
 
-if (process.env.NODE_ENV === "production") {
-  console.error("FATAL: GITHUB_WEBHOOK_SECRET environment variable is not set");
-  process.exit(1);
-} else {
-  console.warn(
-    "WARNING: GITHUB_WEBHOOK_SECRET environment variable is not set. Webhook verification will be disabled.",
-  );
+const isTesting =
+  process.env.NODE_ENV === "test" || !!process.env.JEST_WORKER_ID;
+
+/*
+ * Check for the presence of the GITHUB_WEBHOOK_SECRET environment variable
+ * and handle its absence based on the environment.
+ */
+if (!process.env.GITHUB_WEBHOOK_SECRET) {
+  if (process.env.NODE_ENV === "production") {
+    console.error(
+      "FATAL: GITHUB_WEBHOOK_SECRET environment variable is not set",
+    );
+    process.exit(1);
+  } else if (!isTesting) {
+    console.warn(
+      "WARNING: GITHUB_WEBHOOK_SECRET environment variable is not set. Webhook verification will be disabled.",
+    );
+  }
 }
 
 const app = express();

@@ -10,6 +10,8 @@ const config = {
 
   testTimeout: 30000,
 
+  setupFiles: ["<rootDir>/jest.setup.ts"],
+
   transform: {
     "^.+\\.(ts|tsx)$": "babel-jest",
   },
