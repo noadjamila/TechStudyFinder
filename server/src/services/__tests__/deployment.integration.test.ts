@@ -1,17 +1,11 @@
 import request, { Response, Test } from "supertest";
 import app, { server, pool } from "../../../index";
-import {
-  jest,
-  afterAll,
-  beforeEach,
-  describe,
-  it,
-  expect,
-} from "@jest/globals";
+import { jest, afterAll, beforeEach, describe, it } from "@jest/globals";
 
 const TIMEOUT_MS = 180000;
 
 jest.setTimeout(200000);
+jest.useRealTimers();
 
 jest.mock("../../../db");
 jest.mock("../deployment.utils", () => ({

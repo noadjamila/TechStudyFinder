@@ -1,17 +1,18 @@
-import type { Config } from "@jest/types";
-
-const config: Config.InitialOptions = {
+/** @type {import('jest').Config} */
+const config = {
   rootDir: "./",
 
   testEnvironment: "node",
-
-  preset: "ts-jest",
 
   testMatch: ["**/*.integration.test.ts"],
 
   testPathIgnorePatterns: ["/node_modules/"],
 
   testTimeout: 30000,
+
+  transform: {
+    "^.+\\.(ts|tsx)$": "babel-jest",
+  },
 };
 
-export default config;
+module.exports = config;
