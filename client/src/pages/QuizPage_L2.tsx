@@ -27,7 +27,7 @@ const QuizPage_L2: React.FC = () => {
   const [questions, setQuestions] = useState<{ text: string; riasec_type: RiasecType }[]>([]);
   const TOTAL_QUESTIONS = questions.length;
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [response, setResponse] = useState<{ studyId: number; }[]>([]);
+  const [responseCount, setResponseCount] = useState<number>(0);
   
   const [scores, setScores] =
     useState<Record<RiasecType, number>>(initialScores);
@@ -110,7 +110,7 @@ const QuizPage_L2: React.FC = () => {
       });
 
       const result = await res.json();
-      setResponse(result.studyIds);
+      setResponseCount(result.studyIds.length);
       console.log("Antwort vom Server:", result.studyIds);
     } catch (err) {
       console.error("Fehler beim Senden:", err);
@@ -164,16 +164,10 @@ const QuizPage_L2: React.FC = () => {
               </div>
             ))}
           </div>
-          {response.length > 0 && (
-            <div>
-              <h3>Server-Antwort:</h3>
-              {response.map((item, index) => (
-                <div key={index}>
-                  {item.studyId}
-                </div>
-              ))}
-            </div>
-          )}
+          <div>
+            <h3>Studiengang IDs vom Server:</h3>
+            <p>Anzahl der Studiengänge: {responseCount}</p>
+          </div>
         </div>
       )}
     </div>

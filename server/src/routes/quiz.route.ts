@@ -22,10 +22,19 @@ router.post("/level/2", async (req, res) => {
     console.log("Received highestScores:", highestScores);
 
     try {
-        /*
-        const placeholders = types.map((_, i) => `$${i + 1}`).join(", ");
-        const query = `SELECT id FROM studiengang_raw_data_simulation WHERE type IN (${placeholders})`;
-        const result = await pool.query(query, types);
+        const minMatches = 2; // Define minimum number of matching types
+
+        const query = `
+            SELECT id
+            FROM studiengang_raw_data_simulation
+            WHERE (
+                SELECT COUNT(*)
+                FROM unnest(riasec_type) AS t(type)
+                WHERE type = ANY($1::char[])
+            ) >= $2
+        `;
+
+        const result = await pool.query(query, [types, minMatches]);
 
         console.log("Study IDs Query successful:", result.rows);
 
@@ -34,13 +43,7 @@ router.post("/level/2", async (req, res) => {
             scores: highestScores,
             studyIds: result.rows,
         });
-        */
-        // For testing purposes, return dummy data
-        const dummyStudyIds = types.map((type, index) => ({ studyId: index + 1, type }));
-        res.status(200).json({
-            message: "Study IDs retrieved successfully (dummy data)",
-            studyIds: dummyStudyIds
-        });
+    
     } catch (error) {
         console.error("Error querying study IDs", error);
         res.status(500).json({
@@ -56,7 +59,7 @@ router.post("/level/2", async (req, res) => {
  */
 router.get("/level/2", async (_req, res) => {
     try {
-        const result = await pool.query("SELECT * FROM fragen_level_zwei ORDER BY RANDOM()");
+        const result = await pool.query("SELECT * FROM fragen_level_zwei ORDER BY RANDOM() LIMIT 5");
         console.log("Questions Query successful:", result.rows);
 
         res.status(200).json({
