@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
 // Test route
 app.use("/api", testRouter);
-app.use("/api", quizRoutes);
+app.use("/api/quiz", quizRoutes);
 
 // Test api for database call
 app.get("/api/test-db", async (_req, res) => {
