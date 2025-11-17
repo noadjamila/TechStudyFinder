@@ -11,9 +11,13 @@ jest.mock("../../../db");
 jest.mock("../deployment.utils", () => ({
   runDeploymentScript: jest.fn(() => Promise.resolve()),
 }));
+
+var mockHandleDeployWebhook = jest.fn(() => Promise.resolve());
+var mockVerifySignature = jest.fn(() => true);
+
 jest.mock("../deployment.service", () => ({
-  handleDeployWebhook: jest.fn(() => Promise.resolve()),
-  verifySignature: jest.fn(() => true),
+  handleDeployWebhook: mockHandleDeployWebhook,
+  verifySignature: mockVerifySignature,
 }));
 
 const supertestEnd = (request: Test): Promise<Response> => {
