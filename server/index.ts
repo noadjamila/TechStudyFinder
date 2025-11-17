@@ -8,6 +8,7 @@ import "dotenv/config";
 import path from "path";
 import testRouter from "./src/routes/health.route";
 import deployRouter from "./src/routes/deploy.route";
+import quizRoutes from "./src/routes/quiz.route";
 import { pool } from "./db";
 import "express-async-errors";
 
@@ -24,6 +25,11 @@ let server: import("http").Server | null = null;
 // Standard JSON parsing for most routes
 app.use(express.json());
 
+// Routers
+app.use("/api", testRouter);
+app.use("/deploy", deployRouter);
+app.use("/api/quiz", quizRoutes);
+
 // Raw body parsing for deployment webhook route
 app.use(
   "/deploy/webhook",
@@ -34,10 +40,6 @@ app.use(
   }),
 );
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
-
-// Routers
-app.use("/api", testRouter);
-app.use("/deploy", deployRouter);
 
 // Test api for database call
 app.get("/api/test-db", async (_req, res) => {

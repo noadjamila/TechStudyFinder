@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "test": "npm run test:unit",
-    "test:unit": "jest --testMatch='**/*.test.ts' --testPathIgnorePatterns='integration\\.test\\.ts$' --passWithNoTests",
-    "test:integration": "jest --testMatch='**/*.integration.test.ts' --passWithNoTests",
+    "main": "index.ts",
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:integration": "jest --config jest.integration.config.ts --passWithNoTests",
     "start": "npx ts-node index.ts",
     "dev": "nodemon index.ts",
     "build": "tsc",
@@ -24,6 +26,7 @@
   },
   "devDependencies": {
     "@types/jest": "^29.0.0",
+    "@types/node": "^24.10.1",
     "@types/pg": "^8.15.6",
     "@types/supertest": "^6.0.3",
     "express-async-errors": "^3.1.1",

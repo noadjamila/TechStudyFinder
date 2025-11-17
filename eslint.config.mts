@@ -16,6 +16,7 @@ export default defineConfig([
 
   {
     files: ["server/**/*.{js,mjs,ts,mts}"],
+    ignores: ["**/*.test.ts", "**/__tests__/**"],
     extends: [js.configs.recommended],
 
     languageOptions: {
@@ -23,6 +24,34 @@ export default defineConfig([
       globals: { ...globals.node, ...globals.es2021 },
       parserOptions: {
         project: "server/tsconfig.json",
+      },
+    },
+
+    plugins: {
+      "@typescript-eslint": typescriptPlugin,
+      prettier: prettierPlugin,
+    } as any,
+
+    rules: {
+      "no-undef": "off",
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "prettier/prettier": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_" },
+      ],
+      "no-unused-vars": "off",
+    },
+  },
+  {
+    files: ["server/**/*.test.ts", "server/**/__tests__/**/*.ts"],
+    extends: [js.configs.recommended],
+
+    languageOptions: {
+      parser: typescriptEslintParser,
+      globals: { ...globals.node, ...globals.es2021, ...globals.jest },
+      parserOptions: {
+        project: "server/tsconfig.test.json",
       },
     },
 
