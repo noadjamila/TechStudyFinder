@@ -8,6 +8,7 @@
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:unit": "jest --testMatch='**/*.test.ts' --testPathIgnorePatterns='\\.integration\\.test\\.ts$' --passWithNoTests",
     "test:integration": "jest --config jest.integration.config.ts --passWithNoTests",
     "start": "npx ts-node index.ts",
     "dev": "nodemon index.ts",
