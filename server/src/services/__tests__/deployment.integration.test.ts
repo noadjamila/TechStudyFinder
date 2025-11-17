@@ -1,14 +1,15 @@
+import { afterAll, beforeEach, describe, it } from "@jest/globals";
+
+const MOCK_SECRET = "test-secret-for-env";
+process.env.GITHUB_WEBHOOK_SECRET = MOCK_SECRET;
+
 import request, { Response, Test } from "supertest";
 import app, { server, pool } from "../../../index";
-import { jest, afterAll, beforeEach, describe, it } from "@jest/globals";
 
 const TIMEOUT_MS = 180000;
 
 jest.setTimeout(200000);
 jest.useRealTimers();
-
-const MOCK_SECRET = "test-secret-for-env";
-process.env.GITHUB_WEBHOOK_SECRET = MOCK_SECRET;
 
 jest.mock("../../../db");
 jest.mock("../deployment.utils", () => ({
