@@ -7,10 +7,12 @@ import { RawBodyRequest } from "../types/deployment.types";
 
 export const handleDeployWebhook = async (req: Request, res: Response) => {
   const signature = req.headers["x-hub-signature-256"] as string | undefined;
-  const raw = getRawBody(req as RawBodyRequest);
-  if (!raw) {
-    console.error("Raw body missing (middleware misconfiguration?)");
-    return res.status(400).json({ error: "Missing raw body" });
+  let raw: Buffer;
+
+  try {
+    raw = getRawBody(req as RawBodyRequest);
+  } catch (err) {
+    console.error("Raw body missing (middleware misconfiguration?):", err);
   }
 
   if (!signature) {
