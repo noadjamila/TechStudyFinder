@@ -10,15 +10,15 @@ import {
 } from "@jest/globals";
 import { Buffer } from "buffer";
 import * as crypto from "crypto";
-import { RawBodyRequest } from "../types/deployment.types";
+import { RawBodyRequest } from "../../types/deployment.types";
 import { Response } from "express";
-import * as rawBodyMiddleware from "../middlewares/rawBody.middleware";
-import * as deploymentUtils from "./deployment.utils";
-import { handleDeployWebhook, verifySignature } from "./deployment.service";
-import * as deploymentService from "./deployment.service";
+import * as rawBodyMiddleware from "../../middlewares/rawBody.middleware";
+import * as deploymentUtils from "../deployment.utils";
+import { handleDeployWebhook, verifySignature } from "../deployment.service";
+import * as deploymentService from "../deployment.service";
 
-jest.mock("../middlewares/rawBody.middleware");
-jest.mock("./deployment.utils");
+jest.mock("../../middlewares/rawBody.middleware");
+jest.mock("../deployment.utils");
 
 const mockGetRawBody = rawBodyMiddleware.getRawBody as jest.Mock;
 const mockRunDeploymentScript =

@@ -27,7 +27,7 @@ app.use(express.json());
 
 // Routers
 app.use("/api", testRouter);
-app.use("/deploy", deployRouter);
+app.use("deploy", deployRouter);
 app.use("/api/quiz", quizRoutes);
 
 // Raw body parsing for deployment webhook route

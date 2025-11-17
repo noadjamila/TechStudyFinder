@@ -1,5 +1,5 @@
 import request, { Response, Test } from "supertest";
-import app, { server, pool } from "../../index";
+import app, { server, pool } from "../../../index";
 import {
   jest,
   afterAll,
@@ -13,11 +13,11 @@ const TIMEOUT_MS = 180000;
 
 jest.setTimeout(200000);
 
-jest.mock("../../db");
-jest.mock("./deployment.utils", () => ({
+jest.mock("../../../db");
+jest.mock("../deployment.utils", () => ({
   runDeploymentScript: jest.fn(() => Promise.resolve()),
 }));
-jest.mock("./deployment.service", () => ({
+jest.mock("../deployment.service", () => ({
   handleDeployWebhook: jest.fn(() => Promise.resolve()),
   verifySignature: jest.fn(() => true),
 }));
@@ -51,7 +51,7 @@ beforeEach(() => {
 
 describe("integration test POST /deploy/webhook", () => {
   it("should return 200 when deployment is successful", async () => {
-    require("./deployment.service").verifySignature.mockReturnValueOnce(true);
+    require("../deployment.service").verifySignature.mockReturnValueOnce(true);
 
     const payload = {
       ref: "refs/heads/main",
@@ -67,12 +67,12 @@ describe("integration test POST /deploy/webhook", () => {
     await supertestEnd(req);
 
     expect(
-      require("./deployment.utils").runDeploymentScript,
+      require("../deployment.utils").runDeploymentScript,
     ).toHaveBeenCalled();
   });
 
   it("should return 401 when the signature check fails", async () => {
-    require("./deployment.service").verifySignature.mockReturnValueOnce(false);
+    require("../deployment.service").verifySignature.mockReturnValueOnce(false);
 
     const payload = { ref: "refs/heads/main" };
 
@@ -86,7 +86,7 @@ describe("integration test POST /deploy/webhook", () => {
     await supertestEnd(req);
 
     expect(
-      require("./deployment.utils").runDeploymentScript,
+      require("../deployment.utils").runDeploymentScript,
     ).not.toHaveBeenCalled();
   });
 });
