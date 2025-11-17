@@ -1,3 +1,4 @@
+/// <reference types="jest" />
 import { Request, Response } from "express";
 import { filterLevel } from "../quiz.controller";
 import * as quizService from "../../services/quiz.service";

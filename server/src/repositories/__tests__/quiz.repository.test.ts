@@ -1,3 +1,4 @@
+/// <reference types="jest" />
 import { getFilteredResultsLevel1 } from "../quiz.repository";
 import { pool } from "../../../db";
 

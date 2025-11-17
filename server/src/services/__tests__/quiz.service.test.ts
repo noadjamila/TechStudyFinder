@@ -1,3 +1,4 @@
+/// <reference types="jest" />
 import { filterLevel1 } from "../quiz.service";
 import * as quizRepository from "../../repositories/quiz.repository";
 
