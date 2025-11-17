@@ -6,6 +6,7 @@
   "scripts": {
     "main": "index.ts",
     "test": "jest --passWithNoTests",
+    "test:unit": "jest --testMatch='**/*.test.ts' --testPathIgnorePatterns='integration\\.test\\.ts$' --passWithNoTests",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:integration": "jest --config jest.integration.config.ts --passWithNoTests",
