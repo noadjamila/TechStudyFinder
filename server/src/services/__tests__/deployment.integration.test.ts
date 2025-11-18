@@ -33,6 +33,10 @@ describe("POST /deploy/webhook", () => {
     process.env.GITHUB_WEBHOOK_SECRET = SECRET;
   });
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("deploys correctly for valid signature", async () => {
     const payload = JSON.stringify({ ref: "refs/heads/main" });
     const signature = generateSignature(SECRET, payload);
