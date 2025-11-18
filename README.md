@@ -21,6 +21,15 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 
 ---
 
+## Documentation
+
+- [API Endpoint Documentation](docs/endpoints.md)
+- [Contributing Guidelines](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [License](LICENSE)
+- [Question Documentation](docs/questions.md)
+---
+
 ## Getting Started
 
 Run the application locally with the following steps:
