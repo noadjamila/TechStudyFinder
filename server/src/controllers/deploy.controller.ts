@@ -30,14 +30,12 @@ export const handleWebhook = async (
 
     const secret = process.env.GITHUB_WEBHOOK_SECRET;
     if (!secret) {
-      return res.status(500).json({ error: "Server misconfiguration: GITHUB_WEBHOOK_SECRET is not set" });
+      return res.status(500).json({
+        error: "Server misconfiguration: GITHUB_WEBHOOK_SECRET is not set",
+      });
     }
 
-    const isValid = verifySignature(
-      secret,
-      rawBody,
-      signature as string,
-    );
+    const isValid = verifySignature(secret, rawBody, signature as string);
 
     if (!isValid) {
       return res.status(401).json({ error: "Unauthorized" });
