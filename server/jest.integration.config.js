@@ -13,7 +13,7 @@ const config = {
   setupFiles: ["<rootDir>/jest.setup.ts"],
 
   transform: {
-    "^.+\\.(ts|tsx)$": "babel-jest",
+    "^.+\\.(ts|tsx)$": "ts-jest",
   },
 };
 
