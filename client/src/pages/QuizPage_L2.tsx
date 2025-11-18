@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import QuizCard from "../components/quiz/QuizCard_L2";
 import QuizLayout from "../layouts/QuizLayout";
 import { RiasecType, initialScores } from "../types/RiasecTypes";
+import ErrorScreen from "../components/ErrorScreen";
 
 /**
  * `QuizPage_L2` is the page-component for the second level of the quiz.
@@ -30,6 +31,9 @@ const QuizPage_L2: React.FC = () => {
   const TOTAL_QUESTIONS = questions.length;
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [responseCount, setResponseCount] = useState<number>(0);
+  const [error, setError] = useState<{ title: string; message: string } | null>(
+    null,
+  );
 
   const [scores, setScores] =
     useState<Record<RiasecType, number>>(initialScores);
@@ -116,6 +120,11 @@ const QuizPage_L2: React.FC = () => {
       setResponseCount(result.ids.length);
     } catch (err) {
       console.error("Fehler beim Senden:", err);
+      setError({
+        title: "Fehler beim Senden",
+        message:
+          "Der Server konnte die Daten nicht verarbeiten. Bitte versuche es später erneut.",
+      });
     }
   };
 
@@ -126,15 +135,35 @@ const QuizPage_L2: React.FC = () => {
     const fetchQuestions = async () => {
       try {
         const res = await fetch(`/api/quiz/level/${2}`);
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
         const data = await res.json();
-        if (data.questions) setQuestions(data.questions);
+
+        if (!data.questions || data.questions.length === 0) {
+          throw new Error("Keine Fragen erhalten");
+        }
+
+        setQuestions(data.questions);
       } catch (err) {
         console.error(err);
+        setError({
+          title: "Fehler beim Laden der Fragen",
+          message:
+            "Die Fragen konnten nicht geladen werden. Bitte versuche es später erneut.",
+        });
       }
     };
 
     fetchQuestions();
   }, []);
+
+  // Wenn ein Fehler aufgetreten ist, zeige nur den ErrorScreen
+  if (error != null) {
+    return <ErrorScreen title={error.title} message={error.message} />;
+  }
 
   return (
     <div>
