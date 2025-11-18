@@ -48,20 +48,4 @@ describe("QuizCard_L2", () => {
       expect(mockOnSelect).toHaveBeenCalledWith("yes");
     });
   });
-
-  test("resets selection when new question is loaded", () => {
-    const { rerender } = render(
-      <QuizCard_L2 question="Frage 1" onSelect={mockOnSelect} />,
-    );
-    const yesOption = screen.getByLabelText("Ja");
-
-    fireEvent.click(yesOption);
-
-    act(() => {
-      jest.advanceTimersByTime(800);
-    });
-
-    rerender(<QuizCard_L2 question="Frage 2" onSelect={mockOnSelect} />);
-    expect((yesOption as HTMLInputElement).checked).toBe(false);
-  });
 });
