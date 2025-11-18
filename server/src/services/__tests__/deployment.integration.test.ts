@@ -1,111 +1,119 @@
-import { afterAll, beforeEach, describe, it } from "@jest/globals";
-import request, { Response, Test } from "supertest";
-import app, { server, pool } from "../../../index";
+import request from "supertest";
+import express from "express";
+import deployRouter from "../../routes/deploy.route";
+import { runDeploymentScript } from "../deployment.utils";
+import crypto from "crypto";
 
-const TIMEOUT_MS = 180000;
-
-jest.setTimeout(200000);
-jest.useRealTimers();
-
-jest.mock("../../../db");
+// Mock shell deployment
 jest.mock("../deployment.utils", () => ({
-  runDeploymentScript: jest.fn(() => Promise.resolve()),
+  runDeploymentScript: jest.fn().mockResolvedValue(undefined),
 }));
 
-var mockHandleDeployWebhook = jest.fn(() => Promise.resolve());
-var mockVerifySignature = jest.fn(() => true);
+// Mock rate limiters
+jest.mock("../../middlewares/rate-limiter.middleware", () => ({
+  webhookRateLimiter: (_req: any, _res: any, next: any) => next(),
+  globalWebhookRateLimiter: (_req: any, _res: any, next: any) => next(),
+}));
 
-jest.mock("../deployment.service", () => {
-  return {
-    get handleDeployWebhook() {
-      return mockHandleDeployWebhook;
+// Raw-body aware express app
+const app = express();
+app.use(
+  "/deploy/webhook",
+  express.json({
+    verify: (req: any, _res, buf) => {
+      req.rawBody = Buffer.from(buf);
     },
-    get verifySignature() {
-      return mockVerifySignature;
-    },
-  };
-});
+  }),
+);
+app.use("/deploy", deployRouter);
 
-const supertestEnd = (request: Test): Promise<Response> => {
-  return new Promise<Response>((resolve, reject) => {
-    request.end((err: any, res: Response) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve(res);
-    });
-  });
+// Signature helper
+const generateSignature = (secret: string, body: string) => {
+  const hmac = crypto.createHmac("sha256", secret);
+  hmac.update(body);
+  return `sha256=${hmac.digest("hex")}`;
 };
 
-afterAll(async () => {
-  delete process.env.GITHUB_WEBHOOK_SECRET;
+describe("POST /deploy/webhook", () => {
+  const SECRET = "testsecret";
 
-  if (server) {
-    await new Promise<void>((resolve, _reject) => {
-      server?.close((err) => {
-        if (err) {
-          console.error("ERROR closing server:", err);
-          return resolve();
-        }
-        resolve();
-      });
-    });
-  } else {
-    console.warn("WARNING: Server object not available to close in afterAll.");
-  }
-
-  // 2. DATENBANK-POOL BEENDEN:
-  if (pool && typeof pool.end === "function") {
-    await pool.end();
-  }
-}, TIMEOUT_MS);
-
-beforeEach(() => {
-  jest.clearAllMocks();
-});
-
-beforeEach(() => {
-  jest.clearAllMocks();
-});
-
-describe("integration test POST /deploy/webhook", () => {
-  it("should return 200 when deployment is successful", async () => {
-    mockVerifySignature.mockReturnValueOnce(true);
-
-    const payload = {
-      ref: "refs/heads/main",
-    };
-
-    const req = request(app)
-      .post("/deploy/webhook")
-      .send(payload)
-      .set("X-GitHub-Event", "push")
-      .set("X-Hub-Signature-256", "sha256=MOCK_VALID_SIGNATURE")
-      .expect(200);
-
-    await supertestEnd(req);
-
-    expect(
-      require("../deployment.utils").runDeploymentScript,
-    ).toHaveBeenCalled();
+  beforeAll(() => {
+    process.env.GITHUB_WEBHOOK_SECRET = SECRET;
   });
 
-  it("should return 401 when the signature check fails", async () => {
-    mockVerifySignature.mockReturnValueOnce(false);
+  it("deploys correctly for valid signature", async () => {
+    const payload = JSON.stringify({ ref: "refs/heads/main" });
+    const signature = generateSignature(SECRET, payload);
 
-    const payload = { ref: "refs/heads/main" };
-
-    const req = request(app)
+    const res = await request(app)
       .post("/deploy/webhook")
-      .send(payload)
-      .set("X-GitHub-Event", "push")
-      .set("X-Hub-Signature-256", "sha256=MOCK_VALID_SIGNATURE")
-      .expect(401);
+      .set("Content-Type", "application/json")
+      .set("x-hub-signature-256", signature)
+      .set("x-github-event", "push")
+      .send(payload);
 
-    await supertestEnd(req);
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ message: "Deployment finished" });
+    expect(runDeploymentScript).toHaveBeenCalled();
+  });
 
-    expect(
-      require("../deployment.utils").runDeploymentScript,
-    ).not.toHaveBeenCalled();
+  it("returns 401 for invalid signature", async () => {
+    const payload = JSON.stringify({ ref: "refs/heads/main" });
+
+    const res = await request(app)
+      .post("/deploy/webhook")
+      .set("Content-Type", "application/json")
+      .set("x-hub-signature-256", "sha256=invalid")
+      .set("x-github-event", "push")
+      .send(payload);
+
+    expect(res.status).toBe(401);
+    expect(res.body).toEqual({ error: "Unauthorized" });
+  });
+
+  it("returns 400 if signature missing", async () => {
+    const payload = JSON.stringify({ ref: "refs/heads/main" });
+
+    const res = await request(app)
+      .post("/deploy/webhook")
+      .set("Content-Type", "application/json")
+      .set("x-github-event", "push")
+      .send(payload);
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual({ error: "Missing signature" });
+  });
+
+  it("skips deployment for non-main branch", async () => {
+    const payload = JSON.stringify({ ref: "refs/heads/dev" });
+    const signature = generateSignature(SECRET, payload);
+
+    const res = await request(app)
+      .post("/deploy/webhook")
+      .set("Content-Type", "application/json")
+      .set("x-hub-signature-256", signature)
+      .set("x-github-event", "push")
+      .send(payload);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ message: "No deployment needed" });
+    expect(runDeploymentScript).not.toHaveBeenCalled();
+  });
+
+  it("returns 400 for malformed payload", async () => {
+    const payload = JSON.stringify({ foo: "bar" });
+    const signature = generateSignature(SECRET, payload);
+
+    const res = await request(app)
+      .post("/deploy/webhook")
+      .set("Content-Type", "application/json")
+      .set("x-hub-signature-256", signature)
+      .set("x-github-event", "push")
+      .send(payload);
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual({
+      error: "Malformed payload: missing or invalid 'ref'",
+    });
   });
 });

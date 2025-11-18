@@ -2,12 +2,12 @@ import { Buffer } from "buffer";
 import * as crypto from "crypto";
 import { RawBodyRequest } from "../../types/deployment.types";
 import { Response } from "express";
-import * as rawBodyMiddleware from "../../middlewares/rawBody.middleware";
+import * as rawBodyMiddleware from "../rawBody.utils";
 import * as deploymentUtils from "../deployment.utils";
 import { handleDeployWebhook, verifySignature } from "../deployment.service";
 import * as deploymentService from "../deployment.service";
 
-jest.mock("../../middlewares/rawBody.middleware");
+jest.mock("../rawBody.utils");
 jest.mock("../deployment.utils");
 
 const mockGetRawBody = rawBodyMiddleware.getRawBody as jest.Mock;
@@ -81,25 +81,20 @@ describe("verifySignature", () => {
   });
 
   it("should return true for a valid signature", () => {
-    const isValid = verifySignature(MOCK_HASH, MOCK_RAW_BODY);
+    const isValid = verifySignature(MOCK_SECRET, MOCK_RAW_BODY, MOCK_HASH);
     expect(isValid).toBe(true);
   });
 
   it("should return false if GITHUB_WEBHOOK_SECRET is missing", () => {
-    const consoleWarnSpy = jest
-      .spyOn(console, "warn")
-      .mockImplementation(() => {});
     const consoleErrorSpy = jest
       .spyOn(console, "error")
       .mockImplementation(() => {});
 
-    const originalSecret = process.env.GITHUB_WEBHOOK_SECRET;
-    delete process.env.GITHUB_WEBHOOK_SECRET;
-    const isValid = verifySignature(MOCK_HASH, MOCK_RAW_BODY);
-    expect(isValid).toBe(false);
-    process.env.GITHUB_WEBHOOK_SECRET = originalSecret;
+    const isValid = verifySignature("", MOCK_RAW_BODY, MOCK_HASH);
 
-    consoleWarnSpy.mockRestore();
+    expect(isValid).toBe(false);
+    expect(consoleErrorSpy).toHaveBeenCalled();
+
     consoleErrorSpy.mockRestore();
   });
 
@@ -109,8 +104,15 @@ describe("verifySignature", () => {
       .mockImplementation(() => {});
 
     const invalidAlgorithm = "invalidalgo=some-algorithm";
-    const isValid = verifySignature(invalidAlgorithm, MOCK_RAW_BODY);
+
+    const isValid = verifySignature(
+      MOCK_SECRET,
+      MOCK_RAW_BODY,
+      invalidAlgorithm,
+    );
+
     expect(isValid).toBe(false);
+    expect(consoleWarnSpy).toHaveBeenCalled();
 
     consoleWarnSpy.mockRestore();
   });

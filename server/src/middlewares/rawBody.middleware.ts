@@ -1,13 +1,16 @@
-import { RawBodyRequest } from "../types/deployment.types";
+import { Request, Response, NextFunction } from "express";
 
-/*
- * Returns the raw body previously captured and attached to the request object.
+/**
+ * Ensures that req.rawBody exists (set earlier by express.json({ verify }))
  */
-export const getRawBody = (req: RawBodyRequest): Buffer => {
+export const rawBodyMiddleware = (
+  req: Request & { rawBody?: Buffer },
+  res: Response,
+  next: NextFunction,
+) => {
   if (!req.rawBody) {
-    throw new Error(
-      "Raw body is missing from the request. Ensure the raw body middleware is configured correctly.",
-    );
+    return res.status(400).json({ error: "Missing raw body for verification" });
   }
-  return req.rawBody;
+
+  next();
 };

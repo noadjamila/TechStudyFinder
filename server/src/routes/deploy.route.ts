@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { handleWebhook } from "../controllers/deploy.controller";
-import { RawBodyRequest } from "../types/deployment.types";
 import {
   globalWebhookRateLimiter,
   webhookRateLimiter,
 } from "../middlewares/rate-limiter.middleware";
+import { rawBodyMiddleware } from "../middlewares/rawBody.middleware";
 
 const deployRouter = Router();
 
@@ -18,11 +18,10 @@ const deployRouter = Router();
  */
 deployRouter.post(
   "/webhook",
+  rawBodyMiddleware,
   webhookRateLimiter,
   globalWebhookRateLimiter,
-  (req, res, next) => {
-    handleWebhook(req as RawBodyRequest, res, next);
-  },
+  handleWebhook,
 );
 
 export default deployRouter;
