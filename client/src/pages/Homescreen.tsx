@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography } from '@mui/material';
 import LogoMenu from '../components/LogoMenu';
 import Button from '../components/Button';
-import './Homescreen.css';
+//import './Homescreen.css';
 
 const Homescreen: React.FC = () => {
     return (
@@ -27,7 +27,7 @@ const Homescreen: React.FC = () => {
                 </div>
 
                 {/* Quiz Starten Button */}
-                <Button /> {/* Der Button wird hier verwendet */}
+                <Button />
             </div>
         </div>
     );
