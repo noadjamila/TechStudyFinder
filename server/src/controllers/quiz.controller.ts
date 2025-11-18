@@ -49,7 +49,7 @@ export async function filterLevel(
  *
  * @param req request object
  * @param res response object
- * @returns status and if succesful all questions of one level
+ * @returns status and if successful all questions of one level
  */
 export async function getQuestions(req: Request, res: Response) {
   try {
