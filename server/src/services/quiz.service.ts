@@ -27,7 +27,13 @@ export async function filterLevel2(
   _studyProgrammeIds: number[] | undefined,
   _answers: any[],
 ): Promise<any[]> {
-  const types = _answers.map((s) => s.type);
+  if (!_answers || _answers.length === 0) {
+    return [];
+  }
+  const types = _answers.map((s) => s.type).filter(Boolean);
+  if (types.length === 0) {
+    return [];
+  }
   const minMatches = 2;
   return await getFilteredResultsLevel2(_studyProgrammeIds, types, minMatches);
 }
