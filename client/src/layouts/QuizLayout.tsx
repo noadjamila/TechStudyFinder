@@ -1,4 +1,5 @@
-import styles from './QuizLayout.module.css'
+import React from "react";
+import styles from "./QuizLayout.module.css";
 import Progressbar from "../components/quiz/Progressbar";
 
 /**
@@ -6,20 +7,20 @@ import Progressbar from "../components/quiz/Progressbar";
  * Allows parent-components the interaction and modification of this component.
  */
 export interface QuizLayoutProps {
-    /**
-     * The index of the current progress, used by the progressbar.
-     */
-    currentIndex: number;
+  /**
+   * The index of the current progress, used by the progressbar.
+   */
+  currentIndex: number;
 
-    /**
-     * Total number of all questions/steps, used by the progressbar.
-     */
-    questionsTotal: number;
+  /**
+   * Total number of all questions/steps, used by the progressbar.
+   */
+  questionsTotal: number;
 
-    /**
-     * Main content (react components) which is placed within the layout.
-     */
-    children: React.ReactNode;
+  /**
+   * Main content (react components) which is placed within the layout.
+   */
+  children: React.ReactNode;
 }
 
 /**
@@ -34,17 +35,19 @@ export interface QuizLayoutProps {
  * @param {Object} props - Props of the layout.
  * @returns {JSX.Element} The rendered quiz-layout with progressbar and content component.
  */
-const QuizLayout: React.FC<QuizLayoutProps> = ({ currentIndex, questionsTotal, children }) => {
-    return (
-        <div className={styles.container}>
-            <div className={styles.wrapper}>
-                <Progressbar current={currentIndex} total={questionsTotal} />
-                <main className={styles.middle}>
-                    {children}
-                </main>
-            </div>
-        </div>
-    )
-}
+const QuizLayout: React.FC<QuizLayoutProps> = ({
+  currentIndex,
+  questionsTotal,
+  children,
+}: QuizLayoutProps) => {
+  return (
+    <div className={styles.container}>
+      <div className={styles.wrapper}>
+        <Progressbar current={currentIndex} total={questionsTotal} />
+        <main className={styles.middle}>{children}</main>
+      </div>
+    </div>
+  );
+};
 
 export default QuizLayout;

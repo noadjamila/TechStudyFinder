@@ -68,7 +68,6 @@ export async function getQuestionsLevel2(): Promise<any[]> {
   const result = await pool.query(
     "SELECT * FROM fragen_level_zwei ORDER BY RANDOM()",
   );
-  console.log("Questions Query successful:", result.rows);
 
   return result.rows;
 }

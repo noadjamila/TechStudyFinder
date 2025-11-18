@@ -69,8 +69,6 @@ export async function getQuestions(req: Request, res: Response) {
       result = await getQuestionsLevel2Service();
     }
 
-    console.log(`Questions for level ${levelNumber} retrieved:`, result);
-
     res.status(200).json({
       message: "Questions retrieved successfully",
       questions: result,

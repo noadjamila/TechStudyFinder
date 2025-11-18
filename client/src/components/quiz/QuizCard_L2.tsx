@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "./QuizCard_L2.module.css";
 
 /**
@@ -13,16 +13,17 @@ export interface QuizCardProps {
 
   /**
    * Callback function that is called when the user selects an answer.
-   * 
+   *
    * @param option - Key of the selected option ("yes", "no" or "skip").
    * @returns void
-   * 
+   *
    */
+  // eslint-disable-next-line no-unused-vars
   onSelect: (option: string) => void;
 }
 
 /**
- * This component displays a question with three answer options (“yes”, “no”, “skip”).
+ * This component displays a question with three answer options ("yes", "no", "skip").
  * The user can select an option, whereupon a short animation is played
  * before the result is passed to the parent component.
  *
@@ -40,12 +41,6 @@ export interface QuizCardProps {
 const QuizCard_L2: React.FC<QuizCardProps> = ({ question, onSelect }) => {
   const [selection, setSelection] = useState("");
   const [animation, setAnimation] = useState(false);
-
-  // If the question changes, reset of variables.
-  useEffect(() => {
-    setSelection("");
-    setAnimation(false);
-  }, [question]);
 
   /**
    * Deals with the selection of an answer option.

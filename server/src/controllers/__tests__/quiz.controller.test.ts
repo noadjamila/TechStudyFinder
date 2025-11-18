@@ -241,7 +241,6 @@ describe("Quiz Controller - getQuestions Level 2", () => {
     jest
       .spyOn(quizService, "getQuestionsLevel2Service")
       .mockResolvedValue(mockQuestions);
-    jest.spyOn(console, "log").mockImplementation(() => {}); // Suppress console.log
 
     // Act
     await getQuestions(mockRequest as Request, mockResponse as Response);
@@ -253,10 +252,6 @@ describe("Quiz Controller - getQuestions Level 2", () => {
       message: "Questions retrieved successfully",
       questions: mockQuestions,
     });
-    expect(console.log).toHaveBeenCalledWith(
-      "Questions for level 2 retrieved:",
-      mockQuestions,
-    );
   });
 
   it("should handle empty questions array", async () => {

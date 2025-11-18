@@ -7,16 +7,20 @@ describe("QuizLayout", () => {
   const defaultProps: QuizLayoutProps = {
     currentIndex: 2,
     questionsTotal: 10,
-    children: <DummyChild />
+    children: <DummyChild />,
   };
 
   test("renders the progressbar with correct props", () => {
     render(<QuizLayout {...defaultProps} />);
-    
+
     const progressBar = screen.getByRole("progressbar");
     expect(progressBar).toBeInTheDocument();
 
-    expect(screen.getByText(`Frage ${defaultProps.currentIndex} von ${defaultProps.questionsTotal}`)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        `Frage ${defaultProps.currentIndex} von ${defaultProps.questionsTotal}`,
+      ),
+    ).toBeInTheDocument();
   });
 
   test("renders children correctly", () => {

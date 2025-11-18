@@ -1,4 +1,10 @@
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react";
 import QuizCard_L2 from "../components/quiz/QuizCard_L2";
 
 jest.useFakeTimers();
@@ -35,7 +41,7 @@ describe("QuizCard_L2", () => {
     fireEvent.click(yesOption);
 
     act(() => {
-        jest.advanceTimersByTime(800);
+      jest.advanceTimersByTime(800);
     });
 
     await waitFor(() => {
@@ -45,14 +51,14 @@ describe("QuizCard_L2", () => {
 
   test("resets selection when new question is loaded", () => {
     const { rerender } = render(
-      <QuizCard_L2 question="Frage 1" onSelect={mockOnSelect} />
+      <QuizCard_L2 question="Frage 1" onSelect={mockOnSelect} />,
     );
     const yesOption = screen.getByLabelText("Ja");
 
     fireEvent.click(yesOption);
 
     act(() => {
-        jest.advanceTimersByTime(800);
+      jest.advanceTimersByTime(800);
     });
 
     rerender(<QuizCard_L2 question="Frage 2" onSelect={mockOnSelect} />);

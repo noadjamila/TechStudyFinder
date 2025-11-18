@@ -37,7 +37,7 @@ export interface ProgressbarProps {
 const Progressbar: React.FC<ProgressbarProps> = ({ current, total }) => {
   // Limits the current value so that it never falls below 0 or exceeds the total number.
   const safeCurrent = Math.max(0, Math.min(current, total));
-  
+
   // Calculates the current percentage progress
   const percent = total > 0 ? (safeCurrent / total) * 100 : 0;
 

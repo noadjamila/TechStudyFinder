@@ -77,15 +77,9 @@ const QuizPage_L2: React.FC = () => {
     setScores((prev) => {
       const newScores = { ...prev, [currentType]: prev[currentType] + points };
 
-      console.log("Scores:");
-      Object.entries(newScores).forEach(([type, score]) =>
-        console.log(`Typ: ${type}, Score: ${score}`),
-      );
-
       if (currentIndex === TOTAL_QUESTIONS - 1) {
         const topScores = getTopThreeScores(newScores);
         setHighestScores(topScores);
-        console.log("Höchste Drei:", topScores);
         sendData(topScores);
       }
 
@@ -117,7 +111,6 @@ const QuizPage_L2: React.FC = () => {
 
       const result = await res.json();
       setResponseCount(result.ids.length);
-      console.log("Antwort vom Server:", result.ids);
     } catch (err) {
       console.error("Fehler beim Senden:", err);
     }
@@ -131,7 +124,6 @@ const QuizPage_L2: React.FC = () => {
       try {
         const res = await fetch(`/api/quiz/level/${2}`);
         const data = await res.json();
-        console.log("Backend Response:", data);
         if (data.questions) setQuestions(data.questions);
       } catch (err) {
         console.error(err);
@@ -149,6 +141,7 @@ const QuizPage_L2: React.FC = () => {
           questionsTotal={TOTAL_QUESTIONS}
         >
           <QuizCard
+            key={currentIndex}
             question={currentQuestion.text}
             onSelect={(option) => handleSelect(option)}
           />
