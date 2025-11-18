@@ -5,12 +5,12 @@ import { RiasecType, initialScores } from "../types/RiasecTypes";
 
 /**
  * `QuizPage_L2` is the page-component for the second level of the quiz.
- * It fetches level 2 questions, manages quiz state (current question, 
- * user responses, and scoring), renders the corresponding `QuizCard` and 
+ * It fetches level 2 questions, manages quiz state (current question,
+ * user responses, and scoring), renders the corresponding `QuizCard` and
  * `QuizLayout` components and sends the top three RIASEC scores to the backend.
  *
- * The component calculates a RIASEC score based on user answers as well as 
- * the three highest scores at the end of the quiz. 
+ * The component calculates a RIASEC score based on user answers as well as
+ * the three highest scores at the end of the quiz.
  * It also displays a debug summary of all scores and the top three results when the quiz ends.
  *
  * @description
@@ -24,11 +24,13 @@ import { RiasecType, initialScores } from "../types/RiasecTypes";
  * @returns {JSX.Element} A rendered quiz interface with progress tracking and scoring.
  */
 const QuizPage_L2: React.FC = () => {
-  const [questions, setQuestions] = useState<{ text: string; riasec_type: RiasecType }[]>([]);
+  const [questions, setQuestions] = useState<
+    { text: string; riasec_type: RiasecType }[]
+  >([]);
   const TOTAL_QUESTIONS = questions.length;
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [responseCount, setResponseCount] = useState<number>(0);
-  
+
   const [scores, setScores] =
     useState<Record<RiasecType, number>>(initialScores);
 
@@ -84,7 +86,7 @@ const QuizPage_L2: React.FC = () => {
         const topScores = getTopThreeScores(newScores);
         setHighestScores(topScores);
         console.log("Höchste Drei:", topScores);
-        sendData(topScores)
+        sendData(topScores);
       }
 
       return newScores;
@@ -97,21 +99,25 @@ const QuizPage_L2: React.FC = () => {
 
   /**
    * Sends the top three scores to the backend server.
-   * @param topScores The top three RIASEC scores to send. 
+   * @param topScores The top three RIASEC scores to send.
    */
-  const sendData = async (topScores:{ type: RiasecType; score: number }[] ) => {
+  const sendData = async (topScores: { type: RiasecType; score: number }[]) => {
     try {
-      const res = await fetch("http://localhost:5001/api/quiz/level/2", {
+      const res = await fetch("http://localhost:5001/api/quiz/filter", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ highestScores: topScores }),
+        body: JSON.stringify({
+          answers: topScores,
+          level: 2,
+          studyProgrammeIds: [],
+        }),
       });
 
       const result = await res.json();
-      setResponseCount(result.studyIds.length);
-      console.log("Antwort vom Server:", result.studyIds);
+      setResponseCount(result.ids.length);
+      console.log("Antwort vom Server:", result.ids);
     } catch (err) {
       console.error("Fehler beim Senden:", err);
     }
@@ -123,7 +129,7 @@ const QuizPage_L2: React.FC = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const res = await fetch("/api/quiz/level/2");
+        const res = await fetch(`/api/quiz/level/${2}`);
         const data = await res.json();
         console.log("Backend Response:", data);
         if (data.questions) setQuestions(data.questions);
@@ -138,14 +144,14 @@ const QuizPage_L2: React.FC = () => {
   return (
     <div>
       {currentIndex < TOTAL_QUESTIONS ? (
-        <QuizLayout 
-          currentIndex={currentIndex + 1} 
+        <QuizLayout
+          currentIndex={currentIndex + 1}
           questionsTotal={TOTAL_QUESTIONS}
         >
           <QuizCard
-                question={currentQuestion.text}
-                onSelect={(option) => handleSelect(option)}
-              />
+            question={currentQuestion.text}
+            onSelect={(option) => handleSelect(option)}
+          />
         </QuizLayout>
       ) : (
         <div>
