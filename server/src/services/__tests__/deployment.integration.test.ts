@@ -17,14 +17,6 @@ jest.mock("../../middlewares/rate-limiter.middleware", () => ({
 
 // Raw-body aware express app
 const app = express();
-app.use(
-  "/deploy/webhook",
-  express.json({
-    verify: (req: any, _res, buf) => {
-      req.rawBody = Buffer.from(buf);
-    },
-  }),
-);
 app.use("/deploy", deployRouter);
 
 // Signature helper
