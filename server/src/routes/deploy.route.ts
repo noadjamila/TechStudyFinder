@@ -1,4 +1,4 @@
-import { Router } from "express";
+import express, { Router } from "express";
 import { handleWebhook } from "../controllers/deploy.controller";
 import {
   globalWebhookRateLimiter,
@@ -18,6 +18,11 @@ const deployRouter = Router();
  */
 deployRouter.post(
   "/webhook",
+  express.json({
+    verify: (req: any, _res, buf) => {
+      req.rawBody = Buffer.from(buf);
+    },
+  }),
   rawBodyMiddleware,
   webhookRateLimiter,
   globalWebhookRateLimiter,
