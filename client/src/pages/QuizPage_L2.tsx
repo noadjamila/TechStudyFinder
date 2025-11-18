@@ -109,6 +109,9 @@ const QuizPage_L2: React.FC = () => {
         }),
       });
 
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
       const result = await res.json();
       setResponseCount(result.ids.length);
     } catch (err) {
