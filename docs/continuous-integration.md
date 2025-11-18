@@ -3,7 +3,7 @@
 ## Overview
 
 This document describes the complete CI/CD pipeline for the
-*TechStudyFinder* project – including automated testing (CI) and
+_TechStudyFinder_ project – including automated testing (CI) and
 automatic deployment (CD) onto the production server.
 
 ## Continuous Integration (CI)
@@ -20,4 +20,3 @@ CI uses GitHub Actions and is configured under
 5.  Build frontend and backend
 
 Pull Requests can only be merged if all CI steps succeed.
-
