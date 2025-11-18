@@ -5,7 +5,7 @@ import { runDeploymentScript } from "../deployment.utils";
 import crypto from "crypto";
 
 // Mock shell deployment
-jest.mock("../deployment.utils", () => ({
+jest.mock("../../services/deployment.utils", () => ({
   runDeploymentScript: jest.fn().mockResolvedValue(undefined),
 }));
 
