@@ -31,9 +31,6 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^14.6.1",
     "autoprefixer": "^10.4.22",
     "caniuse-lite": "^1.0.30001754",
     "jest": "^30.2.0",
