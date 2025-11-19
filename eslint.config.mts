@@ -119,8 +119,7 @@ export default defineConfig([
       "@typescript-eslint": typescriptPlugin,
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
-      prettier: prettierPlugin,
-      jest: jestPlugin, // das ist das Plugin, das du installierst
+      jest: jestPlugin,
     } as any,
     settings: {
       react: {
