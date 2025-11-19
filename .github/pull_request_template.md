@@ -7,6 +7,7 @@ Explain what has been changed and why these changes are necessary.
 > Example: `GI-21: Implement user login flow`
 
 ## Jira Ticket
+
 Link to the Jira ticket: [GI-XXX](https://techstudyfinder.atlassian.net/browse/GI-XXX)
 
 ## Author Checklist
