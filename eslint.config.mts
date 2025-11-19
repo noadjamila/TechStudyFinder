@@ -7,6 +7,7 @@ import * as prettierPlugin from "eslint-plugin-prettier";
 import js from "@eslint/js";
 import prettierConfig from "eslint-config-prettier";
 import * as typescriptEslintParser from "@typescript-eslint/parser";
+import * as jestPlugin from "eslint-plugin-jest";
 
 export default defineConfig([
   {
@@ -101,6 +102,42 @@ export default defineConfig([
       "prettier/prettier": "error",
       "react/react-in-jsx-scope": "off",
       "no-console": ["warn", { allow: ["warn", "error"] }],
+    },
+  },
+  {
+    files: ["client/**/*.test.tsx", "client/**/__tests__/**/*.tsx"],
+    extends: [js.configs.recommended],
+    languageOptions: {
+      parser: typescriptEslintParser,
+      globals: { ...globals.browser, ...globals.node, ...globals.jest },
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+        project: "client/tsconfig.json",
+      },
+    },
+    plugins: {
+      "@typescript-eslint": typescriptPlugin,
+      react: reactPlugin,
+      "react-hooks": reactHooksPlugin,
+      prettier: prettierPlugin,
+      jest: jestPlugin, // das ist das Plugin, das du installierst
+    } as any,
+    settings: {
+      react: {
+        version: "detect",
+        runtime: "automatic",
+      },
+    },
+    rules: {
+      ...jestPlugin.configs.recommended.rules,
+      "no-undef": "off",
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "prettier/prettier": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_" },
+      ],
+      "no-unused-vars": "off",
     },
   },
 ]);
