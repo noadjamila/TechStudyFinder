@@ -1,5 +1,5 @@
 import { Button as MUIButton } from "@mui/material";
-import { ButtonProps } from "../types/Button.types";
+import { ButtonProps } from "../../types/Button.types";
 
 export default function Button({
                                    label = "Button",

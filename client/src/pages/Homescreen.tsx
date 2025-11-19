@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography } from '@mui/material';
 import LogoMenu from '../components/LogoMenu';
-import Button from '../components/Button';
+import Button from '../components/buttons/Button';
 import './Homescreen.css';
 
 const Homescreen: React.FC = () => {
