@@ -1,11 +1,16 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import Homescreen from "../pages/Homescreen";
 import "@testing-library/jest-dom";
 
 describe("Homescreen Component", () => {
-  test("renders the title, subtitle, info text, and quiz button", () => {
-    render(<Homescreen />);
+  it("renders the title, subtitle, info text, and quiz button", () => {
+    render(
+      <MemoryRouter>
+        <Homescreen />
+      </MemoryRouter>,
+    );
 
     const title = screen.getByText(/Tech Study Finder/i);
     expect(title).toBeInTheDocument();
@@ -24,8 +29,12 @@ describe("Homescreen Component", () => {
     expect(button).toBeInTheDocument();
   });
 
-  test("button click triggers appropriate action", () => {
-    render(<Homescreen />);
+  it("button click triggers appropriate action", () => {
+    render(
+      <MemoryRouter>
+        <Homescreen />
+      </MemoryRouter>,
+    );
 
     const button = screen.getByText(/Quiz Starten/i);
 

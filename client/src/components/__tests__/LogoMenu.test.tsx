@@ -4,7 +4,7 @@ import LogoMenu from "../LogoMenu/LogoMenu";
 import "@testing-library/jest-dom";
 
 describe("LogoMenu Component", () => {
-  test("renders the Logo and Menu Icon", () => {
+  it("renders the Logo and Menu Icon", () => {
     render(<LogoMenu />);
 
     const logo = screen.getByAltText(/Logo/i);
@@ -14,16 +14,17 @@ describe("LogoMenu Component", () => {
     expect(menuIcon).toBeInTheDocument();
   });
 
-  test("opens and closes the menu", () => {
+  it("opens and closes the menu", () => {
     render(<LogoMenu />);
 
     const menuIcon = screen.getByRole("button");
     fireEvent.click(menuIcon);
+    expect(screen.getAllByRole("menuitem").length).toBeGreaterThan(0);
 
-    const menuItems = screen.getAllByRole("menuitem");
-    expect(menuItems.length).toBeGreaterThan(0);
+    // Menü schließen durch Menü-Eintrag
+    fireEvent.click(screen.getByText("Impressum"));
 
-    fireEvent.click(menuIcon);
+    expect(screen.queryAllByRole("menuitem")).toHaveLength(0);
 
     // Re-query for menu items after closing the menu
     expect(screen.queryAllByRole("menuitem").length).toBe(0);
