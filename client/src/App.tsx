@@ -1,6 +1,6 @@
 import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import theme from "./theme/theme";
-import Button from "./components/Button";
+import Button from "./components/buttons/Button";
 
 export default function App() {
   return (
