@@ -11,7 +11,7 @@ import * as jestPlugin from "eslint-plugin-jest";
 
 export default defineConfig([
   {
-    ignores: ["**/jest.config.js", "**/webpack.config.js"],
+    ignores: ["**/jest.config.js", "**/webpack.config.js", "client/public/**"],
   },
   prettierConfig,
 
