@@ -3,10 +3,13 @@ import { Typography } from "@mui/material";
 import LogoMenu from "../components/LogoMenu/LogoMenu";
 import Button from "../components/buttons/Button";
 import "./Homescreen.css";
+import { useNavigate } from "react-router-dom";
 
 const Homescreen: React.FC = () => {
+  const navigate = useNavigate();
+
   const handleQuizStart = () => {
-    console.log("Quiz gestartet");
+    navigate("/quiz");
   };
 
   return (
