@@ -4,6 +4,7 @@ import express, {
   NextFunction,
   ErrorRequestHandler,
 } from "express";
+import cors from "cors";
 import "dotenv/config";
 import path from "path";
 import testRouter from "./src/routes/health.route";
@@ -37,14 +38,19 @@ const PORT = process.env.PORT || 5001;
 
 let server: import("http").Server | null = null;
 
-// Raw body parsing for deployment webhook route
-
 // Standard JSON parsing for most routes
 app.use(express.json());
 
 // Routers
 app.use("/api", testRouter);
 app.use("/deploy", deployRouter);
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  }),
+);
 app.use("/api/quiz", quizRoutes);
 
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
