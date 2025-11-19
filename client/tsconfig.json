@@ -24,6 +24,7 @@
   "exclude": [
     "node_modules",
     "server",
-    "node_modules", "src/**/*.test.tsx"
+    "node_modules",
+    "src/**/*.test.tsx"
   ]
 }
