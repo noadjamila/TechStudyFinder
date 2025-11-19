@@ -1,5 +1,5 @@
 /**
- * FireworksPage Component
+ * Fireworks Component
  * This component displays a celebratory screen after the user completes
  * the initial question in the start flow. It shows a confetti animation
  * for a short period of time and provides a button to continue to the next
@@ -22,19 +22,19 @@
  * - The timer is cleared automatically when the component unmounts.
  *
  * Styling:
- * - Uses a card-like layout styled via FireworksPage.module.css.
+ * - Uses a card-like layout styled via Fireworks.module.css.
  * - The page visually matches the corporate/clean card design used in
  *   other parts of the application.
  */
 import React, { useEffect, useState } from "react";
 import Confetti from "react-confetti";
-import styles from "./FireworksPage.module.css";
+import styles from "../pages/FireworksPage.module.css";
 
 interface Props {
     onContinue: () => void;
 }
 
-const FireworksPage: React.FC<Props> = ({ onContinue }) => {
+const Fireworks: React.FC<Props> = ({ onContinue }) => {
     const [showConfetti, setShowConfetti] = useState(true);
 
     useEffect(() => {
@@ -58,4 +58,4 @@ const FireworksPage: React.FC<Props> = ({ onContinue }) => {
     );
 };
 
-export default FireworksPage;
+export default Fireworks;

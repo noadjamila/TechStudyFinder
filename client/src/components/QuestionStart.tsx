@@ -37,15 +37,24 @@ interface Props {
 }
 
 const QuestionStart: React.FC<Props> = ({ onNext }) => {
-    const [answer, setAnswer] = useState<string>("");
-    const [error, setError] = useState("");
+    const [selected, setSelected] = useState<string>("");
 
-    const handleNext = () => {
-        if (!answer) {
-            setError("Bitte wähle eine Antwort aus.");
-            return;
+    const handleSelect = async (value: string) => {
+        setSelected(value);
+
+        // ---- API CALL HERE (wie gewünscht) ----
+        try {
+            await fetch("http://localhost:5001/api/quiz/start", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ startType: value }),
+            });
+        } catch (err) {
+            console.error("Fehler beim Senden:", err);
         }
-        onNext(answer);
+
+        // Direkt weiter zur nächsten Page
+        onNext(value);
     };
 
     return (
@@ -59,7 +68,8 @@ const QuestionStart: React.FC<Props> = ({ onNext }) => {
                     <input
                         type="radio"
                         name="startquestion"
-                        onChange={() => setAnswer("anfangen")}
+                        checked={selected === "anfangen"}
+                        onChange={() => handleSelect("anfangen")}
                     />
                     Ich fange an zu studieren
                 </label>
@@ -68,7 +78,8 @@ const QuestionStart: React.FC<Props> = ({ onNext }) => {
                     <input
                         type="radio"
                         name="startquestion"
-                        onChange={() => setAnswer("weiterstudieren")}
+                        checked={selected === "weiterstudieren"}
+                        onChange={() => handleSelect("weiterstudieren")}
                     />
                     Ich will weiter studieren
                 </label>
@@ -77,17 +88,12 @@ const QuestionStart: React.FC<Props> = ({ onNext }) => {
                     <input
                         type="radio"
                         name="startquestion"
-                        onChange={() => setAnswer("umschauen")}
+                        checked={selected === "umschauen"}
+                        onChange={() => handleSelect("umschauen")}
                     />
                     Ich möchte mich einfach umschauen
                 </label>
             </div>
-
-            {error && <div className={styles.error}>{error}</div>}
-
-            <button className={styles.button} onClick={handleNext}>
-                Weiter
-            </button>
         </div>
     );
 };
