@@ -43,7 +43,7 @@ const LogoMenu: React.FC = () => {
         </Typography>
 
         {/* Menu */}
-        <IconButton edge="end" onClick={handleMenuClick}>
+        <IconButton edge="end" onClick={handleMenuClick} aria-label="Open menu">
           <MenuIcon />
         </IconButton>
 
