@@ -105,7 +105,10 @@ export default defineConfig([
     },
   },
   {
-    files: ["client/**/*.test.tsx", "client/**/__tests__/**/*.tsx"],
+    files: [
+      "client/**/*.{test,spec}.{ts,tsx}",
+      "client/**/__tests__/**/*.{ts,tsx}",
+    ],
     extends: [js.configs.recommended],
     languageOptions: {
       parser: typescriptEslintParser,
