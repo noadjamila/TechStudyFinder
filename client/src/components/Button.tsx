@@ -1,12 +1,29 @@
-import React from 'react';
-import './Button.css';
+import { Button as MUIButton } from "@mui/material";
+import { ButtonProps } from "../types/Button.types";
 
-const Button: React.FC = () => {
+export default function Button({
+                                   label = "Button",
+                                   onClick,
+                                   disabled = false,
+                                   fullWidth = false,
+                               }: ButtonProps) {
     return (
-        <button className="custom-button">
-            Quiz Starten
-        </button>
+        <MUIButton
+            variant="contained"
+            onClick={onClick}
+            disabled={disabled}
+            fullWidth={fullWidth}
+            sx={(theme) => ({
+                backgroundColor: theme.palette.grey[100],
+                color: theme.palette.grey[900],
+                borderRadius: "20px",
+                boxShadow: 3,
+                ":hover": {
+                    backgroundColor: theme.palette.primary.main,
+                },
+            })}
+        >
+            {label}
+        </MUIButton>
     );
-};
-
-export default Button;
+}
