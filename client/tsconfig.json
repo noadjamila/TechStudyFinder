@@ -14,9 +14,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "typeRoots": [
-      "./node_modules/@types"
-    ]
+    "typeRoots": ["./node_modules/@types", "../node_modules/@types"],
+    "types": ["jest"]
   },
   "include": [
     "./src/**/*"
@@ -26,4 +25,7 @@
     "server",
     "node_modules", "src/**/*.test.tsx"
   ]
+}
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules", "server"]
 }
