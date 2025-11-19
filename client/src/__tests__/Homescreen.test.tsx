@@ -5,7 +5,7 @@ import '@testing-library/jest-dom';
 
 describe('Homescreen Component', () => {
 
-    test('renders the title, subtitle, and quiz button', () => {
+    test('renders the title, subtitle, info text, and quiz button', () => {
         render(<Homescreen />);
 
 
@@ -16,7 +16,8 @@ describe('Homescreen Component', () => {
         const subtitle = screen.getByText(/Finde den Studiengang, der zu dir passt!/i);
         expect(subtitle).toBeInTheDocument();
 
-        const infoText = screen.getByText(/ Das Quiz dauert etwa 15 Minuten. Es wird dir helfen, den Studiengang zu finden, der am besten zu dir passt!/i);
+
+        const infoText = screen.getByText(/Das Quiz dauert etwa 15 Minuten. Es wird dir helfen, den Studiengang zu finden, der am besten zu dir passt!/i);
         expect(infoText).toBeInTheDocument();
 
 
@@ -32,7 +33,6 @@ describe('Homescreen Component', () => {
 
 
         fireEvent.click(button);
-
 
     });
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from '@mui/material';
-import LogoMenu from '../components/LogoMenu';
+import LogoMenu from '../components/LogoMenu/LogoMenu';
 import Button from '../components/buttons/Button';
 import './Homescreen.css';
 
@@ -27,7 +27,7 @@ const Homescreen: React.FC = () => {
 
                 <div className="info-text">
                     <Typography variant="body1">
-                        Das Quiz dauert etwa 5 Minuten. Es wird dir helfen, den Studiengang zu finden, der am besten zu dir passt!
+                        Das Quiz dauert etwa 15 Minuten. Es wird dir helfen, den Studiengang zu finden, der am besten zu dir passt!
                     </Typography>
                 </div>
 
