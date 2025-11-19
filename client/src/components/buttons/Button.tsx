@@ -13,15 +13,15 @@ export default function Button({
       onClick={onClick}
       disabled={disabled}
       fullWidth={fullWidth}
-      sx={{
-        backgroundColor: "lightGrey",
-        color: "darkGrey",
+      sx={(theme) => ({
+        backgroundColor: theme.palette.grey[100],
+        color: theme.palette.grey[900],
         borderRadius: "20px",
         boxShadow: 3,
         ":hover": {
-          backgroundColor: "purple",
+          backgroundColor: theme.palette.primary.main,
         },
-      }}
+      })}
     >
       {label}
     </MUIButton>
