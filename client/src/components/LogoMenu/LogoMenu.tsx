@@ -48,8 +48,8 @@ const LogoMenu: React.FC = () => {
         </IconButton>
 
         <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
-          <MenuItem onClick={handleMenuClose}>Impressum</MenuItem>
           <MenuItem onClick={handleMenuClose}>Einloggen</MenuItem>
+          <MenuItem onClick={handleMenuClose}>Impressum</MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>

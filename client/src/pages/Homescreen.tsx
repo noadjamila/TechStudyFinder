@@ -27,7 +27,7 @@ const Homescreen: React.FC = () => {
         <div className="info-text">
           <Typography variant="body1">
             Das Quiz dauert etwa 15 Minuten. Es wird dir helfen, den Studiengang
-            zu finden, der am besten zu dir passt!
+            zu finden, der am besten zu dir passt.
           </Typography>
         </div>
 

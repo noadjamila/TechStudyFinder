@@ -21,7 +21,7 @@ describe("Homescreen Component", () => {
     expect(subtitle).toBeInTheDocument();
 
     const infoText = screen.getByText(
-      /Das Quiz dauert etwa 15 Minuten. Es wird dir helfen, den Studiengang zu finden, der am besten zu dir passt!/i,
+      /Das Quiz dauert etwa 15 Minuten. Es wird dir helfen, den Studiengang zu finden, der am besten zu dir passt./i,
     );
     expect(infoText).toBeInTheDocument();
 
