@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import QuizLayout, { QuizLayoutProps } from "../layouts/QuizLayout";
+import QuizLayout, { QuizLayoutProps } from "../QuizLayout";
 
 const DummyChild = () => <div>Test Content</div>;
 

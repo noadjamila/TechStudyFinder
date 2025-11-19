@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography } from "@mui/material";
-import LogoMenu from "../components/LogoMenu/LogoMenu";
+import LogoMenu from "../components/logo-menu/LogoMenu";
 import Button from "../components/buttons/Button";
 import "./Homescreen.css";
 import { useNavigate } from "react-router-dom";
