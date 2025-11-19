@@ -6,22 +6,23 @@ export default function Button({
   onClick,
   disabled = false,
   fullWidth = false,
+  color = "primary",
+  sx = {},
 }: ButtonProps) {
   return (
     <MUIButton
       variant="contained"
+      color={color}
       onClick={onClick}
       disabled={disabled}
       fullWidth={fullWidth}
-      sx={(theme) => ({
-        backgroundColor: theme.palette.grey[100],
-        color: theme.palette.grey[900],
+      sx={{
         borderRadius: "20px",
+        fontWeight: "bold",
+        textTransform: "none",
         boxShadow: 3,
-        ":hover": {
-          backgroundColor: theme.palette.primary.main,
-        },
-      })}
+        ...sx,
+      }}
     >
       {label}
     </MUIButton>

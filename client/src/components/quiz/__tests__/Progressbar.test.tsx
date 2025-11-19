@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import Progressbar from "../components/quiz/Progressbar";
+import Progressbar from "../Progressbar";
 
 describe("Progressbar", () => {
   test("renders the current und total progressindex correctly", () => {

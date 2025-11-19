@@ -11,7 +11,7 @@ import * as jestPlugin from "eslint-plugin-jest";
 
 export default defineConfig([
   {
-    ignores: ["**/jest.config.js", "**/webpack.config.js"],
+    ignores: ["**/jest.config.js", "**/webpack.config.js", "client/public/**"],
   },
   prettierConfig,
 
@@ -120,7 +120,7 @@ export default defineConfig([
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
       prettier: prettierPlugin,
-      jest: jestPlugin, // das ist das Plugin, das du installierst
+      jest: jestPlugin,
     } as any,
     settings: {
       react: {
