@@ -25,10 +25,13 @@ const LogoMenu: React.FC = () => {
   return (
     <AppBar
       position="static"
-      style={{ backgroundColor: "transparent", boxShadow: "none" }}
+      sx={{
+        backgroundColor: "transparent",
+        boxShadow: "none",
+      }}
     >
       <Toolbar
-        style={{
+        sx={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
@@ -43,6 +46,7 @@ const LogoMenu: React.FC = () => {
         <IconButton edge="end" onClick={handleMenuClick}>
           <MenuIcon />
         </IconButton>
+
         <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
           <MenuItem onClick={handleMenuClose}>Impressum</MenuItem>
           <MenuItem onClick={handleMenuClose}>Einloggen</MenuItem>
