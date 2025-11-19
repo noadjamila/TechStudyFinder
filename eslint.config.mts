@@ -131,7 +131,6 @@ export default defineConfig([
       ...jestPlugin.configs.recommended.rules,
       "no-undef": "off",
       "no-console": ["warn", { allow: ["warn", "error"] }],
-      "prettier/prettier": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
         { argsIgnorePattern: "^_" },
