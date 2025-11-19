@@ -12,7 +12,7 @@ export default defineConfig([
   prettierConfig,
 
   {
-    files: ["server/**/*.{js,mjs,ts,mts}"],
+      files: ["client/**/*.test.tsx", "client/**/__tests__/**/*.tsx"],
     extends: [js.configs.recommended],
 
     languageOptions: {
