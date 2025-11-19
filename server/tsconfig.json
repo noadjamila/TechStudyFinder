@@ -13,5 +13,5 @@
     "sourceMap": true
   },
   "include": ["./**/*.ts", "./**/*.mts"],
-  "exclude": ["node_modules", "client"]
+  "exclude": ["node_modules", "client", "**/*.test.ts"]
 }

@@ -1,37 +1,30 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import LogoMenu from '../LogoMenu/LogoMenu';
-import '@testing-library/jest-dom';
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import LogoMenu from "../LogoMenu/LogoMenu";
+import "@testing-library/jest-dom";
 
-describe('LogoMenu Component', () => {
+describe("LogoMenu Component", () => {
+  test("renders the Logo and Menu Icon", () => {
+    render(<LogoMenu />);
 
-    test('renders the Logo and Menu Icon', () => {
-        render(<LogoMenu />);
+    const logo = screen.getByAltText(/Logo/i);
+    expect(logo).toBeInTheDocument();
 
+    const menuIcon = screen.getByRole("button");
+    expect(menuIcon).toBeInTheDocument();
+  });
 
-        const logo = screen.getByAltText(/Logo/i);
-        expect(logo).toBeInTheDocument();
+  test("opens and closes the menu", () => {
+    render(<LogoMenu />);
 
+    const menuIcon = screen.getByRole("button");
+    fireEvent.click(menuIcon);
 
-        const menuIcon = screen.getByRole('button');
-        expect(menuIcon).toBeInTheDocument();
-    });
+    const menuItems = screen.getAllByRole("menuitem");
+    expect(menuItems.length).toBeGreaterThan(0);
 
-    test('opens and closes the menu', () => {
-        render(<LogoMenu />);
+    fireEvent.click(menuIcon);
 
-
-        const menuIcon = screen.getByRole('button');
-        fireEvent.click(menuIcon);
-
-
-        const menuItems = screen.getAllByRole('menuitem');
-        expect(menuItems.length).toBeGreaterThan(0);
-
-
-        fireEvent.click(menuIcon);
-
-
-        expect(menuItems.length).toBe(0);
-    });
+    expect(menuItems.length).toBe(0);
+  });
 });
