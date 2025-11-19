@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography } from '@mui/material';
 import LogoMenu from '../components/LogoMenu';
 import Button from '../components/Button';
-//import './Homescreen.css';
+import './Homescreen.css';
 
 const Homescreen: React.FC = () => {
     return (
@@ -10,7 +10,7 @@ const Homescreen: React.FC = () => {
             <LogoMenu />
 
 
-            <div className="card">
+            <div className="text-content">
                 {/* Main Content */}
                 <Typography variant="h4" className="title">
                     Tech Study Finder

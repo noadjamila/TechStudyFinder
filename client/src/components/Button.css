@@ -1,19 +1,7 @@
 .custom-button {
-    background-color: #644bbf; /* Gray background color */
-    color: #f7f7f7; /* Dark gray text color */
-    font-family: 'Poppins', sans-serif; /* Font style */
-    padding: 12px 30px; /* Padding */
-    font-size: 1.2rem; /* Schriftgröße */
-    border-radius: 25px; /* Abgerundete Ecken */
-    border: 1px solid #ddd; /* Light gray border */
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
-    cursor: pointer; /* Indicates the button is clickable */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adding shadow to the button */
-}
-
-.custom-button:hover {
-    background-color: #c1a9d9; /* Background color when hovering */
-    border-color: #c1a9d9; /* Change border color on hover to match the background */
-    color : black;
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* Darker and stronger shadow on hover */
+    padding: 12px 30px;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
 }
