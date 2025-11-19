@@ -8,11 +8,11 @@ export default function App() {
       <CssBaseline />
 
       <Box
-        sx={{
-          backgroundColor: "lightGrey",
+        sx={(theme) => ({
+          backgroundColor: theme.palette.grey[100],
           minHeight: "100vh",
           p: 2,
-        }}
+        })}
       >
         <h1>Welcome to my Project!</h1>
         <Button />
