@@ -25,6 +25,7 @@ describe("LogoMenu Component", () => {
 
     fireEvent.click(menuIcon);
 
-    expect(menuItems.length).toBe(0);
+    // Re-query for menu items after closing the menu
+    expect(screen.queryAllByRole("menuitem").length).toBe(0);
   });
 });
