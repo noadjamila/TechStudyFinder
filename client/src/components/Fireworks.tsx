@@ -28,7 +28,7 @@
  */
 import React, { useEffect, useState } from "react";
 import Confetti from "react-confetti";
-import styles from "../pages/FireworksPage.module.css";
+import styles from "./Fireworks.module.css";
 
 interface Props {
     onContinue: () => void;
