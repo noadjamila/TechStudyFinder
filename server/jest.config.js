@@ -6,6 +6,7 @@ const config = {
   testMatch: ["**/__tests__/**/*.test.ts", "**/?(*.)+(spec|test).ts"],
   transformIgnorePatterns: ["/node_modules/"],
   moduleFileExtensions: ["ts", "js", "json", "node"],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   modulePathIgnorePatterns: ["<rootDir>/dist/", "<rootDir>/node_modules/"],
   testPathIgnorePatterns: ["/node_modules/", "/dist/"],
   collectCoverageFrom: [

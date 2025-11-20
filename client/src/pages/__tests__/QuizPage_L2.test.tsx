@@ -1,4 +1,4 @@
-import { initialScores } from "../types/RiasecTypes";
+import { initialScores } from "../../types/RiasecTypes";
 
 jest.useFakeTimers();
 

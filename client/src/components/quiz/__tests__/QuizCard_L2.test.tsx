@@ -5,7 +5,7 @@ import {
   waitFor,
   act,
 } from "@testing-library/react";
-import QuizCard_L2 from "../components/quiz/QuizCard_L2";
+import QuizCard_L2 from "../QuizCard_L2";
 
 jest.useFakeTimers();
 

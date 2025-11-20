@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import QuizCard from "../components/quiz/QuizCard_L2";
 import QuizLayout from "../layouts/QuizLayout";
 import { RiasecType, initialScores } from "../types/RiasecTypes";
-import ErrorScreen from "../components/ErrorScreen";
+import ErrorScreen from "../components/error-screen/ErrorScreen";
 
 /**
  * `QuizPage_L2` is the page-component for the second level of the quiz.
