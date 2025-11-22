@@ -144,6 +144,15 @@ export default defineConfig([
     },
   },
 
+  // d.ts files
+  {
+    files: ["**/*.d.ts"],
+    rules: {
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "off"
+    }
+  },
+
   // Prettier always has to be last
   prettier,
 ]);
