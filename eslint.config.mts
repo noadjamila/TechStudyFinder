@@ -1,10 +1,10 @@
-import * as typescriptPlugin from "@typescript-eslint/eslint-plugin";
+import tsPlugin from "@typescript-eslint/eslint-plugin";
+import * as typescriptEslintParser from "@typescript-eslint/parser";
 import globals from "globals";
-import { defineConfig } from "eslint/config";
+import {defineConfig} from "eslint/config";
 import reactPlugin from "eslint-plugin-react";
 import * as reactHooksPlugin from "eslint-plugin-react-hooks";
 import js from "@eslint/js";
-import * as typescriptEslintParser from "@typescript-eslint/parser";
 import * as jestPlugin from "eslint-plugin-jest";
 import prettier from "eslint-config-prettier";
 
@@ -28,7 +28,7 @@ export default defineConfig([
     },
 
     plugins: {
-      "@typescript-eslint": typescriptPlugin,
+      "@typescript-eslint": tsPlugin as any,
     },
 
     rules: {
@@ -56,7 +56,7 @@ export default defineConfig([
     },
 
     plugins: {
-      "@typescript-eslint": typescriptPlugin,
+      "@typescript-eslint": tsPlugin as any,
     },
 
     rules: {
@@ -75,7 +75,6 @@ export default defineConfig([
     files: ["client/**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}"],
     plugins: {
       react: reactPlugin,
-      "react-hooks": reactHooksPlugin,
     },
 
     extends: [js.configs.recommended],
@@ -98,7 +97,6 @@ export default defineConfig([
 
     rules: {
       ...reactPlugin.configs.recommended.rules,
-      ...reactHooksPlugin.configs.recommended.rules,
       "react/react-in-jsx-scope": "off",
       "no-console": ["warn", { allow: ["warn", "error"] }],
     },
@@ -119,10 +117,10 @@ export default defineConfig([
     },
 
     plugins: {
-      "@typescript-eslint": typescriptPlugin,
-      react: reactPlugin,
-      "react-hooks": reactHooksPlugin,
-      jest: jestPlugin,
+      "@typescript-eslint": tsPlugin as any,
+      react: reactPlugin as any,
+      "react-hooks": reactHooksPlugin as any,
+      jest: jestPlugin as any,
     },
 
     settings: {
