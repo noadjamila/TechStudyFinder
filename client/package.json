@@ -2,6 +2,9 @@
   "name": "study_finder",
   "version": "0.1.0",
   "private": true,
+  "overrides": {
+    "glob": "^11.0.4"
+  },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
@@ -25,7 +28,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --passWithNoTests",
+    "test": "react-scripts test --passWithNoTests --watchAll=false",
     "eject": "react-scripts eject"
   },
   "proxy": "http://localhost:5001",

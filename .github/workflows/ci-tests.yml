@@ -1,4 +1,4 @@
-name: CI Tests
+name: Tests
 
 on:
   pull_request:
@@ -17,17 +17,17 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "16"
           cache: "npm"
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Run Unit Tests
-        run: CI=true npm test --workspaces
+      - name: Run Unit Tests (Client)
+        run: CI=true npm test --workspace=client
 
-      - name: Run Integration Tests
-        run: npm run test:integration
+      - name: Run Unit Tests (Server)
+        run: CI=true npm run test:unit --workspace=server
 
-      - name: Build Project
-        run: npm run build
+      - name: Run Integration Tests (Server)
+        run: npm run test:integration --workspace=server

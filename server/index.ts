@@ -8,14 +8,42 @@ import cors from "cors";
 import "dotenv/config";
 import path from "path";
 import testRouter from "./src/routes/health.route";
+import deployRouter from "./src/routes/deploy.route";
 import quizRoutes from "./src/routes/quiz.route";
 import { pool } from "./db";
+import "express-async-errors";
+
+const isTesting =
+  process.env.NODE_ENV === "test" || !!process.env.JEST_WORKER_ID;
+
+/*
+ * Check for the presence of the GITHUB_WEBHOOK_SECRET environment variable
+ * and handle its absence based on the environment.
+ */
+if (!process.env.GITHUB_WEBHOOK_SECRET) {
+  if (process.env.NODE_ENV === "production") {
+    console.error(
+      "FATAL: GITHUB_WEBHOOK_SECRET environment variable is not set",
+    );
+    process.exit(1);
+  } else if (!isTesting) {
+    console.warn(
+      "WARNING: GITHUB_WEBHOOK_SECRET environment variable is not set. Webhook verification will be disabled.",
+    );
+  }
+}
 
 const app = express();
+const PORT = process.env.PORT || 5001;
 
+let server: import("http").Server | null = null;
+
+// Standard JSON parsing for most routes
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
+// Routers
+app.use("/api", testRouter);
+app.use("/deploy", deployRouter);
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -23,12 +51,9 @@ app.use(
     credentials: true,
   }),
 );
-
-// Test route
-app.use("/api", testRouter);
-
-// Quiz routes
 app.use("/api/quiz", quizRoutes);
+
+app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
 // Test api for database call
 app.get("/api/test-db", async (_req, res) => {
@@ -45,7 +70,7 @@ app.get("/api/test-db", async (_req, res) => {
 
 // Fallback route for SPA
 app.get("*", (req, res, next) => {
-  if (req.url.startsWith("/api/")) {
+  if (req.url.startsWith("/api/") || req.url.startsWith("/deploy")) {
     return next();
   }
 
@@ -54,7 +79,7 @@ app.get("*", (req, res, next) => {
 
 // 404 Handler
 app.use((_req, res) => {
-  res.status(404).json({ error: "Route nicht gefunden" });
+  res.status(404).json({ error: "Route not found" });
 });
 
 // Error Handler
@@ -62,17 +87,17 @@ app.use(((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error("Server error:", err);
   const statusCode = (err as any).status || 500;
   res.status(statusCode).json({
-    error: "Interner Server-Fehler",
+    error: "Internal server error",
     message: err.message,
   });
 }) as ErrorRequestHandler);
 
-const PORT = process.env.PORT || 5001;
-
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Backend running on http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  server = app.listen(PORT, () => {
+    // eslint-disable-next-line no-console
+    console.log(`Backend running on http://localhost:${PORT}`);
+  });
+}
 
 // Error handling for the server
 process.on("uncaughtException", (error) => {
@@ -83,3 +108,6 @@ process.on("uncaughtException", (error) => {
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
 });
+
+export default app;
+export { server, pool };

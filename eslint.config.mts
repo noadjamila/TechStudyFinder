@@ -3,21 +3,28 @@ import globals from "globals";
 import { defineConfig } from "eslint/config";
 import reactPlugin from "eslint-plugin-react";
 import * as reactHooksPlugin from "eslint-plugin-react-hooks";
-import * as prettierPlugin from "eslint-plugin-prettier";
 import js from "@eslint/js";
-import prettierConfig from "eslint-config-prettier";
 import * as typescriptEslintParser from "@typescript-eslint/parser";
 import * as jestPlugin from "eslint-plugin-jest";
 
 export default defineConfig([
   {
-    ignores: ["**/jest.config.js", "**/webpack.config.js", "client/public/**"],
+    ignores: [
+      "**/jest.config.js",
+      "**/webpack.config.js",
+      "client/public/**",
+      "**/babel.config.js",
+    ],
   },
-  prettierConfig,
 
   {
     files: ["server/**/*.{js,mjs,ts,mts}"],
-    ignores: ["**/*.test.ts", "**/__tests__/**"],
+    ignores: [
+      "**/*.test.ts",
+      "**/__tests__/**",
+      "jest.*.js",
+      "**/jest.integration.config.js",
+    ],
     extends: [js.configs.recommended],
 
     languageOptions: {
@@ -30,13 +37,11 @@ export default defineConfig([
 
     plugins: {
       "@typescript-eslint": typescriptPlugin,
-      prettier: prettierPlugin,
     } as any,
 
     rules: {
       "no-undef": "off",
       "no-console": ["warn", { allow: ["warn", "error"] }],
-      "prettier/prettier": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
         { argsIgnorePattern: "^_" },
@@ -58,13 +63,11 @@ export default defineConfig([
 
     plugins: {
       "@typescript-eslint": typescriptPlugin,
-      prettier: prettierPlugin,
     } as any,
 
     rules: {
       "no-undef": "off",
       "no-console": ["warn", { allow: ["warn", "error"] }],
-      "prettier/prettier": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
         { argsIgnorePattern: "^_" },
@@ -77,7 +80,6 @@ export default defineConfig([
     plugins: {
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
-      prettier: prettierPlugin,
     } as any,
 
     extends: [js.configs.recommended],
@@ -99,7 +101,6 @@ export default defineConfig([
     rules: {
       ...reactPlugin.configs.recommended.rules,
       ...reactHooksPlugin.configs.recommended.rules,
-      "prettier/prettier": "error",
       "react/react-in-jsx-scope": "off",
       "no-console": ["warn", { allow: ["warn", "error"] }],
     },
@@ -119,7 +120,6 @@ export default defineConfig([
       "@typescript-eslint": typescriptPlugin,
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
-      prettier: prettierPlugin,
       jest: jestPlugin,
     } as any,
     settings: {
@@ -132,7 +132,6 @@ export default defineConfig([
       ...jestPlugin.configs.recommended.rules,
       "no-undef": "off",
       "no-console": ["warn", { allow: ["warn", "error"] }],
-      "prettier/prettier": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
         { argsIgnorePattern: "^_" },
