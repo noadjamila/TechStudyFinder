@@ -15,10 +15,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "typeRoots": ["./node_modules/@types", "../node_modules/@types"],
-    "types": [
-      "vite/client",
-      "vitest/globals"
-    ]
+    "types": ["vite/client", "vitest/globals"]
   },
   "include": [
     "./src/**/*",
