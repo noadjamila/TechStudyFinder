@@ -10,7 +10,7 @@ import prettier from "eslint-config-prettier";
 
 export default defineConfig([
   {
-    ignores: ["**/jest.config.js", "**/webpack.config.js", "client/public/**"],
+    ignores: ["**/vite.config.ts", "client/public/**"],
   },
 
   // Server
