@@ -10,7 +10,7 @@ import prettier from "eslint-config-prettier";
 
 export default defineConfig([
   {
-    ignores: ["**/vite.config.ts", "client/public/**"],
+    ignores: ["client/public/**"],
   },
 
   // Server
