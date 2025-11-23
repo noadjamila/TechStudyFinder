@@ -1,14 +1,6 @@
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  act,
-} from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import QuizCard_L2 from "../QuizCard_L2";
 import { vi } from "vitest";
-
-vi.useFakeTimers();
 
 describe("QuizCard_L2", () => {
   const mockOnSelect = vi.fn();
@@ -19,7 +11,7 @@ describe("QuizCard_L2", () => {
   });
 
   afterEach(() => {
-    vi.runOnlyPendingTimers();
+    vi.clearAllTimers();
     vi.useRealTimers();
   });
 
@@ -45,8 +37,6 @@ describe("QuizCard_L2", () => {
       vi.advanceTimersByTime(800);
     });
 
-    await waitFor(() => {
-      expect(mockOnSelect).toHaveBeenCalledWith("yes");
-    });
+    expect(mockOnSelect).toHaveBeenCalledWith("yes");
   });
 });
