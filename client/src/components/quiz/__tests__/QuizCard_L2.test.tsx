@@ -11,7 +11,7 @@ import { vi } from "vitest";
 vi.useFakeTimers();
 
 describe("QuizCard_L2", () => {
-  const mockOnSelect = jest.fn();
+  const mockOnSelect = vi.fn();
 
   beforeEach(() => {
     vi.useFakeTimers();
@@ -19,8 +19,8 @@ describe("QuizCard_L2", () => {
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
-    jest.useRealTimers();
+    vi.runOnlyPendingTimers();
+    vi.useRealTimers();
   });
 
   test("shows the submitted question", () => {
@@ -42,7 +42,7 @@ describe("QuizCard_L2", () => {
     fireEvent.click(yesOption);
 
     act(() => {
-      jest.advanceTimersByTime(800);
+      vi.advanceTimersByTime(800);
     });
 
     await waitFor(() => {
