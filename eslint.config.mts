@@ -1,11 +1,10 @@
 import tsPlugin from "@typescript-eslint/eslint-plugin";
-import * as typescriptEslintParser from "@typescript-eslint/parser";
+import * as tsParser from "@typescript-eslint/parser";
 import globals from "globals";
-import { defineConfig } from "eslint/config";
+import {defineConfig} from "eslint/config";
 import reactPlugin from "eslint-plugin-react";
-import * as reactHooksPlugin from "eslint-plugin-react-hooks";
 import js from "@eslint/js";
-import * as jestPlugin from "eslint-plugin-jest";
+import jestPlugin from "eslint-plugin-jest";
 import prettier from "eslint-config-prettier";
 
 export default defineConfig([
@@ -20,7 +19,7 @@ export default defineConfig([
     extends: [js.configs.recommended],
 
     languageOptions: {
-      parser: typescriptEslintParser,
+      parser: tsParser,
       globals: { ...globals.node, ...globals.es2021 },
       parserOptions: {
         project: "server/tsconfig.json",
@@ -48,7 +47,7 @@ export default defineConfig([
     extends: [js.configs.recommended],
 
     languageOptions: {
-      parser: typescriptEslintParser,
+      parser: tsParser,
       globals: { ...globals.node, ...globals.es2021, ...globals.jest },
       parserOptions: {
         project: "server/tsconfig.test.json",
@@ -80,7 +79,7 @@ export default defineConfig([
     extends: [js.configs.recommended],
 
     languageOptions: {
-      parser: typescriptEslintParser,
+      parser: tsParser,
       globals: { ...globals.browser },
       parserOptions: {
         ecmaFeatures: { jsx: true },
@@ -108,7 +107,7 @@ export default defineConfig([
     extends: [js.configs.recommended],
 
     languageOptions: {
-      parser: typescriptEslintParser,
+      parser: tsParser,
       globals: { ...globals.browser, ...globals.node, ...globals.jest },
       parserOptions: {
         ecmaFeatures: { jsx: true },
@@ -119,7 +118,6 @@ export default defineConfig([
     plugins: {
       "@typescript-eslint": tsPlugin as any,
       react: reactPlugin as any,
-      "react-hooks": reactHooksPlugin as any,
       jest: jestPlugin as any,
     },
 
