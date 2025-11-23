@@ -7,6 +7,8 @@
     "server"
   ],
   "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write .",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "npm start --workspace=server",
     "dev:client": "npm run dev --workspace=client",

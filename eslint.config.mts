@@ -1,7 +1,7 @@
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import * as tsParser from "@typescript-eslint/parser";
 import globals from "globals";
-import {defineConfig} from "eslint/config";
+import { defineConfig } from "eslint/config";
 import reactPlugin from "eslint-plugin-react";
 import js from "@eslint/js";
 import jestPlugin from "eslint-plugin-jest";
