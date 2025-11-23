@@ -6,14 +6,15 @@ import {
   act,
 } from "@testing-library/react";
 import QuizCard_L2 from "../QuizCard_L2";
+import { vi } from "vitest";
 
-jest.useFakeTimers();
+vi.useFakeTimers();
 
 describe("QuizCard_L2", () => {
   const mockOnSelect = jest.fn();
 
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     mockOnSelect.mockClear();
   });
 
