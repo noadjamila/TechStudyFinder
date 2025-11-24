@@ -25,7 +25,7 @@ export const handleWebhook = async (
 
     const event = req.headers["x-github-event"];
     if (event !== "push") {
-      return res.status(200).json({ message: "Event ignored" });
+      return res.status(200).json({ message: "No deployment needed" });
     }
 
     const secret = process.env.GITHUB_WEBHOOK_SECRET;
