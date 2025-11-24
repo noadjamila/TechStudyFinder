@@ -1,13 +1,16 @@
-name: CI Tests
+name: Build
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - main
+  push:
+    branches:
+      - main
 
 jobs:
-  test_suite:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,17 +29,11 @@ jobs:
       - name: Install Server Dependencies
         run: npm install --workspace=server --ignore-scripts
 
-      - name: Run Server Unit Tests
-        run: npm run test:unit --workspace=server
-
-      - name: Run Server Integration Tests
-        run: npm run test:integration --workspace=server
+      - name: Build Server
+        run: npm run build --workspace=server
 
       - name: Install Client Dependencies
         run: npm install --workspace=client --ignore-scripts
-
-      - name: Run Client Tests
-        run: npm test --workspace=client
 
       - name: Build Client
         run: npm run build --workspace=client

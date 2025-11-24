@@ -9,6 +9,14 @@ yarn-error.log*
 yarn.lock
 
 # ======================
+# Testing
+# ======================
+coverage/
+server/coverage/
+client/coverage/
+*.lcov
+
+# ======================
 # Frontend / React
 # ======================
 client/node_modules/
@@ -44,3 +52,4 @@ Thumbs.db       # Windows
 *.sln
 /.idea/
 /server/dist/
+/client/dist/

@@ -10,12 +10,18 @@
     "esModuleInterop": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "typeRoots": ["./node_modules/@types"]
+    "typeRoots": ["./node_modules/@types", "../node_modules/@types"],
+    "types": ["vite/client", "vitest/globals"]
   },
-  "include": ["./src/**/*"],
+  "include": [
+    "./src/**/*",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "setupTests.ts"
+  ],
   "exclude": ["node_modules", "server"]
 }

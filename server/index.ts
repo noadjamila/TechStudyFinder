@@ -4,9 +4,11 @@ import express, {
   NextFunction,
   ErrorRequestHandler,
 } from "express";
+import cors from "cors";
 import "dotenv/config";
 import path from "path";
 import testRouter from "./src/routes/health.route";
+import quizRoutes from "./src/routes/quiz.route";
 import { pool } from "./db";
 
 const app = express();
@@ -14,8 +16,19 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  }),
+);
+
 // Test route
 app.use("/api", testRouter);
+
+// Quiz routes
+app.use("/api/quiz", quizRoutes);
 
 // Test api for database call
 app.get("/api/test-db", async (_req, res) => {
