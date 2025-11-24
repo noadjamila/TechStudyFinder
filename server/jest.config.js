@@ -1,6 +1,5 @@
-import type { Config } from "@jest/types";
-
-const config: Config.InitialOptions = {
+/** @type {import('ts-jest').JestConfigWithTsJest} */
+module.exports = {
   rootDir: ".",
   preset: "ts-jest",
   testEnvironment: "node",
@@ -21,5 +20,3 @@ const config: Config.InitialOptions = {
   coverageDirectory: "coverage",
   verbose: true,
 };
-
-export default config;

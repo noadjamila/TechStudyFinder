@@ -1,6 +1,7 @@
 import { initialScores } from "../../types/RiasecTypes";
+import { vi } from "vitest";
 
-jest.useFakeTimers();
+vi.useFakeTimers();
 
 describe("QuizPage_L2 score calculation", () => {
   test("increments score on 'yes'", async () => {
