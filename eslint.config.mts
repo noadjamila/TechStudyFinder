@@ -1,34 +1,25 @@
-import * as typescriptPlugin from "@typescript-eslint/eslint-plugin";
+import tsPlugin from "@typescript-eslint/eslint-plugin";
+import * as tsParser from "@typescript-eslint/parser";
 import globals from "globals";
 import { defineConfig } from "eslint/config";
 import reactPlugin from "eslint-plugin-react";
-import * as reactHooksPlugin from "eslint-plugin-react-hooks";
 import js from "@eslint/js";
-import * as typescriptEslintParser from "@typescript-eslint/parser";
-import * as jestPlugin from "eslint-plugin-jest";
+import jestPlugin from "eslint-plugin-jest";
+import prettier from "eslint-config-prettier";
 
 export default defineConfig([
   {
-    ignores: [
-      "**/jest.config.js",
-      "**/webpack.config.js",
-      "client/public/**",
-      "**/babel.config.js",
-    ],
+    ignores: ["client/public/**"],
   },
 
+  // Server
   {
     files: ["server/**/*.{js,mjs,ts,mts}"],
-    ignores: [
-      "**/*.test.ts",
-      "**/__tests__/**",
-      "jest.*.js",
-      "**/jest.integration.config.js",
-    ],
+    ignores: ["**/*.test.ts", "**/__tests__/**", "server/jest.config.js"],
     extends: [js.configs.recommended],
 
     languageOptions: {
-      parser: typescriptEslintParser,
+      parser: tsParser,
       globals: { ...globals.node, ...globals.es2021 },
       parserOptions: {
         project: "server/tsconfig.json",
@@ -36,8 +27,8 @@ export default defineConfig([
     },
 
     plugins: {
-      "@typescript-eslint": typescriptPlugin,
-    } as any,
+      "@typescript-eslint": tsPlugin as any,
+    },
 
     rules: {
       "no-undef": "off",
@@ -49,12 +40,14 @@ export default defineConfig([
       "no-unused-vars": "off",
     },
   },
+
+  // Server tests
   {
     files: ["server/**/*.test.ts", "server/**/__tests__/**/*.ts"],
     extends: [js.configs.recommended],
 
     languageOptions: {
-      parser: typescriptEslintParser,
+      parser: tsParser,
       globals: { ...globals.node, ...globals.es2021, ...globals.jest },
       parserOptions: {
         project: "server/tsconfig.test.json",
@@ -62,8 +55,8 @@ export default defineConfig([
     },
 
     plugins: {
-      "@typescript-eslint": typescriptPlugin,
-    } as any,
+      "@typescript-eslint": tsPlugin as any,
+    },
 
     rules: {
       "no-undef": "off",
@@ -75,59 +68,66 @@ export default defineConfig([
       "no-unused-vars": "off",
     },
   },
+
+  // Client
   {
     files: ["client/**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}"],
     plugins: {
       react: reactPlugin,
-      "react-hooks": reactHooksPlugin,
-    } as any,
+    },
 
     extends: [js.configs.recommended],
 
     languageOptions: {
-      parser: typescriptEslintParser,
+      parser: tsParser,
       globals: { ...globals.browser },
       parserOptions: {
         ecmaFeatures: { jsx: true },
         project: "client/tsconfig.json",
       },
     },
+
     settings: {
       react: {
         version: "detect",
         runtime: "automatic",
       },
     },
+
     rules: {
       ...reactPlugin.configs.recommended.rules,
-      ...reactHooksPlugin.configs.recommended.rules,
       "react/react-in-jsx-scope": "off",
       "no-console": ["warn", { allow: ["warn", "error"] }],
     },
   },
+
+  // Client tests
   {
     files: ["client/**/*.test.tsx", "client/**/__tests__/**/*.tsx"],
     extends: [js.configs.recommended],
+
     languageOptions: {
-      parser: typescriptEslintParser,
+      parser: tsParser,
       globals: { ...globals.browser, ...globals.node, ...globals.jest },
       parserOptions: {
         ecmaFeatures: { jsx: true },
         project: "client/tsconfig.json",
       },
     },
+
     plugins: {
-      "@typescript-eslint": typescriptPlugin,
-      react: reactPlugin,
-      "react-hooks": reactHooksPlugin,
-      jest: jestPlugin,
-    } as any,
+      "@typescript-eslint": tsPlugin as any,
+      react: reactPlugin as any,
+      jest: jestPlugin as any,
+    },
+
     settings: {
       react: {
         version: "detect",
         runtime: "automatic",
       },
     },
+
     rules: {
       ...jestPlugin.configs.recommended.rules,
       "no-undef": "off",
@@ -139,4 +139,16 @@ export default defineConfig([
       "no-unused-vars": "off",
     },
   },
+
+  // d.ts files
+  {
+    files: ["**/*.d.ts"],
+    rules: {
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
+
+  // Prettier always has to be last
+  prettier,
 ]);

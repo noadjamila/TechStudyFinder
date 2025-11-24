@@ -20,11 +20,20 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "16"
+          node-version: "20"
           cache: "npm"
 
-      - name: Install Dependencies
-        run: npm ci
+      - name: Install Root Dependencies
+        run: npm install --ignore-scripts
 
-      - name: Build Project
-        run: npm run build
+      - name: Install Server Dependencies
+        run: npm install --workspace=server --ignore-scripts
+
+      - name: Build Server
+        run: npm run build --workspace=server
+
+      - name: Install Client Dependencies
+        run: npm install --workspace=client --ignore-scripts
+
+      - name: Build Client
+        run: npm run build --workspace=client
