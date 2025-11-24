@@ -15,13 +15,14 @@ echo "--- Start deployment $(date) ---"
 #  exit 1
 #}
 
+cd "$DEPLOY_DIR"
+
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [ "$CURRENT_BRANCH" != "main" ]; then
   echo "Error: Not on main branch. Current branch: $CURRENT_BRANCH"
   exit 1
 fi
 
-cd "$DEPLOY_DIR"
 
 echo "Starting git pull..."
 git pull origin main
