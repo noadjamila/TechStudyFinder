@@ -4,8 +4,9 @@ import { RawBodyRequest } from "../../types/deployment.types";
 import { Response } from "express";
 import * as rawBodyMiddleware from "../rawBody.utils";
 import * as deploymentUtils from "../deployment.utils";
-import { handleDeployWebhook, verifySignature } from "../deployment.service";
+import { verifySignature } from "../deployment.service";
 import * as deploymentService from "../deployment.service";
+import { handleWebhook } from "../../controllers/deploy.controller";
 
 jest.mock("../rawBody.utils");
 jest.mock("../deployment.utils");
@@ -128,8 +129,9 @@ describe("handleDeployWebhook", () => {
   it("should return status 200 and perform deployment for valid push to main", async () => {
     const req = createMockRequest(MOCK_HASH);
     const res = mockRes();
+    const next = jest.fn();
 
-    await handleDeployWebhook(req, res);
+    await handleWebhook(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ message: "Deployment finished" });
@@ -143,10 +145,11 @@ describe("handleDeployWebhook", () => {
 
     const req = createMockRequest(undefined);
     const res = mockRes();
+    const next = jest.fn();
 
     (req as { rawBody: Buffer | undefined }).rawBody = undefined;
 
-    await handleDeployWebhook(req, res);
+    await handleWebhook(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ error: "Missing signature" });
@@ -166,8 +169,9 @@ describe("handleDeployWebhook", () => {
       "sha256=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
     const req = createMockRequest(invalidSignature);
     const res = mockRes();
+    const next = jest.fn();
 
-    await handleDeployWebhook(req, res);
+    await handleWebhook(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith({ error: "Unauthorized" });
@@ -183,8 +187,9 @@ describe("handleDeployWebhook", () => {
       "pull_request",
     );
     const res = mockRes();
+    const next = jest.fn();
 
-    await handleDeployWebhook(req, res);
+    await handleWebhook(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ message: "No deployment needed" });
@@ -198,8 +203,9 @@ describe("handleDeployWebhook", () => {
       "push",
     );
     const res = mockRes();
+    const next = jest.fn();
 
-    await handleDeployWebhook(req, res);
+    await handleWebhook(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ message: "No deployment needed" });
