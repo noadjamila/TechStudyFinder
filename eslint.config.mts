@@ -15,7 +15,7 @@ export default defineConfig([
   // Server
   {
     files: ["server/**/*.{js,mjs,ts,mts}"],
-    ignores: ["**/*.test.ts", "**/__tests__/**", "server/jest.config.js"],
+    ignores: ["**/*.test.ts", "**/__tests__/**", "server/jest.config.js", "server/babel.config.js"],
     extends: [js.configs.recommended],
 
     languageOptions: {
