@@ -9,7 +9,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:unit": "jest --config jest.config.js",
-    "test:integration": "jest --config jest.integration.config.ts --passWithNoTests",
+    "test:integration": "jest --config jest.integration.config.js --passWithNoTests",
     "start": "npx ts-node index.ts",
     "dev": "nodemon index.ts",
     "build": "tsc",
