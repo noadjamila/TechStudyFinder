@@ -7,6 +7,8 @@ import js from "@eslint/js";
 import jestPlugin from "eslint-plugin-jest";
 import prettier from "eslint-config-prettier";
 
+
+
 export default defineConfig([
   {
     ignores: ["client/public/**"],
@@ -27,17 +29,23 @@ export default defineConfig([
     },
 
     plugins: {
+        react: reactPlugin,
       "@typescript-eslint": tsPlugin as any,
     },
 
     rules: {
+        ...reactPlugin.configs.recommended.rules,
+        "react/react-in-jsx-scope": "off",
       "no-undef": "off",
       "no-console": ["warn", { allow: ["warn", "error"] }],
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        { argsIgnorePattern: "^_" },
-      ],
       "no-unused-vars": "off",
+
+        "@typescript-eslint/no-unused-vars": [
+            "error",
+            { argsIgnorePattern: "^_",
+                varsIgnorePattern: "^_"
+            },
+        ],
     },
   },
 
@@ -72,9 +80,11 @@ export default defineConfig([
   // Client
   {
     files: ["client/**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}"],
-    plugins: {
-      react: reactPlugin,
-    },
+
+      plugins: {
+          react: reactPlugin,
+          "@typescript-eslint": tsPlugin as any,
+      },
 
     extends: [js.configs.recommended],
 
@@ -98,6 +108,16 @@ export default defineConfig([
       ...reactPlugin.configs.recommended.rules,
       "react/react-in-jsx-scope": "off",
       "no-console": ["warn", { allow: ["warn", "error"] }],
+
+        "no-unused-vars": "off",
+
+        "@typescript-eslint/no-unused-vars": [
+            "error",
+            {
+                argsIgnorePattern: "^_",
+                varsIgnorePattern: "^_",
+            },
+        ],
     },
   },
 
