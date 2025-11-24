@@ -1,8 +1,5 @@
 import * as crypto from "crypto";
 import { Buffer } from "buffer";
-import { Response } from "express";
-import { runDeploymentScript } from "./deployment.utils";
-import { RawBodyRequest } from "../types/deployment.types";
 
 /**
  * Verifies the GitHub webhook signature using HMAC SHA-256.
@@ -67,55 +64,5 @@ export const verifySignature = (
   } catch (err) {
     console.error("[verifySignature] Error comparing signatures:", err);
     return false;
-  }
-};
-
-export const handleDeployWebhook = async (
-  req: RawBodyRequest,
-  res: Response,
-) => {
-  const signature = req.headers["x-hub-signature-256"] as string | undefined;
-  const githubEvent = req.headers["x-github-event"];
-
-  if (!signature) {
-    return res.status(400).json({ error: "Missing signature" });
-  }
-
-  if (!req.rawBody) {
-    return res.status(400).json({ error: "Missing raw body for verification" });
-  }
-
-  const secret = process.env.GITHUB_WEBHOOK_SECRET;
-  if (!secret) {
-    console.error("[handleDeployWebhook] Missing GITHUB_WEBHOOK_SECRET");
-    return res.status(500).json({ error: "Server misconfiguration" });
-  }
-
-  if (!verifySignature(secret, req.rawBody, signature)) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
-  if (
-    !req.body ||
-    typeof req.body !== "object" ||
-    typeof req.body.ref !== "string"
-  ) {
-    return res
-      .status(400)
-      .json({ error: "Malformed payload: missing or invalid 'ref'" });
-  }
-
-  const branch = req.body.ref;
-
-  if (githubEvent !== "push" || branch !== "refs/heads/main") {
-    return res.status(200).json({ message: "No deployment needed" });
-  }
-
-  try {
-    await runDeploymentScript();
-    return res.status(200).json({ message: "Deployment finished" });
-  } catch (err) {
-    console.error("Deployment script failed:", err);
-    return res.status(500).json({ error: "Deployment failed" });
   }
 };
