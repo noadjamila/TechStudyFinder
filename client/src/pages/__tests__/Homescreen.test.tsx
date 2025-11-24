@@ -1,8 +1,13 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter, useLocation } from "react-router-dom";
 import Homescreen from "../Homescreen";
+import { fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
+
+const LocationDisplay = () => {
+  const location = useLocation();
+  return <div data-testid="location">{location.pathname}</div>;
+};
 
 describe("Homescreen Component", () => {
   it("renders the title, subtitle, info text, and quiz button", () => {
@@ -12,32 +17,27 @@ describe("Homescreen Component", () => {
       </MemoryRouter>,
     );
 
-    const title = screen.getByText(/Tech Study Finder/i);
-    expect(title).toBeInTheDocument();
-
-    const subtitle = screen.getByText(
-      /Finde den Studiengang, der zu dir passt!/i,
-    );
-    expect(subtitle).toBeInTheDocument();
-
-    const infoText = screen.getByText(
-      /Das Quiz dauert etwa 15 Minuten. Es wird dir helfen, den Studiengang zu finden, der am besten zu dir passt./i,
-    );
-    expect(infoText).toBeInTheDocument();
-
-    const button = screen.getByText(/Quiz Starten/i);
-    expect(button).toBeInTheDocument();
+    expect(screen.getByText(/Tech Study Finder/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Finde den Studiengang, der zu dir passt!/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Das Quiz dauert etwa 15 Minuten/i),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/Quiz starten/i)).toBeInTheDocument();
   });
 
-  it("button click triggers appropriate action", () => {
+  it("navigates to /quiz when clicking the start button", () => {
     render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={["/"]}>
         <Homescreen />
+        <LocationDisplay />
       </MemoryRouter>,
     );
 
-    const button = screen.getByText(/Quiz Starten/i);
-
+    const button = screen.getByText(/Quiz starten/i);
     fireEvent.click(button);
+
+    expect(screen.getByTestId("location")).toHaveTextContent("/quiz");
   });
 });
