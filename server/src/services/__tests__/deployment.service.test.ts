@@ -152,7 +152,9 @@ describe("handleDeployWebhook", () => {
     await handleWebhook(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "Missing signature" });
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Missing raw body for verification",
+    });
     expect(mockRunDeploymentScript).not.toHaveBeenCalled();
 
     consoleWarnSpy.mockRestore();
