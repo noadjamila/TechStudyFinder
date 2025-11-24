@@ -38,9 +38,6 @@ const PORT = process.env.PORT || 5001;
 
 let server: import("http").Server | null = null;
 
-// Standard JSON parsing for most routes
-app.use(express.json());
-
 // Routers
 app.use("/api", testRouter);
 app.use("/deploy", deployRouter);
@@ -53,6 +50,10 @@ app.use(
 );
 app.use("/api/quiz", quizRoutes);
 
+// Standard JSON parsing for most routes
+app.use(express.json());
+
+// Serve static files from the React app
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
 // Test api for database call
