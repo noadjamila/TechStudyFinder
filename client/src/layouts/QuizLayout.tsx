@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./QuizLayout.module.css";
 import Progressbar from "../components/quiz/Progressbar";
+import Zurueck_Button from "../components/buttons/Zurueck_Button";
 
 /**
  * Props of {@link QuizLayout}.
@@ -21,6 +22,8 @@ export interface QuizLayoutProps {
    * Main content (react components) which is placed within the layout.
    */
   children: React.ReactNode;
+
+  oneBack: () => void;
 }
 
 /**
@@ -39,11 +42,21 @@ const QuizLayout: React.FC<QuizLayoutProps> = ({
   currentIndex,
   questionsTotal,
   children,
+  oneBack,
 }: QuizLayoutProps) => {
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
         <Progressbar current={currentIndex} total={questionsTotal} />
+        <Zurueck_Button
+          label="Zurück"
+          onClick={oneBack}
+          color="secondary"
+          sx={{
+            padding: "10px 20px",
+            fontSize: "1.1rem",
+          }}
+        />
         <main className={styles.middle}>{children}</main>
       </div>
     </div>
