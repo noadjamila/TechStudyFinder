@@ -129,7 +129,7 @@ describe("handleDeployWebhook", () => {
     await handleWebhook(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({ message: "Deployment finished" });
+    expect(res.json).toHaveBeenCalledWith({ message: "Deployment started" });
     expect(mockRunDeploymentScript).toHaveBeenCalled();
   });
 

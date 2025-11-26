@@ -1,7 +1,7 @@
 import request from "supertest";
 import express from "express";
 import deployRouter from "../../routes/deploy.route";
-import { runDeploymentScript } from "../deployment.utils";
+import { runDeploymentScript } from "../../services/deployment.utils";
 import crypto from "crypto";
 
 // Mock shell deployment
@@ -17,9 +17,18 @@ jest.mock("../../middlewares/rate-limiter.middleware", () => ({
 
 // Raw-body aware express app
 const app = express();
+
+// Set rawBody
+app.use(
+  express.json({
+    verify: (req: any, _res, buf) => {
+      req.rawBody = buf;
+    },
+  }),
+);
+
 app.use("/deploy", deployRouter);
 
-// Signature helper
 const generateSignature = (secret: string, body: string) => {
   const hmac = crypto.createHmac("sha256", secret);
   hmac.update(body);
@@ -49,7 +58,7 @@ describe("POST /deploy/webhook", () => {
       .send(payload);
 
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ message: "Deployment finished" });
+    expect(res.body).toEqual({ message: "Deployment started" });
     expect(runDeploymentScript).toHaveBeenCalled();
   });
 
