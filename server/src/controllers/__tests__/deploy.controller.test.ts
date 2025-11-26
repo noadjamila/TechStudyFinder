@@ -115,8 +115,7 @@ describe("handleWebhook", () => {
   });
 
   it("starts deployment and immediately returns 200", async () => {
-    (req as any).rawBody = Buffer.from("payload");
-
+    req.rawBody = Buffer.from("payload");
     req.headers["x-hub-signature-256"] = "sig";
     req.headers["x-github-event"] = "push";
 
