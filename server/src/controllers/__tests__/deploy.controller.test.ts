@@ -3,9 +3,7 @@ import { verifySignature } from "../../services/deployment.service";
 import { runDeploymentScript } from "../../services/deployment.utils";
 
 jest.mock("../../services/deployment.service");
-jest.mock("../../services/deployment.utils", () => ({
-  runDeploymentScript: jest.fn().mockResolvedValue(undefined),
-}));
+jest.mock("../../services/deployment.utils");
 
 describe("handleWebhook", () => {
   let req: any;
@@ -27,6 +25,9 @@ describe("handleWebhook", () => {
     next = jest.fn();
 
     process.env.GITHUB_WEBHOOK_SECRET = "secret";
+
+    (runDeploymentScript as jest.Mock).mockResolvedValue(undefined);
+    (verifySignature as jest.Mock).mockReturnValue(true);
   });
 
   afterEach(() => {
@@ -129,6 +130,8 @@ describe("handleWebhook", () => {
     (verifySignature as jest.Mock).mockReturnValue(true);
 
     await handleWebhook(req, res, next);
+
+    await new Promise((resolve) => setImmediate(resolve));
 
     expect(runDeploymentScript).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenCalledWith(200);
