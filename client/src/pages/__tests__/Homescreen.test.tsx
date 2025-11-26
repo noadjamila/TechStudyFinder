@@ -1,7 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import Homescreen from "../Homescreen";
-import { fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
 const LocationDisplay = () => {
