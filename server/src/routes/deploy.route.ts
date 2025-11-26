@@ -4,7 +4,6 @@ import {
   globalWebhookRateLimiter,
   webhookRateLimiter,
 } from "../middlewares/rate-limiter.middleware";
-import { rawBodyMiddleware } from "../middlewares/rawBody.middleware";
 
 const deployRouter = Router();
 
@@ -23,7 +22,6 @@ deployRouter.post(
       req.rawBody = Buffer.from(buf);
     },
   }),
-  rawBodyMiddleware,
   webhookRateLimiter,
   globalWebhookRateLimiter,
   handleWebhook,
