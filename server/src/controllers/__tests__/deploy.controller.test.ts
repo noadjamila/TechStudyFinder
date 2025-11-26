@@ -3,7 +3,9 @@ import { verifySignature } from "../../services/deployment.service";
 import { runDeploymentScript } from "../../services/deployment.utils";
 
 jest.mock("../../services/deployment.service");
-jest.mock("../../services/deployment.utils");
+jest.mock("../../services/deployment.utils", () => ({
+  runDeploymentScript: jest.fn().mockResolvedValue(undefined),
+}));
 
 describe("handleWebhook", () => {
   let req: any;
