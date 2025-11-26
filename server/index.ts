@@ -16,19 +16,14 @@ import "express-async-errors";
 const isTesting =
   process.env.NODE_ENV === "test" || !!process.env.JEST_WORKER_ID;
 
-/*
- * Check for the presence of the GITHUB_WEBHOOK_SECRET environment variable
- * and handle its absence based on the environment.
- */
+// Safety check for webhook secret
 if (!process.env.GITHUB_WEBHOOK_SECRET) {
   if (process.env.NODE_ENV === "production") {
-    console.error(
-      "FATAL: GITHUB_WEBHOOK_SECRET environment variable is not set",
-    );
+    console.error("FATAL: GITHUB_WEBHOOK_SECRET is not set");
     process.exit(1);
   } else if (!isTesting) {
     console.warn(
-      "WARNING: GITHUB_WEBHOOK_SECRET environment variable is not set. Webhook verification will be disabled.",
+      "WARNING: Missing GITHUB_WEBHOOK_SECRET (dev/testing mode only).",
     );
   }
 }
@@ -38,38 +33,40 @@ const PORT = process.env.PORT || 5001;
 
 let server: import("http").Server | null = null;
 
-// Routers
-app.use("/api", testRouter);
-app.use("/deploy", deployRouter);
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  }),
-);
-app.use("/api/quiz", quizRoutes);
+// CORS configuration for development
+if (process.env.NODE_ENV !== "production") {
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    }),
+  );
+}
 
-// Standard JSON parsing for most routes
+// Deployment route
+app.use("/deploy", deployRouter);
+
+// Standard JSON parsing middleware
 app.use(express.json());
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, "..", "client", "build")));
+// API routes
+app.use("/api", testRouter);
+app.use("/api/quiz", quizRoutes);
 
-// Test api for database call
+// Test DB route
 app.get("/api/test-db", async (_req, res) => {
   try {
     const result = await pool.query("SELECT NOW()");
-    res.json({ success: true, time: (result.rows?.[0] as any)?.now });
+    res.json({ success: true, time: result.rows?.[0]?.now });
   } catch (err: any) {
-    console.error("Datenbankfehler:", err);
-    res
-      .status(500)
-      .json({ success: false, error: err?.message || String(err) });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
-// Fallback route for SPA
+// Serve static files from the frontend
+app.use(express.static(path.join(__dirname, "..", "client", "build")));
+
+// SPA fallback
 app.get("*", (req, res, next) => {
   if (req.url.startsWith("/api/") || req.url.startsWith("/deploy")) {
     return next();
@@ -78,12 +75,12 @@ app.get("*", (req, res, next) => {
   res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
 });
 
-// 404 Handler
+// 404 handler
 app.use((_req, res) => {
   res.status(404).json({ error: "Route not found" });
 });
 
-// Error Handler
+// Error handler
 app.use(((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error("Server error:", err);
   const statusCode = (err as any).status || 500;
@@ -100,14 +97,13 @@ if (require.main === module) {
   });
 }
 
-// Error handling for the server
 process.on("uncaughtException", (error) => {
   console.error("Uncaught Exception:", error);
   process.exit(1);
 });
 
 process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  console.error("Unhandled Rejection:", promise, "reason:", reason);
 });
 
 export { server, pool };
