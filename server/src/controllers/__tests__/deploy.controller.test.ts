@@ -1,4 +1,4 @@
-import { handleWebhook } from "../../controllers/deploy.controller";
+import { handleWebhook } from "../deploy.controller";
 import { verifySignature } from "../../services/deployment.service";
 import { runDeploymentScript } from "../../services/deployment.utils";
 
