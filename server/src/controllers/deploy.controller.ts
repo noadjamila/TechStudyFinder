@@ -54,6 +54,7 @@ export const handleWebhook = async (
     }
 
     runDeploymentScript()
+      // eslint-disable-next-line no-console
       .then(() => console.log("Deployment finished"))
       .catch((e) => console.error("Deployment error:", e));
 
