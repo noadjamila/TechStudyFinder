@@ -115,18 +115,20 @@ describe("handleWebhook", () => {
   });
 
   it("starts deployment and immediately returns 200", async () => {
-    req.rawBody = Buffer.from("payload");
     req.headers["x-hub-signature-256"] = "sig";
     req.headers["x-github-event"] = "push";
 
-    (verifySignature as jest.Mock).mockReturnValue(true);
+    const payload = { ref: "refs/heads/main" };
+    const raw = JSON.stringify(payload);
 
-    req.body = { ref: "refs/heads/main" };
+    req.rawBody = Buffer.from(raw);
+    req.body = payload;
+
+    (verifySignature as jest.Mock).mockReturnValue(true);
 
     await handleWebhook(req, res, next);
 
     expect(runDeploymentScript).toHaveBeenCalledTimes(1);
-
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ message: "Deployment started" });
   });
