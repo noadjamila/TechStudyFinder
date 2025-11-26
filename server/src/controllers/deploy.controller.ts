@@ -53,10 +53,12 @@ export const handleWebhook = async (
       return res.status(200).json({ message: "No deployment needed" });
     }
 
-    runDeploymentScript()
-      // eslint-disable-next-line no-console
-      .then(() => console.log("Deployment finished"))
-      .catch((e) => console.error("Deployment error:", e));
+    setImmediate(() => {
+      runDeploymentScript()
+        // eslint-disable-next-line no-console
+        .then(() => console.log("Deployment finished"))
+        .catch((e) => console.error("Deployment error:", e));
+    });
 
     return res.status(200).json({ message: "Deployment started" });
   } catch (err) {
