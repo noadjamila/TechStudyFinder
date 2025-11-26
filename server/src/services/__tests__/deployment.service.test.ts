@@ -2,16 +2,13 @@ import { Buffer } from "buffer";
 import * as crypto from "crypto";
 import { RawBodyRequest } from "../../types/deployment.types";
 import { Response } from "express";
-import * as rawBodyMiddleware from "../rawBody.utils";
 import * as deploymentUtils from "../deployment.utils";
 import { verifySignature } from "../deployment.service";
 import * as deploymentService from "../deployment.service";
 import { handleWebhook } from "../../controllers/deploy.controller";
 
-jest.mock("../rawBody.utils");
 jest.mock("../deployment.utils");
 
-const mockGetRawBody = rawBodyMiddleware.getRawBody as jest.Mock;
 const mockRunDeploymentScript =
   deploymentUtils.runDeploymentScript as unknown as jest.Mock<
     Promise<void>,
@@ -57,7 +54,6 @@ beforeAll(() => {
 
 beforeEach(() => {
   process.env.GITHUB_WEBHOOK_SECRET = MOCK_SECRET;
-  mockGetRawBody.mockReturnValue(MOCK_RAW_BODY);
 });
 
 afterEach(() => {
@@ -121,7 +117,6 @@ describe("verifySignature", () => {
 
 describe("handleDeployWebhook", () => {
   beforeEach(() => {
-    mockGetRawBody.mockReturnValue(MOCK_RAW_BODY);
     mockRunDeploymentScript.mockResolvedValue(undefined);
     mockVerifySignature.mockReturnValue(true);
   });
