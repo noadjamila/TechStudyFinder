@@ -49,6 +49,24 @@ const QuizPage_L2: React.FC = () => {
    */
   const next = () => setCurrentIndex((i) => Math.min(TOTAL_QUESTIONS, i + 1));
 
+  const goBack = () => {
+    const currentType = currentQuestion.riasec_type;
+    setScores((prev) => {
+      const newScores = { ...prev, [currentType]: prev[currentType] - 1 };
+
+      if (currentIndex === TOTAL_QUESTIONS - 1) {
+        const topScores = getTopThreeScores(newScores);
+        setHighestScores(topScores);
+        sendData(topScores);
+      }
+
+      return newScores;
+    });
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
   /**
    * Returns the top three RIASEC scores sorted in descending order.
    *
@@ -171,6 +189,7 @@ const QuizPage_L2: React.FC = () => {
         <QuizLayout
           currentIndex={currentIndex + 1}
           questionsTotal={TOTAL_QUESTIONS}
+          oneBack={goBack}
         >
           <QuizCard
             key={currentIndex}
