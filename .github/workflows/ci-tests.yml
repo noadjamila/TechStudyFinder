@@ -1,4 +1,4 @@
-name: CI Tests
+name: Tests
 
 on:
   pull_request:
@@ -20,14 +20,23 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Install Root Dependencies (Safe)
+        run: npm ci --ignore-scripts
 
-      - name: Run Unit Tests
-        run: CI=true npm test --workspaces
+      - name: Install Server Dependencies (Safe)
+        run: npm ci --workspace=server --ignore-scripts
 
-      - name: Run Integration Tests
-        run: npm run test:integration
+      - name: Run Server Unit Tests
+        run: npm run test:unit --workspace=server
 
-      - name: Build Project
-        run: npm run build
+      - name: Run Server Integration Tests
+        run: npm run test:integration --workspace=server
+
+      - name: Install Client Dependencies (Safe)
+        run: npm ci --workspace=client --ignore-scripts
+
+      - name: Run Client Tests
+        run: npm test --workspace=client
+
+      - name: Build Client
+        run: npm run build --workspace=client

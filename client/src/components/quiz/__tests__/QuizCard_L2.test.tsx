@@ -1,25 +1,18 @@
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  act,
-} from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import QuizCard_L2 from "../QuizCard_L2";
-
-jest.useFakeTimers();
+import { vi } from "vitest";
 
 describe("QuizCard_L2", () => {
-  const mockOnSelect = jest.fn();
+  const mockOnSelect = vi.fn();
 
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     mockOnSelect.mockClear();
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
-    jest.useRealTimers();
+    vi.clearAllTimers();
+    vi.useRealTimers();
   });
 
   test("shows the submitted question", () => {
@@ -41,11 +34,9 @@ describe("QuizCard_L2", () => {
     fireEvent.click(yesOption);
 
     act(() => {
-      jest.advanceTimersByTime(800);
+      vi.advanceTimersByTime(800);
     });
 
-    await waitFor(() => {
-      expect(mockOnSelect).toHaveBeenCalledWith("yes");
-    });
+    expect(mockOnSelect).toHaveBeenCalledWith("yes");
   });
 });
