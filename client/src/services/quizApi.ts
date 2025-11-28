@@ -1,13 +1,43 @@
-export async function postFilterLevel(payload: {
-  level: 1 | 2 | 3;
-  answers: any[];
-  studyProgrammeIds?: number[];
-}) {
-  const res = await fetch("/api/quiz/filter", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) throw new Error("Filter request failed");
-  return res.json() as Promise<{ success: boolean; ids: number[] }>;
+interface Level1Payload {
+  level: 1;
+  answers: [{ studientyp: string }] | [];
+}
+
+interface FilterResponse {
+  ids: number[];
+}
+
+const API_BASE_URL = "http://localhost:5001/api/quiz";
+
+/**
+ * Sendet die Level 1 Antwort an den Server und ruft die gefilterten IDs ab.
+ * * @param payload Das zu sendende Datenobjekt, enthält level und answers.
+ * @returns Ein Promise, das die gefilterten IDs enthält.
+ */
+export async function postFilterLevel(
+  payload: Level1Payload,
+): Promise<FilterResponse> {
+  const endpoint = `${API_BASE_URL}/filter`;
+
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
+
+    const result: FilterResponse = await res.json();
+    return result;
+  } catch (err) {
+    console.error("Fehler beim API-Aufruf (postFilterLevel):", err);
+    throw new Error(
+      "Konnte keine Verbindung zum Backend herstellen oder Daten verarbeiten.",
+    );
+  }
 }

@@ -11,6 +11,7 @@ export interface QuizPageL1Props {
 const L1_OPTIONS = [
   { label: "ein Studium beginnen?", value: "grundständig" },
   { label: "dein Studium fortsetzen?", value: "weiterführend" },
+  { label: "dich erstmal umschauen?", value: "all" },
 ];
 
 //
@@ -22,9 +23,17 @@ export default function QuizPage_L1({ onNextLevel }: QuizPageL1Props) {
 
     setTimeout(async () => {
       try {
+        let answersPayload: [{ studientyp: string }] | [];
+
+        if (selectedType === "all") {
+          answersPayload = [];
+        } else {
+          answersPayload = [{ studientyp: selectedType }];
+        }
+
         const res = await postFilterLevel({
           level: 1,
-          answers: [{ studientyp: selectedType }],
+          answers: answersPayload,
         });
 
         onNextLevel?.(res.ids);

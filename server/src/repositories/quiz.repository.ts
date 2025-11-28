@@ -12,14 +12,27 @@ export async function getFilteredResultsLevel1(
   let query = `SELECT id FROM studiengang_raw_data_simulation`;
   let params: string[] = [];
 
+  //debugging for neither grundständig nore weiterführend
+  if (!studientyp) {
+    console.log(
+      "[DB DEBUG] Filtering skipped (studientyp is undefined/all). Returning ALL IDs.",
+    );
+  }
+
   // if there is a studientyp filter, add it to the query
   if (studientyp) {
     query += ` WHERE studientyp = $1`;
     params.push(studientyp);
   }
 
+  console.log(`[DB DEBUG] Executing Query: ${query}`);
+  console.log(`[DB DEBUG] Parameters: ${params.join(", ")}`);
+
   // send query to database, return study programme ids
   const result = await pool.query(query, params);
+
+  console.log(`[DB DEBUG] Rows found: ${result.rows.length}`);
+
   return result.rows.map((row: any) => row.id);
 }
 
