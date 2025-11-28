@@ -2,8 +2,9 @@ import React from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
+import Radio from "@mui/material/Radio";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Box from "@mui/material/Box";
 
 export interface QuizOption<T = string> {
   label: string;
@@ -12,7 +13,6 @@ export interface QuizOption<T = string> {
 }
 
 export interface QuizCardBaseProps<T = string> {
-  title?: string; // Optional: z.B. "Level 1"
   question: string;
   options: QuizOption<T>[];
   selected?: T;
@@ -20,7 +20,6 @@ export interface QuizCardBaseProps<T = string> {
 }
 
 const QuizCardBase = <T,>({
-  title,
   question,
   options,
   selected,
@@ -31,55 +30,41 @@ const QuizCardBase = <T,>({
       sx={{
         maxWidth: 600,
         width: "100%",
-        mx: "auto", // Zentriert die Karte horizontal
-        boxShadow: 3, // Stärkerer Schatten für den "Card"-Effekt
-        borderRadius: 2, // Etwas rundere Ecken
+        mx: "auto",
+        boxShadow: 3,
+        borderRadius: 2,
+        backgroundColor: "#E2FBBE",
+        fontFamily: "Roboto",
       }}
     >
       <CardContent>
-        {/* Titel (optional) */}
-        {title && (
-          <Typography
-            gutterBottom
-            variant="overline"
-            display="block"
-            color="text.secondary"
-          >
-            {title}
-          </Typography>
-        )}
-
         {/* Die Frage */}
         <Typography variant="h5" component="div" gutterBottom sx={{ mb: 3 }}>
           {question}
         </Typography>
 
         {/* Die Antwortmöglichkeiten */}
-        <Stack spacing={2} direction="column">
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
           {options.map((o) => {
             const isSelected = selected === o.value;
             return (
-              <Button
+              <FormControlLabel
                 key={String(o.value)}
-                variant={isSelected ? "contained" : "outlined"} // Gefüllt wenn ausgewählt, sonst Umrandung
-                color={isSelected ? "primary" : "inherit"}
                 onClick={() => onSelect(o.value)}
-                size="large"
-                fullWidth
+                control={<Radio checked={isSelected} value={String(o.value)} />}
+                label={o.label}
                 sx={{
-                  justifyContent: "flex-start", // Text linksbündig sieht bei langen Antworten oft besser aus
-                  textAlign: "left",
-                  borderColor: isSelected ? "" : "rgba(0, 0, 0, 0.23)", // Leichte Border für nicht-ausgewählte
+                  width: "100%",
+                  mr: 0,
+                  "& .MuiTypography-root": {
+                    fontWeight: "normal",
+                  },
                 }}
-              >
-                {o.label}
-              </Button>
+              />
             );
           })}
-        </Stack>
+        </Box>
       </CardContent>
-
-      {/*hier müsste noch der Zurück-Button rein */}
     </Card>
   );
 };
