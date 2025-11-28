@@ -63,6 +63,7 @@ Run the application locally with the following steps:
 ## Tech Stack
 
 **Frontend**: React (Progressive Web App)
+For further documentation, see the [client README](client/README.md).
 
 **Backend**: Node.js (REST API)
 
