@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import Quiz_L2 from "./pages/QuizPage_L2";
+import Quiz_L1 from "./pages/QuizPage_L1";
 
 import { registerSW } from "virtual:pwa-register";
 
@@ -18,6 +19,7 @@ ReactDOM.createRoot(rootElement).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
+        <Route path="/quiz/level/1" element={<Quiz_L1 />} />
         <Route path="/quiz/level/2" element={<Quiz_L2 />} />
       </Routes>
     </BrowserRouter>
