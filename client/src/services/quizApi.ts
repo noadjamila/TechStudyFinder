@@ -10,9 +10,7 @@ interface FilterResponse {
 const API_BASE_URL = "http://localhost:5001/api/quiz";
 
 /**
- * Sendet die Level 1 Antwort an den Server und ruft die gefilterten IDs ab.
- * * @param payload Das zu sendende Datenobjekt, enthält level und answers.
- * @returns Ein Promise, das die gefilterten IDs enthält.
+ * documentation
  */
 export async function postFilterLevel(
   payload: Level1Payload,

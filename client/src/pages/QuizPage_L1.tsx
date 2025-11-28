@@ -3,7 +3,6 @@ import QuizLayout from "../layouts/QuizLayout";
 import QuizCardBase from "../components/quiz/QuizCardBase";
 import { postFilterLevel } from "../services/quizApi";
 
-// Definiert das Interface für die Props
 export interface QuizPageL1Props {
   onNextLevel?: (_ids: number[]) => void;
 }

@@ -18,6 +18,7 @@ export interface QuizCardBaseProps<T = string> {
   selected?: T;
   onSelect: (value: T) => void;
 }
+const buttonColor = "#AFCEFF";
 
 const QuizCardBase = <T,>({
   question,
@@ -35,15 +36,16 @@ const QuizCardBase = <T,>({
         borderRadius: 2,
         backgroundColor: "#E2FBBE",
         fontFamily: "Roboto",
+        color: "#3F3E42",
       }}
     >
       <CardContent>
-        {/* Die Frage */}
+        {/* the question*/}
         <Typography variant="h5" component="div" gutterBottom sx={{ mb: 3 }}>
           {question}
         </Typography>
 
-        {/* Die Antwortmöglichkeiten */}
+        {/* the answer-possibilites */}
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
           {options.map((o) => {
             const isSelected = selected === o.value;
@@ -56,8 +58,8 @@ const QuizCardBase = <T,>({
                 sx={{
                   width: "100%",
                   mr: 0,
-                  "& .MuiTypography-root": {
-                    fontWeight: "normal",
+                  "&.Mui-checked": {
+                    color: buttonColor,
                   },
                 }}
               />
