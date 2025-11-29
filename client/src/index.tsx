@@ -5,6 +5,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import Quiz_L2 from "./pages/QuizPage_L2";
+import ResultsPage from "./pages/ResultsPage";
 
 const rootElement = document.getElementById("root");
 
@@ -20,6 +21,7 @@ root.render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/quiz/level/2" element={<Quiz_L2 />} />
+        <Route path="/results" element={<ResultsPage />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,
