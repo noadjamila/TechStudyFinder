@@ -7,3 +7,5 @@ jest.mock("pg", () => {
 
   return { Pool: jest.fn(() => mockPool) };
 });
+
+process.env.GITHUB_WEBHOOK_SECRET = "test-secret-for-env";
