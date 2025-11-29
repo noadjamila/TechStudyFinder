@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import QuizLayout from "../layouts/QuizLayout";
 import QuizCardBase from "../components/quiz/QuizCardBase";
 import { postFilterLevel } from "../services/quizApi";
+import QuizMascot from "../assets/Männchen_Home_Level1.png";
 
 /** Callback function executed upon successful completion of the level.
  * It receives an array of filtered IDs from the backend. */
@@ -65,6 +66,7 @@ export default function QuizPage_L1({ onNextLevel }: QuizPageL1Props) {
         options={L1_OPTIONS}
         selected={selected}
         onSelect={handleSelectAndNext}
+        imageSrc={QuizMascot}
       />
     </QuizLayout>
   );
