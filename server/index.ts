@@ -8,78 +8,102 @@ import cors from "cors";
 import "dotenv/config";
 import path from "path";
 import testRouter from "./src/routes/health.route";
+import deployRouter from "./src/routes/deploy.route";
 import quizRoutes from "./src/routes/quiz.route";
 import { pool } from "./db";
+import "express-async-errors";
+
+const isTesting =
+  process.env.NODE_ENV === "test" || !!process.env.JEST_WORKER_ID;
+
+// Safety check for webhook secret
+if (!process.env.GITHUB_WEBHOOK_SECRET) {
+  if (process.env.NODE_ENV === "production") {
+    console.error("FATAL: GITHUB_WEBHOOK_SECRET is not set");
+    process.exit(1);
+  } else if (!isTesting) {
+    console.warn(
+      "WARNING: Missing GITHUB_WEBHOOK_SECRET (dev/testing mode only).",
+    );
+  }
+}
 
 const app = express();
+const PORT = process.env.PORT || 5001;
 
+let server: import("http").Server | null = null;
+
+// CORS configuration for development
+if (process.env.NODE_ENV !== "production") {
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    }),
+  );
+}
+
+// Deployment route
+app.use("/deploy", deployRouter);
+
+// Standard JSON parsing middleware
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  }),
-);
-
-// Test route
+// API routes
 app.use("/api", testRouter);
-
-// Quiz routes
 app.use("/api/quiz", quizRoutes);
 
-// Test api for database call
+// Test DB route
 app.get("/api/test-db", async (_req, res) => {
   try {
     const result = await pool.query("SELECT NOW()");
-    res.json({ success: true, time: (result.rows?.[0] as any)?.now });
+    res.json({ success: true, time: result.rows?.[0]?.now });
   } catch (err: any) {
-    console.error("Datenbankfehler:", err);
-    res
-      .status(500)
-      .json({ success: false, error: err?.message || String(err) });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
-// Fallback route for SPA
+// Serve static files from the frontend
+app.use(express.static(path.join(__dirname, "..", "client", "build")));
+
+// SPA fallback
 app.get("*", (req, res, next) => {
-  if (req.url.startsWith("/api/")) {
+  if (req.url.startsWith("/api/") || req.url.startsWith("/deploy")) {
     return next();
   }
 
   res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
 });
 
-// 404 Handler
+// 404 handler
 app.use((_req, res) => {
-  res.status(404).json({ error: "Route nicht gefunden" });
+  res.status(404).json({ error: "Route not found" });
 });
 
-// Error Handler
+// Error handler
 app.use(((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error("Server error:", err);
   const statusCode = (err as any).status || 500;
   res.status(statusCode).json({
-    error: "Interner Server-Fehler",
+    error: "Internal server error",
     message: err.message,
   });
 }) as ErrorRequestHandler);
 
-const PORT = process.env.PORT || 5001;
+if (require.main === module) {
+  server = app.listen(PORT, () => {
+    // eslint-disable-next-line no-console
+    console.log(`Backend running on http://localhost:${PORT}`);
+  });
+}
 
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Backend running on http://localhost:${PORT}`);
-});
-
-// Error handling for the server
 process.on("uncaughtException", (error) => {
   console.error("Uncaught Exception:", error);
   process.exit(1);
 });
 
 process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  console.error("Unhandled Rejection:", promise, "reason:", reason);
 });
+
+export { server, pool };
