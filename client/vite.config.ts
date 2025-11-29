@@ -18,4 +18,10 @@ export default defineConfig({
       },
     },
   },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./client/setupTests.ts"],
+    alias: [{ find: "jest", replacement: "vitest" }],
+  },
 });
