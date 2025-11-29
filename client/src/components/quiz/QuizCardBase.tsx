@@ -8,6 +8,11 @@ import Box from "@mui/material/Box";
 import { quizColors } from "./quizColorTheme";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
+/**
+ * Interface defining a single selectable option within the quiz card.
+ * @template T The type of the option's unique identifier (value).
+ */
+
 export interface QuizOption<T = string> {
   label: string;
   value: T;
@@ -20,6 +25,18 @@ export interface QuizCardBaseProps<T = string> {
   selected?: T;
   onSelect: (value: T) => void;
 }
+
+/**
+ * A generic, styled React component that renders a single question card
+ * with a set of radio button options.
+ *
+ * It uses Material UI (MUI) components (Card, Radio, FormControlLabel, etc.)
+ * and applies custom theming for radio button colors based on quizColorTheme.
+ *
+ * @template T The type of the option's unique identifier (value).
+ * @param {QuizCardBaseProps<T>} props The props defining the card content and behavior.
+ * @returns {JSX.Element} The Quiz Card component.
+ */
 
 const quizRadioTheme = createTheme({
   components: {

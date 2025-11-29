@@ -1,8 +1,16 @@
+/**
+ * Interface defining the payload structure for Level 1 quiz filtering.
+ * The user's answer(s) for Level 1, specifically the studientyp.
+ */
+
 interface Level1Payload {
   level: 1;
   answers: [{ studientyp: string }] | [];
 }
 
+/**
+ * Interface defining the expected response structure from the filtering endpoint.
+ */
 interface FilterResponse {
   ids: number[];
 }
@@ -10,7 +18,11 @@ interface FilterResponse {
 const API_BASE_URL = "http://localhost:5001/api/quiz";
 
 /**
- * documentation
+ * Sends the user's Level 1 answers to the backend filtering endpoint.
+ *
+ * @param {Level1Payload} payload The data containing the level and answers.
+ * @returns {Promise<FilterResponse>} A promise resolving to an object with the filtered IDs array.
+ * @throws {Error} Throws if the network request or response processing fails.
  */
 export async function postFilterLevel(
   payload: Level1Payload,
