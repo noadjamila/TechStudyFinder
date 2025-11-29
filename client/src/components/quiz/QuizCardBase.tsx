@@ -5,6 +5,8 @@ import Typography from "@mui/material/Typography";
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Box from "@mui/material/Box";
+import { quizColors } from "./quizColorTheme";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 export interface QuizOption<T = string> {
   label: string;
@@ -18,7 +20,21 @@ export interface QuizCardBaseProps<T = string> {
   selected?: T;
   onSelect: (value: T) => void;
 }
-const buttonColor = "#AFCEFF";
+
+const quizRadioTheme = createTheme({
+  components: {
+    MuiRadio: {
+      styleOverrides: {
+        root: {
+          color: quizColors.text,
+          "&.Mui-checked": {
+            color: quizColors.buttonColorChecked,
+          },
+        },
+      },
+    },
+  },
+});
 
 const QuizCardBase = <T,>({
   question,
@@ -27,47 +43,45 @@ const QuizCardBase = <T,>({
   onSelect,
 }: QuizCardBaseProps<T>) => {
   return (
-    <Card
-      sx={{
-        maxWidth: 600,
-        width: "100%",
-        mx: "auto",
-        boxShadow: 3,
-        borderRadius: 2,
-        backgroundColor: "#E2FBBE",
-        fontFamily: "Roboto",
-        color: "#3F3E42",
-      }}
-    >
-      <CardContent>
-        {/* the question*/}
-        <Typography variant="h5" component="div" gutterBottom sx={{ mb: 3 }}>
-          {question}
-        </Typography>
+    <ThemeProvider theme={quizRadioTheme}>
+      <Card
+        sx={{
+          maxWidth: 600,
+          width: "100%",
+          mx: "auto",
+          boxShadow: 3,
+          borderRadius: 2,
+          backgroundColor: quizColors.cardColour,
+          fontFamily: "Roboto",
+          color: quizColors.text,
+        }}
+      >
+        <CardContent>
+          {/* the question*/}
+          <Typography variant="h5" component="div" gutterBottom sx={{ mb: 3 }}>
+            {question}
+          </Typography>
 
-        {/* the answer-possibilites */}
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-          {options.map((o) => {
-            const isSelected = selected === o.value;
-            return (
-              <FormControlLabel
-                key={String(o.value)}
-                onClick={() => onSelect(o.value)}
-                control={<Radio checked={isSelected} value={String(o.value)} />}
-                label={o.label}
-                sx={{
-                  width: "100%",
-                  mr: 0,
-                  "&.Mui-checked": {
-                    color: buttonColor,
-                  },
-                }}
-              />
-            );
-          })}
-        </Box>
-      </CardContent>
-    </Card>
+          {/* the answer-possibilites */}
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            {options.map((o) => {
+              const isSelected = selected === o.value;
+              return (
+                <FormControlLabel
+                  key={String(o.value)}
+                  onClick={() => onSelect(o.value)}
+                  control={
+                    <Radio checked={isSelected} value={String(o.value)} />
+                  }
+                  label={o.label}
+                  sx={{ mr: 0 }}
+                />
+              );
+            })}
+          </Box>
+        </CardContent>
+      </Card>
+    </ThemeProvider>
   );
 };
 
