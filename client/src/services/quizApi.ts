@@ -46,8 +46,6 @@ export async function postFilterLevel(
     return result;
   } catch (err) {
     console.error("Error during API call (postFilterLevel):", err);
-    throw new Error(
-      "Could not connect to the backend or process data.",
-    );
+    throw new Error("Could not connect to the backend or process data.");
   }
 }
