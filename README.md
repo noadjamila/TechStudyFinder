@@ -74,6 +74,21 @@ For further documentation, see the [client README](client/README.md).
 
 ---
 
+## Automated maintenance
+
+This project uses GitHub Dependabot to automatically keep dependencies up to date.
+Dependabot regularly monitors the following areas:
+
+- Node.js dependencies in the root directory
+- Client (React): `/client`
+- Server (Express/TS): `/server`
+- GitHub Actions workflows
+
+New versions automatically generate pull requests, which should be reviewed before merging.
+The configuration is located in `.github/dependabot.yml`.
+
+---
+
 ## Purpose
 
 - Make Informatics more **approachable and inclusive**.
