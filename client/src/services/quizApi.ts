@@ -45,9 +45,9 @@ export async function postFilterLevel(
     const result: FilterResponse = await res.json();
     return result;
   } catch (err) {
-    console.error("Fehler beim API-Aufruf (postFilterLevel):", err);
+    console.error("Error during API call (postFilterLevel):", err);
     throw new Error(
-      "Konnte keine Verbindung zum Backend herstellen oder Daten verarbeiten.",
+      "Could not connect to the backend or process data.",
     );
   }
 }
