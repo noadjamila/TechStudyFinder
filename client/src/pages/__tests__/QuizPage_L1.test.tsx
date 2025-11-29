@@ -130,7 +130,7 @@ describe("QuizPage_L1", () => {
       expect(postFilterLevelMock).toHaveBeenCalled();
 
       expect(alertSpy).toHaveBeenCalledWith(
-        "Beim Laden ist ein Fehler aufgetreten. Bitte erneut versuchen.",
+        "An error occurred while loading. Please try again.",
       );
 
       expect(mockOnNextLevel).not.toHaveBeenCalled();

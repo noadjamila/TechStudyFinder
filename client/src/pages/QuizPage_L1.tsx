@@ -53,8 +53,8 @@ export default function QuizPage_L1({ onNextLevel }: QuizPageL1Props) {
 
         onNextLevel?.(res.ids);
       } catch (err) {
-        console.error("Fehler beim Filtern der Studiengänge:", err);
-        alert("Beim Laden ist ein Fehler aufgetreten. Bitte erneut versuchen.");
+        console.error("Mistake while filtering", err);
+        alert("Error appeared during loading. Please try again.");
       }
     }, 800);
   };

@@ -5,9 +5,8 @@ import Typography from "@mui/material/Typography";
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Box from "@mui/material/Box";
-import { quizColors } from "./quizColorTheme";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { SxProps, Theme } from "@mui/material/styles";
+import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 
 /**
  * Interface defining selectable options within the quiz card.
@@ -45,21 +44,6 @@ export interface QuizCardBaseProps<T = string> {
  * @returns {JSX.Element} The Quiz Card component.
  */
 
-const quizRadioTheme = createTheme({
-  components: {
-    MuiRadio: {
-      styleOverrides: {
-        root: {
-          color: quizColors.text,
-          "&.Mui-checked": {
-            color: quizColors.buttonColorChecked,
-          },
-        },
-      },
-    },
-  },
-});
-
 const QuizCardBase = <T,>({
   question,
   options,
@@ -70,6 +54,23 @@ const QuizCardBase = <T,>({
   sx,
   imageSrc,
 }: QuizCardBaseProps<T>) => {
+  const theme = useTheme();
+
+  const quizRadioTheme = createTheme(theme, {
+    components: {
+      MuiRadio: {
+        styleOverrides: {
+          root: {
+            color: theme.palette.quiz.textColor,
+            "&.Mui-checked": {
+              color: theme.palette.quiz.buttonChecked,
+            },
+          },
+        },
+      },
+    },
+  });
+
   const renderRadioOptions = showRadioButtons && options && options.length > 0;
   return (
     <ThemeProvider theme={quizRadioTheme}>
@@ -81,9 +82,8 @@ const QuizCardBase = <T,>({
           mx: "auto",
           boxShadow: 3,
           borderRadius: 2,
-          backgroundColor: quizColors.cardColour,
-          fontFamily: "Roboto",
-          color: quizColors.text,
+          backgroundColor: theme.palette.quiz.cardBackground,
+          color: theme.palette.quiz.textColor,
           pt: 2,
           pb: 6,
           overflow: "visible",
