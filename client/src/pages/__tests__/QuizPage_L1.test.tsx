@@ -49,7 +49,7 @@ describe("QuizPage_L1", () => {
     );
   });
 
-  // 2. tests the undergrates (grundständig)
+  // 2. tests the undergraduates (grundständig)
   it("calls API with correct payload and triggers onNextLevel after 800ms when 'grundständig' is selected", async () => {
     const mockOnNextLevel = vi.fn();
     const mockResponseIds = [101, 102];
