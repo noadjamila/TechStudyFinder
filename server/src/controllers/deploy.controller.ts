@@ -1,5 +1,4 @@
-import { Request, Response, NextFunction } from "express";
-import { RawBodyRequest } from "../types/deployment.types";
+import { NextFunction, Request, Response } from "express";
 import { verifySignature } from "../services/deployment.service";
 import { runDeploymentScript } from "../services/deployment.utils";
 
@@ -9,10 +8,9 @@ export const handleWebhook = async (
   next: NextFunction,
 ) => {
   try {
-    const rawReq = req as RawBodyRequest;
+    const rawBody = req.body as Buffer;
 
-    const rawBody = rawReq.rawBody;
-    if (!rawBody) {
+    if (!rawBody || !Buffer.isBuffer(rawBody)) {
       return res
         .status(400)
         .json({ error: "Missing raw body for verification" });
@@ -41,7 +39,8 @@ export const handleWebhook = async (
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const payload = req.body;
+    const jsonString = rawBody.toString("utf-8");
+    const payload = JSON.parse(jsonString);
 
     if (!payload || !payload.ref) {
       return res.status(400).json({
