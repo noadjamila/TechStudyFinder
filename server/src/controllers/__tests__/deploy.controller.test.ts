@@ -5,6 +5,9 @@ import { runDeploymentScript } from "../../services/deployment.utils";
 jest.mock("../../services/deployment.service");
 jest.mock("../../services/deployment.utils");
 
+const MOCK_PAYLOAD = { ref: "refs/heads/main" };
+const MOCK_BUFFER = Buffer.from(JSON.stringify(MOCK_PAYLOAD));
+
 describe("handleWebhook", () => {
   let req: any;
   let res: any;
@@ -12,9 +15,11 @@ describe("handleWebhook", () => {
 
   beforeEach(() => {
     req = {
-      headers: {},
-      body: {},
-      rawBody: Buffer.from("payload"),
+      headers: {
+        "x-hub-signature-256": "sig",
+        "x-github-event": "push",
+      },
+      body: MOCK_BUFFER,
     };
 
     res = {
@@ -34,11 +39,16 @@ describe("handleWebhook", () => {
     jest.clearAllMocks();
   });
 
-  it("returns 400 if raw body is missing", async () => {
-    req.rawBody = undefined;
-
+  it("returns 400 if raw body is missing or not a Buffer", async () => {
+    req.body = undefined;
     await handleWebhook(req, res, next);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Missing raw body for verification",
+    });
 
+    req.body = {};
+    await handleWebhook(req, res, next);
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       error: "Missing raw body for verification",
@@ -55,7 +65,6 @@ describe("handleWebhook", () => {
   });
 
   it("returns 200 if event is not a push", async () => {
-    req.headers["x-hub-signature-256"] = "sig";
     req.headers["x-github-event"] = "issues";
 
     await handleWebhook(req, res, next);
@@ -67,9 +76,6 @@ describe("handleWebhook", () => {
   it("returns 500 if secret is missing", async () => {
     delete process.env.GITHUB_WEBHOOK_SECRET;
 
-    req.headers["x-hub-signature-256"] = "sig";
-    req.headers["x-github-event"] = "push";
-
     await handleWebhook(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(500);
@@ -79,8 +85,6 @@ describe("handleWebhook", () => {
   });
 
   it("returns 401 if signature verification fails", async () => {
-    req.headers["x-hub-signature-256"] = "sig";
-    req.headers["x-github-event"] = "push";
     (verifySignature as jest.Mock).mockReturnValue(false);
 
     await handleWebhook(req, res, next);
@@ -90,11 +94,7 @@ describe("handleWebhook", () => {
   });
 
   it("returns 400 if payload.ref is missing", async () => {
-    req.headers["x-hub-signature-256"] = "sig";
-    req.headers["x-github-event"] = "push";
-    (verifySignature as jest.Mock).mockReturnValue(true);
-
-    req.body = {};
+    req.body = Buffer.from(JSON.stringify({ notRef: "data" }));
 
     await handleWebhook(req, res, next);
 
@@ -105,11 +105,7 @@ describe("handleWebhook", () => {
   });
 
   it("returns 200 if branch is not main", async () => {
-    req.headers["x-hub-signature-256"] = "sig";
-    req.headers["x-github-event"] = "push";
-    (verifySignature as jest.Mock).mockReturnValue(true);
-
-    req.body = { ref: "refs/heads/feature" };
+    req.body = Buffer.from(JSON.stringify({ ref: "refs/heads/feature" }));
 
     await handleWebhook(req, res, next);
 
@@ -118,17 +114,6 @@ describe("handleWebhook", () => {
   });
 
   it("starts deployment and immediately returns 200", async () => {
-    req.headers["x-hub-signature-256"] = "sig";
-    req.headers["x-github-event"] = "push";
-
-    const payload = { ref: "refs/heads/main" };
-    const raw = JSON.stringify(payload);
-
-    req.rawBody = Buffer.from(raw);
-    req.body = payload;
-
-    (verifySignature as jest.Mock).mockReturnValue(true);
-
     await handleWebhook(req, res, next);
 
     await new Promise((resolve) => setImmediate(resolve));
@@ -139,8 +124,6 @@ describe("handleWebhook", () => {
   });
 
   it("calls next(err) if an exception occurs", async () => {
-    req.headers["x-hub-signature-256"] = "sig";
-    req.headers["x-github-event"] = "push";
     (verifySignature as jest.Mock).mockImplementation(() => {
       throw new Error("Boom");
     });
