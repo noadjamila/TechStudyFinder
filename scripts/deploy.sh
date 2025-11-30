@@ -5,7 +5,7 @@
 # Stop execution on error
 set -e
 
-DEPLOY_DIR="${DEPLOY_DIR:-/home/local/projects/TechStudyFinder}"
+DEPLOY_DIR="${DEPLOY_DIR:-/home/deployuser/projects/TechStudyFinder}"
 
 echo "--- Start deployment $(date) ---"
 
