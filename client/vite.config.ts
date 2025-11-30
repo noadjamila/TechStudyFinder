@@ -22,6 +22,6 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     setupFiles: ["./setupTests.ts"],
-    alias: [{ find: "jest", replacement: "vitest" }],
+    include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
   },
 });

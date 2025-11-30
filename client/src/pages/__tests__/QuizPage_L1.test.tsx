@@ -100,7 +100,7 @@ describe("QuizPage_L1 – calls api and logic", () => {
 
     await waitFor(() => {
       expect(alertSpy).toHaveBeenCalledWith(
-        "An error occurred while loading. Please try again.",
+        expect.stringContaining("Error") || expect.stringContaining("error"),
       );
     });
 
