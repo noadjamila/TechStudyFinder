@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import {
   Box,
   Typography,
@@ -8,13 +8,18 @@ import {
   List,
   ListItem,
   Divider,
+  Select,
+  MenuItem,
+  FormControl,
 } from "@mui/material";
 import { GridLegacy as Grid } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import theme from "../../theme/theme";
 import { StudyProgramme } from "../../types/StudyProgramme.types";
 import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 interface ResultsProps {
   studyProgrammes: StudyProgramme[];
@@ -25,6 +30,46 @@ interface ResultsProps {
  * Receives study programmes as props from parent component.
  */
 const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
+  const [favorites, setFavorites] = useState<Set<number>>(new Set());
+  const [selectedUniversity, setSelectedUniversity] = useState<string>("");
+  const [selectedDegree, setSelectedDegree] = useState<string>("");
+
+  const toggleFavorite = (programmeId: number) => {
+    setFavorites((prev) => {
+      const newFavorites = new Set(prev);
+      if (newFavorites.has(programmeId)) {
+        newFavorites.delete(programmeId);
+      } else {
+        newFavorites.add(programmeId);
+      }
+      return newFavorites;
+    });
+  };
+
+  // Get unique universities and degrees for filter options
+  const universities = useMemo(() => {
+    const uniqueUniversities = [
+      ...new Set(studyProgrammes.map((p) => p.university)),
+    ];
+    return uniqueUniversities.sort();
+  }, [studyProgrammes]);
+
+  const degrees = useMemo(() => {
+    const uniqueDegrees = [...new Set(studyProgrammes.map((p) => p.degree))];
+    return uniqueDegrees.sort();
+  }, [studyProgrammes]);
+
+  // Filter programmes based on selected filters
+  const filteredProgrammes = useMemo(() => {
+    return studyProgrammes.filter((programme) => {
+      const matchesUniversity =
+        !selectedUniversity || programme.university === selectedUniversity;
+      const matchesDegree =
+        !selectedDegree || programme.degree === selectedDegree;
+      return matchesUniversity && matchesDegree;
+    });
+  }, [studyProgrammes, selectedUniversity, selectedDegree]);
+
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -52,68 +97,167 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
             </Typography>
           </Box>
         ) : (
-          <List sx={{ width: "100%" }}>
-            {studyProgrammes.map((programme, index) => (
-              <React.Fragment key={programme.id}>
-                <ListItem
+          <>
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={2}
+              alignItems={{ xs: "flex-start", sm: "center" }}
+              sx={{ marginBottom: 3 }}
+            >
+              <FormControl
+                sx={{
+                  minWidth: { xs: 250, sm: 250 },
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "25px",
+                    backgroundColor: "#FFFFFF",
+                  },
+                }}
+              >
+                <Select
+                  id="university-filter"
+                  value={selectedUniversity}
+                  onChange={(e) => setSelectedUniversity(e.target.value)}
+                  displayEmpty
+                  IconComponent={ArrowDropDownIcon}
+                  renderValue={(selected) => (
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <PlaceIcon sx={{ fontSize: 20, color: "#4A4458" }} />
+                      <Typography
+                        sx={{ color: selected ? "#4A4458" : "#9E9E9E" }}
+                      >
+                        {selected || "Universität/Hochschule"}
+                      </Typography>
+                    </Box>
+                  )}
                   sx={{
-                    padding: 2,
-                    transition: "background-color 0.3s",
-                    "&:hover": {
-                      backgroundColor: "#D5F3AC",
+                    borderRadius: "25px",
+                    "& .MuiSelect-icon": {
+                      color: "#4A4458",
                     },
                   }}
                 >
-                  <Grid
-                    container
-                    spacing={2}
-                    alignItems="flex-start"
-                    sx={{ width: "100%" }}
+                  <MenuItem value="">All Universities</MenuItem>
+                  {universities.map((university) => (
+                    <MenuItem key={university} value={university}>
+                      {university}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl
+                sx={{
+                  minWidth: { xs: 250, sm: 250 },
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "25px",
+                    backgroundColor: "#FFFFFF",
+                  },
+                }}
+              >
+                <Select
+                  id="degree-filter"
+                  value={selectedDegree}
+                  onChange={(e) => setSelectedDegree(e.target.value)}
+                  displayEmpty
+                  IconComponent={ArrowDropDownIcon}
+                  renderValue={(selected) => (
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <StarsIcon sx={{ fontSize: 20, color: "#4A4458" }} />
+                      <Typography
+                        sx={{ color: selected ? "#4A4458" : "#9E9E9E" }}
+                      >
+                        {selected || "Abschluss"}
+                      </Typography>
+                    </Box>
+                  )}
+                  sx={{
+                    borderRadius: "25px",
+                    "& .MuiSelect-icon": {
+                      color: "#4A4458",
+                    },
+                  }}
+                >
+                  <MenuItem value="">All Degrees</MenuItem>
+                  {degrees.map((degree) => (
+                    <MenuItem key={degree} value={degree}>
+                      {degree}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Stack>
+
+            <List sx={{ width: "100%" }}>
+              {filteredProgrammes.map((programme, index) => (
+                <React.Fragment key={programme.id}>
+                  <ListItem
+                    sx={{
+                      padding: 2,
+                      transition: "background-color 0.3s",
+                      "&:hover": {
+                        backgroundColor: "#efffd9ff",
+                      },
+                    }}
                   >
                     <Grid
-                      item
-                      xs={12}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
+                      container
+                      spacing={2}
+                      alignItems="flex-start"
+                      sx={{ width: "100%" }}
                     >
-                      <Typography variant="h6" sx={{ fontWeight: 500 }}>
-                        {programme.name}
-                      </Typography>
-                      <IconButton aria-label="favorite" sx={{ ml: 1 }}>
-                        <FavoriteIcon />
-                      </IconButton>
-                    </Grid>
-
-                    <Grid item xs={12} sm={6}>
-                      <Stack direction="row" alignItems="center" gap={0.5}>
-                        <PlaceIcon
-                          sx={{ fontSize: 18, color: "text.secondary" }}
-                        />
-                        <Typography variant="body2" color="text.secondary">
-                          {programme.university}
+                      <Grid
+                        item
+                        xs={12}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                          {programme.name}
                         </Typography>
-                      </Stack>
-                    </Grid>
+                        <IconButton
+                          aria-label="favorite"
+                          onClick={() => toggleFavorite(programme.id)}
+                          sx={{ ml: 1 }}
+                        >
+                          {favorites.has(programme.id) ? (
+                            <FavoriteIcon sx={{ color: "#FFBDEE" }} />
+                          ) : (
+                            <FavoriteBorderIcon sx={{ color: "#9E9E9E" }} />
+                          )}
+                        </IconButton>
+                      </Grid>
 
-                    <Grid item xs={12} sm={6}>
-                      <Stack direction="row" alignItems="center" gap={0.5}>
-                        <StarsIcon
-                          sx={{ fontSize: 18, color: "text.secondary" }}
-                        />
-                        <Typography variant="body2" color="text.secondary">
-                          {programme.degree}
-                        </Typography>
-                      </Stack>
+                      <Grid item xs={12} sm={6}>
+                        <Stack direction="row" alignItems="center" gap={0.5}>
+                          <PlaceIcon
+                            sx={{ fontSize: 18, color: "text.secondary" }}
+                          />
+                          <Typography variant="body2" color="text.secondary">
+                            {programme.university}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6}>
+                        <Stack direction="row" alignItems="center" gap={0.5}>
+                          <StarsIcon
+                            sx={{ fontSize: 18, color: "text.secondary" }}
+                          />
+                          <Typography variant="body2" color="text.secondary">
+                            {programme.degree}
+                          </Typography>
+                        </Stack>
+                      </Grid>
                     </Grid>
-                  </Grid>
-                </ListItem>
-                {index < studyProgrammes.length - 1 && <Divider />}
-              </React.Fragment>
-            ))}
-          </List>
+                  </ListItem>
+                  {index < filteredProgrammes.length - 1 && <Divider />}
+                </React.Fragment>
+              ))}
+            </List>
+          </>
         )}
       </Box>
     </ThemeProvider>
