@@ -65,7 +65,7 @@ app.get("/api/test-db", async (_req, res) => {
 });
 
 // Serve static files from the frontend
-app.use(express.static(path.join(__dirname, "..", "client", "build")));
+app.use(express.static(path.join(__dirname, "..", "client", "dist")));
 
 // SPA fallback
 app.get("*", (req, res, next) => {
@@ -73,7 +73,7 @@ app.get("*", (req, res, next) => {
     return next();
   }
 
-  res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
+  res.sendFile(path.join(__dirname, "..", "client", "dist", "index.html"));
 });
 
 // 404 handler
