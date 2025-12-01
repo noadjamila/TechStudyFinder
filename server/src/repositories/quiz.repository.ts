@@ -12,7 +12,7 @@ export async function getFilteredResultsLevel1(
   let query = `SELECT id FROM studiengang_raw_data_simulation`;
   let params: string[] = [];
 
-  //debugging for neither grundständig nore weiterführend
+  //debugging for neither grundständig nor weiterführend
   if (!studientyp) {
     console.log(
       "[DB DEBUG] Filtering skipped (studientyp is undefined/all). Returning ALL IDs.",

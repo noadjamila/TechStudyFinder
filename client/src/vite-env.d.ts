@@ -13,3 +13,13 @@ declare module "virtual:pwa-register" {
     options?: RegisterSWOptions,
   ): (reloadPage?: boolean) => void;
 }
+
+declare module "*.png" {
+  const value: string;
+  export default value;
+}
+
+declare module "*.jpg" {
+  const value: string;
+  export default value;
+}

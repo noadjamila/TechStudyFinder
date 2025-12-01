@@ -15,7 +15,7 @@ interface FilterResponse {
   ids: number[];
 }
 
-const API_BASE_URL = "http://localhost:5001/api/quiz";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 /**
  * Sends the user's Level 1 answers to the backend filtering endpoint.
@@ -45,9 +45,7 @@ export async function postFilterLevel(
     const result: FilterResponse = await res.json();
     return result;
   } catch (err) {
-    console.error("Fehler beim API-Aufruf (postFilterLevel):", err);
-    throw new Error(
-      "Konnte keine Verbindung zum Backend herstellen oder Daten verarbeiten.",
-    );
+    console.error("Error during API call (postFilterLevel):", err);
+    throw new Error("Could not connect to the backend or process data.");
   }
 }

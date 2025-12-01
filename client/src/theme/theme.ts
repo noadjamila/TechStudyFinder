@@ -2,18 +2,17 @@ import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
-    primary: { main: "#b9a5ff" },
-    secondary: { main: "#f1e1ff" },
-    grey: {
-      900: "#2E2E2E",
-      100: "#f7f7f7",
+    mode: "light",
+    quiz: {
+      buttonColor: "#AFCEFF",
+      buttonChecked: "#AFCEFF",
+      cardBackground: "#E2FBBE",
+      textColor: "#3F3E42",
     },
   },
   typography: {
-    fontFamily: "'Poppins', sans-serif",
-    h1: { fontFamily: "'Open Sans', sans-serif" },
-    h2: { fontFamily: "'Open Sans', sans-serif" },
-    h3: { fontFamily: "'Open Sans', sans-serif" },
+    fontFamily: "Roboto, sans-serif",
   },
 });
+
 export default theme;

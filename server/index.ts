@@ -29,7 +29,9 @@ if (!process.env.GITHUB_WEBHOOK_SECRET) {
 }
 
 const app = express();
+app.set("trust proxy", true);
 const PORT = process.env.PORT || 5001;
+const clientDistPath = path.join(__dirname, "..", "..", "client", "dist");
 
 let server: import("http").Server | null = null;
 
@@ -64,7 +66,7 @@ app.get("/api/test-db", async (_req, res) => {
 });
 
 // Serve static files from the frontend
-app.use(express.static(path.join(__dirname, "..", "client", "build")));
+app.use(express.static(clientDistPath));
 
 // SPA fallback
 app.get("*", (req, res, next) => {
@@ -72,7 +74,7 @@ app.get("*", (req, res, next) => {
     return next();
   }
 
-  res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
+  res.sendFile(path.join(clientDistPath, "index.html"));
 });
 
 // 404 handler
