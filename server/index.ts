@@ -46,7 +46,6 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 // Deployment route
-app.use("/deploy/webhook", express.raw({ type: "*/*" }));
 app.use("/deploy", deployRouter);
 
 // Standard JSON parsing middleware

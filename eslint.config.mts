@@ -33,17 +33,21 @@ export default defineConfig([
     },
 
     plugins: {
+      react: reactPlugin,
       "@typescript-eslint": tsPlugin as any,
     },
 
     rules: {
+      ...reactPlugin.configs.recommended.rules,
+      "react/react-in-jsx-scope": "off",
       "no-undef": "off",
       "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-unused-vars": "off",
+
       "@typescript-eslint/no-unused-vars": [
         "error",
-        { argsIgnorePattern: "^_" },
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
-      "no-unused-vars": "off",
     },
   },
 
@@ -78,8 +82,10 @@ export default defineConfig([
   // Client
   {
     files: ["client/**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}"],
+
     plugins: {
       react: reactPlugin,
+      "@typescript-eslint": tsPlugin as any,
     },
 
     extends: [js.configs.recommended],
@@ -104,6 +110,16 @@ export default defineConfig([
       ...reactPlugin.configs.recommended.rules,
       "react/react-in-jsx-scope": "off",
       "no-console": ["warn", { allow: ["warn", "error"] }],
+
+      "no-unused-vars": "off",
+
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
     },
   },
 
