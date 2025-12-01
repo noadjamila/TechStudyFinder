@@ -1,5 +1,6 @@
 import React from "react";
 import Results from "../components/quiz/Results";
+import DataSource from "../components/DataSource";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 
 const ResultsPage: React.FC = () => {
@@ -22,9 +23,32 @@ const ResultsPage: React.FC = () => {
       university: "Rheinische Friedrich-Wilhelms-Universität Bonn",
       degree: "Bachelor of Science",
     },
+    {
+      id: 4,
+      name: "Medieninformatik",
+      university: "Universität zu Lübeck",
+      degree: "Bachelor of Science",
+    },
+    {
+      id: 5,
+      name: "Data Science",
+      university: "Ludwig-Maximilians-Universität München",
+      degree: "Master of Science",
+    },
   ]; // Replace with actual data retrieval logic
 
-  return <Results studyProgrammes={studyProgrammes} />;
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        width: "100%",
+        overflow: "auto",
+      }}
+    >
+      <DataSource />
+      <Results studyProgrammes={studyProgrammes} />
+    </div>
+  );
 };
 
 export default ResultsPage;

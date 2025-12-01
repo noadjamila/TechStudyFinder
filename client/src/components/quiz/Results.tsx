@@ -155,7 +155,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                     },
                   }}
                 >
-                  <MenuItem value="">All Universities</MenuItem>
+                  <MenuItem value="">Alle Universitäten/Hochschulen</MenuItem>
                   {universities.map((university) => (
                     <MenuItem key={university} value={university}>
                       {university}
@@ -207,7 +207,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                     },
                   }}
                 >
-                  <MenuItem value="">All Degrees</MenuItem>
+                  <MenuItem value="">Alle Abschlüsse</MenuItem>
                   {degrees.map((degree) => (
                     <MenuItem key={degree} value={degree}>
                       {degree}
