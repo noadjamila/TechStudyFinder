@@ -84,7 +84,15 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
           variant="h2"
           component="h1"
           gutterBottom
-          sx={{ color: "#4A4458", marginBottom: 3 }}
+          color="text.header"
+          sx={{
+            marginBottom: 3,
+            fontWeight: 700,
+            fontSize: "2.5rem", // Desktop: 40px
+            "@media (max-width:600px)": {
+              fontSize: "2rem", // Mobile: 32px
+            },
+          }}
         >
           Meine Ergebnisse
         </Typography>
@@ -92,7 +100,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
         {studyProgrammes.length === 0 ? (
           <Box sx={{ padding: 2 }}>
             <Typography variant="h6">No study programmes found</Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2">
               Try adjusting your quiz answers
             </Typography>
           </Box>
@@ -109,7 +117,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   minWidth: { xs: 250, sm: 250 },
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "25px",
-                    backgroundColor: "#FFFFFF",
+                    backgroundColor: theme.palette.results.background,
                   },
                 }}
               >
@@ -121,9 +129,17 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   IconComponent={ArrowDropDownIcon}
                   renderValue={(selected) => (
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <PlaceIcon sx={{ fontSize: 20, color: "#4A4458" }} />
+                      <PlaceIcon
+                        sx={{
+                          fontSize: 20,
+                        }}
+                      />
                       <Typography
-                        sx={{ color: selected ? "#4A4458" : "#9E9E9E" }}
+                        sx={{
+                          color: selected
+                            ? theme.palette.results.filterSelected
+                            : theme.palette.results.filterUnselected,
+                        }}
                       >
                         {selected || "Universität/Hochschule"}
                       </Typography>
@@ -132,7 +148,10 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   sx={{
                     borderRadius: "25px",
                     "& .MuiSelect-icon": {
-                      color: "#4A4458",
+                      color: theme.palette.results.filterBorder,
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: theme.palette.quiz.buttonColor,
                     },
                   }}
                 >
@@ -150,7 +169,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   minWidth: { xs: 250, sm: 250 },
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "25px",
-                    backgroundColor: "#FFFFFF",
+                    backgroundColor: theme.palette.results.background,
                   },
                 }}
               >
@@ -162,9 +181,17 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   IconComponent={ArrowDropDownIcon}
                   renderValue={(selected) => (
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <StarsIcon sx={{ fontSize: 20, color: "#4A4458" }} />
+                      <StarsIcon
+                        sx={{
+                          fontSize: 20,
+                        }}
+                      />
                       <Typography
-                        sx={{ color: selected ? "#4A4458" : "#9E9E9E" }}
+                        sx={{
+                          color: selected
+                            ? theme.palette.results.filterSelected
+                            : theme.palette.results.filterUnselected,
+                        }}
                       >
                         {selected || "Abschluss"}
                       </Typography>
@@ -173,7 +200,10 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   sx={{
                     borderRadius: "25px",
                     "& .MuiSelect-icon": {
-                      color: "#4A4458",
+                      color: theme.palette.results.filterBorder,
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: theme.palette.quiz.buttonColor,
                     },
                   }}
                 >
@@ -195,7 +225,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                       padding: 2,
                       transition: "background-color 0.3s",
                       "&:hover": {
-                        backgroundColor: "#efffd9ff",
+                        backgroundColor: theme.palette.results.hoverBackground,
                       },
                     }}
                   >
@@ -223,19 +253,27 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                           sx={{ ml: 1 }}
                         >
                           {favorites.has(programme.id) ? (
-                            <FavoriteIcon sx={{ color: "#FFBDEE" }} />
+                            <FavoriteIcon
+                              sx={{
+                                color:
+                                  theme.palette.results.favoriteIconToggled,
+                              }}
+                            />
                           ) : (
-                            <FavoriteBorderIcon sx={{ color: "#9E9E9E" }} />
+                            <FavoriteBorderIcon
+                              sx={{
+                                color:
+                                  theme.palette.results.favoriteIconUntoggled,
+                              }}
+                            />
                           )}
                         </IconButton>
                       </Grid>
 
                       <Grid item xs={12} sm={6}>
                         <Stack direction="row" alignItems="center" gap={0.5}>
-                          <PlaceIcon
-                            sx={{ fontSize: 18, color: "text.secondary" }}
-                          />
-                          <Typography variant="body2" color="text.secondary">
+                          <PlaceIcon sx={{ fontSize: 20 }} />
+                          <Typography variant="body1">
                             {programme.university}
                           </Typography>
                         </Stack>
@@ -243,10 +281,8 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
 
                       <Grid item xs={12} sm={6}>
                         <Stack direction="row" alignItems="center" gap={0.5}>
-                          <StarsIcon
-                            sx={{ fontSize: 18, color: "text.secondary" }}
-                          />
-                          <Typography variant="body2" color="text.secondary">
+                          <StarsIcon sx={{ fontSize: 20 }} />
+                          <Typography variant="body1">
                             {programme.degree}
                           </Typography>
                         </Stack>
