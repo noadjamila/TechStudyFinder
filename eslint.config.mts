@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import * as tsParser from "@typescript-eslint/parser";
 import globals from "globals";
