@@ -43,7 +43,7 @@ export default defineConfig([
       ...reactPlugin.configs.recommended.rules,
       "react/react-in-jsx-scope": "off",
       "no-undef": "off",
-      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-console": ["warn", { allow: ["warn", "error", "debug"] }],
       "no-unused-vars": "off",
 
       "@typescript-eslint/no-unused-vars": [
