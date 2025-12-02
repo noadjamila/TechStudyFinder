@@ -97,9 +97,9 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
 
       {studyProgrammes.length === 0 ? (
         <Box sx={{ padding: 2 }}>
-          <Typography variant="h6">No study programmes found</Typography>
+          <Typography variant="h6">Keine Studiengänge gefunden</Typography>
           <Typography variant="body2">
-            Try adjusting your quiz answers
+            Versuchen Sie, Ihre Quizantworten anzupassen
           </Typography>
         </Box>
       ) : (
