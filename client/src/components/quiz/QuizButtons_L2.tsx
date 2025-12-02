@@ -13,12 +13,19 @@ export default function QuizButtons_L2({
 }: QuizButtonsProps) {
   const theme = useTheme();
   return (
-    <Stack spacing={2} sx={{ mt: 3, justifyContent: "center" }}>
+    <Stack
+      spacing={2}
+      sx={{
+        mt: 3,
+        justifyContent: "center",
+        padding: "0 2em",
+      }}
+    >
       <Box
         sx={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          columnGap: "10px",
+          columnGap: "16px",
           width: "100%",
         }}
       >
