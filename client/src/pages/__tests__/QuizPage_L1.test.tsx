@@ -8,7 +8,7 @@ import * as quizApi from "../../services/quizApi";
 vi.mock("../../services/quizApi");
 
 // Mocks the quizCard
-vi.mock("../../components/quiz/QuizCardBase", () => ({
+vi.mock("../../components/quiz/QuizCard_L1", () => ({
   default: ({ question, options, onSelect }: any) =>
     React.createElement(
       "div",

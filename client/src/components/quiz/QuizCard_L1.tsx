@@ -14,7 +14,6 @@ import { useTheme } from "@mui/material/styles";
  * Other buttons or actions can be implemented with the children prop.
  * @template T The type of the option's unique identifier (value).
  */
-
 export interface QuizOption<T = string> {
   label: string;
   value: T;
@@ -43,8 +42,7 @@ export interface QuizCardBaseProps<T = string> {
  * @param {QuizCardBaseProps<T>} props The props defining the card content and behavior.
  * @returns {JSX.Element} The Quiz Card component.
  */
-
-const QuizCardBase = <T,>({
+const QuizCard_L1 = <T,>({
   question,
   options,
   selected,
@@ -114,9 +112,10 @@ const QuizCardBase = <T,>({
                     showRadioButtons ? (
                       <Radio
                         checked={isSelected}
+                        onChange={() => onSelect?.(o.value)}
                         value={String(o.value)}
                         sx={{
-                          color: theme.palette.text.primary,
+                          color: theme.palette.quiz.buttonChecked,
                           "&.Mui-checked": {
                             color: theme.palette.quiz.buttonChecked,
                           },
@@ -141,4 +140,4 @@ const QuizCardBase = <T,>({
   );
 };
 
-export default QuizCardBase;
+export default QuizCard_L1;
