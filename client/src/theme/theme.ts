@@ -59,6 +59,22 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: "Roboto, sans-serif",
+    h5: {
+      fontSize: "1.25rem",
+      fontWeight: 500,
+      lineHeight: 1.6,
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+          borderRadius: "9px",
+          fontWeight: "bold",
+        },
+      },
+    },
   },
 });
 
