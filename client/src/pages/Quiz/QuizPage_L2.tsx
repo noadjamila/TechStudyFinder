@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
-import QuizCard from "../components/quiz/QuizCard_L2";
-import QuizLayout from "../layouts/QuizLayout";
-import { RiasecType, initialScores } from "../types/RiasecTypes";
-import ErrorScreen from "../components/error-screen/ErrorScreen";
-import CardStack from "../components/quiz/CardStack";
+import QuizCard from "../../components/quiz/QuizCard_L2";
+import QuizLayout from "../../layouts/QuizLayout";
+import { RiasecType, initialScores } from "../../types/RiasecTypes";
+import ErrorScreen from "../../components/error-screen/ErrorScreen";
+import CardStack from "../../components/quiz/CardStack";
+
+export interface QuizPageL2Props {
+  previousIds: number[];
+  onNextLevel: () => void;
+}
 
 /**
  * `QuizPage_L2` is the page-component for the second level of the quiz.
@@ -25,7 +30,20 @@ import CardStack from "../components/quiz/CardStack";
  *
  * @returns {JSX.Element} A rendered quiz interface with progress tracking and scoring.
  */
-const QuizPage_L2: React.FC = () => {
+const QuizPage_L2: React.FC<QuizPageL2Props> = ({
+  previousIds,
+  onNextLevel,
+}) => {
+  // TODO: Remove both debugs once database works
+  console.debug(
+    "Will contain IDs from L1, once response from backend is successful:",
+    previousIds,
+  );
+  console.debug(
+    "Will send user from L2 to L3 after finishing the questions, once response from backend is successful:",
+    onNextLevel,
+  );
+
   const [questions, setQuestions] = useState<
     { text: string; riasec_type: RiasecType }[]
   >([]);
