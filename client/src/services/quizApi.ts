@@ -27,7 +27,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
 export async function postFilterLevel(
   payload: Level1Payload,
 ): Promise<FilterResponse> {
-  const endpoint = `${API_BASE_URL}/filter`;
+  const endpoint = `${API_BASE_URL}/api/quiz/filter`;
 
   try {
     const res = await fetch(endpoint, {
