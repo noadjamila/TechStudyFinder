@@ -2,7 +2,6 @@
  * Interface defining the payload structure for Level 1 quiz filtering.
  * The user's answer(s) for Level 1, specifically the studientyp.
  */
-
 interface Level1Payload {
   level: 1;
   answers: [{ studientyp: string }] | [];
@@ -15,7 +14,7 @@ interface FilterResponse {
   ids: number[];
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 /**
  * Sends the user's Level 1 answers to the backend filtering endpoint.
@@ -27,7 +26,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
 export async function postFilterLevel(
   payload: Level1Payload,
 ): Promise<FilterResponse> {
-  const endpoint = `${API_BASE_URL}/api/quiz/filter`;
+  const endpoint = `${API_BASE_URL}/quiz/filter`;
 
   try {
     const res = await fetch(endpoint, {
