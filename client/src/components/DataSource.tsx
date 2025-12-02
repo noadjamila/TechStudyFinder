@@ -7,7 +7,7 @@ import HRKLogo from "../assets/HRK_logo.png";
  * and attribution text for the data source.
  */
 export default function DataSource() {
-  const HRK_WEBSITE_URL = "https://www.hrk.de/"; // TODO: Add HRK website URL
+  const HRK_WEBSITE_URL = "https://www.hrk.de/";
 
   return (
     <Box
