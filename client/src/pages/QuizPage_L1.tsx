@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import QuizLayout from "../layouts/QuizLayout";
-import QuizCardBase from "../components/quiz/QuizCardBase";
+import QuizCard_L1 from "../components/quiz/QuizCard_L1";
 import { postFilterLevel } from "../services/quizApi";
 import QuizMascot from "../assets/Männchen_Home_Level1.png";
 
@@ -59,7 +59,7 @@ export default function QuizPage_L1({ onNextLevel }: QuizPageL1Props) {
 
   return (
     <QuizLayout currentIndex={selected ? 1 : 0} questionsTotal={1}>
-      <QuizCardBase
+      <QuizCard_L1
         question="Möchtest du..."
         options={L1_OPTIONS}
         selected={selected}
