@@ -1,4 +1,4 @@
-import { Button, Stack, useTheme } from "@mui/material";
+import { Box, Button, Stack, useTheme } from "@mui/material";
 
 interface QuizButtonsProps {
   onYes: () => void;
@@ -13,32 +13,37 @@ export default function QuizButtons_L2({
 }: QuizButtonsProps) {
   const theme = useTheme();
   return (
-    <Stack
-      direction={"row"}
-      spacing={2}
-      sx={{ mt: 3, justifyContent: "center" }}
-    >
-      <Button
-        variant="outlined"
-        onClick={onNo}
+    <Stack spacing={2} sx={{ mt: 3, justifyContent: "center" }}>
+      <Box
         sx={{
-          borderColor: theme.custom.secondaryBorder,
-          color: theme.palette.text.primary,
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          columnGap: "10px",
+          width: "100%",
         }}
       >
-        Nein
-      </Button>
-
-      <Button
-        variant="outlined"
-        onClick={onYes}
-        sx={{
-          bgcolor: theme.custom.primaryButton,
-          color: theme.palette.text.primary,
-        }}
-      >
-        Ja
-      </Button>
+        <Button
+          variant="outlined"
+          onClick={onNo}
+          sx={{
+            borderColor: theme.custom.secondaryBorder,
+            color: theme.palette.text.primary,
+          }}
+        >
+          Nein
+        </Button>
+        <Button
+          variant="outlined"
+          onClick={onYes}
+          sx={{
+            bgcolor: theme.custom.primaryButton,
+            borderColor: theme.custom.primaryButton,
+            color: theme.palette.text.primary,
+          }}
+        >
+          Ja
+        </Button>
+      </Box>
 
       <Button
         variant="outlined"
