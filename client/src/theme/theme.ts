@@ -71,7 +71,7 @@ const theme = createTheme({
         root: {
           textTransform: "none",
           borderRadius: "9px",
-          fontWeight: "bold",
+          fontWeight: "600",
           height: "50px",
         },
       },

@@ -37,24 +37,15 @@ const QuizLayout = ({
   return (
     <Box
       sx={{
-        minHeight: "100vh",
         width: "100%",
-        display: "flex",
-        justifyContent: "center",
-        bgcolor: theme.palette.background.default,
+        maxWidth: 420,
+        px: 2,
+        mt: 2,
+        boxSizing: "border-box",
+        margin: "0 auto",
       }}
     >
-      <Box
-        sx={{
-          width: "100%",
-          maxWidth: 600,
-          px: 2,
-          py: 4,
-          display: "flex",
-          flexDirection: "column",
-          gap: 4,
-        }}
-      >
+      <Box sx={{ width: "100%", maxWidth: 500, px: 2, pt: 4 }}>
         <Progressbar
           current={currentIndex}
           total={questionsTotal}
@@ -62,9 +53,27 @@ const QuizLayout = ({
           fillColor={theme.palette.quiz.progressFill}
         />
 
-        <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
-          {children}
+        <Box
+          sx={{
+            mt: 1,
+            textAlign: "left",
+            color: theme.palette.text.primary,
+            fontSize: "0.9rem",
+          }}
+        >
+          Frage {currentIndex} von {questionsTotal}
         </Box>
+      </Box>
+
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: 420,
+          mt: 4,
+          px: 2,
+        }}
+      >
+        {children}
       </Box>
     </Box>
   );
