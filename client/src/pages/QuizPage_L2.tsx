@@ -3,6 +3,7 @@ import QuizCard from "../components/quiz/QuizCard_L2";
 import QuizLayout from "../layouts/QuizLayout";
 import { RiasecType, initialScores } from "../types/RiasecTypes";
 import ErrorScreen from "../components/error-screen/ErrorScreen";
+import CardStack from "../components/quiz/CardStack";
 
 /**
  * `QuizPage_L2` is the page-component for the second level of the quiz.
@@ -44,9 +45,7 @@ const QuizPage_L2: React.FC = () => {
 
   const currentQuestion = questions[currentIndex];
 
-  /**
-   * Advances to the next question without exceeding the total count.
-   */
+  //Advances to the next question without exceeding the total count.
   const next = () => setCurrentIndex((i) => Math.min(TOTAL_QUESTIONS, i + 1));
 
   /**
@@ -170,11 +169,16 @@ const QuizPage_L2: React.FC = () => {
           currentIndex={currentIndex + 1}
           questionsTotal={TOTAL_QUESTIONS}
         >
-          <QuizCard
-            key={currentIndex}
-            question={currentQuestion.text}
-            onSelect={(option) => handleSelect(option)}
-          />
+          <CardStack
+            currentIndex={currentIndex + 1}
+            totalCards={TOTAL_QUESTIONS}
+          >
+            <QuizCard
+              key={currentIndex}
+              question={currentQuestion.text}
+              onSelect={(option) => handleSelect(option)}
+            />
+          </CardStack>
         </QuizLayout>
       ) : (
         <div>

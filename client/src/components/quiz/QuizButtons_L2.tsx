@@ -18,7 +18,7 @@ export default function QuizButtons_L2({
       sx={{
         mt: 3,
         justifyContent: "center",
-        padding: "0 4em",
+        padding: "0 2em",
       }}
     >
       <Box
