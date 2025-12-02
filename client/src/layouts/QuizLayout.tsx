@@ -39,13 +39,16 @@ const QuizLayout = ({
       sx={{
         width: "100%",
         maxWidth: 420,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
         px: 2,
         mt: 2,
         boxSizing: "border-box",
         margin: "0 auto",
       }}
     >
-      <Box sx={{ width: "100%", maxWidth: 500, px: 2, pt: 4 }}>
+      <Box sx={{ width: "100%", maxWidth: 420, px: 2, pt: 4 }}>
         <Progressbar
           current={currentIndex}
           total={questionsTotal}
