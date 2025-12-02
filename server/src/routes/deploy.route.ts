@@ -1,9 +1,6 @@
 import express, { Router } from "express";
 import { handleWebhook } from "../controllers/deploy.controller";
-import {
-  globalWebhookRateLimiter,
-  webhookRateLimiter,
-} from "../middlewares/rate-limiter.middleware";
+import { webhookRateLimiter } from "../middlewares/rate-limiter.middleware";
 
 const deployRouter = Router();
 
@@ -23,7 +20,6 @@ deployRouter.post(
     },
   }),
   webhookRateLimiter,
-  globalWebhookRateLimiter,
   handleWebhook,
 );
 
