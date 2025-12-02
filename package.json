@@ -41,7 +41,7 @@
     "lint-staged": "^16.2.6",
     "npm-run-all2": "^8.0.4",
     "prettier": "^3.7.3",
-    "source-map": "^0.7.4",
+    "source-map": "^0.7.6",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.2"
   },
