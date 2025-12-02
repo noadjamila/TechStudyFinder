@@ -119,7 +119,7 @@ const QuizPage_L2: React.FC = () => {
       const result = await res.json();
       setResponseCount(result.ids.length);
     } catch (err) {
-      console.error("Fehler beim Senden:", err);
+      console.error("Error sending the data: ", err);
       setError({
         title: "Fehler beim Senden",
         message:
@@ -128,9 +128,7 @@ const QuizPage_L2: React.FC = () => {
     }
   };
 
-  /**
-   * Fetches the questions of level 2 from the backend when the component mounts.
-   */
+  // Fetches the questions of level 2 from the backend when the component mounts.
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -143,7 +141,7 @@ const QuizPage_L2: React.FC = () => {
         const data = await res.json();
 
         if (!data.questions || data.questions.length === 0) {
-          throw new Error("Keine Fragen erhalten");
+          throw new Error("No questions found in the response.");
         }
 
         setQuestions(data.questions);
@@ -160,7 +158,7 @@ const QuizPage_L2: React.FC = () => {
     fetchQuestions();
   }, []);
 
-  // Wenn ein Fehler aufgetreten ist, zeige nur den ErrorScreen
+  // In case of an error, display the ErrorScreen component.
   if (error != null) {
     return <ErrorScreen title={error.title} message={error.message} />;
   }
