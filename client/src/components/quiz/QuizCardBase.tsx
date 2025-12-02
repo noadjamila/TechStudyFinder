@@ -6,7 +6,7 @@ import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Box from "@mui/material/Box";
 import { SxProps, Theme } from "@mui/material/styles";
-import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 
 /**
  * Interface defining selectable options within the quiz card.
@@ -56,95 +56,88 @@ const QuizCardBase = <T,>({
 }: QuizCardBaseProps<T>) => {
   const theme = useTheme();
 
-  const quizRadioTheme = createTheme(theme, {
-    components: {
-      MuiRadio: {
-        styleOverrides: {
-          root: {
-            color: theme.palette.quiz.textColor,
-            "&.Mui-checked": {
-              color: theme.palette.quiz.buttonChecked,
-            },
-          },
-        },
-      },
-    },
-  });
-
   const renderRadioOptions = showRadioButtons && options && options.length > 0;
+
   return (
-    <ThemeProvider theme={quizRadioTheme}>
-      <Card
+    <Card
+      sx={{
+        position: "relative",
+        maxWidth: 600,
+        width: "100%",
+        mx: "auto",
+        boxShadow: 3,
+        borderRadius: 2,
+        backgroundColor: theme.palette.quiz.cardBackground,
+        color: theme.palette.text.primary,
+        pt: 2,
+        pb: 6,
+        overflow: "visible",
+        ...sx,
+      }}
+    >
+      {/* render the mascot in case that the level has a mascot */}
+      {imageSrc && (
+        <Box
+          component="img"
+          src={imageSrc}
+          alt="Quiz Mascot"
+          sx={{
+            position: "absolute",
+            top: -90,
+            right: 40,
+            width: 60,
+            height: 90,
+          }}
+        />
+      )}
+
+      <CardContent
         sx={{
-          position: "relative",
-          maxWidth: 600,
-          width: "100%",
-          mx: "auto",
-          boxShadow: 3,
-          borderRadius: 2,
-          backgroundColor: theme.palette.quiz.cardBackground,
-          color: theme.palette.quiz.textColor,
-          pt: 2,
-          pb: 6,
-          overflow: "visible",
-          ...sx,
+          px: "30px",
         }}
       >
-        {/* rendert the mascot in case that the level has a mascot */}
-        {imageSrc && (
-          <Box
-            component="img"
-            src={imageSrc}
-            alt="Quiz Mascot"
-            sx={{
-              position: "absolute",
-              top: -90,
-              right: 40,
-              width: 60,
-              height: 90,
-            }}
-          />
+        {/* the question*/}
+        <Typography variant="h5" component="div" gutterBottom sx={{ mb: 3 }}>
+          {question}
+        </Typography>
+
+        {/* the answer options */}
+        {renderRadioOptions && (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            {options!.map((o) => {
+              const isSelected = selected === o.value;
+              return (
+                <FormControlLabel
+                  key={String(o.value)}
+                  onClick={() => onSelect?.(o.value)}
+                  control={
+                    showRadioButtons ? (
+                      <Radio
+                        checked={isSelected}
+                        value={String(o.value)}
+                        sx={{
+                          color: theme.palette.text.primary,
+                          "&.Mui-checked": {
+                            color: theme.palette.quiz.buttonChecked,
+                          },
+                        }}
+                      />
+                    ) : (
+                      <></>
+                    )
+                  }
+                  label={o.label}
+                  sx={{ mr: 0 }}
+                />
+              );
+            })}
+          </Box>
         )}
-
-        <CardContent
-          sx={{
-            px: "30px",
-          }}
-        >
-          {/* the question*/}
-          <Typography variant="h5" component="div" gutterBottom sx={{ mb: 3 }}>
-            {question}
-          </Typography>
-
-          {/* the answer-possibilites */}
-          {renderRadioOptions && (
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              {options!.map((o) => {
-                const isSelected = selected === o.value;
-                return (
-                  <FormControlLabel
-                    key={String(o.value)}
-                    onClick={() => onSelect?.(o.value)}
-                    control={
-                      showRadioButtons ? (
-                        <Radio checked={isSelected} value={String(o.value)} />
-                      ) : (
-                        <></>
-                      )
-                    }
-                    label={o.label}
-                    sx={{ mr: 0 }}
-                  />
-                );
-              })}
-            </Box>
-          )}
-          {children && (
-            <Box sx={{ mt: renderRadioOptions ? 3 : 0 }}>{children}</Box>
-          )}
-        </CardContent>
-      </Card>
-    </ThemeProvider>
+        {children && (
+          <Box sx={{ mt: renderRadioOptions ? 3 : 0 }}>{children}</Box>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
