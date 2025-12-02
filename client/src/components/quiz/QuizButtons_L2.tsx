@@ -30,6 +30,7 @@ export default function QuizButtons_L2({
         }}
       >
         <Button
+          aria-label="Antwort Nein"
           variant="outlined"
           onClick={onNo}
           sx={{
@@ -40,6 +41,7 @@ export default function QuizButtons_L2({
           Nein
         </Button>
         <Button
+          aria-label="Antwort Ja"
           variant="outlined"
           onClick={onYes}
           sx={{
@@ -53,6 +55,7 @@ export default function QuizButtons_L2({
       </Box>
 
       <Button
+        aria-label="Antwort Überspringen"
         variant="outlined"
         onClick={onSkip}
         sx={{

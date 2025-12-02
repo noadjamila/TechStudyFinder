@@ -41,6 +41,11 @@ const Progressbar: React.FC<ProgressbarProps> = ({
 
   return (
     <div
+      role="progressbar"
+      aria-valuenow={safeCurrent}
+      aria-valuemin={0}
+      aria-valuemax={total}
+      aria-label={`Frage ${safeCurrent} von ${total}`}
       style={{
         height: 10,
         borderRadius: 5,
