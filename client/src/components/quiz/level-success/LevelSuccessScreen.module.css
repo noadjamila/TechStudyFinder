@@ -1,0 +1,40 @@
+.wrapper {
+  width: 100%;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+.card {
+  width: 100%;
+  max-width: 720px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  transition: opacity 300ms ;
+}
+
+.show { opacity: 1; }
+.hide  { opacity: 0; height: 0; margin: 0; overflow: hidden; }
+
+.actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
