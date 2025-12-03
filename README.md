@@ -66,19 +66,22 @@ Run the application locally with the following steps:
 To set up the database, follow the steps below:
 
 1. **Create the tables**
-  Execute the SQL scripts for the required tables. To avoid dependency issues, run the institutions script first:
-  - [Institution schema](server/db/schema/institutions.sql)
-  - [Degree programme schema](server/db/schema/degreeprogrammes.sql)
+   Execute the SQL scripts for the required tables. To avoid dependency issues, run the institutions script first:
+
+- [Institution schema](server/db/schema/institutions.sql)
+- [Degree programme schema](server/db/schema/degreeprogrammes.sql)
 
 2. **Insert the data**
-  The data for institutions and degree programmes is provided via a private XML document.
-  To import this data into the database, run the following commands:
-  ```bash
-   npx ts-node server/db/scripts/import_institutions.ts
-   ```
-   ```bash
-   npx ts-node server/db/scripts/import_degreeprogrammes.ts
-   ```
+   The data for institutions and degree programmes is provided via a private XML document.
+   To import this data into the database, run the following commands:
+
+```bash
+ npx ts-node server/db/scripts/import_institutions.ts
+```
+
+```bash
+npx ts-node server/db/scripts/import_degreeprogrammes.ts
+```
 
 ## Tech Stack
 
