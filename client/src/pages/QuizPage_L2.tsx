@@ -50,21 +50,36 @@ const QuizPage_L2: React.FC = () => {
   const next = () => setCurrentIndex((i) => Math.min(TOTAL_QUESTIONS, i + 1));
 
   const goBack = () => {
-    const currentType = currentQuestion.riasec_type;
+    const previousAnswer = answers[currentIndex - 1];
+    const lastQuestion = questions[currentIndex - 1];
+    const lastType = lastQuestion.riasec_type;
+
+    const pointsMap: Record<string, number> = {
+      yes: 1,
+      no: -1,
+      skip: 0,
+    };
+    const points = pointsMap[previousAnswer];
+    console.log(
+      `Zurück von Frage ${currentIndex}: Rückgängig machen → "${previousAnswer}" = ${points} Punkte für ${lastType}`,
+    );
+
     setScores((prev) => {
-      const newScores = { ...prev, [currentType]: prev[currentType] - 1 };
+      const newScores = { ...prev, [lastType]: prev[lastType] - points };
 
       if (currentIndex === TOTAL_QUESTIONS - 1) {
         const topScores = getTopThreeScores(newScores);
         setHighestScores(topScores);
         sendData(topScores);
       }
-
+      console.log("Scores nach Rückgängig:", newScores);
       return newScores;
     });
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
+    setTimeout(() => {
+      if (currentIndex > 0) {
+        setCurrentIndex(currentIndex - 1);
+      }
+    }, 300);
   };
 
   /**
@@ -82,10 +97,15 @@ const QuizPage_L2: React.FC = () => {
 
   /**
    * Handles the user’s answer selection for the current question.
+   * Saves the current selected Option.
    * Updates scores, logs results for debugging, and triggers progression.
    *
    * @param {"yes" | "no" | "skip"} option - The selected answer option.
    */
+  const [answers, setAnswers] = useState<Record<string, "yes" | "no" | "skip">>(
+    {},
+  );
+
   const handleSelect = (option: string) => {
     const currentType = currentQuestion.riasec_type;
 
@@ -95,6 +115,11 @@ const QuizPage_L2: React.FC = () => {
       skip: 0,
     };
     const points = pointsMap[option] ?? 0;
+    console.log(
+      `Frage ${currentIndex}: Antwort="${option}" → ${points} Punkte für ${currentType}`,
+    );
+
+    setAnswers((prev) => ({ ...prev, [currentIndex]: option }));
 
     setScores((prev) => {
       const newScores = { ...prev, [currentType]: prev[currentType] + points };
@@ -104,7 +129,7 @@ const QuizPage_L2: React.FC = () => {
         setHighestScores(topScores);
         sendData(topScores);
       }
-
+      console.log("Neue Scores:", newScores);
       return newScores;
     });
 
