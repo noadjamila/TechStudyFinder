@@ -13,18 +13,4 @@ const webhookRateLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-/**
- * Global rate limiter middleware for deployment hook endpoint.
- * Limits to 20 requests per 5 minutes across all IP addresses.
- * This helps prevent distributed attacks, e.g. IP rotation.
- */
-const globalWebhookRateLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes
-  limit: 20, // max 20 deployments globally per windowMs
-  keyGenerator: () => "global", // Use a constant key to apply limit globally
-  message: "Too many global deployment requests, please try again later.",
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-export { webhookRateLimiter, globalWebhookRateLimiter };
+export { webhookRateLimiter };

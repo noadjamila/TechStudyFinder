@@ -14,7 +14,7 @@ export async function getFilteredResultsLevel1(
 
   //debugging for neither grundständig nor weiterführend
   if (!studientyp) {
-    console.log(
+    console.debug(
       "[DB DEBUG] Filtering skipped (studientyp is undefined/all). Returning ALL IDs.",
     );
   }
@@ -25,13 +25,13 @@ export async function getFilteredResultsLevel1(
     params.push(studientyp);
   }
 
-  console.log(`[DB DEBUG] Executing Query: ${query}`);
-  console.log(`[DB DEBUG] Parameters: ${params.join(", ")}`);
+  console.debug(`[DB DEBUG] Executing Query: ${query}`);
+  console.debug(`[DB DEBUG] Parameters: ${params.join(", ")}`);
 
   // send query to database, return study programme ids
   const result = await pool.query(query, params);
 
-  console.log(`[DB DEBUG] Rows found: ${result.rows.length}`);
+  console.debug(`[DB DEBUG] Rows found: ${result.rows.length}`);
 
   return result.rows.map((row: any) => row.id);
 }

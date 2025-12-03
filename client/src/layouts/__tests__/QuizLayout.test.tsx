@@ -1,7 +1,14 @@
+import React from "react";
 import { render, screen } from "@testing-library/react";
+import { describe, test, expect } from "vitest";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "../../theme/theme";
 import QuizLayout, { QuizLayoutProps } from "../QuizLayout";
 
 const DummyChild = () => <div>Test Content</div>;
+
+const renderWithTheme = (ui: React.ReactElement) =>
+  render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
 
 describe("QuizLayout", () => {
   const defaultProps: QuizLayoutProps = {
@@ -11,7 +18,7 @@ describe("QuizLayout", () => {
   };
 
   test("renders the progressbar with correct props", () => {
-    render(<QuizLayout {...defaultProps} />);
+    renderWithTheme(<QuizLayout {...defaultProps} />);
 
     const progressBar = screen.getByRole("progressbar");
     expect(progressBar).toBeInTheDocument();
@@ -24,7 +31,7 @@ describe("QuizLayout", () => {
   });
 
   test("renders children correctly", () => {
-    render(<QuizLayout {...defaultProps} />);
+    renderWithTheme(<QuizLayout {...defaultProps} />);
     expect(screen.getByText("Test Content")).toBeInTheDocument();
   });
 });
