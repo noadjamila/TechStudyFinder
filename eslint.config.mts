@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import * as tsParser from "@typescript-eslint/parser";
 import globals from "globals";
@@ -21,7 +23,13 @@ export default defineConfig([
   // Server
   {
     files: ["server/**/*.{js,mjs,ts,mts}"],
-    ignores: ["**/*.test.ts", "**/__tests__/**", "server/jest.config.js"],
+    ignores: [
+      "**/*.test.ts",
+      "**/__tests__/**",
+      "server/jest.config.js",
+      "server/babel.config.js",
+      "server/jest.integration.config.js",
+    ],
     extends: [js.configs.recommended],
 
     languageOptions: {
@@ -33,17 +41,21 @@ export default defineConfig([
     },
 
     plugins: {
+      react: reactPlugin,
       "@typescript-eslint": tsPlugin as any,
     },
 
     rules: {
+      ...reactPlugin.configs.recommended.rules,
+      "react/react-in-jsx-scope": "off",
       "no-undef": "off",
-      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-console": ["warn", { allow: ["warn", "error", "debug"] }],
+      "no-unused-vars": "off",
+
       "@typescript-eslint/no-unused-vars": [
         "error",
-        { argsIgnorePattern: "^_" },
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
-      "no-unused-vars": "off",
     },
   },
 
@@ -78,8 +90,10 @@ export default defineConfig([
   // Client
   {
     files: ["client/**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}"],
+
     plugins: {
       react: reactPlugin,
+      "@typescript-eslint": tsPlugin as any,
     },
 
     extends: [js.configs.recommended],
@@ -104,6 +118,16 @@ export default defineConfig([
       ...reactPlugin.configs.recommended.rules,
       "react/react-in-jsx-scope": "off",
       "no-console": ["warn", { allow: ["warn", "error"] }],
+
+      "no-unused-vars": "off",
+
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
     },
   },
 

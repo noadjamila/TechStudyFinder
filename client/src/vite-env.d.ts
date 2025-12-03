@@ -1,3 +1,11 @@
+interface ImportMetaEnv {
+  readonly VITE_API_URL: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
 declare module "virtual:pwa-register" {
   export interface RegisterSWOptions {
     immediate?: boolean;
@@ -12,4 +20,14 @@ declare module "virtual:pwa-register" {
   export function registerSW(
     options?: RegisterSWOptions,
   ): (reloadPage?: boolean) => void;
+}
+
+declare module "*.png" {
+  const value: string;
+  export default value;
+}
+
+declare module "*.jpg" {
+  const value: string;
+  export default value;
 }

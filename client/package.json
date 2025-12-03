@@ -16,21 +16,24 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
-    "@types/jest": "^29.0.0",
+    "@types/jest": "^30.0.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.1.1",
+    "@vitest/coverage-v8": "^4.0.14",
     "jsdom": "^27.2.0",
     "typescript": "^5.9.3",
     "vite": "^7.2.4",
     "vite-plugin-pwa": "^1.1.0",
-    "vitest": "^4.0.13"
+    "vitest": "^4.0.14"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
     "format": "prettier --write ."
   },
   "browserslist": {

@@ -63,6 +63,7 @@ Run the application locally with the following steps:
 ## Tech Stack
 
 **Frontend**: React (Progressive Web App)
+For further documentation, see the [client README](client/README.md).
 
 **Backend**: Node.js (REST API)
 
@@ -70,6 +71,21 @@ Run the application locally with the following steps:
 
 > The project is currently in the **concept and prototyping phase**.  
 > The final architecture and algorithm will be determined as the system evolves.
+
+---
+
+## Automated maintenance
+
+This project uses GitHub Dependabot to automatically keep dependencies up to date.
+Dependabot regularly monitors the following areas:
+
+- Node.js dependencies in the root directory
+- Client (React): `/client`
+- Server (Express/TS): `/server`
+- GitHub Actions workflows
+
+New versions automatically generate pull requests, which should be reviewed before merging.
+The configuration is located in `.github/dependabot.yml`.
 
 ---
 
