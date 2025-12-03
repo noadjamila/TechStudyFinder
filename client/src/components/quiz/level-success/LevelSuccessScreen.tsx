@@ -7,7 +7,7 @@ export type LevelSuccessScreenProps = {
   /* The level the user has just completed (1, 2 or 3)*/
   currentLevel: Level;
   /* callback */
-  onContinue: () => void;
+  onContinue?: () => void;
 };
 /*Short descriptions for what happens in the next level*/
 const NEXT_LEVEL_TEXT: Record<Level, string> = {
@@ -18,7 +18,7 @@ const NEXT_LEVEL_TEXT: Record<Level, string> = {
 
 export default function LevelSuccessScreen({
   currentLevel,
-  onContinue,
+  onContinue = () => {},
 }: LevelSuccessScreenProps) {
   /*Component phase:
    * "won" then show “Level X completed!”
