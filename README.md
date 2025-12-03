@@ -4,14 +4,14 @@
 
 Many young people, especially **FLINTA** (women, lesbian, inter, non-binary, trans, and agender individuals), never consider studying Informatics because they assume it’s only about programming or math. This project aims to change that by showing how diverse and creative IT can be and how it connects to things people already care about.
 
-**Disclaimer:**  
+**Disclaimer:**
 This application is not intended to provide professional career or psychological advice. It’s meant for general informational purposes only and shouldn’t replace guidance from qualified professionals.
 
 ---
 
 ## Project Overview
 
-The app helps users explore how their personal interests can relate to Informatics and related study programs.  
+The app helps users explore how their personal interests can relate to Informatics and related study programs.
 It’s meant to **inspire** and **guide**, not test technical skills. Both bachelor's and master's programmes are included in the application. The user may filter for their desired degree.
 
 **Planned user flow:**
@@ -28,6 +28,7 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [License](LICENSE)
 - [Question Documentation](docs/questions.md)
+- [Database Schema](docs/database_schema.md)
 
 ---
 
@@ -60,6 +61,25 @@ Run the application locally with the following steps:
 
 ---
 
+## Initialize the Database
+
+To set up the database, follow the steps below:
+
+1. **Create the tables**
+  Execute the SQL scripts for the required tables. To avoid dependency issues, run the institutions script first:
+  - [Institution schema](server/db/schema/institutions.sql)
+  - [Degree programme schema](server/db/schema/degreeprogrammes.sql)
+
+2. **Insert the data**
+  The data for institutions and degree programmes is provided via a private XML document.
+  To import this data into the database, run the following commands:
+  ```bash
+   npx ts-node server/db/scripts/import_institutions.ts
+   ```
+   ```bash
+   npx ts-node server/db/scripts/import_degreeprogrammes.ts
+   ```
+
 ## Tech Stack
 
 **Frontend**: React (Progressive Web App)
@@ -69,7 +89,7 @@ For further documentation, see the [client README](client/README.md).
 
 **Matching Logic**: To be defined (algorithm for mapping interests to programs)
 
-> The project is currently in the **concept and prototyping phase**.  
+> The project is currently in the **concept and prototyping phase**.
 > The final architecture and algorithm will be determined as the system evolves.
 
 ---
