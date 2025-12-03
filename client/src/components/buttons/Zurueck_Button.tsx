@@ -22,7 +22,6 @@ export default function ZurueckButton({
         borderRadius: "20px",
         fontWeight: "bold",
         textTransform: "none",
-        boxShadow: 3,
         ...sx,
       }}
     >
