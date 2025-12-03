@@ -4,11 +4,12 @@ import styles from "./LevelSuccessScreen.module.css";
 type Level = 1 | 2 | 3;
 
 export type LevelSuccessScreenProps = {
+  /* The level the user has just completed (1, 2 or 3)*/
   currentLevel: Level;
-
+  /* callback */
   onContinue: () => void;
 };
-
+/*Short descriptions for what happens in the next level*/
 const NEXT_LEVEL_TEXT: Record<Level, string> = {
   1: "Interessenbasierte Orientierung (RISEC)",
   2: "Vertiefende Fachinteressen / Spezialisierung",
@@ -19,9 +20,14 @@ export default function LevelSuccessScreen({
   currentLevel,
   onContinue,
 }: LevelSuccessScreenProps) {
+  /*Component phase:
+   * "won" then show “Level X completed!”
+   * "next" then show “Next Level: …”
+   */
   const [phase, setPhase] = useState<"won" | "next">("won");
 
   useEffect(() => {
+    // After 1.2 seconds, switch to next-level text
     const id = setTimeout(() => setPhase("next"), 1200);
     return () => clearTimeout(id);
   }, [currentLevel]);
@@ -34,6 +40,7 @@ export default function LevelSuccessScreen({
   return (
     <div className={styles.wrapper}>
       <div role="dialog" aria-labelledby="ls-title" className={styles.card}>
+        {/* Phase 1  visible first */}
         <h2
           id="ls-title"
           className={`${styles.title} ${
@@ -44,6 +51,7 @@ export default function LevelSuccessScreen({
           Level1 {currentLevel} geschafft!
         </h2>
 
+        {/* Phase 2  fades in after the delay */}
         <h2
           className={`${styles.title} ${
             phase === "next" ? styles.visible : styles.hidden
