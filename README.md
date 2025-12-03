@@ -1,19 +1,17 @@
 # TechStudyFinder
 
-This is a test line.
-
 **TechStudyFinder** is a progressive web application designed to help young people discover Informatics study programs that align with their **interests, hobbies, and personality**.
 
 Many young people, especially **FLINTA** (women, lesbian, inter, non-binary, trans, and agender individuals), never consider studying Informatics because they assume it’s only about programming or math. This project aims to change that by showing how diverse and creative IT can be and how it connects to things people already care about.
 
-**Disclaimer:**
+**Disclaimer:**  
 This application is not intended to provide professional career or psychological advice. It’s meant for general informational purposes only and shouldn’t replace guidance from qualified professionals.
 
 ---
 
 ## Project Overview
 
-The app helps users explore how their personal interests can relate to Informatics and related study programs.
+The app helps users explore how their personal interests can relate to Informatics and related study programs.  
 It’s meant to **inspire** and **guide**, not test technical skills. Both bachelor's and master's programmes are included in the application. The user may filter for their desired degree.
 
 **Planned user flow:**
@@ -71,7 +69,7 @@ For further documentation, see the [client README](client/README.md).
 
 **Matching Logic**: To be defined (algorithm for mapping interests to programs)
 
-> The project is currently in the **concept and prototyping phase**.
+> The project is currently in the **concept and prototyping phase**.  
 > The final architecture and algorithm will be determined as the system evolves.
 
 ---
