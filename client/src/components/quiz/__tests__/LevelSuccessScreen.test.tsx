@@ -25,7 +25,7 @@ describe("LevelSuccessScreen (AK-compliant)", () => {
 
     // transition to next level text
     expect(
-      screen.getByText("Interessenbasierte Orientierung (RISEC)"),
+      await screen.findByText(/Interessenbasierte Orientierung\s*\(RISEC\)/i),
     ).toBeInTheDocument();
 
     vi.useRealTimers();
