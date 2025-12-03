@@ -3,6 +3,7 @@ import QuizCard from "../components/quiz/QuizCard_L2";
 import QuizLayout from "../layouts/QuizLayout";
 import { RiasecType, initialScores } from "../types/RiasecTypes";
 import ErrorScreen from "../components/error-screen/ErrorScreen";
+import { useNavigate } from "react-router-dom";
 
 /**
  * `QuizPage_L2` is the page-component for the second level of the quiz.
@@ -48,8 +49,11 @@ const QuizPage_L2: React.FC = () => {
    * Advances to the next question without exceeding the total count.
    */
   const next = () => setCurrentIndex((i) => Math.min(TOTAL_QUESTIONS, i + 1));
-
+  const navigate = useNavigate();
   const goBack = () => {
+    if (currentIndex == 0) {
+      navigate("/quiz/level/1");
+    }
     const previousAnswer = answers[currentIndex - 1];
     const lastQuestion = questions[currentIndex - 1];
     const lastType = lastQuestion.riasec_type;
