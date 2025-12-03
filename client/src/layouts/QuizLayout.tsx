@@ -48,15 +48,19 @@ const QuizLayout: React.FC<QuizLayoutProps> = ({
     <div className={styles.container}>
       <div className={styles.wrapper}>
         <Progressbar current={currentIndex} total={questionsTotal} />
-        <Zurueck_Button
-          label="Zurück"
-          onClick={oneBack}
-          color="secondary"
-          sx={{
-            padding: "10px 20px",
-            fontSize: "1.1rem",
-          }}
-        />
+        <div className={styles.backButtonContainer}>
+          <Zurueck_Button
+            label="Zurück"
+            onClick={oneBack}
+            color="secondary"
+            sx={{
+              padding: "6px 14px",
+              fontSize: "1rem",
+              width: "auto",
+              minWidth: "unset",
+            }}
+          />
+        </div>
         <main className={styles.middle}>{children}</main>
       </div>
     </div>

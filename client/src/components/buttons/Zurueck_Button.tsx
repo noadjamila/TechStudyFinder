@@ -1,5 +1,6 @@
 import { Button as MUIButton } from "@mui/material";
 import { ButtonProps } from "../../types/Button.types";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 export default function ZurueckButton({
   label = "Zurück Button",
@@ -12,6 +13,7 @@ export default function ZurueckButton({
   return (
     <MUIButton
       variant="outlined"
+      startIcon={<ArrowBackIcon />}
       color={color}
       onClick={onClick}
       disabled={disabled}

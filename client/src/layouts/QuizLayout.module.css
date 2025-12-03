@@ -5,6 +5,11 @@
   height: 100vh;
 }
 
+.backButtonContainer {
+  display: flex;
+  justify-content: flex-start;
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
