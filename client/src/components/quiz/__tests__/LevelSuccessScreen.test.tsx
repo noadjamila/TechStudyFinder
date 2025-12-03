@@ -6,6 +6,7 @@ describe("LevelSuccessScreen (AK-compliant)", () => {
   it("shows the initial success text 'Level1 {level} geschafft!' on first render", () => {
     render(<LevelSuccessScreen currentLevel={1} />);
 
+    // first show the success message
     expect(screen.getByText(/Level1\s+1\s+geschafft!/i)).toBeInTheDocument();
   });
 
@@ -14,12 +15,15 @@ describe("LevelSuccessScreen (AK-compliant)", () => {
 
     render(<LevelSuccessScreen currentLevel={1} />);
 
+    // Initially: only "Level completed"
     expect(screen.getByText(/Level1\s+1\s+geschafft!/i)).toBeInTheDocument();
 
+    // Wait for the transition delay to finish
     await act(async () => {
       vi.advanceTimersByTime(1200);
     });
 
+    // transition to next level text
     expect(
       screen.getByText("Interessenbasierte Orientierung (RISEC)"),
     ).toBeInTheDocument();
@@ -32,12 +36,14 @@ describe("LevelSuccessScreen (AK-compliant)", () => {
 
     render(<LevelSuccessScreen currentLevel={3} />);
 
+    // Phase 1: success text
     expect(screen.getByText(/Level1\s+3\s+geschafft!/i)).toBeInTheDocument();
-
+    // Switch to phase 2
     await act(async () => {
       vi.advanceTimersByTime(1200);
     });
 
+    // Final message
     expect(
       screen.getByText("Du hast alle Level abgeschlossen"),
     ).toBeInTheDocument();
@@ -50,6 +56,7 @@ describe("LevelSuccessScreen (AK-compliant)", () => {
 
     render(<LevelSuccessScreen currentLevel={2} onContinue={onContinue} />);
 
+    // Click the 'Weiter' button
     screen.getByRole("button", { name: /weiter/i }).click();
 
     expect(onContinue).toHaveBeenCalledTimes(1);
