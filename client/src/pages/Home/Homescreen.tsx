@@ -9,7 +9,7 @@ const Homescreen: React.FC = () => {
   const navigate = useNavigate();
 
   const handleQuizStart = () => {
-    navigate("/quiz");
+    navigate("/quiz/level/1");
   };
 
   return (

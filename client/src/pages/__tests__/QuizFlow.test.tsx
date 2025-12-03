@@ -2,9 +2,8 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 
-import QuizFlow from "../Quiz/QuizFlow";
-
 vi.mock("../Quiz/QuizPage_L1", () => ({
+  __esModule: true,
   default: ({ onNextLevel }: { onNextLevel: (ids: number[]) => void }) => (
     <div>
       <div>Mock Level 1</div>
@@ -14,6 +13,7 @@ vi.mock("../Quiz/QuizPage_L1", () => ({
 }));
 
 vi.mock("../Quiz/QuizPage_L2", () => ({
+  __esModule: true,
   default: ({
     previousIds,
     onNextLevel,
@@ -28,6 +28,8 @@ vi.mock("../Quiz/QuizPage_L2", () => ({
   ),
 }));
 
+import QuizFlow from "../Quiz/QuizFlow";
+
 describe("QuizFlow", () => {
   test("renders level 1 initially", () => {
     render(<QuizFlow />);
@@ -38,6 +40,7 @@ describe("QuizFlow", () => {
   test("moves from level 1 to level 2 and passes ids from level 1", () => {
     render(<QuizFlow />);
 
+    // Level 1 to level 2
     fireEvent.click(screen.getByText("go-to-l2"));
 
     expect(
@@ -49,7 +52,9 @@ describe("QuizFlow", () => {
   test("moves to level 3 (renders nothing) after level 2 onNextLevel", () => {
     const { container } = render(<QuizFlow />);
 
+    // Level 1 to level 2
     fireEvent.click(screen.getByText("go-to-l2"));
+    // Level 2 to level 3
     fireEvent.click(screen.getByText("go-to-l3"));
 
     expect(screen.queryByText("Mock Level 1")).not.toBeInTheDocument();
