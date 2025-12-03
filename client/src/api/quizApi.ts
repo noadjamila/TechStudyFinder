@@ -4,7 +4,7 @@
  */
 interface QuizFilterPayload {
   level: number;
-  answers: any[];
+  answers: string[];
   studyProgrammeIds?: number[]; // used in Level 2 and 3
 }
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
 import QuizCard_L1 from "../../components/quiz/QuizCard_L1";
-import { postFilterLevel } from "../../services/quizApi";
+import { postFilterLevel } from "../../api/quizApi";
 import QuizMascot from "../../assets/Männchen_Home_Level1.png";
 
 /** Callback function executed upon successful completion of the level.

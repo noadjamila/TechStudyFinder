@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import React from "react";
 import QuizPage_L1 from "../Quiz/QuizPage_L1";
-import * as quizApi from "../../services/quizApi";
+import * as quizApi from "../../api/quizApi";
 
 // Mock API
 vi.mock("../../services/quizApi");

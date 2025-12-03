@@ -112,7 +112,6 @@ const QuizCard_L1 = <T,>({
                     showRadioButtons ? (
                       <Radio
                         checked={isSelected}
-                        onChange={() => onSelect?.(o.value)}
                         value={String(o.value)}
                         sx={{
                           color: theme.palette.quiz.buttonChecked,

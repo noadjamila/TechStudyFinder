@@ -3,11 +3,11 @@ import { Card, Typography, useTheme } from "@mui/material";
 import QuizButtons_L2 from "./QuizButtons_L2";
 
 /**
- * Props for {@link QuizCard_L2}
+ * Props for the QuizCard_L2 component.
  * Allows parent-components the interaction and modification of this component.
+ * Contains the question text and a callback for when an option is selected.
  */
 export interface QuizCardProps {
-  // Current question to be displayed.
   question: string;
   onSelect: (option: "yes" | "no" | "skip") => void;
 }

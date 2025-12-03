@@ -30,8 +30,8 @@ export interface ProgressbarProps {
 const Progressbar: React.FC<ProgressbarProps> = ({
   current,
   total,
-  bgColor = "eee",
-  fillColor = "333",
+  bgColor = "#eee",
+  fillColor = "#333",
 }) => {
   // Limits the current value so that it never falls below 0 or exceeds the total number.
   const safeCurrent = Math.max(0, Math.min(current, total));
