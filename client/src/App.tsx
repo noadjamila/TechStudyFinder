@@ -6,7 +6,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Homescreen />} />
-      <Route path="/quiz/" element={<QuizFlow />} />
+      <Route path="/quiz" element={<QuizFlow />} />
     </Routes>
   );
 }
