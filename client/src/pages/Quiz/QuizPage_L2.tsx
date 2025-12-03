@@ -47,7 +47,6 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   const [questions, setQuestions] = useState<
     { text: string; riasec_type: RiasecType }[]
   >([]);
-  const TOTAL_QUESTIONS = questions.length;
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [responseCount, setResponseCount] = useState<number>(0);
   const [error, setError] = useState<{ title: string; message: string } | null>(
@@ -61,9 +60,11 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
     { type: RiasecType; score: number }[]
   >([]);
 
+  const TOTAL_QUESTIONS = questions.length;
   const currentQuestion = questions[currentIndex];
+  const quizFinished = TOTAL_QUESTIONS > 0 && currentIndex >= TOTAL_QUESTIONS;
 
-  //Advances to the next question without exceeding the total count.
+  // Advances to the next question without exceeding the total count.
   const next = () => setCurrentIndex((i) => Math.min(TOTAL_QUESTIONS, i + 1));
 
   /**
@@ -86,6 +87,8 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
    * @param {"yes" | "no" | "skip"} option - The selected answer option.
    */
   const handleSelect = (option: string) => {
+    if (!currentQuestion) return;
+
     const currentType = currentQuestion.riasec_type;
 
     const pointsMap: Record<string, number> = {
@@ -98,17 +101,21 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
     setScores((prev) => {
       const newScores = { ...prev, [currentType]: prev[currentType] + points };
 
+      // last question -> compute top 3 and send to backend
       if (currentIndex === TOTAL_QUESTIONS - 1) {
         const topScores = getTopThreeScores(newScores);
         setHighestScores(topScores);
-        sendData(topScores);
+        void sendData(topScores);
       }
 
       return newScores;
     });
 
+    // Move to next question (or to debug screen at the end)
     setTimeout(() => {
-      if (currentIndex < TOTAL_QUESTIONS) next();
+      if (currentIndex < TOTAL_QUESTIONS) {
+        next();
+      }
     }, 300);
   };
 
@@ -133,8 +140,11 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
+
       const result = await res.json();
       setResponseCount(result.ids.length);
+
+      // TODO: Call onNextLevel with the received IDs once backend works and proceed to the next quiz level.
     } catch (err) {
       console.error("Error sending the data: ", err);
       setError({
@@ -180,9 +190,18 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
     return <ErrorScreen title={error.title} message={error.message} />;
   }
 
+  // While questions are still loading (but no error yet), show a simple loading state.
+  if (TOTAL_QUESTIONS === 0) {
+    return (
+      <QuizLayout currentIndex={0} questionsTotal={0}>
+        <div>Lädt...</div>
+      </QuizLayout>
+    );
+  }
+
   return (
     <div>
-      {currentIndex < TOTAL_QUESTIONS ? (
+      {!quizFinished ? (
         <QuizLayout
           currentIndex={currentIndex + 1}
           questionsTotal={TOTAL_QUESTIONS}

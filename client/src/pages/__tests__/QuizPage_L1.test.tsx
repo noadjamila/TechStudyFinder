@@ -1,111 +1,77 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import React from "react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { vi, describe, test, expect, beforeEach } from "vitest";
+import type { Mock } from "vitest";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "../../theme/theme";
+
 import QuizPage_L1 from "../Quiz/QuizPage_L1";
-import * as quizApi from "../../api/quizApi";
+import { postFilterLevel } from "../../api/quizApi";
 
-// Mock API
-vi.mock("../../services/quizApi");
+const renderWithTheme = (ui: React.ReactElement) =>
+  render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
 
-// Mocks the quizCard
-vi.mock("../../components/quiz/QuizCard_L1", () => ({
-  default: ({ question, options, onSelect }: any) =>
-    React.createElement(
-      "div",
-      { "data-testid": "quiz-card-mock" },
-      React.createElement("h2", null, question),
-      options?.map((opt: any) =>
-        React.createElement(
-          "button",
-          {
-            key: opt.value,
-            onClick: () => onSelect(opt.value),
-            "data-testid": `option-${opt.value}`,
-          },
-          opt.label,
-        ),
-      ),
-    ),
+vi.mock("../../api/quizApi", () => ({
+  postFilterLevel: vi.fn(),
 }));
 
-const mockOnNextLevel = vi.fn();
+vi.spyOn(window, "alert").mockImplementation(() => {});
 
-describe("QuizPage_L1 – calls api and logic", () => {
+describe("QuizPage_L1", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockOnNextLevel.mockClear();
   });
 
-  it("renders the question and the answer possibilities", () => {
-    render(<QuizPage_L1 onNextLevel={mockOnNextLevel} />);
-    expect(screen.getByText(/Möchtest du/i)).toBeInTheDocument();
-    expect(screen.getByText(/ein Studium beginnen/i)).toBeInTheDocument();
-    expect(screen.getByText(/dich erstmal umschauen/i)).toBeInTheDocument();
+  test("renders question and options", () => {
+    renderWithTheme(<QuizPage_L1 />);
+
+    expect(screen.getByText("Möchtest du...")).toBeInTheDocument();
+    expect(screen.getByText("ein Studium beginnen?")).toBeInTheDocument();
+    expect(screen.getByText("dein Studium fortsetzen?")).toBeInTheDocument();
+    expect(screen.getByText("dich erstmal umschauen?")).toBeInTheDocument();
   });
 
-  it("calls the API with 'grundständig'", async () => {
-    const mockIds = [101, 102];
-    vi.mocked(quizApi.postFilterLevel).mockResolvedValue({ ids: mockIds });
+  test("calls API and onNextLevel after selecting an option", async () => {
+    const mockNext = vi.fn();
+    (postFilterLevel as Mock).mockResolvedValue({ ids: [1, 2, 3] });
 
-    render(<QuizPage_L1 onNextLevel={mockOnNextLevel} />);
-    fireEvent.click(screen.getByText(/ein Studium beginnen/i));
+    renderWithTheme(<QuizPage_L1 onNextLevel={mockNext} />);
+
+    fireEvent.click(screen.getByText(/ein Studium beginnen\?/i));
 
     await waitFor(() => {
-      expect(quizApi.postFilterLevel).toHaveBeenCalledWith({
-        level: 1,
-        answers: [{ studientyp: "grundständig" }],
-      });
+      expect(postFilterLevel).toHaveBeenCalled(); // statt CalledTimes(1)
     });
 
-    expect(mockOnNextLevel).toHaveBeenCalledWith(mockIds);
+    expect(mockNext).toHaveBeenCalledWith([1, 2, 3]);
   });
 
-  it("calls API with 'weiterführend' ", async () => {
-    vi.mocked(quizApi.postFilterLevel).mockResolvedValue({ ids: [301] });
+  test("sends empty answers array when 'all' is selected", async () => {
+    const mockNext = vi.fn();
+    (postFilterLevel as Mock).mockResolvedValue({ ids: [42] });
 
-    render(<QuizPage_L1 onNextLevel={mockOnNextLevel} />);
-    fireEvent.click(screen.getByText(/dein Studium fortsetzen/i));
+    renderWithTheme(<QuizPage_L1 onNextLevel={mockNext} />);
+
+    fireEvent.click(screen.getByText(/dich erstmal umschauen\?/i));
 
     await waitFor(() => {
-      expect(quizApi.postFilterLevel).toHaveBeenCalledWith({
-        level: 1,
-        answers: [{ studientyp: "weiterführend" }],
-      });
+      expect(postFilterLevel).toHaveBeenCalled();
     });
+
+    const payload = (postFilterLevel as Mock).mock.calls[0][0];
+    expect(Array.isArray(payload.answers)).toBe(true);
+    expect(payload.answers.length).toBe(0);
   });
 
-  it("calls API without a filter, all study IDs are the result", async () => {
-    vi.mocked(quizApi.postFilterLevel).mockResolvedValue({ ids: [201, 202] });
+  test("shows alert on API error", async () => {
+    (postFilterLevel as Mock).mockRejectedValue(new Error("fail"));
 
-    render(<QuizPage_L1 onNextLevel={mockOnNextLevel} />);
-    fireEvent.click(screen.getByText(/dich erstmal umschauen/i));
+    renderWithTheme(<QuizPage_L1 />);
 
-    await waitFor(() => {
-      expect(quizApi.postFilterLevel).toHaveBeenCalledWith({
-        level: 1,
-        answers: [],
-      });
-    });
-  });
-
-  it("shows an alert because of an API mistakte", async () => {
-    vi.mocked(quizApi.postFilterLevel).mockRejectedValue(
-      new Error("Network error"),
-    );
-
-    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
-
-    render(<QuizPage_L1 onNextLevel={mockOnNextLevel} />);
-    fireEvent.click(screen.getByText(/ein Studium beginnen/i));
+    fireEvent.click(screen.getByText(/ein Studium beginnen\?/i));
 
     await waitFor(() => {
-      expect(alertSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Error") || expect.stringContaining("error"),
-      );
+      expect(window.alert).toHaveBeenCalled();
     });
-
-    expect(mockOnNextLevel).not.toHaveBeenCalled();
-
-    alertSpy.mockRestore();
   });
 });

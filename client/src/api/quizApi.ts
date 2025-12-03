@@ -1,11 +1,18 @@
-/**
- * Interface defining the payload structure for Level 1 quiz filtering.
- * The user's answer(s) for Level 1, specifically the studientyp.
- */
-interface QuizFilterPayload {
-  level: number;
-  answers: string[];
-  studyProgrammeIds?: number[]; // used in Level 2 and 3
+interface Level1Answer {
+  studientyp: string;
+}
+
+interface Level2Answer {
+  type: string; // RiasecType
+  score: number;
+}
+
+type QuizAnswer = Level1Answer | Level2Answer;
+
+export interface QuizFilterPayload {
+  level: 1 | 2 | 3;
+  answers: QuizAnswer[];
+  studyProgrammeIds?: number[];
 }
 
 /**

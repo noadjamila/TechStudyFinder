@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, Typography, useTheme } from "@mui/material";
-import QuizButtons_L2 from "./QuizButtons_L2";
+import QuizButtons_L2 from "../buttons/QuizButtons_L2";
 
 /**
  * Props for the QuizCard_L2 component.
