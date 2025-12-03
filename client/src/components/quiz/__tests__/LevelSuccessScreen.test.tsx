@@ -13,7 +13,7 @@ describe("LevelSuccessScreen (AK-compliant)", () => {
   it("switches to the next level description after 1200ms for level 1", async () => {
     vi.useFakeTimers();
 
-    render(<LevelSuccessScreen currentLevel={1} />);
+    const { rerender } = render(<LevelSuccessScreen currentLevel={1} />);
 
     // Initially: only "Level completed"
     expect(screen.getByText(/Level1\s+1\s+geschafft!/i)).toBeInTheDocument();
@@ -23,10 +23,14 @@ describe("LevelSuccessScreen (AK-compliant)", () => {
       vi.advanceTimersByTime(1200);
     });
 
+    rerender(<LevelSuccessScreen currentLevel={1} />);
+
     // transition to next level text
-    expect(
-      await screen.findByText(/Interessenbasierte Orientierung\s*\(RISEC\)/i),
-    ).toBeInTheDocument();
+    const next = await screen.findByText(
+      /Interessenbasierte Orientierung\s*\(RISEC\)/i,
+    );
+
+    expect(next).toBeInTheDocument();
 
     vi.useRealTimers();
   });
