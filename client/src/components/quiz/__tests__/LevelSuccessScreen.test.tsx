@@ -1,86 +1,109 @@
-import { render, screen, act } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import LevelSuccessScreen from "../level-success/LevelSuccessScreen";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import LevelSuccessScreen, {
+  LevelSuccessScreenProps,
+} from "../level-success/LevelSuccessScreen";
 
-describe("LevelSuccessScreen (AK-compliant)", async () => {
-  it("shows the initial success text 'Level1 {level} geschafft!' on first render", () => {
-    render(<LevelSuccessScreen currentLevel={1} />);
-    expect(screen.getByText(/Level1\s+1\s+geschafft!/i)).toBeInTheDocument();
+// Mock CSS module import
+jest.mock("./LevelSuccessScreen.module.css", () => ({
+  wrapper: "wrapper",
+  card: "card",
+  title: "title",
+  visible: "visible",
+  hidden: "hidden",
+  actions: "actions",
+  button: "button",
+}));
+
+const mockOnContinue = jest.fn();
+
+const renderLevelSuccessScreen = (props: LevelSuccessScreenProps) => {
+  render(<LevelSuccessScreen {...props} />);
+};
+
+describe("LevelSuccessScreen", () => {
+  it("should render the correct level completion message for level 1", () => {
+    renderLevelSuccessScreen({ currentLevel: 1, onContinue: mockOnContinue });
+
+    // Phase 1: "Level 1 geschafft!"
+    expect(screen.getByText(/Level\s*1\s*geschafft!/i)).toBeInTheDocument();
   });
 
-  it("switches to the next level description after 1200ms for level 1", async () => {
-    vi.useFakeTimers();
+  it("should render the correct next level message after 1.2 seconds for level 1", async () => {
+    renderLevelSuccessScreen({ currentLevel: 1, onContinue: mockOnContinue });
 
-    render(<LevelSuccessScreen currentLevel={1} />);
-
-    // Phase 1 visible initially
-    expect(screen.getByText(/Level1\s+1\s+geschafft!/i)).toBeInTheDocument();
-
-    // Advance the timers to trigger the transition
-    await act(async () => {
-      vi.advanceTimersByTime(1200);
-    });
-
-    // Check for the next-level description for Level 1
-    const next = await screen.findByText(
-      /Interessenbasierte Orientierung\s*\(RISEC\)/i,
+    // Wait for Phase 2 to appear after 1200ms
+    await waitFor(
+      () => {
+        expect(
+          screen.getByText(
+            /Next\s*Level:\s*Interessenbasierte\s*Orientierung\s*\(RISEC\)/i,
+          ),
+        ).toBeInTheDocument();
+      },
+      { timeout: 5000 },
     );
-    expect(next).toBeInTheDocument();
+  });
 
-    vi.useRealTimers();
-  }, 10000); // Increase the timeout for CI environments
+  it("should render the correct next level message after 1.2 seconds for level 2", async () => {
+    renderLevelSuccessScreen({ currentLevel: 2, onContinue: mockOnContinue });
 
-  it("switches to the next level description after 1200ms for level 2", async () => {
-    vi.useFakeTimers();
+    // Phase 1: "Level 2 geschafft!"
+    expect(screen.getByText(/Level\s*2\s*geschafft!/i)).toBeInTheDocument();
 
-    render(<LevelSuccessScreen currentLevel={2} />);
-
-    // Phase 1 visible for Level 2
-    expect(screen.getByText(/Level1\s+2\s+geschafft!/i)).toBeInTheDocument();
-
-    // Advance the timers to trigger the transition
-    await act(async () => {
-      vi.advanceTimersByTime(1200);
-    });
-
-    // Check for the next-level description for Level 2
-    const next = await screen.findByText(
-      /Vertiefende Fachinteressen \/ Spezialisierung/i,
+    // Wait for Phase 2 to appear after 1200ms
+    await waitFor(
+      () => {
+        expect(
+          screen.getByText(
+            /Next\s*Level:\s*Vertiefende\s*Fachinteressen\s*\/\s*Spezialisierung/i,
+          ),
+        ).toBeInTheDocument();
+      },
+      { timeout: 5000 },
     );
-    expect(next).toBeInTheDocument();
+  });
 
-    vi.useRealTimers();
-  }, 10000); // Increase the timeout for CI environments
+  it("should correctly handle level 3 (final level) and show 'Du hast alle Level abgeschlossen'", async () => {
+    renderLevelSuccessScreen({ currentLevel: 3, onContinue: mockOnContinue });
 
-  it("shows the final completion text for level 3 after the delay", async () => {
-    vi.useFakeTimers();
+    // Phase 1: "Level 3 geschafft!"
+    expect(screen.getByText(/Level\s*3\s*geschafft!/i)).toBeInTheDocument();
 
-    render(<LevelSuccessScreen currentLevel={3} />);
+    // Wait for Phase 2 to appear after 1200ms
+    await waitFor(
+      () => {
+        expect(
+          screen.getByText("Du hast alle Level abgeschlossen"),
+        ).toBeInTheDocument();
+      },
+      { timeout: 5000 },
+    );
+  });
 
-    // Phase 1: success text for Level 3
-    expect(screen.getByText(/Level1\s+3\s+geschafft!/i)).toBeInTheDocument();
+  it("should trigger the onContinue function when the 'Weiter' button is clicked", () => {
+    renderLevelSuccessScreen({ currentLevel: 2, onContinue: mockOnContinue });
 
-    // Switch to phase 2 for Level 3
-    await act(async () => {
-      vi.advanceTimersByTime(1200);
-    });
+    // Phase 1: "Level 2 geschafft!"
+    expect(screen.getByText(/Level\s*2\s*geschafft!/i)).toBeInTheDocument();
 
-    // Final message for Level 3
+    // Click the "Weiter" button
+    fireEvent.click(screen.getByRole("button", { name: /weiter/i }));
+
+    // Ensure onContinue is called
+    expect(mockOnContinue).toHaveBeenCalledTimes(1);
+  });
+
+  it("should not display phase 2 message before 1.2 seconds", () => {
+    renderLevelSuccessScreen({ currentLevel: 1, onContinue: mockOnContinue });
+
+    // Phase 1: "Level 1 geschafft!"
+    expect(screen.getByText(/Level\s*1\s*geschafft!/i)).toBeInTheDocument();
+
+    // Phase 2 should not be visible yet
     expect(
-      screen.getByText("Du hast alle Level abgeschlossen"),
-    ).toBeInTheDocument();
-
-    vi.useRealTimers();
-  }, 10000); // Increase the timeout for CI environments
-
-  it("calls onContinue when the button is clicked", () => {
-    const onContinue = vi.fn();
-
-    render(<LevelSuccessScreen currentLevel={2} onContinue={onContinue} />);
-
-    // Click the 'Weiter' button
-    screen.getByRole("button", { name: /weiter/i }).click();
-
-    expect(onContinue).toHaveBeenCalledTimes(1);
+      screen.queryByText(
+        /Next\s*Level:\s*Interessenbasierte\s*Orientierung\s*\(RISEC\)/i,
+      ),
+    ).not.toBeInTheDocument();
   });
 });
