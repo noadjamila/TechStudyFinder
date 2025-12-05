@@ -219,6 +219,7 @@ const QuizPage_L2: React.FC = () => {
           currentIndex={currentIndex + 1}
           questionsTotal={TOTAL_QUESTIONS}
           oneBack={goBack}
+          showBackButton={true}
         >
           <QuizCard
             key={currentIndex}

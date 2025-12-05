@@ -23,7 +23,9 @@ export interface QuizLayoutProps {
    */
   children: React.ReactNode;
 
-  oneBack: () => void;
+  oneBack?: () => void;
+
+  showBackButton?: boolean;
 }
 
 /**
@@ -43,23 +45,16 @@ const QuizLayout: React.FC<QuizLayoutProps> = ({
   questionsTotal,
   children,
   oneBack,
+  showBackButton = true,
 }: QuizLayoutProps) => {
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
-        <Progressbar current={currentIndex} total={questionsTotal} />
-        <div className={styles.backButtonContainer}>
-          <Zurueck_Button
-            label="Zurück"
-            onClick={oneBack}
-            color="secondary"
-            sx={{
-              padding: "6px 14px",
-              fontSize: "1rem",
-              width: "auto",
-              minWidth: "unset",
-            }}
-          />
+        <div className={styles.topArea}>
+          {showBackButton && (
+            <Zurueck_Button label="Zurück" onClick={oneBack} sx={{}} />
+          )}
+          <Progressbar current={currentIndex} total={questionsTotal} />
         </div>
         <main className={styles.middle}>{children}</main>
       </div>

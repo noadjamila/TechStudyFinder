@@ -60,7 +60,7 @@ export default function QuizPage_L1({ onNextLevel }: QuizPageL1Props) {
   };
 
   return (
-    <QuizLayout currentIndex={1} questionsTotal={1}>
+    <QuizLayout currentIndex={1} questionsTotal={1} showBackButton={false}>
       <QuizCardBase
         question="Möchtest du..."
         options={L1_OPTIONS}
