@@ -48,7 +48,7 @@ export default function LevelSuccessScreen({
           }`}
           aria-live="polite"
         >
-          Level1 {currentLevel} geschafft!
+          Level {currentLevel} geschafft!
         </h2>
 
         {/* Phase 2  fades in after the delay */}
