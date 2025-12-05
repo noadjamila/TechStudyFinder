@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
-import QuizCard from "../components/quiz/QuizCard_L2";
-import QuizLayout from "../layouts/QuizLayout";
-import { RiasecType, initialScores } from "../types/RiasecTypes";
-import ErrorScreen from "../components/error-screen/ErrorScreen";
+import QuizCard from "../../components/quiz/QuizCard_L2";
+import QuizLayout from "../../layouts/QuizLayout";
+import { RiasecType, initialScores } from "../../types/RiasecTypes";
+import ErrorScreen from "../../components/error-screen/ErrorScreen";
 import { useNavigate } from "react-router-dom";
+import CardStack from "../../components/quiz/CardStack";
+
+export interface QuizPageL2Props {
+  previousIds: number[];
+  onNextLevel: () => void;
+}
 
 /**
  * `QuizPage_L2` is the page-component for the second level of the quiz.
@@ -25,11 +31,23 @@ import { useNavigate } from "react-router-dom";
  *
  * @returns {JSX.Element} A rendered quiz interface with progress tracking and scoring.
  */
-const QuizPage_L2: React.FC = () => {
+const QuizPage_L2: React.FC<QuizPageL2Props> = ({
+  previousIds,
+  onNextLevel,
+}) => {
+  // TODO: Remove both debugs once database works
+  console.debug(
+    "Will contain IDs from L1, once response from backend is successful:",
+    previousIds,
+  );
+  console.debug(
+    "Will send user from L2 to L3 after finishing the questions, once response from backend is successful:",
+    onNextLevel,
+  );
+
   const [questions, setQuestions] = useState<
     { text: string; riasec_type: RiasecType }[]
   >([]);
-  const TOTAL_QUESTIONS = questions.length;
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [responseCount, setResponseCount] = useState<number>(0);
   const [error, setError] = useState<{ title: string; message: string } | null>(
@@ -43,11 +61,11 @@ const QuizPage_L2: React.FC = () => {
     { type: RiasecType; score: number }[]
   >([]);
 
+  const TOTAL_QUESTIONS = questions.length;
   const currentQuestion = questions[currentIndex];
+  const quizFinished = TOTAL_QUESTIONS > 0 && currentIndex >= TOTAL_QUESTIONS;
 
-  /**
-   * Advances to the next question without exceeding the total count.
-   */
+  // Advances to the next question without exceeding the total count.
   const next = () => setCurrentIndex((i) => Math.min(TOTAL_QUESTIONS, i + 1));
   const navigate = useNavigate();
   const goBack = () => {
@@ -64,9 +82,11 @@ const QuizPage_L2: React.FC = () => {
       skip: 0,
     };
     const points = pointsMap[previousAnswer];
+    /*
     console.log(
       `Zurück von Frage ${currentIndex}: Rückgängig machen → "${previousAnswer}" = ${points} Punkte für ${lastType}`,
     );
+    */
 
     setScores((prev) => {
       const newScores = { ...prev, [lastType]: prev[lastType] - points };
@@ -76,7 +96,7 @@ const QuizPage_L2: React.FC = () => {
         setHighestScores(topScores);
         sendData(topScores);
       }
-      console.log("Scores nach Rückgängig:", newScores);
+      // console.log("Scores nach Rückgängig:", newScores);
       return newScores;
     });
     setTimeout(() => {
@@ -111,6 +131,8 @@ const QuizPage_L2: React.FC = () => {
   );
 
   const handleSelect = (option: string) => {
+    if (!currentQuestion) return;
+
     const currentType = currentQuestion.riasec_type;
 
     const pointsMap: Record<string, number> = {
@@ -128,17 +150,21 @@ const QuizPage_L2: React.FC = () => {
     setScores((prev) => {
       const newScores = { ...prev, [currentType]: prev[currentType] + points };
 
+      // last question -> compute top 3 and send to backend
       if (currentIndex === TOTAL_QUESTIONS - 1) {
         const topScores = getTopThreeScores(newScores);
         setHighestScores(topScores);
-        sendData(topScores);
+        void sendData(topScores);
       }
       console.log("Neue Scores:", newScores);
       return newScores;
     });
 
+    // Move to next question (or to debug screen at the end)
     setTimeout(() => {
-      if (currentIndex < TOTAL_QUESTIONS) next();
+      if (currentIndex < TOTAL_QUESTIONS) {
+        next();
+      }
     }, 300);
   };
 
@@ -163,10 +189,13 @@ const QuizPage_L2: React.FC = () => {
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
+
       const result = await res.json();
       setResponseCount(result.ids.length);
+
+      // TODO: Call onNextLevel with the received IDs once backend works and proceed to the next quiz level.
     } catch (err) {
-      console.error("Fehler beim Senden:", err);
+      console.error("Error sending the data: ", err);
       setError({
         title: "Fehler beim Senden",
         message:
@@ -175,9 +204,7 @@ const QuizPage_L2: React.FC = () => {
     }
   };
 
-  /**
-   * Fetches the questions of level 2 from the backend when the component mounts.
-   */
+  // Fetches the questions of level 2 from the backend when the component mounts.
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -190,7 +217,7 @@ const QuizPage_L2: React.FC = () => {
         const data = await res.json();
 
         if (!data.questions || data.questions.length === 0) {
-          throw new Error("Keine Fragen erhalten");
+          throw new Error("No questions found in the response.");
         }
 
         setQuestions(data.questions);
@@ -207,25 +234,39 @@ const QuizPage_L2: React.FC = () => {
     fetchQuestions();
   }, []);
 
-  // Wenn ein Fehler aufgetreten ist, zeige nur den ErrorScreen
+  // In case of an error, display the ErrorScreen component.
   if (error != null) {
     return <ErrorScreen title={error.title} message={error.message} />;
   }
 
+  // While questions are still loading (but no error yet), show a simple loading state.
+  if (TOTAL_QUESTIONS === 0) {
+    return (
+      <QuizLayout currentIndex={0} questionsTotal={0}>
+        <div>Lädt...</div>
+      </QuizLayout>
+    );
+  }
+
   return (
     <div>
-      {currentIndex < TOTAL_QUESTIONS ? (
+      {!quizFinished ? (
         <QuizLayout
           currentIndex={currentIndex + 1}
           questionsTotal={TOTAL_QUESTIONS}
           oneBack={goBack}
           showBackButton={true}
         >
-          <QuizCard
-            key={currentIndex}
-            question={currentQuestion.text}
-            onSelect={(option) => handleSelect(option)}
-          />
+          <CardStack
+            currentIndex={currentIndex + 1}
+            totalCards={TOTAL_QUESTIONS}
+          >
+            <QuizCard
+              key={currentIndex}
+              question={currentQuestion.text}
+              onSelect={(option) => handleSelect(option)}
+            />
+          </CardStack>
         </QuizLayout>
       ) : (
         <div>
