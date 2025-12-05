@@ -7,21 +7,25 @@ export default function ZurueckButton({
   onClick,
   disabled = false,
   fullWidth = false,
-  color = "secondary",
   sx = {},
 }: ButtonProps) {
   return (
     <MUIButton
       variant="outlined"
       startIcon={<ArrowBackIcon />}
-      color={color}
       onClick={onClick}
       disabled={disabled}
       fullWidth={fullWidth}
       sx={{
-        borderRadius: "20px",
-        fontWeight: "bold",
+        borderColor: "black",
+        color: "black",
         textTransform: "none",
+        fontFamily: "Roboto, sans-serif",
+        borderRadius: "15px",
+        padding: "3px 10px",
+        fontSize: "1rem",
+        width: "auto",
+        minWidth: "unset",
         ...sx,
       }}
     >
