@@ -18,11 +18,11 @@ It is divided into **two main domains**:
 
 ### Tables Overview
 
-| Table               | Description                                       |
-| ------------------- | ------------------------------------------------- |
-| hochschultyp        | Types of institutions (e.g., university, college) |
-| traegerschaft       | Control or ownership (e.g., state, private)       |
-| hochschule          | Main table with all institutions                  |
+| Table         | Description                                       |
+| ------------- | ------------------------------------------------- |
+| hochschultyp  | Types of institutions (e.g., university, college) |
+| traegerschaft | Control or ownership (e.g., state, private)       |
+| hochschule    | Main table with all institutions                  |
 
 ### `hochschultyp`
 
@@ -40,25 +40,25 @@ It is divided into **two main domains**:
 
 ### `hochschule`
 
-| Column                   | Type    | PK  | FK                           | Nullable | Description            |
-| ------------------------ | ------- | --- | ---------------------------- | -------- | ---------------------- |
-| id                       | INTEGER | ✅  |                              | ❌       | Institution ID         |
-| name                     | TEXT    |     |                              | ❌       | Full name              |
-| kurzname                 | TEXT    |     |                              | ✅       | Abbreviation           |
-| bundesland               | TEXT    |     |                              | ✅       | State                  |
-| stadt                    | TEXT    |     |                              | ✅       | City                   |
-| telefon                  | TEXT    |     |                              | ✅       | Phone number           |
-| fax                      | TEXT    |     |                              | ✅       | Fax number             |
-| homepage                 | TEXT    |     |                              | ✅       | Website                |
-| email                    | TEXT    |     |                              | ✅       | Contact email          |
-| logo                     | TEXT    |     |                              | ✅       | Logo file/path         |
-| hochschultyp_id          | INTEGER |     | ✅ → institution_type(id)    | ❌       | Type                   |
-| traegerschaft_id         | INTEGER |     | ✅ → institution_control(id) | ❌       | Control type           |
-| gruendungsjahr           | INTEGER |     |                              | ✅       | Year founded           |
-| promotionsrecht          | BOOLEAN |     |                              | ✅       | Can award PhD          |
-| habilitationsrecht       | BOOLEAN |     |                              | ✅       | Can award habilitation |
-| uniklinik                | BOOLEAN |     |                              | ✅       | Has a clinic           |
-| student_statistik        | JSONB   |     |                              | ✅       | Student statistics     |
+| Column             | Type    | PK  | FK                           | Nullable | Description            |
+| ------------------ | ------- | --- | ---------------------------- | -------- | ---------------------- |
+| id                 | INTEGER | ✅  |                              | ❌       | Institution ID         |
+| name               | TEXT    |     |                              | ❌       | Full name              |
+| kurzname           | TEXT    |     |                              | ✅       | Abbreviation           |
+| bundesland         | TEXT    |     |                              | ✅       | State                  |
+| stadt              | TEXT    |     |                              | ✅       | City                   |
+| telefon            | TEXT    |     |                              | ✅       | Phone number           |
+| fax                | TEXT    |     |                              | ✅       | Fax number             |
+| homepage           | TEXT    |     |                              | ✅       | Website                |
+| email              | TEXT    |     |                              | ✅       | Contact email          |
+| logo               | TEXT    |     |                              | ✅       | Logo file/path         |
+| hochschultyp_id    | INTEGER |     | ✅ → institution_type(id)    | ❌       | Type                   |
+| traegerschaft_id   | INTEGER |     | ✅ → institution_control(id) | ❌       | Control type           |
+| gruendungsjahr     | INTEGER |     |                              | ✅       | Year founded           |
+| promotionsrecht    | BOOLEAN |     |                              | ✅       | Can award PhD          |
+| habilitationsrecht | BOOLEAN |     |                              | ✅       | Can award habilitation |
+| uniklinik          | BOOLEAN |     |                              | ✅       | Has a clinic           |
+| student_statistik  | JSONB   |     |                              | ✅       | Student statistics     |
 
 ---
 
@@ -80,27 +80,27 @@ It is divided into **two main domains**:
 
 ### Example: `studiengaenge`
 
-| Column                | Type    | PK  | FK                    | Nullable | Description           |
-| --------------------- | ------- | --- | --------------------- | -------- | --------------------- |
-| id                    | TEXT    | ✅  |                       | ❌       | Degree programme ID   |
-| typ                   | TEXT    |     |                       | ✅       | Type of programme     |
-| name                  | TEXT    |     |                       | ❌       | Main subject          |
-| homepage              | TEXT    |     |                       | ✅       | Website               |
-| studienbeitrag        | TEXT    |     |                       | ✅       | Tuition fees          |
-| beitrag_kommentar     | TEXT    |     |                       | ✅       | Fee notes             |
-| akkreditiert          | BOOLEAN |     |                       | ✅       | Accreditation status  |
-| anmerkungen           | TEXT    |     |                       | ✅       | Free-text comment     |
-| hochschule_id         | TEXT    |     | ✅ → hochschule(id)   | ❌       | Institution           |
-| abschluss_intern      | TEXT    |     |                       | ✅       | Internal degree name  |
-| abschlussart_id       | TEXT    |     | ✅ → abschlussart(id) | ✅       | Degree type           |
-| mastertyp             | TEXT    |     |                       | ✅       | Master programme type |
-| lehramtstypen         | BOOLEAN |     |                       | ✅       | Teaching degree flag  |
-| regelstudienzeit      | TEXT    |     |                       | ✅       | Duration of programme |
-| zielgruppe            | TEXT    |     |                       | ✅       | Target audience       |
-| zulassungssemester    | TEXT    |     |                       | ✅       | Admission term        |
-| zulassungsmodus       | TEXT    |     |                       | ✅       | Admission mode        |
-| zulassungsvoraussetzungen| TEXT    |     |                       | ✅       | Requirements          |
-| zulassungs_link       | TEXT    |     |                       | ✅       | Admission link        |
+| Column                    | Type    | PK  | FK                    | Nullable | Description           |
+| ------------------------- | ------- | --- | --------------------- | -------- | --------------------- |
+| id                        | TEXT    | ✅  |                       | ❌       | Degree programme ID   |
+| typ                       | TEXT    |     |                       | ✅       | Type of programme     |
+| name                      | TEXT    |     |                       | ❌       | Main subject          |
+| homepage                  | TEXT    |     |                       | ✅       | Website               |
+| studienbeitrag            | TEXT    |     |                       | ✅       | Tuition fees          |
+| beitrag_kommentar         | TEXT    |     |                       | ✅       | Fee notes             |
+| akkreditiert              | BOOLEAN |     |                       | ✅       | Accreditation status  |
+| anmerkungen               | TEXT    |     |                       | ✅       | Free-text comment     |
+| hochschule_id             | TEXT    |     | ✅ → hochschule(id)   | ❌       | Institution           |
+| abschluss_intern          | TEXT    |     |                       | ✅       | Internal degree name  |
+| abschlussart_id           | TEXT    |     | ✅ → abschlussart(id) | ✅       | Degree type           |
+| mastertyp                 | TEXT    |     |                       | ✅       | Master programme type |
+| lehramtstypen             | BOOLEAN |     |                       | ✅       | Teaching degree flag  |
+| regelstudienzeit          | TEXT    |     |                       | ✅       | Duration of programme |
+| zielgruppe                | TEXT    |     |                       | ✅       | Target audience       |
+| zulassungssemester        | TEXT    |     |                       | ✅       | Admission term        |
+| zulassungsmodus           | TEXT    |     |                       | ✅       | Admission mode        |
+| zulassungsvoraussetzungen | TEXT    |     |                       | ✅       | Requirements          |
+| zulassungs_link           | TEXT    |     |                       | ✅       | Admission link        |
 
 ### Many-to-Many Tables
 
@@ -114,13 +114,13 @@ It is divided into **two main domains**:
 
 ### `fristen`
 
-| Column              | Type   | Description                |
-| ------------------- | ------ | -------------------------- |
-| id                  | SERIAL | Primary key                |
-| studiengang_id      | TEXT   | FK → studiengaenge(id) |
-| name                | TEXT   | Name of the deadline       |
-| semester            | TEXT   | Term / semester            |
-| typ                 | TEXT   | Type (e.g. graduate).      |
-| start               | DATE   | Start date                 |
-| ende                | DATE   | End date                   |
-| kommentar           | TEXT   | Notes                      |
+| Column         | Type   | Description            |
+| -------------- | ------ | ---------------------- |
+| id             | SERIAL | Primary key            |
+| studiengang_id | TEXT   | FK → studiengaenge(id) |
+| name           | TEXT   | Name of the deadline   |
+| semester       | TEXT   | Term / semester        |
+| typ            | TEXT   | Type (e.g. graduate).  |
+| start          | DATE   | Start date             |
+| ende           | DATE   | End date               |
+| kommentar      | TEXT   | Notes                  |
