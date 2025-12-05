@@ -2,19 +2,9 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import LevelSuccessScreen, {
   LevelSuccessScreenProps,
 } from "../level-success/LevelSuccessScreen";
+import { vi } from "vitest";
 
-// Mock CSS module import
-jest.mock("./LevelSuccessScreen.module.css", () => ({
-  wrapper: "wrapper",
-  card: "card",
-  title: "title",
-  visible: "visible",
-  hidden: "hidden",
-  actions: "actions",
-  button: "button",
-}));
-
-const mockOnContinue = jest.fn();
+const mockOnContinue = vi.fn();
 
 const renderLevelSuccessScreen = (props: LevelSuccessScreenProps) => {
   render(<LevelSuccessScreen {...props} />);
