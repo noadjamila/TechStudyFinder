@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "./QuizLayout.module.css";
 import Progressbar from "../components/quiz/Progressbar";
 import { Box, useTheme } from "@mui/material";
 import Zurueck_Button from "../components/buttons/Zurueck_Button";
@@ -57,17 +56,16 @@ const QuizLayout = ({
       }}
     >
       <Box sx={{ width: "100%", maxWidth: 420, px: 2, pt: 4 }}>
-        <div className={styles.topArea}>
-          {showBackButton && (
-            <Zurueck_Button label="Zurück" onClick={oneBack} sx={{}} />
-          )}
-          <Progressbar
-            current={currentIndex}
-            total={questionsTotal}
-            bgColor={theme.palette.quiz.progressBg}
-            fillColor={theme.palette.quiz.progressFill}
-          />
-        </div>
+        {showBackButton && (
+          <Zurueck_Button label="Zurück" onClick={oneBack} sx={{ mb: 2 }} />
+        )}
+        <Progressbar
+          current={currentIndex}
+          total={questionsTotal}
+          bgColor={theme.palette.quiz.progressBg}
+          fillColor={theme.palette.quiz.progressFill}
+        />
+
         <Box
           sx={{
             mt: 1,
