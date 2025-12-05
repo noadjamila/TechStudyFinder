@@ -6,7 +6,7 @@ import path from "path";
 
 dotenv.config();
 
-// Hilfsfunktion: Textfeld auf Deutsch extrahieren
+// Extraxt german text from possible multilingual fields
 function getTextDe(nameField: any): string | null {
   if (!nameField) return null;
 
@@ -23,7 +23,7 @@ function getTextDe(nameField: any): string | null {
   return null;
 }
 
-// Hilfsfunktion: Telefonnummer + Prefix
+// Extract phone and fax number with prefix from field
 function getPhone(field: any): string | null {
   if (!field) return null;
   const prefix = field.prefix || "";
@@ -45,15 +45,13 @@ async function main() {
 
   const xmlPath = path.join("db/scripts", "../xml/institutions.xml");
 
-  // Prüfen, ob Datei existiert
   if (!fs.existsSync(xmlPath)) {
-    console.error("XML-Datei nicht gefunden:", xmlPath);
+    console.error("XML file not found:", xmlPath);
     process.exit(1);
   }
 
   const xmlData = fs.readFileSync(xmlPath, "utf-8");
 
-  // XML parsen
   const result = await parseStringPromise(xmlData, {
     explicitArray: false,
     mergeAttrs: true,
@@ -75,12 +73,12 @@ async function main() {
     }
   }
   if (institutions.length === 0) {
-    console.error("Keine Institutionen im XML gefunden!");
+    console.error("No institutions found!");
     process.exit(1);
   }
 
   for (const inst of institutions) {
-    const id = inst.id ? parseInt(inst.id) : null;
+    const id = inst.id ? inst.id : null;
     if (!id) continue;
 
     const name = getTextDe(inst.name);
@@ -108,7 +106,7 @@ async function main() {
 
     if (institution_type_id && institution_type_name) {
       await client.query(
-        `INSERT INTO institution_type (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
+        `INSERT INTO hochschultyp (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
         [institution_type_id, institution_type_name],
       );
     }
@@ -123,18 +121,17 @@ async function main() {
 
     if (institutional_control_id && institutional_control_name) {
       await client.query(
-        `INSERT INTO institution_control (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
+        `INSERT INTO traegerschaft (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
         [institutional_control_id, institutional_control_name],
       );
     }
 
-    // institution einfügen
     try {
       await client.query(
-        `INSERT INTO institutions (
-          id, name, shortname, state, city, phone, fax, homepage, email, logo,
-          institution_type_id, institutional_control_id, foundation_year, award_phd, award_habil, clinic,
-          student_statistic
+        `INSERT INTO hochschule (
+          id, name, kurzname, bundesland, stadt, telefon, fax, homepage, email, logo,
+          hochschultyp_id, traegerschaft_id, gruendungsjahr, promotionsrecht, habilitationsrecht, uniklinik,
+          student_statistik
         ) VALUES (
           $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17
         ) ON CONFLICT (id) DO NOTHING`,
@@ -158,14 +155,14 @@ async function main() {
           student_statistic,
         ],
       );
-      console.log(`Institution ${name} (${id}) eingefügt`);
+      console.log(`Institution ${name} (${id}) inserted.`);
     } catch (error) {
-      console.error(`Fehler bei Institution ${id}:`, error);
+      console.error(`Error with institution ${id}:`, error);
     }
   }
 
   await client.end();
-  console.log("Import abgeschlossen!");
+  console.log("Import succeeded!");
 }
 
 main().catch((err) => console.error(err));

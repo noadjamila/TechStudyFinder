@@ -2,49 +2,32 @@
 -- Degree Programme Meta Tables
 -- ------------------------------
 
-CREATE TABLE subjects (
+CREATE TABLE abschlussart (
     id TEXT PRIMARY KEY,
     name TEXT
 );
 
-CREATE TABLE degrees (
+CREATE TABLE studienfelder (
     id TEXT PRIMARY KEY,
     name TEXT
 );
 
-CREATE TABLE subject_groups (
+CREATE TABLE schwerpunkte (
     id TEXT PRIMARY KEY,
     name TEXT
 );
 
-CREATE TABLE areas_of_study (
+CREATE TABLE studienform (
     id TEXT PRIMARY KEY,
     name TEXT
 );
 
-CREATE TABLE disciplines (
-    id TEXT PRIMARY KEY,
-    name TEXT,
-    area_of_study_id TEXT REFERENCES areas_of_study(id),
-    subject_group_id TEXT REFERENCES subject_groups(id)
-);
-
-CREATE TABLE fields_of_study (
+CREATE TABLE unterrichtssprachen (
     id TEXT PRIMARY KEY,
     name TEXT
 );
 
-CREATE TABLE modes_of_study (
-    id TEXT PRIMARY KEY,
-    name TEXT
-);
-
-CREATE TABLE teaching_languages (
-    id TEXT PRIMARY KEY,
-    name TEXT
-);
-
-CREATE TABLE locations (
+CREATE TABLE standorte (
     id TEXT PRIMARY KEY,
     name TEXT
 );
@@ -53,74 +36,74 @@ CREATE TABLE locations (
 -- Degree Programmes
 -- ------------------------------
 
-CREATE TABLE degree_programmes (
+CREATE TABLE studiengaenge (
     id TEXT PRIMARY KEY,
-    type TEXT,
-    subject_id TEXT REFERENCES subjects(id),
+    typ TEXT,
+    name TEXT,
     homepage TEXT,
-    fee_amount TEXT,
-    fee_comment TEXT,
-    accredited BOOLEAN,
-    comment TEXT,
-    institution_id TEXT REFERENCES institutions(id),
-    internal_degree TEXT,
-    degree_id TEXT REFERENCES degrees(id),
-    master_type TEXT,
-    teachingdegrees BOOLEAN,
-    duration TEXT,
-    target_group TEXT,
-    admission_term TEXT,
-    admission_mode TEXT,
-    admission_requirement TEXT,
-    admission_link TEXT
+    studienbeitrag TEXT,
+    beitrag_kommentar TEXT,
+    akkreditiert BOOLEAN,
+    anmerkungen TEXT,
+    hochschule_id TEXT REFERENCES hochschule(id),
+    abschluss_intern TEXT,
+    abschlussart_id TEXT REFERENCES abschlussart(id),
+    mastertyp TEXT,
+    lehramtstypen BOOLEAN,
+    regelstudienzeit TEXT,
+    zielgruppe TEXT,
+    zulassungssemester TEXT,
+    zulassungsmodus TEXT,
+    zulassungsvoraussetzungen TEXT,
+    zulassungs_link TEXT
 );
 
 -- ------------------------------
 -- Deadlines
 -- ------------------------------
 
-CREATE TABLE deadlines (
+CREATE TABLE fristen (
     id SERIAL PRIMARY KEY,
-    degree_programme_id TEXT REFERENCES degree_programmes(id),
+    studiengang_id TEXT REFERENCES studiengaenge(id),
     name TEXT,
-    term TEXT,
-    type TEXT,
-    begin_date DATE,
-    end_date DATE,
-    comment TEXT
+    semester TEXT,
+    typ TEXT,
+    start DATE,
+    ende DATE,
+    kommentar TEXT
 );
 
 -- ------------------------------
 -- Many-to-Many Tables
 -- ------------------------------
 
-CREATE TABLE degree_programme_disciplines (
-    degree_programme_id TEXT REFERENCES degree_programmes(id),
-    discipline_id TEXT REFERENCES disciplines(id),
-    PRIMARY KEY (degree_programme_id, discipline_id)
+CREATE TABLE studiengang_studienfelder_relation (
+    studiengang_id TEXT REFERENCES studiengaenge(id),
+    studienfeld_id TEXT REFERENCES studienfelder(id),
+    PRIMARY KEY (studiengang_id, studienfeld_id)
 );
 
-CREATE TABLE degree_programme_studyfields (
-    degree_programme_id TEXT REFERENCES degree_programmes(id),
-    studyfield_id TEXT REFERENCES fields_of_study(id),
-    PRIMARY KEY (degree_programme_id, studyfield_id)
+CREATE TABLE studiengang_schwerpunkte_relation (
+    studiengang_id TEXT REFERENCES studiengaenge(id),
+    schwerpunkt_id TEXT REFERENCES schwerpunkte(id),
+    PRIMARY KEY (studiengang_id, schwerpunkt_id)
 );
 
-CREATE TABLE degree_programme_modes (
-    degree_programme_id TEXT REFERENCES degree_programmes(id),
-    mode_of_study_id TEXT REFERENCES modes_of_study(id),
-    PRIMARY KEY (degree_programme_id, mode_of_study_id)
+CREATE TABLE studiengang_studienform_relation (
+    studiengang_id TEXT REFERENCES studiengaenge(id),
+    studienform_id TEXT REFERENCES studienform(id),
+    PRIMARY KEY (studiengang_id, studienform_id)
 );
 
-CREATE TABLE degree_programme_languages (
-    degree_programme_id TEXT REFERENCES degree_programmes(id),
-    teaching_language_id TEXT REFERENCES teaching_languages(id),
+CREATE TABLE studiengang_sprachen_relation (
+    studiengang_id TEXT REFERENCES studiengaenge(id),
+    sprache_id TEXT REFERENCES unterrichtssprachen(id),
     is_main BOOLEAN,
-    PRIMARY KEY (degree_programme_id, teaching_language_id)
+    PRIMARY KEY (studiengang_id, sprache_id)
 );
 
-CREATE TABLE degree_programme_locations (
-    degree_programme_id TEXT REFERENCES degree_programmes(id),
-    location_id TEXT REFERENCES locations(id),
-    PRIMARY KEY (degree_programme_id, location_id)
+CREATE TABLE studiengang_standorte_relation (
+    studiengang_id TEXT REFERENCES studiengaenge(id),
+    standort_id TEXT REFERENCES standorte(id),
+    PRIMARY KEY (studiengang_id, standort_id)
 );

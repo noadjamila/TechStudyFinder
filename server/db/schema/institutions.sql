@@ -1,30 +1,30 @@
 
-CREATE TABLE institution_type (
+CREATE TABLE hochschultyp (
 	id INTEGER PRIMARY KEY,
 	name TEXT
 );
 
-CREATE TABLE institution_control (
+CREATE TABLE traegerschaft (
 	id INTEGER PRIMARY KEY,
 	name TEXT
 );
 
-CREATE TABLE institutions (
-    id INTEGER PRIMARY KEY,
+CREATE TABLE hochschule (
+    id TEXT PRIMARY KEY,
     name TEXT,
-    shortname TEXT,
-    state TEXT,
-    city TEXT,
-    phone TEXT,
+    kurzname TEXT,
+    bundesland TEXT,
+    stadt TEXT,
+    telefon TEXT,
     fax TEXT,
     homepage TEXT,
     email TEXT,
     logo TEXT,
-    institution_type_id INTEGER REFERENCES institution_type(id),
-    institutional_control_id INTEGER REFERENCES institution_control(id),
-    foundation_year INTEGER,
-    award_phd BOOLEAN,
-    award_habil BOOLEAN,
-    clinic BOOLEAN,
-    student_statistic JSONB
+    hochschultyp_id INTEGER REFERENCES hochschultyp(id),
+    traegerschaft_id INTEGER REFERENCES traegerschaft(id),
+    gruendungsjahr INTEGER,
+    promotionsrecht BOOLEAN,
+    habilitationsrecht BOOLEAN,
+    uniklinik BOOLEAN,
+    student_statistik JSONB
 );

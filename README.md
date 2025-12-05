@@ -76,11 +76,13 @@ To set up the database, follow the steps below:
    To import this data into the database, run the following commands:
 
 ```bash
- npx ts-node server/db/scripts/import_institutions.ts
+ cd server
+ npx ts-node db/scripts/import_institutions.ts
 ```
 
 ```bash
-npx ts-node server/db/scripts/import_degreeprogrammes.ts
+ cd server
+ npx ts-node db/scripts/import_degreeprogrammes.ts
 ```
 
 ## Tech Stack

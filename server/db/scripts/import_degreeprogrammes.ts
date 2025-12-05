@@ -6,7 +6,7 @@ import path from "path";
 
 dotenv.config();
 
-// Hilfsfunktion: deutsches Textfeld extrahieren
+// Extraxt german text from possible multilingual fields
 function getTextDe(nameField: any): string | null {
   if (!nameField) return null;
 
@@ -36,15 +36,13 @@ async function main() {
 
   const xmlPath = path.join("db/scripts", "../xml/degreeprogrammes.xml");
 
-  // Prüfen, ob Datei existiert
   if (!fs.existsSync(xmlPath)) {
-    console.error("XML-Datei nicht gefunden:", xmlPath);
+    console.error("XML file not found:", xmlPath);
     process.exit(1);
   }
 
   const xmlData = fs.readFileSync(xmlPath, "utf-8");
 
-  // XML parsen
   const result = await parseStringPromise(xmlData, {
     explicitArray: false,
     mergeAttrs: true,
@@ -66,28 +64,18 @@ async function main() {
     }
   }
   if (degreeprogrammes.length === 0) {
-    console.error("Keine Studiengänge im XML gefunden!");
+    console.error("No programmeDegrees found!");
     process.exit(1);
   }
-  console.log(`✅ ${degreeprogrammes.length} Studiengänge geladen`);
+  console.log(`✅ ${degreeprogrammes.length} programmes found.`);
 
   for (const programme of degreeprogrammes) {
-    // subjects
-    const subject_id = programme.subject?.id || null;
-    const subject_name = getTextDe(programme.subject?.name);
-    if (subject_id && subject_name) {
-      await client.query(
-        `INSERT INTO subjects (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
-        [subject_id, subject_name],
-      );
-    }
-
     // degrees
     const degree_id = programme.degree?.id || null;
     const degree_name = getTextDe(programme.degree?.name);
     if (degree_id && degree_name) {
       await client.query(
-        `INSERT INTO degrees (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
+        `INSERT INTO abschlussart (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
         [degree_id, degree_name],
       );
     }
@@ -95,6 +83,7 @@ async function main() {
     // degree_programmes
     const id = programme.id ? programme.id : null;
     const type = programme.type ? programme.type : null;
+    const subject_name = getTextDe(programme.subject?.name);
     const institution_id = programme.institution?.id || null;
     const homepage = programme.homepage || null;
     const fee_amount = getTextDe(programme.fee?.name);
@@ -118,10 +107,10 @@ async function main() {
     // insert degree_programmes
     try {
       await client.query(
-        `INSERT INTO degree_programmes (
-          id, type, institution_id, fee_amount, fee_comment, accredited, homepage, comment,
-          internal_degree, master_type, teachingdegrees, duration, target_group, admission_term,
-          admission_mode, admission_requirement, admission_link, subject_id, degree_id
+        `INSERT INTO studiengaenge (
+          id, typ, hochschule_id, studienbeitrag, beitrag_kommentar, akkreditiert, homepage, anmerkungen,
+          abschluss_intern, mastertyp, lehramtstypen, regelstudienzeit, zielgruppe, zulassungssemester,
+          zulassungsmodus, zulassungsvoraussetzungen, zulassungs_link, name, abschlussart_id
         ) VALUES (
           $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19
         ) ON CONFLICT (id) DO NOTHING`,
@@ -143,13 +132,13 @@ async function main() {
           admission_mode,
           admission_requirement,
           admission_link,
-          subject_id,
+          subject_name,
           degree_id,
         ],
       );
-      console.log(`Studiengang ${subject_name} (${id}) eingefügt`);
+      console.log(`Programme ${subject_name} (${id}) insterted.`);
     } catch (error) {
-      console.error(`Fehler bei Studiengang ${id}:`, error);
+      console.error(`Error with programme ${id}:`, error);
       process.exit(1);
     }
 
@@ -170,7 +159,7 @@ async function main() {
 
         if (deadline_name) {
           await client.query(
-            `INSERT INTO deadlines (degree_programme_id, name, term, type, begin_date, end_date, comment) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+            `INSERT INTO fristen (studiengang_id, name, semester, typ, start, ende, kommentar) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
             [
               id,
               deadline_name,
@@ -196,40 +185,17 @@ async function main() {
         const discipline_id = discipline.id || null;
         const discipline_name = getTextDe(discipline.name);
 
-        const area_of_study_id = discipline.area_of_study?.id || null;
-        const area_of_study_name = getTextDe(discipline.area_of_study?.name);
-        if (area_of_study_id && area_of_study_name) {
-          await client.query(
-            `INSERT INTO areas_of_study (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
-            [area_of_study_id, area_of_study_name],
-          );
-        }
-
-        const subject_group_id = discipline.subject_group?.id || null;
-        const subject_group_name = getTextDe(discipline.subject_group?.name);
-        if (subject_group_id && subject_group_name) {
-          await client.query(
-            `INSERT INTO subject_groups (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
-            [subject_group_id, subject_group_name],
-          );
-        }
-
         if (discipline_id && discipline_name) {
           await client.query(
-            `INSERT INTO disciplines (id, name, area_of_study_id, subject_group_id) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO NOTHING`,
-            [
-              discipline_id,
-              discipline_name,
-              area_of_study_id,
-              subject_group_id,
-            ],
+            `INSERT INTO studienfelder (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
+            [discipline_id, discipline_name],
           );
         }
 
-        // Many-to-Many Beziehung einfügen
+        // Many-to-Many relation
         if (discipline_id) {
           await client.query(
-            `INSERT INTO degree_programme_disciplines (degree_programme_id, discipline_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+            `INSERT INTO studiengang_studienfelder_relation (studiengang_id, studienfeld_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
             [id, discipline_id],
           );
         }
@@ -249,15 +215,15 @@ async function main() {
 
         if (field_id && field_name) {
           await client.query(
-            `INSERT INTO fields_of_study (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
+            `INSERT INTO schwerpunkte (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
             [field_id, field_name],
           );
         }
 
-        // Many-to-Many Beziehung einfügen
+        // Many-to-Many relation
         if (field_id) {
           await client.query(
-            `INSERT INTO degree_programme_studyfields (degree_programme_id, studyfield_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+            `INSERT INTO studiengang_schwerpunkte_relation (studiengang_id, schwerpunkt_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
             [id, field_id],
           );
         }
@@ -277,15 +243,15 @@ async function main() {
 
         if (mode_id && mode_name) {
           await client.query(
-            `INSERT INTO modes_of_study (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
+            `INSERT INTO studienform (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
             [mode_id, mode_name],
           );
         }
 
-        // Many-to-Many Beziehung einfügen
+        // Many-to-Many relation
         if (mode_id) {
           await client.query(
-            `INSERT INTO degree_programme_modes (degree_programme_id, mode_of_study_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+            `INSERT INTO studiengang_studienform_relation (studiengang_id, studienform_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
             [id, mode_id],
           );
         }
@@ -306,15 +272,15 @@ async function main() {
 
         if (lang_id && lang_name) {
           await client.query(
-            `INSERT INTO teaching_languages (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
+            `INSERT INTO unterrichtssprachen (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
             [lang_id, lang_name],
           );
         }
 
-        // Many-to-Many Beziehung einfügen
+        // Many-to-Many relation
         if (lang_id) {
           await client.query(
-            `INSERT INTO degree_programme_languages (degree_programme_id, teaching_language_id, is_main) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+            `INSERT INTO studiengang_sprachen_relation (studiengang_id, sprache_id, is_main) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
             [id, lang_id, lang_isMain],
           );
         }
@@ -334,15 +300,15 @@ async function main() {
 
         if (location_id && location_name) {
           await client.query(
-            `INSERT INTO locations (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
+            `INSERT INTO standorte (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
             [location_id, location_name],
           );
         }
 
-        // Many-to-Many Beziehung einfügen
+        // Many-to-Many relation
         if (location_id) {
           await client.query(
-            `INSERT INTO degree_programme_locations (degree_programme_id, location_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+            `INSERT INTO studiengang_standorte_relation (studiengang_id, standort_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
             [id, location_id],
           );
         }
@@ -351,7 +317,7 @@ async function main() {
   }
 
   await client.end();
-  console.log("Import abgeschlossen!");
+  console.log("Import succeeded!");
 }
 
 main().catch((err) => console.error(err));
