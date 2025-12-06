@@ -1,21 +1,48 @@
 import "@mui/material/styles";
 
 declare module "@mui/material/styles" {
+  interface TypeText {
+    header?: string;
+    subHeader?: string;
+    skipButton?: string;
+  }
+
   interface Palette {
+    decorative: {
+      pink: string;
+      green: string;
+      blue: string;
+      yellow: string;
+    };
     quiz: {
-      buttonColor: string;
-      buttonChecked: string;
-      cardBackground: string;
-      textColor: string;
+      secondary: string;
+      progressUnfilled: string;
+    };
+    navigation: {
+      background: string;
+    };
+    favorites: {
+      inactive: string;
     };
   }
 
   interface PaletteOptions {
+    decorative?: {
+      pink?: string;
+      green?: string;
+      blue?: string;
+      yellow?: string;
+    };
     quiz?: {
-      buttonColor?: string;
-      buttonChecked?: string;
+      secondary?: string;
       cardBackground?: string;
-      textColor?: string;
+      progressUnfilled?: string;
+    };
+    navigation?: {
+      background?: string;
+    };
+    favorites?: {
+      inactive?: string;
     };
   }
 }
