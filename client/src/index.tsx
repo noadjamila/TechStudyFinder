@@ -1,13 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider, CssBaseline } from "@mui/material";
-import theme from "./theme/theme";
+
 import "./index.css";
 import App from "./App";
-import Quiz_L2 from "./pages/QuizPage_L2";
-import ResultsPage from "./pages/ResultsPage";
-import Quiz_L1 from "./pages/QuizPage_L1";
+import theme from "./theme/theme";
 import { registerSW } from "virtual:pwa-register";
 
 const rootElement = document.getElementById("root");
@@ -20,12 +18,7 @@ ReactDOM.createRoot(rootElement).render(
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/quiz/level/1" element={<Quiz_L1 />} />
-          <Route path="/quiz/level/2" element={<Quiz_L2 />} />
-          <Route path="/results" element={<ResultsPage />} />
-        </Routes>
+        <App />
       </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>,
@@ -34,11 +27,9 @@ ReactDOM.createRoot(rootElement).render(
 // Register Vite PWA Service Worker
 registerSW({
   onNeedRefresh() {
-    // eslint-disable-next-line no-console
     console.log("New content available; please refresh.");
   },
   onOfflineReady() {
-    // eslint-disable-next-line no-console
     console.log("App ready to work offline.");
   },
 });

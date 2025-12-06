@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import * as tsParser from "@typescript-eslint/parser";
 import globals from "globals";
@@ -41,7 +43,7 @@ export default defineConfig([
       ...reactPlugin.configs.recommended.rules,
       "react/react-in-jsx-scope": "off",
       "no-undef": "off",
-      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-console": ["warn", { allow: ["warn", "error", "debug"] }],
       "no-unused-vars": "off",
 
       "@typescript-eslint/no-unused-vars": [
@@ -153,7 +155,7 @@ export default defineConfig([
     rules: {
       ...jestPlugin.configs.recommended.rules,
       "no-undef": "off",
-      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-console": ["warn", { allow: ["warn", "error", "debug"] }],
       "@typescript-eslint/no-unused-vars": [
         "error",
         { argsIgnorePattern: "^_" },

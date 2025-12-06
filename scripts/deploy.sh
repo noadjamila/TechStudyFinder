@@ -34,6 +34,6 @@ echo "Rebuild frontend and backend..."
 npm run build
 
 echo "Restart application via PM2..."
-pm2 restart TechStudyFinder
+pm2 restart techstudyfinder
 
 echo "--- Deployment finished successfully ---"

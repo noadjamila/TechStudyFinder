@@ -20,7 +20,7 @@
     "./src/**/*",
     "vite.config.ts",
     "vitest.config.ts",
-    "setupTests.ts"
+    "setupTests.tsx"
   ],
   "exclude": ["node_modules", "server"]
 }

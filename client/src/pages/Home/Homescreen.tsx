@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import LogoMenu from "../components/logo-menu/LogoMenu";
-import Button from "../components/buttons/Button";
+import LogoMenu from "../../components/logo-menu/LogoMenu";
+import Button from "../../components/buttons/Button";
 import "./Homescreen.css";
 import { useNavigate } from "react-router-dom";
 
@@ -9,7 +9,7 @@ const Homescreen: React.FC = () => {
   const navigate = useNavigate();
 
   const handleQuizStart = () => {
-    navigate("/quiz");
+    navigate("/quiz/level/1");
   };
 
   return (
