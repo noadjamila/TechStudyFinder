@@ -3,12 +3,12 @@ import QuizCard from "../../components/quiz/QuizCard_L2";
 import QuizLayout from "../../layouts/QuizLayout";
 import { RiasecType, initialScores } from "../../types/RiasecTypes";
 import ErrorScreen from "../../components/error-screen/ErrorScreen";
-import { useNavigate } from "react-router-dom";
 import CardStack from "../../components/quiz/CardStack";
 
 export interface QuizPageL2Props {
   previousIds: number[];
   onNextLevel: () => void;
+  oneLevelBack: () => void;
 }
 
 /**
@@ -34,6 +34,7 @@ export interface QuizPageL2Props {
 const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   previousIds,
   onNextLevel,
+  oneLevelBack,
 }) => {
   // TODO: Remove both debugs once database works
   console.debug(
@@ -67,43 +68,48 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
 
   // Advances to the next question without exceeding the total count.
   const next = () => setCurrentIndex((i) => Math.min(TOTAL_QUESTIONS, i + 1));
-  const navigate = useNavigate();
+
+  /*
+    Handles  the option to go back one Question.
+    Updates the scores based on the previous selcted answer.
+    Switches Levels if user is on the first Question.
+ */
   const goBack = () => {
     if (currentIndex == 0) {
-      navigate("/quiz/level/1");
+      oneLevelBack();
+    } else {
+      const previousAnswer = answers[currentIndex - 1];
+      const lastQuestion = questions[currentIndex - 1];
+      const lastType = lastQuestion.riasec_type;
+
+      const pointsMap: Record<string, number> = {
+        yes: 1,
+        no: -1,
+        skip: 0,
+      };
+      const points = pointsMap[previousAnswer];
+
+      console.log(
+        `Zurück von Frage ${currentIndex}: Rückgängig machen → "${previousAnswer}" = ${points} Punkte für ${lastType}`,
+      );
+
+      setScores((prev) => {
+        const newScores = { ...prev, [lastType]: prev[lastType] - points };
+
+        if (currentIndex === TOTAL_QUESTIONS - 1) {
+          const topScores = getTopThreeScores(newScores);
+          setHighestScores(topScores);
+          sendData(topScores);
+        }
+        console.log("Scores nach Rückgängig:", newScores);
+        return newScores;
+      });
+      setTimeout(() => {
+        if (currentIndex > 0) {
+          setCurrentIndex(currentIndex - 1);
+        }
+      }, 300);
     }
-    const previousAnswer = answers[currentIndex - 1];
-    const lastQuestion = questions[currentIndex - 1];
-    const lastType = lastQuestion.riasec_type;
-
-    const pointsMap: Record<string, number> = {
-      yes: 1,
-      no: -1,
-      skip: 0,
-    };
-    const points = pointsMap[previousAnswer];
-    /*
-    console.log(
-      `Zurück von Frage ${currentIndex}: Rückgängig machen → "${previousAnswer}" = ${points} Punkte für ${lastType}`,
-    );
-    */
-
-    setScores((prev) => {
-      const newScores = { ...prev, [lastType]: prev[lastType] - points };
-
-      if (currentIndex === TOTAL_QUESTIONS - 1) {
-        const topScores = getTopThreeScores(newScores);
-        setHighestScores(topScores);
-        sendData(topScores);
-      }
-      // console.log("Scores nach Rückgängig:", newScores);
-      return newScores;
-    });
-    setTimeout(() => {
-      if (currentIndex > 0) {
-        setCurrentIndex(currentIndex - 1);
-      }
-    }, 300);
   };
 
   /**
