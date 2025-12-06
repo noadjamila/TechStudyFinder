@@ -34,7 +34,7 @@ export default function QuizButtons_L2({
           variant="outlined"
           onClick={onNo}
           sx={{
-            borderColor: theme.custom.secondaryBorder,
+            borderColor: theme.palette.primary.main,
             color: theme.palette.text.primary,
           }}
         >
@@ -45,8 +45,8 @@ export default function QuizButtons_L2({
           variant="outlined"
           onClick={onYes}
           sx={{
-            bgcolor: theme.custom.primaryButton,
-            borderColor: theme.custom.primaryButton,
+            bgcolor: theme.palette.primary.main,
+            borderColor: theme.palette.primary.main,
             color: theme.palette.text.primary,
           }}
         >
@@ -59,7 +59,7 @@ export default function QuizButtons_L2({
         variant="outlined"
         onClick={onSkip}
         sx={{
-          borderColor: theme.custom.tertiaryBorder,
+          borderColor: theme.palette.quiz.secondary,
           color: theme.palette.text.primary,
         }}
       >

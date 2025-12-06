@@ -1,60 +1,47 @@
 import { createTheme } from "@mui/material/styles";
 
-declare module "@mui/material/styles" {
-  interface Theme {
-    custom: {
-      primaryButton: string;
-      secondaryButton: string;
-      tertiaryButton: string;
-      secondaryBorder: string;
-      tertiaryBorder: string;
-    };
-  }
-  interface ThemeOptions {
-    custom?: {
-      primaryButton?: string;
-      secondaryButton?: string;
-      tertiaryButton?: string;
-      secondaryBorder?: string;
-      tertiaryBorder?: string;
-    };
-  }
-  interface Palette {
-    quiz: {
-      buttonChecked: string;
-      cardBackground: string;
-      progressBg: string;
-      progressFill: string;
-    };
-  }
-  interface PaletteOptions {
-    quiz?: {
-      buttonChecked?: string;
-      cardBackground?: string;
-      progressBg?: string;
-      progressFill?: string;
-    };
-  }
-}
-
 const theme = createTheme({
-  custom: {
-    primaryButton: "#AFCEFF",
-    secondaryButton: "#FFFFFF",
-    tertiaryButton: "#FFFFFF",
-    secondaryBorder: "#AFCEFF",
-    tertiaryBorder: "#D9D9D9",
-  },
   palette: {
     mode: "light",
+
     text: {
       primary: "#3F3E42",
+      header: "#4A4458",
+      subHeader: "#6B6B6B",
+      skipButton: "#706F74",
     },
+
+    // Base colors - reusable across app
+    primary: {
+      main: "#AFCEFF", // Primary blue - buttons, highlights, cards (less opacity)
+    },
+    secondary: {
+      main: "#FFA5E9", // Pink accent - navigation, active favorites, errorNumber
+    },
+    background: {
+      default: "#FFFFFD", // Main background
+      paper: "#E9E9E9", // Speech bubbles
+    },
+
+    decorative: {
+      pink: "#FFBDEE",
+      green: "#E7F9CE", // card backgrounds
+      blue: "#D8E7FF",
+      yellow: "#FFF8AD",
+    },
+
+    // Feature-specific
     quiz: {
-      buttonChecked: "#AFCEFF",
-      cardBackground: "#E2FBBE",
-      progressBg: "#FFD7F5",
-      progressFill: "#FFA5E9",
+      secondary: "#D9D9D9",
+      progressUnfilled: "#FFD7F5",
+    },
+
+    navigation: {
+      background: "#EFEFEF",
+    },
+
+    favorites: {
+      inactive: "#CAC4D0",
     },
   },
   typography: {

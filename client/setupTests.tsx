@@ -3,23 +3,7 @@ import { vi } from "vitest";
 
 vi.mock("@mui/material/styles", async () => {
   const actual = await vi.importActual<any>("@mui/material/styles");
-  const baseTheme = actual.createTheme();
-
-  return {
-    ...actual,
-    useTheme: () => ({
-      ...baseTheme,
-      palette: {
-        ...baseTheme.palette,
-        quiz: {
-          buttonChecked: "#ccc",
-          cardBackground: "#eee",
-          progressBg: "#ddd",
-          progressFill: "#bbb",
-        },
-      },
-    }),
-  };
+  return actual;
 });
 
 vi.mock("react-router-dom", async () => {
@@ -32,6 +16,5 @@ vi.mock("react-router-dom", async () => {
 });
 
 if (!globalThis.fetch) {
-  // @ts-expect-error
   globalThis.fetch = vi.fn();
 }

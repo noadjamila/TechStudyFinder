@@ -65,7 +65,7 @@ const QuizCard_L1 = <T,>({
         mx: "auto",
         boxShadow: 3,
         borderRadius: 2,
-        backgroundColor: theme.palette.quiz.cardBackground,
+        backgroundColor: theme.palette.decorative.green,
         color: theme.palette.text.primary,
         pt: 2,
         pb: 6,
@@ -114,9 +114,9 @@ const QuizCard_L1 = <T,>({
                         checked={isSelected}
                         value={String(o.value)}
                         sx={{
-                          color: theme.palette.quiz.buttonChecked,
+                          color: theme.palette.primary.main,
                           "&.Mui-checked": {
-                            color: theme.palette.quiz.buttonChecked,
+                            color: theme.palette.primary.main,
                           },
                         }}
                       />
