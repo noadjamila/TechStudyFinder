@@ -14,18 +14,18 @@ export interface QuizLayoutProps {
   questionsTotal: number;
   // Main content (react components) which is placed within the layout.
   children: React.ReactNode;
-
+  // Function for the back Button to go back one Question.
   oneBack?: () => void;
-
+  // Boolean to handle if the Back Button is be visible on a page.
   showBackButton?: boolean;
 }
 
 /**
  * The `QuizLayout` is the base layout for all quiz pages.
- * It shows a progressbar und renders the embedded component (e.g. a quiz question).
+ * It shows a progressbar and a Back Button and renders the embedded component (e.g. a quiz question).
  *
  * @example
- * <QuizLayout currentIndex={2} questionsTotal={10}>
+ * <QuizLayout currentIndex={2} questionsTotal={10} oneBack={goBack} showBackButton={true}>
  *   <Question />
  * </QuizLayout>
  *
