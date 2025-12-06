@@ -6,7 +6,6 @@
  * @example
  * const type: RiasecType = RiasecType.R; // "R"
  */
-/* eslint-disable no-unused-vars */
 export enum RiasecType {
   R = "R",
   I = "I",
@@ -15,7 +14,6 @@ export enum RiasecType {
   E = "E",
   C = "C",
 }
-/* eslint-enable no-unused-vars */
 
 /**
  * The initial score state for all RIASEC types.
