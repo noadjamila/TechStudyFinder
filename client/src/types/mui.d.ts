@@ -45,4 +45,13 @@ declare module "@mui/material/styles" {
       inactive?: string;
     };
   }
+  declare module "*.png" {
+    const content: string;
+    export default content;
+  }
+
+  declare module "*.jpg" {
+    const content: string;
+    export default content;
+  }
 }
