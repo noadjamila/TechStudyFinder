@@ -57,7 +57,7 @@ const QuizLayout = ({
     >
       <Box sx={{ width: "100%", maxWidth: 420, px: 2, pt: 4 }}>
         {showBackButton && (
-          <Zurueck_Button label="Zurück" onClick={oneBack} sx={{ mb: 2 }} />
+          <Zurueck_Button label="Zurück" onClick={oneBack} sx={{}} />
         )}
         <Progressbar
           current={currentIndex}

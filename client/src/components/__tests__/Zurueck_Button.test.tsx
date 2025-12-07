@@ -7,7 +7,7 @@ const theme = createTheme({
   custom: {
     secondaryBorder: "#ccc",
   },
-});
+} as any);
 
 describe("ZurueckButton", () => {
   const renderWithTheme = (ui: React.ReactElement) =>
