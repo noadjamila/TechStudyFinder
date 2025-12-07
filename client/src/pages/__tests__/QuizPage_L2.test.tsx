@@ -229,4 +229,20 @@ describe("QuizPage_L2", () => {
 
     expect(await screen.findByText("Debug-Screen")).toBeInTheDocument();
   });
+
+  test("renders mascot image", async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ questions: sampleQuestions }),
+    });
+
+    renderWithProviders(
+      <QuizPage_L2 previousIds={[1, 2]} onNextLevel={() => {}} />,
+    );
+
+    await screen.findByText("Magst du forschen?");
+
+    const mascot = screen.getByAltText("Mascot");
+    expect(mascot).toBeInTheDocument();
+  });
 });

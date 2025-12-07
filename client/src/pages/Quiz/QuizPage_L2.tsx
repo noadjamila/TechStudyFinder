@@ -221,6 +221,7 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
             src="/mascot.png"
             width={61}
             height={90}
+            alt="Mascot"
             style={{
               position: "absolute",
               bottom: 0,
