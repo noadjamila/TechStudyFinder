@@ -28,7 +28,6 @@ export interface QuizCardBaseProps<T = string> {
   showRadioButtons?: boolean;
   children?: ReactNode;
   sx?: SxProps<Theme>;
-  imageSrc?: string;
 }
 
 /**
@@ -50,7 +49,6 @@ const QuizCard_L1 = <T,>({
   showRadioButtons = true,
   children,
   sx,
-  imageSrc,
 }: QuizCardBaseProps<T>) => {
   const theme = useTheme();
 
@@ -73,22 +71,6 @@ const QuizCard_L1 = <T,>({
         ...sx,
       }}
     >
-      {/* render the mascot in case that the level has a mascot */}
-      {imageSrc && (
-        <Box
-          component="img"
-          src={imageSrc}
-          alt="Quiz Mascot"
-          sx={{
-            position: "absolute",
-            top: -90,
-            right: 40,
-            width: 60,
-            height: 90,
-          }}
-        />
-      )}
-
       <CardContent
         sx={{
           px: "30px",

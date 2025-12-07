@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
 import QuizCard_L1 from "../../components/quiz/QuizCard_L1";
 import { postFilterLevel } from "../../api/quizApi";
-import QuizMascot from "../../assets/Männchen_Home_Level1.png";
+import { Box } from "@mui/material";
 
 /** Callback function executed upon successful completion of the level.
  * It receives an array of filtered IDs from the backend. */
@@ -59,13 +59,31 @@ export default function QuizPage_L1({ onNextLevel }: QuizPageL1Props) {
 
   return (
     <QuizLayout currentIndex={selected ? 1 : 0} questionsTotal={1}>
-      <QuizCard_L1
-        question="Möchtest du..."
-        options={L1_OPTIONS}
-        selected={selected}
-        onSelect={handleSelectAndNext}
-        imageSrc={QuizMascot}
-      />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          justifyContent: "center",
+        }}
+      >
+        <img
+          src="/mascot_standing_blue.svg"
+          width={62}
+          height={90}
+          alt="Mascot"
+          style={{
+            alignSelf: "flex-start",
+            marginLeft: "25px",
+          }}
+        />
+        <QuizCard_L1
+          question="Möchtest du..."
+          options={L1_OPTIONS}
+          selected={selected}
+          onSelect={handleSelectAndNext}
+        />
+      </Box>
     </QuizLayout>
   );
 }

@@ -80,7 +80,7 @@ describe("QuizCard_L1", () => {
 
     const img = screen.getByAltText("Quiz Mascot");
     expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute("src", "/path/to/mascot.png");
+    expect(img).toHaveAttribute("src", "/path/to/mascot_walking_pink.png");
   });
 
   test("renders children content below options", () => {

@@ -218,7 +218,7 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
           </CardStack>
 
           <img
-            src="/mascot.png"
+            src="/mascot_walking_pink.svg"
             width={61}
             height={90}
             alt="Mascot"
