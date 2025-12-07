@@ -14,7 +14,7 @@ export default function ZurueckButton({
   return (
     <MUIButton
       variant="outlined"
-      startIcon={<ArrowBackIcon />}
+      startIcon={<ArrowBackIcon data-testid="ArrowBackIcon" />}
       onClick={onClick}
       disabled={disabled}
       fullWidth={fullWidth}
