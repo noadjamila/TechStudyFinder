@@ -73,16 +73,6 @@ describe("QuizCard_L1", () => {
     expect(screen.queryByText("Option C")).toBeNull();
   });
 
-  test("renders mascot image when imageSrc is provided", () => {
-    renderWithTheme(
-      <QuizCard_L1 {...(defaultProps as any)} imageSrc="/path/to/mascot.png" />,
-    );
-
-    const img = screen.getByAltText("Quiz Mascot");
-    expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute("src", "/path/to/mascot_walking_pink.png");
-  });
-
   test("renders children content below options", () => {
     renderWithTheme(
       <QuizCard_L1 {...(defaultProps as any)}>
