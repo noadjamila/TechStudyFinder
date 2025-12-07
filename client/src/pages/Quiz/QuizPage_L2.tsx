@@ -89,10 +89,6 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
       };
       const points = pointsMap[previousAnswer];
 
-      console.log(
-        `Zurück von Frage ${currentIndex}: Rückgängig machen → "${previousAnswer}" = ${points} Punkte für ${lastType}`,
-      );
-
       setScores((prev) => {
         const newScores = { ...prev, [lastType]: prev[lastType] - points };
 
@@ -101,7 +97,6 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
           setHighestScores(topScores);
           sendData(topScores);
         }
-        console.log("Scores nach Rückgängig:", newScores);
         return newScores;
       });
       setTimeout(() => {
@@ -147,9 +142,6 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
       skip: 0,
     };
     const points = pointsMap[option] ?? 0;
-    console.log(
-      `Frage ${currentIndex}: Antwort="${option}" → ${points} Punkte für ${currentType}`,
-    );
 
     setAnswers((prev) => ({ ...prev, [currentIndex]: option }));
 
@@ -162,7 +154,6 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
         setHighestScores(topScores);
         void sendData(topScores);
       }
-      console.log("Neue Scores:", newScores);
       return newScores;
     });
 
