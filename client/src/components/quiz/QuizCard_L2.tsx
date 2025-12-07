@@ -42,7 +42,7 @@ const QuizCard_L2: React.FC<QuizCardProps> = ({ question, onSelect }) => {
           boxSizing: "border-box",
           boxShadow: 3,
           borderRadius: 2,
-          backgroundColor: theme.palette.quiz.cardBackground,
+          backgroundColor: theme.palette.decorative.green,
           pb: 3,
           px: 0.5,
           overflow: "visible",
