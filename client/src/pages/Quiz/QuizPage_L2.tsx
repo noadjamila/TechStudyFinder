@@ -216,6 +216,18 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
               onSelect={(option) => handleSelect(option)}
             />
           </CardStack>
+
+          <img
+            src="/mascot.png"
+            width={61}
+            height={90}
+            style={{
+              position: "absolute",
+              bottom: 0,
+              right: 30,
+              pointerEvents: "none",
+            }}
+          />
         </QuizLayout>
       ) : (
         <div>

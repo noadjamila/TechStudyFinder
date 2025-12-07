@@ -1,6 +1,7 @@
 import React from "react";
 import Progressbar from "../components/quiz/Progressbar";
 import { Box, useTheme } from "@mui/material";
+import HomeButton from "../components/buttons/HomeButton";
 
 /**
  * Props of {@link QuizLayout}.
@@ -49,6 +50,19 @@ const QuizLayout = ({
       }}
     >
       <Box sx={{ width: "100%", maxWidth: 420, px: 2, pt: 4 }}>
+        <Box
+          sx={{
+            display: "grid",
+            gap: 2,
+            gridTemplateColumns: "1fr auto auto",
+            alignItems: "center",
+            mb: 4,
+          }}
+        >
+          <HomeButton></HomeButton>
+          <HomeButton></HomeButton>
+        </Box>
+
         <Progressbar
           current={currentIndex}
           total={questionsTotal}

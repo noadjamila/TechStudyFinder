@@ -1,4 +1,4 @@
-import { Box, Button, Stack, useTheme } from "@mui/material";
+import { Button, Stack, Typography, useTheme } from "@mui/material";
 
 interface QuizButtonsProps {
   onYes: () => void;
@@ -21,50 +21,43 @@ export default function QuizButtons_L2({
         padding: "0 2em",
       }}
     >
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          columnGap: "16px",
-          width: "100%",
-        }}
-      >
-        <Button
-          aria-label="Antwort Nein"
-          variant="outlined"
-          onClick={onNo}
-          sx={{
-            borderColor: theme.palette.primary.main,
-            color: theme.palette.text.primary,
-          }}
-        >
-          Nein
-        </Button>
-        <Button
-          aria-label="Antwort Ja"
-          variant="outlined"
-          onClick={onYes}
-          sx={{
-            bgcolor: theme.palette.primary.main,
-            borderColor: theme.palette.primary.main,
-            color: theme.palette.text.primary,
-          }}
-        >
-          Ja
-        </Button>
-      </Box>
-
       <Button
-        aria-label="Antwort Überspringen"
+        aria-label="Antwort Ja"
         variant="outlined"
-        onClick={onSkip}
+        onClick={onYes}
         sx={{
-          borderColor: theme.palette.quiz.secondary,
+          bgcolor: theme.palette.primary.main,
+          borderColor: theme.palette.primary.main,
           color: theme.palette.text.primary,
         }}
       >
-        Überspringen
+        Ja
       </Button>
+
+      <Button
+        aria-label="Antwort Nein"
+        variant="outlined"
+        onClick={onNo}
+        sx={{
+          borderColor: theme.palette.primary.main,
+          color: theme.palette.text.primary,
+        }}
+      >
+        Nein
+      </Button>
+
+      <Typography
+        aria-label="Antwort Überspringen"
+        onClick={onSkip}
+        sx={{
+          cursor: "pointer",
+          color: theme.palette.text.skipButton,
+          textAlign: "center",
+          textDecoration: "underline",
+        }}
+      >
+        Überspringen
+      </Typography>
     </Stack>
   );
 }
