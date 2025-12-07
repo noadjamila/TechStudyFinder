@@ -19,7 +19,7 @@ export default function ZurueckButton({
       disabled={disabled}
       fullWidth={fullWidth}
       sx={{
-        borderColor: theme.custom.secondaryBorder,
+        borderColor: theme.palette.text.skipButton,
         color: theme.palette.text.secondary,
         textTransform: "none",
         fontFamily: "Roboto, sans-serif",
