@@ -22,12 +22,19 @@
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0 0 10px 0;
-  transition: opacity 300ms ;
+  transition: opacity 300ms;
 }
 
 /* Visible hidden states for the text transition */
-.show { opacity: 1; }
-.hide  { opacity: 0; height: 0; margin: 0; overflow: hidden; }
+.show {
+  opacity: 1;
+}
+.hide {
+  opacity: 0;
+  height: 0;
+  margin: 0;
+  overflow: hidden;
+}
 
 /* Button container */
 .actions {

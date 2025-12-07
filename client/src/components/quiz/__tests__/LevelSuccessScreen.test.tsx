@@ -1,17 +1,16 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import LevelSuccessScreen from "../level-success/LevelSuccessScreen";
+import { vi } from "vitest";
 import "@testing-library/jest-dom";
 
 describe("LevelSuccessScreen", () => {
-  const mockOnContinue = () => {};
+  const mockOnContinue = vi.fn();
 
   it("should display 'Level X geschafft!' text initially", () => {
     render(<LevelSuccessScreen currentLevel={1} onContinue={mockOnContinue} />);
 
     const levelText = screen.getByText("Level 1 geschafft!");
-    if (!levelText) {
-      throw new Error("Text 'Level 1 geschafft!' wurde nicht gefunden");
-    }
+    expect(levelText).toBeInTheDocument();
   });
 
   it("should transition to the next level text after 1.2 seconds", async () => {
@@ -22,9 +21,7 @@ describe("LevelSuccessScreen", () => {
         const nextLevelText = screen.getByText(
           "Vertiefende Fachinteressen / Spezialisierung",
         );
-        if (!nextLevelText) {
-          throw new Error("Text für das nächste Level wurde nicht gefunden");
-        }
+        expect(nextLevelText).toBeInTheDocument();
       },
       {
         timeout: 1500,
@@ -33,10 +30,10 @@ describe("LevelSuccessScreen", () => {
   });
 
   it("should call 'onContinue' function when 'Weiter' is clicked", () => {
-    const mockOnContinue = () => {};
-
     render(<LevelSuccessScreen currentLevel={1} onContinue={mockOnContinue} />);
 
     fireEvent.click(screen.getByText("Weiter"));
+
+    expect(mockOnContinue).toHaveBeenCalledTimes(1);
   });
 });

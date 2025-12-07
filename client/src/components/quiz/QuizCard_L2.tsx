@@ -18,7 +18,7 @@ export interface QuizCardProps {
    * @returns void
    *
    */
-  // eslint-disable-next-line no-unused-vars
+
   onSelect: (option: string) => void;
 }
 
