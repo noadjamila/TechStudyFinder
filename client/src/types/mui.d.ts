@@ -25,11 +25,7 @@ declare module "@mui/material/styles" {
       inactive: string;
     };
     results: {
-      background: string;
-      filterBorder: string;
-      filterSelected: string;
       filterUnselected: string;
-      hoverBackground: string;
       favoriteIconToggled: string;
       favoriteIconUntoggled: string;
     };
@@ -54,11 +50,7 @@ declare module "@mui/material/styles" {
       inactive?: string;
     };
     results?: {
-      background?: string;
-      filterBorder?: string;
-      filterSelected?: string;
       filterUnselected?: string;
-      hoverBackground?: string;
       favoriteIconToggled?: string;
       favoriteIconUntoggled?: string;
     };

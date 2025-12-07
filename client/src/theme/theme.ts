@@ -23,6 +23,7 @@ const theme = createTheme({
       paper: "#E9E9E9", // Speech bubbles
     },
 
+    // Four colors of the Launch Screen
     decorative: {
       pink: "#FFBDEE",
       green: "#E7F9CE", // card backgrounds
@@ -43,23 +44,14 @@ const theme = createTheme({
     favorites: {
       inactive: "#CAC4D0",
     },
-    results: {
-      background: "#FFFFFF",
-      filterBorder: "#3F3E42",
-      filterSelected: "#3F3E42",
-      filterUnselected: "#9E9E9E",
-      hoverBackground: "#f0f6ffff",
-      favoriteIconToggled: "#FFBDEE",
-      favoriteIconUntoggled: "#c2c2c2ff",
-    },
   },
   typography: {
-    fontFamily: "Roboto, sans-serif",
+    fontFamily: "Fira Sans, sans-serif",
     h2: {
-      fontFamily: '"Lexend Deca", Roboto, sans-serif',
+      fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
     },
     h6: {
-      fontFamily: '"Lexend Deca", Roboto, sans-serif',
+      fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
     },
     h5: {
       fontSize: "1.25rem",

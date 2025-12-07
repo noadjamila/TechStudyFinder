@@ -4,9 +4,8 @@ import {
   Typography,
   IconButton,
   Stack,
-  List,
-  ListItem,
-  Divider,
+  Card,
+  CardContent,
   Select,
   MenuItem,
   FormControl,
@@ -115,7 +114,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                 minWidth: { xs: 250, sm: 250 },
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "25px",
-                  backgroundColor: theme.palette.results.background,
+                  backgroundColor: theme.palette.background.default,
                 },
               }}
             >
@@ -126,6 +125,24 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                 displayEmpty
                 IconComponent={ArrowDropDownIcon}
                 aria-label="Filter nach Universität oder Hochschule"
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      backgroundColor: theme.palette.background.default,
+                      "& .MuiMenuItem-root": {
+                        "&:hover": {
+                          backgroundColor: `${theme.palette.primary.main}33`,
+                        },
+                        "&.Mui-selected": {
+                          backgroundColor: `${theme.palette.primary.main}4D`,
+                          "&:hover": {
+                            backgroundColor: `${theme.palette.primary.main}66`,
+                          },
+                        },
+                      },
+                    },
+                  },
+                }}
                 renderValue={(selected) => (
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <PlaceIcon
@@ -136,8 +153,8 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                     <Typography
                       sx={{
                         color: selected
-                          ? theme.palette.results.filterSelected
-                          : theme.palette.results.filterUnselected,
+                          ? theme.palette.text.primary
+                          : theme.palette.text.skipButton,
                       }}
                     >
                       {selected || "Universität/Hochschule"}
@@ -147,10 +164,10 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                 sx={{
                   borderRadius: "25px",
                   "& .MuiSelect-icon": {
-                    color: theme.palette.results.filterBorder,
+                    color: theme.palette.text.primary,
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: theme.palette.quiz.buttonColor,
+                    borderColor: theme.palette.decorative.blue,
                   },
                 }}
               >
@@ -168,7 +185,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                 minWidth: { xs: 250, sm: 250 },
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "25px",
-                  backgroundColor: theme.palette.results.background,
+                  backgroundColor: theme.palette.background.default,
                 },
               }}
             >
@@ -179,6 +196,24 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                 displayEmpty
                 IconComponent={ArrowDropDownIcon}
                 aria-label="Filter nach Abschluss"
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      backgroundColor: theme.palette.background.default,
+                      "& .MuiMenuItem-root": {
+                        "&:hover": {
+                          backgroundColor: `${theme.palette.primary.main}33`,
+                        },
+                        "&.Mui-selected": {
+                          backgroundColor: `${theme.palette.primary.main}4D`,
+                          "&:hover": {
+                            backgroundColor: `${theme.palette.primary.main}66`,
+                          },
+                        },
+                      },
+                    },
+                  },
+                }}
                 renderValue={(selected) => (
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <StarsIcon
@@ -189,8 +224,8 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                     <Typography
                       sx={{
                         color: selected
-                          ? theme.palette.results.filterSelected
-                          : theme.palette.results.filterUnselected,
+                          ? theme.palette.text.primary
+                          : theme.palette.text.skipButton,
                       }}
                     >
                       {selected || "Abschluss"}
@@ -200,10 +235,10 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                 sx={{
                   borderRadius: "25px",
                   "& .MuiSelect-icon": {
-                    color: theme.palette.results.filterBorder,
+                    color: theme.palette.text.primary,
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: theme.palette.quiz.buttonColor,
+                    borderColor: theme.palette.decorative.blue,
                   },
                 }}
               >
@@ -217,18 +252,21 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
             </FormControl>
           </Stack>
 
-          <List sx={{ width: "100%" }}>
-            {filteredProgrammes.map((programme, index) => (
-              <React.Fragment key={programme.id}>
-                <ListItem
-                  sx={{
-                    padding: 2,
-                    transition: "background-color 0.3s",
-                    "&:hover": {
-                      backgroundColor: theme.palette.results.hoverBackground,
-                    },
-                  }}
-                >
+          <Stack spacing={2}>
+            {filteredProgrammes.map((programme) => (
+              <Card
+                key={programme.id}
+                sx={{
+                  backgroundColor: `${theme.palette.primary.main}33`,
+                  boxShadow: 3,
+                  borderRadius: 2,
+                  transition: "background-color 0.3s",
+                  "&:hover": {
+                    backgroundColor: `${theme.palette.primary.main}80`,
+                  },
+                }}
+              >
+                <CardContent sx={{ padding: 2 }}>
                   <Grid
                     container
                     spacing={2}
@@ -258,14 +296,13 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         {favorites.has(programme.id) ? (
                           <FavoriteIcon
                             sx={{
-                              color: theme.palette.results.favoriteIconToggled,
+                              color: theme.palette.secondary.main,
                             }}
                           />
                         ) : (
                           <FavoriteBorderIcon
                             sx={{
-                              color:
-                                theme.palette.results.favoriteIconUntoggled,
+                              color: theme.palette.favorites.inactive,
                             }}
                           />
                         )}
@@ -290,11 +327,10 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                       </Stack>
                     </Grid>
                   </Grid>
-                </ListItem>
-                {index < filteredProgrammes.length - 1 && <Divider />}
-              </React.Fragment>
+                </CardContent>
+              </Card>
             ))}
-          </List>
+          </Stack>
         </>
       )}
     </Box>

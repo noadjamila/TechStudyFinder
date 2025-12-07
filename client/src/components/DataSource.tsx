@@ -12,11 +12,14 @@ export default function DataSource() {
   return (
     <Box
       sx={{
+        maxWidth: 800,
+        margin: "0 auto",
+        padding: 3,
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
+        alignItems: "flex-start",
         gap: 2,
-        my: 4,
+        my: 0,
       }}
     >
       <Box
@@ -44,7 +47,7 @@ export default function DataSource() {
       </Box>
       <Typography
         variant="body2"
-        align="center"
+        align="left"
         sx={{
           maxWidth: 600,
           px: 2,
