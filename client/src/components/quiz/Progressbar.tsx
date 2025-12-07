@@ -11,8 +11,8 @@ export interface ProgressbarProps {
   // Total number of steps.
   // Needs to be greater than 0 so that percentage progress can be calculated.
   total: number;
-  bgColor?: string;
-  fillColor?: string;
+  bgColor: string;
+  fillColor: string;
 }
 
 /**
@@ -30,8 +30,8 @@ export interface ProgressbarProps {
 const Progressbar: React.FC<ProgressbarProps> = ({
   current,
   total,
-  bgColor = "#eee",
-  fillColor = "#333",
+  bgColor,
+  fillColor,
 }) => {
   // Limits the current value so that it never falls below 0 or exceeds the total number.
   const safeCurrent = Math.max(0, Math.min(current, total));

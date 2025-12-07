@@ -62,8 +62,8 @@ const QuizLayout = ({
         <Progressbar
           current={currentIndex}
           total={questionsTotal}
-          bgColor={theme.palette.quiz.progressBg}
-          fillColor={theme.palette.quiz.progressFill}
+          bgColor={theme.palette.quiz.progressUnfilled}
+          fillColor={theme.palette.secondary.main}
         />
 
         <Box
