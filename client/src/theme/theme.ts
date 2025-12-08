@@ -23,6 +23,7 @@ const theme = createTheme({
       paper: "#E9E9E9", // Speech bubbles
     },
 
+    // Four colors of the Launch Screen
     decorative: {
       pink: "#FFBDEE",
       green: "#E7F9CE", // card backgrounds
@@ -45,7 +46,13 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: "Roboto, sans-serif",
+    fontFamily: "Fira Sans, sans-serif",
+    h2: {
+      fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
+    },
+    h6: {
+      fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
+    },
     h5: {
       fontSize: "1.25rem",
       fontWeight: 500,
