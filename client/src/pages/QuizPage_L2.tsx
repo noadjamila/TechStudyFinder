@@ -48,10 +48,8 @@ const QuizPage_L2: React.FC = () => {
     const savedIndex = localStorage.getItem("currentIndex");
     const savedScores = localStorage.getItem("scores");
 
-    if (savedIndex) {
+    if (savedIndex && savedScores) {
       setCurrentIndex(Number(savedIndex));
-    }
-    if (savedScores) {
       setScores(JSON.parse(savedScores));
     }
   }, []);
@@ -176,7 +174,6 @@ const QuizPage_L2: React.FC = () => {
     fetchQuestions();
   }, []);
 
-  // Wenn ein Fehler aufgetreten ist, zeige nur den ErrorScreen
   if (error != null) {
     return <ErrorScreen title={error.title} message={error.message} />;
   }
