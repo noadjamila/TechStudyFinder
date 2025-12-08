@@ -6,18 +6,20 @@ import {
   Typography,
   Paper,
   useTheme,
-  useMediaQuery,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import ResultIcon from "@mui/icons-material/Bookmark";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useNavigate } from "react-router-dom";
 
-const NavBar: React.FC = () => {
+interface NavBarProps {
+  isSidebarMode?: boolean;
+}
+
+const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
   const [value, setValue] = useState(0);
   const navigate = useNavigate();
   const theme = useTheme();
-  const isDesktop = useMediaQuery(theme.breakpoints.up("sm"));
 
   // Navigation Elements
   const navItems = [
@@ -32,18 +34,11 @@ const NavBar: React.FC = () => {
   };
 
   //desktop view
-  if (isDesktop) {
+  if (isSidebarMode) {
     return (
       <Box
         sx={{
-          position: "fixed",
-          top: "50%",
-          transform: "translateY(-50%)",
-          left: 0,
-          width: 80,
-          pt: 15,
-          borderRadius: 9,
-          boxShadow: 3,
+          width: "100%",
           zIndex: 1000,
           display: "flex",
           flexDirection: "column",
@@ -55,6 +50,7 @@ const NavBar: React.FC = () => {
         {navItems.map((item, index) => (
           <Box
             key={item.label}
+            onClick={() => handleNavigation(index, item.path)}
             sx={{
               width: 60,
               height: 75,
@@ -62,20 +58,48 @@ const NavBar: React.FC = () => {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              borderRadius: 3,
-              mb: 1, // Abstand zwischen den Elementen
               cursor: "pointer",
-              bgcolor:
-                value === index ? theme.palette.primary.light : "transparent",
-              color:
-                value === index
-                  ? theme.palette.primary.dark
-                  : theme.palette.text.secondary,
+              mb: 1,
+              bgcolor: "transparent",
+              color: theme.palette.text.secondary,
             }}
-            onClick={() => handleNavigation(index, item.path)}
           >
-            <item.icon sx={{ fontSize: 24, mb: 0.5 }} />
-            <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+
+                // **1. Hintergrund (Rosa Pille)**
+                ...(value === index && {
+                  width: 50,
+                  height: 40,
+                  borderRadius: 999,
+                  backgroundColor: theme.palette.secondary.light,
+                }),
+                mb: 0.5,
+              }}
+            >
+              <item.icon
+                sx={{
+                  fontSize: 24,
+                  color:
+                    value === index
+                      ? "#FFFFFF !important"
+                      : theme.palette.text.secondary,
+                }}
+              />
+            </Box>
+            <Typography
+              variant="caption"
+              sx={{
+                fontWeight: "bold",
+                color:
+                  value === index
+                    ? theme.palette.secondary.main
+                    : theme.palette.text.secondary,
+              }}
+            >
               {item.label}
             </Typography>
           </Box>

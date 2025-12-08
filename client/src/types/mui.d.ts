@@ -20,6 +20,7 @@ declare module "@mui/material/styles" {
     };
     navigation: {
       background: string;
+      navbar: string;
     };
     favorites: {
       inactive: string;
@@ -40,6 +41,7 @@ declare module "@mui/material/styles" {
     };
     navigation?: {
       background?: string;
+      navbar?: string;
     };
     favorites?: {
       inactive?: string;
