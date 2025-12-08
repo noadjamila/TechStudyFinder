@@ -32,7 +32,11 @@ const BaseCard = ({ question, sx, children }: QuizCardBaseProps) => {
     <Card
       sx={{
         position: "relative",
-        maxWidth: 600,
+        maxWidth: {
+          xs: 320,
+          md: 540,
+          lg: 700,
+        },
         width: "100%",
         minHeight: "80px",
         mx: "auto",
@@ -54,7 +58,7 @@ const BaseCard = ({ question, sx, children }: QuizCardBaseProps) => {
         component="div"
         gutterBottom
         sx={{
-          mt: 3,
+          mt: 1,
           px: 2,
           textAlign: "center",
         }}

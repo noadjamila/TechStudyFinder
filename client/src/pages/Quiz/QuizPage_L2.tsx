@@ -4,6 +4,7 @@ import QuizLayout from "../../layouts/QuizLayout";
 import { RiasecType, initialScores } from "../../types/RiasecTypes";
 import ErrorScreen from "../../components/error-screen/ErrorScreen";
 import CardStack from "../../components/quiz/CardStack";
+import { Stack } from "@mui/material";
 
 export interface QuizPageL2Props {
   previousIds: number[];
@@ -217,18 +218,23 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
             />
           </CardStack>
 
-          <img
-            src="/mascot_walking_pink.svg"
-            width={61}
-            height={90}
-            alt="Mascot"
-            style={{
-              position: "absolute",
+          <Stack
+            sx={{
+              position: "fixed",
               bottom: 0,
-              right: 30,
+              right: 0,
+              zIndex: 10,
               pointerEvents: "none",
+              pr: { xs: 20, md: 40 },
             }}
-          />
+          >
+            <img
+              src="/mascot_walking_pink.svg"
+              width={61}
+              height={90}
+              alt="Mascot"
+            />
+          </Stack>
         </QuizLayout>
       ) : (
         <div>

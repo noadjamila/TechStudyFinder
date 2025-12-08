@@ -44,7 +44,11 @@ const QuizLayout = ({
       <Box
         sx={{
           width: "100%",
-          maxWidth: 420,
+          maxWidth: {
+            xs: 420,
+            md: 600,
+            lg: 900,
+          },
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -54,7 +58,13 @@ const QuizLayout = ({
           margin: "0 auto",
         }}
       >
-        <Box sx={{ width: "100%", maxWidth: 420, px: 2, pt: 4 }}>
+        <Box
+          sx={{
+            width: "100%",
+            px: 2,
+            pt: 4,
+          }}
+        >
           <Box
             sx={{
               display: "grid",

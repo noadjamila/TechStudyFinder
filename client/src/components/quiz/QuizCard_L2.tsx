@@ -28,12 +28,10 @@ const QuizCard_L2: React.FC<QuizCardProps> = ({ question, onSelect }) => {
       <BaseCard
         question={question}
         sx={{
-          maxWidth: {
-            xs: 280,
-            sm: 340,
-            md: 420,
+          height: {
+            xs: 300,
+            md: 200,
           },
-          height: 300,
         }}
       ></BaseCard>
 

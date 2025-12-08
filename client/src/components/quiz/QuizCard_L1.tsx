@@ -32,7 +32,6 @@ const QuizCard_L1 = <T,>({ question, onSelect }: QuizCardBaseProps<T>) => {
           alignItems: "center",
           justifyContent: "center",
           width: "100%",
-          maxWidth: 280,
         }}
       >
         <BaseCard
