@@ -23,17 +23,11 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: Install Root Dependencies
-        run: npm install --ignore-scripts
-
-      - name: Install Server Dependencies
-        run: npm install --workspace=server --ignore-scripts
+      - name: Install Dependencies
+        run: npm install
 
       - name: Build Server
         run: npm run build --workspace=server
-
-      - name: Install Client Dependencies
-        run: npm install --workspace=client --ignore-scripts
 
       - name: Build Client
         run: npm run build --workspace=client
