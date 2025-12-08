@@ -20,20 +20,23 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: Install Root Dependencies (Safe)
-        run: npm ci --ignore-scripts
+      - name: Clean workspace before install
+        run: |
+          rm -rf node_modules
+          rm -rf client/node_modules
+          rm -rf server/node_modules
+          rm -f package-lock.json
+          rm -f client/package-lock.json
+          rm -f server/package-lock.json
 
-      - name: Install Server Dependencies (Safe)
-        run: npm ci --workspace=server --ignore-scripts
+      - name: Install Dependencies
+        run: npm ci
 
       - name: Run Server Unit Tests
         run: npm run test:unit --workspace=server
 
       - name: Run Server Integration Tests
         run: npm run test:integration --workspace=server
-
-      - name: Install Client Dependencies (Safe)
-        run: npm ci --workspace=client --ignore-scripts
 
       - name: Run Client Tests
         run: npm test --workspace=client
