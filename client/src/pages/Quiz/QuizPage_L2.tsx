@@ -225,7 +225,8 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
               right: 0,
               zIndex: 10,
               pointerEvents: "none",
-              pr: { xs: 20, md: 40 },
+              pr: { xs: 10, md: 40, lg: 60 },
+              mt: 4,
             }}
           >
             <img
