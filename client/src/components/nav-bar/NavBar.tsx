@@ -96,7 +96,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
                 fontWeight: "bold",
                 color:
                   value === index
-                    ? theme.palette.secondary.main
+                    ? theme.palette.text.secondary
                     : theme.palette.text.secondary,
               }}
             >

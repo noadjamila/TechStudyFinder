@@ -47,7 +47,7 @@ const LogoMenu: React.FC = () => {
           aria-label="Open menu"
           sx={{
             ml: 2,
-            mr: 1,
+            mr: 10,
           }}
         >
           <MenuIcon fontSize="large" />

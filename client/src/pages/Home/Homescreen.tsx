@@ -12,6 +12,7 @@ import DesktopLayout from "../../layouts/DesktopLayout";
 const Homescreen: React.FC = () => {
   const navigate = useNavigate();
   const muiTheme = useTheme();
+  const toggleSidebar = () => {};
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
   const handleQuizStart = () => {
     navigate("/quiz/level/1");
@@ -94,13 +95,13 @@ const Homescreen: React.FC = () => {
             alt="Maskottchen"
             sx={{
               position: "absolute",
-              width: { xs: 40, sm: 60 },
-              height: "auto",
+              width: { xs: 40, sm: 40 },
+              height: "absolute",
               top: {
-                xs: -60,
-                sm: -85,
+                xs: -80,
+                sm: -58,
               },
-              right: { xs: 20, sm: -20 },
+              right: { xs: 20, sm: 20 },
             }}
           />
 
@@ -144,7 +145,9 @@ const Homescreen: React.FC = () => {
     >
       {isDesktop ? (
         // DESKTOP: Umschließe den Hauptinhalt mit dem DesktopLayout
-        <DesktopLayout>{MainContent}</DesktopLayout>
+        <DesktopLayout onMenuToggle={toggleSidebar}>
+          {MainContent}
+        </DesktopLayout>
       ) : (
         // MOBIL: LogoMenu und Navigationbar als separate Elemente, gefolgt vom Inhalt
         <>
