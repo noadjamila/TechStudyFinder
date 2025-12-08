@@ -44,11 +44,27 @@ const QuizPage_L2: React.FC = () => {
 
   const currentQuestion = questions[currentIndex];
 
+  useEffect(() => {
+    const savedIndex = localStorage.getItem("currentIndex");
+    const savedScores = localStorage.getItem("scores");
+
+    if (savedIndex) {
+      setCurrentIndex(Number(savedIndex));
+    }
+    if (savedScores) {
+      setScores(JSON.parse(savedScores));
+    }
+  }, []);
+
   /**
    * Advances to the next question without exceeding the total count.
    */
-  const next = () => setCurrentIndex((i) => Math.min(TOTAL_QUESTIONS, i + 1));
-
+  const next = () => {
+    const nextIndex = Math.min(TOTAL_QUESTIONS, currentIndex + 1);
+    setCurrentIndex(nextIndex);
+    localStorage.setItem("currentIndex", nextIndex.toString());
+    localStorage.setItem("scores", JSON.stringify(scores));
+  };
   /**
    * Returns the top three RIASEC scores sorted in descending order.
    *
