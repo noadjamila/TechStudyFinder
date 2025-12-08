@@ -1,22 +1,14 @@
 import React from "react";
-import Card from "@mui/material/Card";
-import Typography from "@mui/material/Typography";
-import { SxProps, Theme, useTheme } from "@mui/material/styles";
-import QuizButtons_L1 from "../buttons/QuizButtons_L1";
+import { SxProps, Theme } from "@mui/material/styles";
 import { Box } from "@mui/material";
+import BaseCard from "./BaseCard";
+import SecondaryButton from "../buttons/SecondaryButton";
 
 /**
- * Interface defining selectable options within the quiz card.
- * The radio buttons are the default, set to true, but can be set false, so they disappear.
- * Other buttons or actions can be implemented with the children prop.
- * @template T The type of the option's unique identifier (value).
+ * Props for the QuizCard_L1 component.
+ * Allows parent-components the interaction and modification of this component.
+ * Contains the question text and a callback for when an option is selected.
  */
-export interface QuizOption<T = string> {
-  label: string;
-  value: T;
-  description?: string;
-}
-
 export interface QuizCardBaseProps<T = string> {
   question: string;
   onSelect: (value: T) => void;
@@ -24,19 +16,13 @@ export interface QuizCardBaseProps<T = string> {
 }
 
 /**
- * A generic, styled React component that renders a single question card
- * with a set of radio button options.
+ * A quiz card component for level 1 questions with three answer options.
  *
- * It uses Material UI (MUI) components (Card, Radio, FormControlLabel, etc.)
- * and applies custom theming for radio button colors based on quizColorTheme.
- *
- * @template T The type of the option's unique identifier (value).
- * @param {QuizCardBaseProps<T>} props The props defining the card content and behavior.
- * @returns {JSX.Element} The Quiz Card component.
+ * @param question: The question text to display on the card.
+ * @param onSelect: Callback function when an option is selected.
+ * @constructor
  */
-const QuizCard_L1 = <T,>({ question, onSelect, sx }: QuizCardBaseProps<T>) => {
-  const theme = useTheme();
-
+const QuizCard_L1 = <T,>({ question, onSelect }: QuizCardBaseProps<T>) => {
   return (
     <>
       <Box
@@ -49,37 +35,28 @@ const QuizCard_L1 = <T,>({ question, onSelect, sx }: QuizCardBaseProps<T>) => {
           maxWidth: 280,
         }}
       >
-        <Card
+        <BaseCard
+          question={question}
           sx={{
-            position: "relative",
-            maxWidth: 600,
-            width: "100%",
-            mx: "auto",
-            boxShadow: 3,
-            borderRadius: 2,
-            backgroundColor: theme.palette.decorative.green,
-            color: theme.palette.text.primary,
             pt: 2,
-            pb: 6,
-            overflow: "visible",
-            ...sx,
+            pb: 4,
           }}
-        >
-          {/* the question*/}
-          <Typography
-            variant="h5"
-            component="div"
-            gutterBottom
-            sx={{ mt: 3, textAlign: "center" }}
-          >
-            {question}
-          </Typography>
-        </Card>
-        <QuizButtons_L1
-          startStudying={() => onSelect?.("grundständig" as T)}
-          masterStudies={() => onSelect?.("weiterführend" as T)}
-          lookAround={() => onSelect?.("all" as T)}
-        />
+        ></BaseCard>
+
+        <Box sx={{ display: "grid", gap: 2, mt: 3 }}>
+          <SecondaryButton
+            label={"Ein Studium beginnen?"}
+            onClick={() => onSelect?.("grundständig" as T)}
+          />
+          <SecondaryButton
+            label={"Einen Master studieren?"}
+            onClick={() => onSelect?.("weiterführend" as T)}
+          />
+          <SecondaryButton
+            label={"Dich erstmal umschauen?"}
+            onClick={() => onSelect?.("all" as T)}
+          />
+        </Box>
       </Box>
     </>
   );
