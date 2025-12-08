@@ -6,7 +6,6 @@
  * @example
  * const type: RiasecType = RiasecType.R; // "R"
  */
-
 export enum RiasecType {
   R = "R",
   I = "I",
