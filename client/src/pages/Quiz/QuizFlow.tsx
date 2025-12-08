@@ -1,6 +1,7 @@
 import { useState } from "react";
 import QuizPage_L1 from "./QuizPage_L1";
 import QuizPage_L2 from "./QuizPage_L2";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Manages the multi-level quiz flow.
@@ -12,6 +13,7 @@ import QuizPage_L2 from "./QuizPage_L2";
 export default function QuizFlow() {
   const [level, setLevel] = useState<1 | 2 | 3>(1);
   const [idsFromLevel1, setIdsFromLevel1] = useState<number[]>([]);
+  const navigate = useNavigate();
 
   if (level === 1) {
     return (
@@ -19,6 +21,7 @@ export default function QuizFlow() {
         onNextLevel={(ids) => {
           setIdsFromLevel1(ids);
           setLevel(2);
+          navigate("/quiz/level/2");
         }}
       />
     );
@@ -29,6 +32,8 @@ export default function QuizFlow() {
       <QuizPage_L2
         previousIds={idsFromLevel1}
         onNextLevel={() => setLevel(3)}
+        // uncomment once QuizPage_L3 is implemented
+        // navigate("/quiz/level/3");
       />
     );
   }

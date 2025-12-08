@@ -11,16 +11,6 @@ export interface QuizPageL1Props {
 }
 
 /**
- * Constants defining the options for the Level 1 question.
- * The value field is used in the API payload.
- */
-const L1_OPTIONS = [
-  { label: "ein Studium beginnen?", value: "grundständig" },
-  { label: "dein Studium fortsetzen?", value: "weiterführend" },
-  { label: "dich erstmal umschauen?", value: "all" },
-];
-
-/**
  * The QuizPage_L1 component handles the first question of the quiz.
  * It manages the user's selection and calls the filtering API to get
  * the initial set of filtered IDs.
@@ -78,9 +68,7 @@ export default function QuizPage_L1({ onNextLevel }: QuizPageL1Props) {
           }}
         />
         <QuizCard_L1
-          question="Möchtest du..."
-          options={L1_OPTIONS}
-          selected={selected}
+          question="Möchtest du ..."
           onSelect={handleSelectAndNext}
         />
       </Box>
