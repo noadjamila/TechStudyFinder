@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import StartButton from "../../components/buttons/Button";
-import "./Homescreen.css";
 import { useNavigate } from "react-router-dom";
 import CardStack from "../../../src/components/quiz/CardStack";
 import theme from "../../theme/theme";
@@ -29,6 +28,7 @@ const Homescreen: React.FC = () => {
     <Box
       className="page-content-wrapper"
       sx={{
+        overflow: "hidden",
         maxWidth: "100%",
         mx: "auto",
         px: { xs: 1, sm: 0 },
@@ -58,7 +58,13 @@ const Homescreen: React.FC = () => {
       </Typography>
 
       {/*box for the info texts*/}
-      <Box className="info-text" sx={{ mt: 2, mb: 6 }}>
+      <Box
+        className="info-text"
+        sx={{
+          mt: 2,
+          mb: 6,
+        }}
+      >
         <Typography
           variant="body1"
           sx={{ px: { xs: 2, sm: 1, lineHeight: 1.3 } }}
@@ -77,11 +83,9 @@ const Homescreen: React.FC = () => {
             backgroundColor: theme.palette.decorative.green,
             borderRadius: 2,
             boxShadow: 3,
-            mt: 19,
+            mt: 8,
             mx: "auto",
             maxWidth: "400px",
-            width: "400px",
-            marginLeft: { sm: "-100px", md: "-100px" },
           }}
         >
           <Box
@@ -131,7 +135,13 @@ const Homescreen: React.FC = () => {
   );
 
   return (
-    <div className="homescreen-container">
+    <div
+      className="homescreen-container"
+      style={{
+        overflow: "hidden",
+        height: "100svh",
+      }}
+    >
       {isDesktop ? (
         // DESKTOP: Umschließe den Hauptinhalt mit dem DesktopLayout
         <DesktopLayout>{MainContent}</DesktopLayout>
@@ -140,7 +150,7 @@ const Homescreen: React.FC = () => {
         <>
           <LogoMenu />
           <Navigationbar />
-          {MainContent} {/* Der Inhalt wird direkt darunter gerendert */}
+          {MainContent}
         </>
       )}
     </div>

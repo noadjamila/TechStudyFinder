@@ -9,7 +9,6 @@ import {
   Box,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import "./LogoMenu.css";
 import theme from "../../theme/theme";
 
 const LogoMenu: React.FC = () => {
@@ -30,6 +29,7 @@ const LogoMenu: React.FC = () => {
       sx={{
         backgroundColor: "transparent",
         boxShadow: "none",
+        mt: 1.5,
       }}
     >
       <Toolbar
@@ -40,53 +40,62 @@ const LogoMenu: React.FC = () => {
           px: 0,
         }}
       >
-        {/* Menu and Tech Study Finder Headline*/}
+        {/* Menu Icon*/}
         <IconButton
           edge="start"
           onClick={handleMenuClick}
           aria-label="Open menu"
           sx={{
             ml: 2,
-            mr: 3,
+            mr: 1,
           }}
         >
           <MenuIcon fontSize="large" />
         </IconButton>
 
-        <Box
+        {/*Tech Study Finder Headline*/}
+        <Typography
+          variant="h5"
           sx={{
+            fontWeight: "bold",
+            color: theme.palette.text.primary,
+            whiteSpace: "nowrap",
             flexGrow: 1,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            pr: 2,
           }}
         >
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: "bold",
-              color: theme.palette.text.primary,
-              whiteSpace: "nowrap",
-            }}
-          >
-            Tech Study Finder
-          </Typography>
-        </Box>
-
-        {/*Logo */}
-        <Typography
-          variant="h6"
-          sx={{
-            ml: 1,
-            mr: 4,
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <img src="/logo.png" alt="Logo" className="logo" />
+          Tech Study Finder
         </Typography>
 
-        <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
+        {/* 3. Logo (Rechtsbündig) */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            pr: 1.5,
+          }}
+        >
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="logo-image"
+            style={{
+              width: 40,
+              height: 40,
+              objectFit: "contain",
+            }}
+          />
+        </Box>
+
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleMenuClose}
+          disableScrollLock={true}
+        >
           <MenuItem onClick={handleMenuClose}>Einloggen</MenuItem>
           <MenuItem onClick={handleMenuClose}>Impressum</MenuItem>
         </Menu>

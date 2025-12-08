@@ -11,15 +11,17 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
   const theme = useTheme();
 
   return (
+    //{/*Background*/}
     <Box
       sx={{
+        overflow: "hidden",
         display: "flex",
         width: "100%",
         bgcolor: theme.palette.background.paper,
         justifyContent: "center",
         alignItems: "center",
-        py: 10,
-        px: 12,
+        //py: 10,
+        // px: 12,
         position: "relative",
       }}
     >
@@ -45,7 +47,8 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
         sx={{
           marginRight: "120px",
           width: "90%",
-          height: "90vh",
+          height: "100%",
+          maxHeight: "100%",
           display: "flex",
           bgcolor: theme.palette.background.default,
           borderRadius: 10,
@@ -53,6 +56,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
           px: 7,
           flexDirection: "column",
           alignItems: "center",
+          overflow: "hidden",
         }}
       >
         {children}
