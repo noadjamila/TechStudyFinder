@@ -30,6 +30,9 @@ export default function SecondaryButton({
       sx={{
         borderColor: theme.palette.primary.main,
         color: theme.palette.text.primary,
+        "&:hover": {
+          bgcolor: theme.palette.background.paper,
+        },
       }}
     >
       {label}

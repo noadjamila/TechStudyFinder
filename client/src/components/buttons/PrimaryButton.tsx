@@ -31,6 +31,9 @@ export default function PrimaryButton({
         bgcolor: theme.palette.primary.main,
         borderColor: theme.palette.primary.main,
         color: theme.palette.text.primary,
+        "&:hover": {
+          bgcolor: theme.palette.decorative.blueDark,
+        },
       }}
     >
       {label}

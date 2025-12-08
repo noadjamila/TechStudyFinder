@@ -63,6 +63,9 @@ const QuizCard_L2: React.FC<QuizCardProps> = ({ question, onSelect }) => {
             color: theme.palette.text.skipButton,
             textAlign: "center",
             textDecoration: "underline",
+            "&:hover": {
+              color: theme.palette.text.primary,
+            },
           }}
         >
           Überspringen
