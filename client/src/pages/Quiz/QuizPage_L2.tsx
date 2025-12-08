@@ -90,8 +90,9 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
       const points = pointsMap[previousAnswer];
 
       setScores((prev) => {
+        console.log("Previous scores:", prev);
         const newScores = { ...prev, [lastType]: prev[lastType] - points };
-
+        console.log("New scores after update:", newScores);
         if (currentIndex === TOTAL_QUESTIONS - 1) {
           const topScores = getTopThreeScores(newScores);
           setHighestScores(topScores);

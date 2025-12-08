@@ -1,7 +1,7 @@
 import React from "react";
 import Progressbar from "../components/quiz/Progressbar";
 import { Box, useTheme } from "@mui/material";
-import Zurueck_Button from "../components/buttons/Zurueck_Button";
+import Back_Button from "../components/buttons/Back_Button";
 
 /**
  * Props of {@link QuizLayout}.
@@ -57,7 +57,7 @@ const QuizLayout = ({
     >
       <Box sx={{ width: "100%", maxWidth: 420, px: 2, pt: 4 }}>
         {showBackButton && (
-          <Zurueck_Button label="Zurück" onClick={oneBack} sx={{}} />
+          <Back_Button label="Zurück" onClick={oneBack} sx={{}} />
         )}
         <Progressbar
           current={currentIndex}

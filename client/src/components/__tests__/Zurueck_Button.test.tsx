@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import ZurueckButton from "../buttons/Zurueck_Button";
+import BackButton from "../buttons/Back_Button";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
@@ -14,7 +14,7 @@ describe("ZurueckButton", () => {
     render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
 
   test("renders with default label", () => {
-    renderWithTheme(<ZurueckButton onClick={() => {}} />);
+    renderWithTheme(<BackButton onClick={() => {}} />);
 
     expect(
       screen.getByRole("button", { name: /zurück button/i }),
@@ -22,14 +22,14 @@ describe("ZurueckButton", () => {
   });
 
   test("respects fullWidth prop", () => {
-    renderWithTheme(<ZurueckButton onClick={() => {}} fullWidth />);
+    renderWithTheme(<BackButton onClick={() => {}} fullWidth />);
 
     const button = screen.getByRole("button");
     expect(button).toHaveClass("MuiButton-fullWidth");
   });
 
   test("renders start icon", () => {
-    renderWithTheme(<ZurueckButton onClick={() => {}} />);
+    renderWithTheme(<BackButton onClick={() => {}} />);
 
     expect(screen.getByTestId("ArrowBackIcon")).toBeInTheDocument();
   });
