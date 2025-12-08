@@ -60,9 +60,24 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
     { type: RiasecType; score: number }[]
   >([]);
 
+  const [userAnswers, setUserAnswers] = useState<string[]>([]);
+
   const TOTAL_QUESTIONS = questions.length;
   const currentQuestion = questions[currentIndex];
   const quizFinished = TOTAL_QUESTIONS > 0 && currentIndex >= TOTAL_QUESTIONS;
+
+  useEffect(() => {
+    const savedLevel = localStorage.getItem("currentLevel");
+    const savedAnswers = localStorage.getItem("userAnswers");
+
+    if (savedLevel) {
+      setCurrentIndex(parseInt(savedLevel));
+    }
+
+    if (savedAnswers) {
+      setUserAnswers(JSON.parse(savedAnswers));
+    }
+  }, []);
 
   // Advances to the next question without exceeding the total count.
   const next = () => setCurrentIndex((i) => Math.min(TOTAL_QUESTIONS, i + 1));
@@ -110,6 +125,13 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
 
       return newScores;
     });
+
+    const updatedAnswers = [...userAnswers, option];
+    setUserAnswers(updatedAnswers);
+
+    localStorage.setItem("userAnswers", JSON.stringify(updatedAnswers));
+
+    localStorage.setItem("currentLevel", (currentIndex + 1).toString());
 
     // Move to next question (or to debug screen at the end)
     setTimeout(() => {
