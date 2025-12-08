@@ -53,7 +53,7 @@ export default function QuizPage_L1({ onNextLevel }: QuizPageL1Props) {
         sx={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "flex-start",
+          alignItems: "center",
           justifyContent: "center",
         }}
       >
@@ -64,7 +64,7 @@ export default function QuizPage_L1({ onNextLevel }: QuizPageL1Props) {
           alt="Mascot"
           style={{
             alignSelf: "flex-start",
-            marginLeft: "25px",
+            marginLeft: "55px",
           }}
         />
         <QuizCard_L1

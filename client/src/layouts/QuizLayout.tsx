@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Progressbar from "../components/quiz/Progressbar";
 import { Box, useTheme } from "@mui/material";
 import HomeButton from "../components/buttons/HomeButton";
+import { useNavigate } from "react-router-dom";
+import StyledDialog from "../components/dialogs/Dialog";
 
 /**
  * Props of {@link QuizLayout}.
@@ -34,65 +36,78 @@ const QuizLayout = ({
   children,
 }: QuizLayoutProps) => {
   const theme = useTheme();
+  const [openDialog, setDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        maxWidth: 420,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        px: 2,
-        mt: 2,
-        boxSizing: "border-box",
-        margin: "0 auto",
-      }}
-    >
-      <Box sx={{ width: "100%", maxWidth: 420, px: 2, pt: 4 }}>
-        <Box
-          sx={{
-            display: "grid",
-            gap: 2,
-            gridTemplateColumns: "1fr auto auto",
-            alignItems: "center",
-            mb: 4,
-          }}
-        >
-          <HomeButton></HomeButton>
-          <HomeButton></HomeButton>
-        </Box>
-
-        <Progressbar
-          current={currentIndex}
-          total={questionsTotal}
-          bgColor={theme.palette.quiz.progressUnfilled}
-          fillColor={theme.palette.secondary.main}
-        />
-
-        <Box
-          sx={{
-            mt: 1,
-            textAlign: "left",
-            color: theme.palette.text.primary,
-            fontSize: "0.9rem",
-          }}
-        >
-          Frage {currentIndex} von {questionsTotal}
-        </Box>
-      </Box>
-
+    <>
       <Box
         sx={{
           width: "100%",
           maxWidth: 420,
-          mt: 4,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           px: 2,
+          mt: 2,
+          boxSizing: "border-box",
+          margin: "0 auto",
         }}
       >
-        {children}
+        <Box sx={{ width: "100%", maxWidth: 420, px: 2, pt: 4 }}>
+          <Box
+            sx={{
+              display: "grid",
+              gap: 2,
+              gridTemplateColumns: "1fr auto auto",
+              alignItems: "center",
+              mb: 4,
+            }}
+          >
+            <HomeButton />
+            <HomeButton onClick={() => setDialogOpen(true)} />
+          </Box>
+
+          <Progressbar
+            current={currentIndex}
+            total={questionsTotal}
+            bgColor={theme.palette.quiz.progressUnfilled}
+            fillColor={theme.palette.secondary.main}
+          />
+
+          <Box
+            sx={{
+              mt: 1,
+              textAlign: "left",
+              color: theme.palette.text.primary,
+              fontSize: "0.9rem",
+            }}
+          >
+            Frage {currentIndex} von {questionsTotal}
+          </Box>
+        </Box>
+
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: 420,
+            mt: 4,
+            px: 2,
+          }}
+        >
+          {children}
+        </Box>
       </Box>
-    </Box>
+      <StyledDialog
+        open={openDialog}
+        onClose={() => setDialogOpen(false)}
+        title="Quiz beenden?"
+        text="Deine Antworten gehen verloren."
+        cancelLabel="NEIN"
+        confirmLabel="JA"
+        onConfirm={() => navigate("/")}
+      />
+    </>
   );
 };
 
