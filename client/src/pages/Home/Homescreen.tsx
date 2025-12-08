@@ -29,7 +29,7 @@ const Homescreen: React.FC = () => {
     <Box
       className="page-content-wrapper"
       sx={{
-        maxWidth: { xs: "90%", sm: "600px", md: "700px" },
+        maxWidth: "100%",
         mx: "auto",
         px: { xs: 1, sm: 0 },
         textAlign: "center",
@@ -77,10 +77,11 @@ const Homescreen: React.FC = () => {
             backgroundColor: theme.palette.decorative.green,
             borderRadius: 2,
             boxShadow: 3,
-            mt: 13,
+            mt: 19,
             mx: "auto",
-            px: { sm: 1 },
-            position: "relative",
+            maxWidth: "400px",
+            width: "400px",
+            marginLeft: { sm: "-100px", md: "-100px" },
           }}
         >
           <Box
@@ -95,7 +96,7 @@ const Homescreen: React.FC = () => {
                 xs: -60,
                 sm: -85,
               },
-              right: { xs: 20, sm: 30 },
+              right: { xs: 20, sm: -20 },
             }}
           />
 

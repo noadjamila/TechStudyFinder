@@ -18,8 +18,8 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
         bgcolor: theme.palette.background.paper,
         justifyContent: "center",
         alignItems: "center",
-        py: 8,
-        px: 10,
+        py: 10,
+        px: 12,
         position: "relative",
       }}
     >
@@ -43,15 +43,16 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
       <Box
         component="main"
         sx={{
-          width: "100%",
-          maxWidth: 800,
+          marginRight: "120px",
+          width: "90%",
           height: "90vh",
-          flexGrow: 1,
           display: "flex",
           bgcolor: theme.palette.background.default,
           borderRadius: 10,
-          py: 3, // Vertikales Padding, damit der Kasten nicht den ganzen Bildschirm füllt
-          px: 7, // Horizontales Padding
+          py: 3,
+          px: 7,
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
         {children}
