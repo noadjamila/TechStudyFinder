@@ -54,6 +54,7 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   const [error, setError] = useState<{ title: string; message: string } | null>(
     null,
   );
+  const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
   const [scores, setScores] =
     useState<Record<RiasecType, number>>(initialScores);
@@ -77,8 +78,13 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   const goBack = () => {
     if (currentIndex == 0) {
       oneLevelBack();
-    } else {
+    } else if (!isTransitioning) {
+      setIsTransitioning(true);
       const previousAnswer = answers[currentIndex - 1];
+      if (!previousAnswer) {
+        setIsTransitioning(false);
+        return;
+      }
       const lastQuestion = questions[currentIndex - 1];
       const lastType = lastQuestion.riasec_type;
 
@@ -104,6 +110,7 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
         if (currentIndex > 0) {
           setCurrentIndex(currentIndex - 1);
         }
+        setIsTransitioning(false);
       }, 300);
     }
   };
@@ -133,7 +140,8 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   );
 
   const handleSelect = (option: string) => {
-    if (!currentQuestion) return;
+    if (!currentQuestion || isTransitioning) return;
+    setIsTransitioning(true);
 
     const currentType = currentQuestion.riasec_type;
 
@@ -163,6 +171,7 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
       if (currentIndex < TOTAL_QUESTIONS) {
         next();
       }
+      setIsTransitioning(false);
     }, 300);
   };
 
