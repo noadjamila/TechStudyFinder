@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import styles from "./LevelSuccessScreen.module.css";
+import { Box, Typography, Button } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 type Level = 1 | 2 | 3;
 
@@ -25,6 +26,7 @@ export default function LevelSuccessScreen({
    * "next" then show “Next Level: …”
    */
   const [phase, setPhase] = useState<"won" | "next">("won");
+  const theme = useTheme();
 
   useEffect(() => {
     // After 1.2 seconds, switch to next-level text
@@ -38,35 +40,72 @@ export default function LevelSuccessScreen({
       : NEXT_LEVEL_TEXT[(currentLevel + 1) as Level];
 
   return (
-    <div className={styles.wrapper}>
-      <div role="dialog" aria-labelledby="ls-title" className={styles.card}>
-        {/* Phase 1  visible first */}
-        <h2
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        padding: theme.spacing(2),
+      }}
+    >
+      <Box
+        role="dialog"
+        aria-labelledby="ls-title"
+        sx={{
+          textAlign: "center",
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: "8px",
+          padding: theme.spacing(4),
+          boxShadow: 3,
+          width: "100%",
+          maxWidth: 500,
+        }}
+      >
+        <Typography
           id="ls-title"
-          className={`${styles.title} ${
-            phase === "won" ? styles.visible : styles.hidden
-          }`}
+          variant="h4"
+          sx={{
+            color: theme.palette.text.primary,
+            marginBottom: theme.spacing(2),
+            display: phase === "won" ? "block" : "none",
+            fontFamily: theme.typography.fontFamily,
+          }}
           aria-live="polite"
         >
           Level {currentLevel} geschafft!
-        </h2>
+        </Typography>
 
-        {/* Phase 2  fades in after the delay */}
-        <h2
-          className={`${styles.title} ${
-            phase === "next" ? styles.visible : styles.hidden
-          }`}
+        <Typography
+          variant="h6"
+          sx={{
+            color: theme.palette.text.primary,
+            marginTop: theme.spacing(2),
+            display: phase === "next" ? "block" : "none",
+            fontFamily: theme.typography.h6.fontFamily,
+          }}
           aria-live="polite"
         >
           {nextText}
-        </h2>
+        </Typography>
 
-        <div className={styles.actions}>
-          <button type="button" onClick={onContinue} className={styles.button}>
-            Weiter
-          </button>
-        </div>
-      </div>
-    </div>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={onContinue}
+          sx={{
+            marginTop: theme.spacing(3),
+            padding: theme.spacing(1.5, 4),
+            backgroundColor: theme.palette.primary.main,
+            "&:hover": {
+              backgroundColor: theme.palette.primary.dark,
+            },
+          }}
+        >
+          Weiter
+        </Button>
+      </Box>
+    </Box>
   );
 }
