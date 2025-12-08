@@ -23,6 +23,15 @@ jobs:
           node-version: "20"
           cache: "npm"
 
+      - name: Clean workspace before install
+        run: |
+          rm -rf node_modules
+          rm -rf client/node_modules
+          rm -rf server/node_modules
+          rm -f package-lock.json
+          rm -f client/package-lock.json
+          rm -f server/package-lock.json
+
       - name: Install Dependencies
         run: npm install
 
