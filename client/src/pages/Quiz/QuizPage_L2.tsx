@@ -60,12 +60,14 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
     { type: RiasecType; score: number }[]
   >([]);
 
+  // Saving answers in localStorage
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
 
   const TOTAL_QUESTIONS = questions.length;
   const currentQuestion = questions[currentIndex];
   const quizFinished = TOTAL_QUESTIONS > 0 && currentIndex >= TOTAL_QUESTIONS;
 
+  // Loading progress (level and answers) from localStorage
   useEffect(() => {
     const savedLevel = localStorage.getItem("currentLevel");
     const savedAnswers = localStorage.getItem("userAnswers");
@@ -126,6 +128,7 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
       return newScores;
     });
 
+    // Saving the answer in localStorage
     const updatedAnswers = [...userAnswers, option];
     setUserAnswers(updatedAnswers);
 
