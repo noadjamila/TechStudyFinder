@@ -1,25 +1,15 @@
-import React, { useState } from "react";
-import styles from "./QuizCard_L2.module.css";
+import React from "react";
+import { Card, Typography, useTheme } from "@mui/material";
+import QuizButtons_L2 from "../buttons/QuizButtons_L2";
 
 /**
- * Props for {@link QuizCard_L2}
+ * Props for the QuizCard_L2 component.
  * Allows parent-components the interaction and modification of this component.
+ * Contains the question text and a callback for when an option is selected.
  */
 export interface QuizCardProps {
-  /**
-   * Current question that should be displayed.
-   */
   question: string;
-
-  /**
-   * Callback function that is called when the user selects an answer.
-   *
-   * @param option - Key of the selected option ("yes", "no" or "skip").
-   * @returns void
-   *
-   */
-  // eslint-disable-next-line no-unused-vars
-  onSelect: (option: string) => void;
+  onSelect: (option: "yes" | "no" | "skip") => void;
 }
 
 /**
@@ -39,54 +29,49 @@ export interface QuizCardProps {
  * @returns {JSX.Element} Interactive quiz card with three answer options.
  */
 const QuizCard_L2: React.FC<QuizCardProps> = ({ question, onSelect }) => {
-  const [selection, setSelection] = useState("");
-  const [animation, setAnimation] = useState(false);
-
-  /**
-   * Deals with the selection of an answer option.
-   *
-   * - Activates a short animation of the radio button
-   * - Calls the `onSelect` callback function after a delay of 800ms
-   *
-   * @param optKey - The key of the selected option
-   */
-  const handleSelect = (optKey: string) => {
-    setSelection(optKey);
-    setAnimation(true);
-
-    setTimeout(() => {
-      setAnimation(false);
-      onSelect(optKey);
-    }, 800);
-  };
-
-  const options = [
-    { key: "yes", value: "Ja" },
-    { key: "no", value: "Nein" },
-    { key: "skip", value: "Überspringen" },
-  ];
+  const theme = useTheme();
 
   return (
-    <div className={styles.card}>
-      <h2 className={styles.question}>{question}</h2>
-      {options.map((opt) => (
-        <label key={opt.key} className={styles.option}>
-          <input
-            type="radio"
-            name="selection"
-            value={opt.key}
-            checked={selection === opt.key}
-            onChange={() => handleSelect(opt.key)}
-          />
-          <span
-            className={`${styles.radiobutton} ${
-              selection === opt.key ? styles.active : ""
-            } ${selection === opt.key && animation ? styles.puls : ""}`}
-          ></span>
-          <span>{opt.value}</span>
-        </label>
-      ))}
-    </div>
+    <>
+      <Card
+        sx={{
+          width: "100%",
+          height: "300px",
+          maxWidth: 280,
+          mx: "auto",
+          boxSizing: "border-box",
+          boxShadow: 3,
+          borderRadius: 2,
+          backgroundColor: theme.palette.decorative.green,
+          pb: 3,
+          px: 0.5,
+          overflow: "visible",
+          justifyContent: "center",
+          alignItems: "center",
+          display: "flex",
+        }}
+      >
+        <Typography
+          variant="h5"
+          sx={{
+            mb: 4,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "80px",
+            textAlign: "center",
+            margin: "2em",
+          }}
+        >
+          {question}
+        </Typography>
+      </Card>
+      <QuizButtons_L2
+        onYes={() => onSelect("yes")}
+        onNo={() => onSelect("no")}
+        onSkip={() => onSelect("skip")}
+      />
+    </>
   );
 };
 

@@ -1,20 +1,25 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { MemoryRouter, useLocation } from "react-router-dom";
-import Homescreen from "../Homescreen";
+import Homescreen from "../Home/Homescreen";
 import "@testing-library/jest-dom";
+import { vi } from "vitest";
 
-const LocationDisplay = () => {
-  const location = useLocation();
-  return <div data-testid="location">{location.pathname}</div>;
-};
+const mockedNavigate = vi.fn();
+
+vi.mock("react-router-dom", async () => {
+  const actual =
+    await vi.importActual<typeof import("react-router-dom")>(
+      "react-router-dom",
+    );
+
+  return {
+    ...actual,
+    useNavigate: () => mockedNavigate,
+  };
+});
 
 describe("Homescreen Component", () => {
   it("renders the title, subtitle, info text, and quiz button", () => {
-    render(
-      <MemoryRouter>
-        <Homescreen />
-      </MemoryRouter>,
-    );
+    render(<Homescreen />);
 
     expect(screen.getByText(/Tech Study Finder/i)).toBeInTheDocument();
     expect(
@@ -26,17 +31,14 @@ describe("Homescreen Component", () => {
     expect(screen.getByText(/Quiz starten/i)).toBeInTheDocument();
   });
 
-  it("navigates to /quiz when clicking the start button", () => {
-    render(
-      <MemoryRouter initialEntries={["/"]}>
-        <Homescreen />
-        <LocationDisplay />
-      </MemoryRouter>,
-    );
+  it("navigates to /quiz/level/1 when clicking the start button", () => {
+    mockedNavigate.mockClear();
+
+    render(<Homescreen />);
 
     const button = screen.getByText(/Quiz starten/i);
     fireEvent.click(button);
 
-    expect(screen.getByTestId("location")).toHaveTextContent("/quiz");
+    expect(mockedNavigate).toHaveBeenCalledWith("/quiz/level/1");
   });
 });
