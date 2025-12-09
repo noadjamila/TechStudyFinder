@@ -1,7 +1,7 @@
 import React from "react";
 import Progressbar from "../components/quiz/Progressbar";
 import { Box, useTheme } from "@mui/material";
-import Back_Button from "../components/buttons/Back_Button";
+//import Back_Button from "../components/buttons/Back_Button";
 
 /**
  * Props of {@link QuizLayout}.
@@ -15,9 +15,9 @@ export interface QuizLayoutProps {
   // Main content (react components) which is placed within the layout.
   children: React.ReactNode;
   // Function for the back Button to go back one Question.
-  oneBack?: () => void;
+  //oneBack?: () => void;
   // Boolean to handle if the Back Button is be visible on a page.
-  showBackButton?: boolean;
+  //showBackButton?: boolean;
 }
 
 /**
@@ -36,8 +36,8 @@ const QuizLayout = ({
   currentIndex,
   questionsTotal,
   children,
-  oneBack,
-  showBackButton = true,
+  // oneBack,
+  //showBackButton = true,
 }: QuizLayoutProps) => {
   const theme = useTheme();
 
@@ -56,9 +56,6 @@ const QuizLayout = ({
       }}
     >
       <Box sx={{ width: "100%", maxWidth: 420, px: 2, pt: 4 }}>
-        {showBackButton && (
-          <Back_Button label="Zurück" onClick={oneBack} sx={{}} />
-        )}
         <Progressbar
           current={currentIndex}
           total={questionsTotal}
