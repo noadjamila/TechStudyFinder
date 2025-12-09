@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-type Level = 1 | 2 | 3;
+type Level = 1 | 2 | 3 | 4;
 
 export type LevelSuccessScreenProps = {
   /* The level the user has just completed (1, 2 or 3)*/
@@ -12,9 +12,10 @@ export type LevelSuccessScreenProps = {
 };
 /*Short descriptions for what happens in the next level*/
 const NEXT_LEVEL_TEXT: Record<Level, string> = {
-  1: "Interessenbasierte Orientierung (RISEC)",
-  2: "Vertiefende Fachinteressen / Spezialisierung",
-  3: "Du hast alle Level abgeschlossen",
+  1: "Deine Rahmenbedingungen",
+  2: "Deine Interessen",
+  3: "Dein Arbeitsstil",
+  4: "Verfeinerung",
 };
 
 export default function LevelSuccessScreen({
@@ -36,7 +37,7 @@ export default function LevelSuccessScreen({
 
   const nextText =
     currentLevel === 3
-      ? NEXT_LEVEL_TEXT[3]
+      ? NEXT_LEVEL_TEXT[4]
       : NEXT_LEVEL_TEXT[(currentLevel + 1) as Level];
 
   return (

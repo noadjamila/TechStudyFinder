@@ -14,6 +14,10 @@ export default function App() {
       <Route path="/quiz/level/:level" element={<QuizFlow />} />
       <Route path="/results" element={<ResultsPage />} />
       <Route
+        path="/level-1"
+        element={<LevelSuccessScreen currentLevel={1} />}
+      />
+      <Route
         path="/level-success/:level"
         element={<LevelSuccessScreenWithParams />}
       />
@@ -23,8 +27,6 @@ export default function App() {
 
 const LevelSuccessScreenWithParams = () => {
   const { level } = useParams();
-
   const currentLevel = parseInt(level || "1", 10) as Level;
-
   return <LevelSuccessScreen currentLevel={currentLevel} />;
 };
