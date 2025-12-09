@@ -102,7 +102,7 @@ const Homescreen: React.FC = () => {
       <CardStack currentIndex={1} totalCards={1}>
         <Box
           sx={{
-            width: { xs: "100%", md: "120%" },
+            width: { xs: "120%", md: "120%" },
             maxWidth: { xs: 360, sm: 520, md: 900 },
             px: { xs: 1, md: 8 },
             py: { xs: 2, md: 3 },
@@ -114,7 +114,7 @@ const Homescreen: React.FC = () => {
             justifyContent: "center",
             position: "relative",
             left: { md: "50%" },
-            transform: { md: "translateX(-55%)" },
+            transform: { xs: "translateX(-8.5%)", md: "translateX(-55%)" },
           }}
         >
           {/* Mascot Image (positioned absolutely relative to the card box) */}
@@ -154,9 +154,9 @@ const Homescreen: React.FC = () => {
             label="Quiz beginnen"
             onClick={handleQuizStart}
             sx={{
-              borderRadius: 3.5,
-              padding: "12px 20px",
-              fontSize: "1.1rem",
+              borderRadius: 3,
+              padding: "8px 16x",
+              fontSize: "1.0rem",
               width: "fit-content",
               mx: "auto",
               display: "block",
