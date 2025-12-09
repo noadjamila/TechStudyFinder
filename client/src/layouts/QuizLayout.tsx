@@ -14,6 +14,8 @@ export interface QuizLayoutProps {
   questionsTotal: number;
   // Main content (react components) which is placed within the layout.
   children: React.ReactNode;
+
+  // For Back Button when back in Layout
   // Function for the back Button to go back one Question.
   //oneBack?: () => void;
   // Boolean to handle if the Back Button is be visible on a page.
@@ -36,6 +38,7 @@ const QuizLayout = ({
   currentIndex,
   questionsTotal,
   children,
+  // For Back Button when back in Layout
   // oneBack,
   //showBackButton = true,
 }: QuizLayoutProps) => {
