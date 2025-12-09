@@ -17,6 +17,7 @@ export default function App() {
         path="/level-1"
         element={<LevelSuccessScreen currentLevel={1} />}
       />
+
       <Route
         path="/level-success/:level"
         element={<LevelSuccessScreenWithParams />}
@@ -28,5 +29,10 @@ export default function App() {
 const LevelSuccessScreenWithParams = () => {
   const { level } = useParams();
   const currentLevel = parseInt(level || "1", 10) as Level;
+
+  if (currentLevel < 1 || currentLevel > 4) {
+    return <div>Level nicht verfügbar</div>;
+  }
+
   return <LevelSuccessScreen currentLevel={currentLevel} />;
 };

@@ -30,9 +30,12 @@ export default function LevelSuccessScreen({
   const theme = useTheme();
 
   useEffect(() => {
-    // After 1.2 seconds, switch to next-level text
-    const id = setTimeout(() => setPhase("next"), 1200);
-    return () => clearTimeout(id);
+    if (currentLevel === 1) {
+      setPhase("next");
+    } else {
+      const id = setTimeout(() => setPhase("next"), 1200);
+      return () => clearTimeout(id);
+    }
   }, [currentLevel]);
 
   const nextText =
@@ -45,57 +48,86 @@ export default function LevelSuccessScreen({
       sx={{
         display: "flex",
         flexDirection: "column",
-        justifyContent: "flex-center",
+        justifyContent: "flex-start",
         alignItems: "center",
         minHeight: "100vh",
         padding: theme.spacing(2),
       }}
     >
-      <Typography
-        id="ls-title"
-        variant="h4"
-        sx={{
-          color: theme.palette.text.primary,
-          marginBottom: theme.spacing(2),
-          display: phase === "won" ? "block" : "none",
-          fontFamily: theme.typography.fontFamily,
-        }}
-        aria-live="polite"
-      >
-        Level {currentLevel} geschafft!
-      </Typography>
+      {currentLevel === 1 ? (
+        <>
+          <Typography
+            variant="h4"
+            sx={{
+              color: theme.palette.text.primary,
+              marginBottom: theme.spacing(2),
+              fontFamily: theme.typography.fontFamily,
+            }}
+            aria-live="polite"
+          >
+            Level {currentLevel}
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              color: theme.palette.text.primary,
+              marginTop: theme.spacing(2),
+              fontFamily: theme.typography.h6.fontFamily,
+            }}
+            aria-live="polite"
+          >
+            {NEXT_LEVEL_TEXT[1]}
+          </Typography>
+        </>
+      ) : (
+        <>
+          <Typography
+            id="ls-title"
+            variant="h4"
+            sx={{
+              color: theme.palette.text.primary,
+              marginBottom: theme.spacing(2),
+              display: phase === "won" ? "block" : "none",
+              fontFamily: theme.typography.fontFamily,
+            }}
+            aria-live="polite"
+          >
+            Level {currentLevel} geschafft!
+          </Typography>
 
-      <Typography
-        variant="h5"
-        sx={{
-          color: theme.palette.text.primary,
-          marginTop: theme.spacing(4),
-          display: phase === "next" ? "block" : "none",
-          fontFamily: theme.typography.h5.fontFamily,
-        }}
-        aria-live="polite"
-      >
-        Level {currentLevel + 1}
-      </Typography>
+          <Typography
+            variant="h5"
+            sx={{
+              color: theme.palette.text.primary,
+              marginTop: theme.spacing(4),
+              display: phase === "next" ? "block" : "none",
+              fontFamily: theme.typography.h5.fontFamily,
+            }}
+            aria-live="polite"
+          >
+            Level {currentLevel + 1}
+          </Typography>
 
-      <Typography
-        variant="h6"
-        sx={{
-          color: theme.palette.text.primary,
-          marginTop: theme.spacing(4),
-          display: phase === "next" ? "block" : "none",
-          fontFamily: theme.typography.h6.fontFamily,
-        }}
-        aria-live="polite"
-      >
-        {nextText}
-      </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              color: theme.palette.text.primary,
+              marginTop: theme.spacing(2),
+              display: phase === "next" ? "block" : "none",
+              fontFamily: theme.typography.h6.fontFamily,
+            }}
+            aria-live="polite"
+          >
+            {nextText}
+          </Typography>
+        </>
+      )}
 
       <Box
         sx={{
-          position: "absolute", // Fixiere den Button am unteren Rand
-          bottom: theme.spacing(3), // Abstand vom unteren Rand
-          right: theme.spacing(2), // Abstand vom rechten Rand
+          position: "absolute",
+          bottom: theme.spacing(3),
+          right: theme.spacing(2),
         }}
       >
         <Button
@@ -108,7 +140,7 @@ export default function LevelSuccessScreen({
             "&:hover": {
               backgroundColor: theme.palette.primary.dark,
             },
-            display: phase === "next" ? "block" : "none", // Zeige Button nur bei der Beschreibung
+            display: phase === "next" ? "block" : "none",
           }}
         >
           Weiter
