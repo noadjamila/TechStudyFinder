@@ -10,27 +10,54 @@ import {
 import NavBar from "../../src/components/nav-bar/NavBar";
 import MenuIcon from "@mui/icons-material/Menu"; //
 
+/**
+ * Props for the DesktopLayout component.
+ * Defines the layout structure and the interaction with child components.
+ *
+ * @interface DesktopLayoutProps
+ * @property {ReactNode} children - The main content to be rendered inside the white container.
+ * @property {() => void} onMenuToggle - Callback function to handle menu toggle
+ */
+
 interface DesktopLayoutProps {
   children: ReactNode;
   onMenuToggle: () => void;
 }
 
+/**
+ * DesktopLayout component.
+ * Provides a responsive layout for desktop views with a sidebar navigation,
+ * a fixed header, and a centered main content area.
+ *
+ * @param {DesktopLayoutProps} props - The component's props.
+ * @returns {React.FC} The rendered Desktop Layout component.
+ */
 const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
   const theme = useTheme();
 
+  // State for the anchor element of the Menu (where the menu opens from)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  // Checks if the Menu is currently open
   const open = Boolean(anchorEl);
 
+  /**
+   * Handles the click on the Menu icon and sets the anchor element.
+   *
+   * @param {React.MouseEvent<HTMLElement>} event - The click event.
+   */
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
+  /**
+   * Closes the Menu by resetting the anchor element state.
+   */
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
   return (
-    //{/*Background*/}
+    // Background Container: Fills the entire viewport with the grey background color
     <Box
       sx={{
         position: "relative",
@@ -40,7 +67,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
         bgcolor: theme.palette.background.paper,
       }}
     >
-      {/*Header + Logo rechts oben */}
+      {/* Header + Logo in the top right corner */}
       <Box
         sx={{
           position: "absolute",
@@ -51,6 +78,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
           gap: 2,
         }}
       >
+        {/* Title and Subtitle of the Header */}
         <Box sx={{ textAlign: "right" }}>
           <Typography variant="h6" fontWeight="bold">
             Tech Study Finder
@@ -58,6 +86,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
           <Typography variant="caption">Deine Reise zum Studiengang</Typography>
         </Box>
 
+        {/* Logo Image */}
         <Box
           component="img"
           src="/logo.png"
@@ -66,7 +95,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
         />
       </Box>
 
-      {/* Navigation Items (vertikal zentriert) */}
+      {/* Navigation Items (vertically centered on the left edge) */}
       <Box
         sx={{
           position: "absolute",
@@ -78,7 +107,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
           justifyContent: "center",
         }}
       >
-        {/* Menu über der Navbar */}
+        {/* Menu Toggle Area */}
         <Box
           sx={{
             width: "100%",
@@ -87,26 +116,28 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
             transform: "translateX(-28%)",
           }}
         >
-          {/* Klickbares Icon (ersetzt den Text-Platzhalter) */}
+          {/* Clickable Menu Icon */}
           <IconButton
             edge="start"
             onClick={handleMenuClick}
             aria-label="Open menu"
             sx={{
               left: 24,
-              color: theme.palette.text.secondary, // Farbe anpassen
+              color: theme.palette.text.secondary,
             }}
           >
             <MenuIcon fontSize="large" />
           </IconButton>
         </Box>
 
+        {/* Drop-down Menu with options */}
         <Menu
           anchorEl={anchorEl}
           open={open}
           onClose={handleMenuClose}
           disableScrollLock={true}
         >
+          {/* Menu Items */}
           <MenuItem onClick={handleMenuClose}>Einloggen</MenuItem>
           <MenuItem onClick={handleMenuClose}>Impressum</MenuItem>
         </Menu>
@@ -114,30 +145,36 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
         <NavBar isSidebarMode />
       </Box>
 
-      {/* Hauptinhalt zentriert */}
+      {/* Main Content Wrapper (sets up space for the white box) */}
       <Box
         sx={{
           width: "100%",
           height: "100%",
           display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
+          pl: "200px",
+          pt: 11,
+          px: 14,
         }}
       >
+        {/* The White Main Content Box */}
         <Box
           component="main"
           sx={{
-            width: "75%",
-            maxWidth: 900,
+            width: "80%",
+            maxWidth: 1200,
             height: "80%",
             bgcolor: theme.palette.background.default,
             borderRadius: 10,
-            px: 6,
-            py: 4,
+            px: 5,
+
+            pb: 7,
+
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
             overflow: "hidden",
+            alignItems: "center",
           }}
         >
           {children}

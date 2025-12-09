@@ -9,22 +9,37 @@ import LogoMenu from "../../components/logo-menu/LogoMenu";
 import Navigationbar from "../../components/nav-bar/NavBar";
 import DesktopLayout from "../../layouts/DesktopLayout";
 
+/**
+ * Homescreen component.
+ * Renders the landing page of the application, presenting key information
+ * and offering a quiz start option. It adapts its layout based on whether
+ * the screen size corresponds to a desktop or mobile view.
+ *
+ * @returns {React.FC} The rendered Homescreen component.
+ */
 const Homescreen: React.FC = () => {
   const navigate = useNavigate();
   const muiTheme = useTheme();
   const toggleSidebar = () => {};
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
+
+  /**
+   * Handles the start of the quiz by navigating to the first level.
+   */
   const handleQuizStart = () => {
     navigate("/quiz/level/1");
   };
 
+  // --- Static Content Definitions ---
   const mainTitle = "Finde dein Studium";
   const subTitle = "Du weißt nicht, was du studieren möchtest?";
   const infoText1 = "Kein Problem!";
   const infoText2 =
     "Tech Study Finder unterstützt dich dabei, Studiengänge zu finden, die zu deinen persönlichen Interessen passen.";
   const cardQuestion = "Bist du bereit, dich auf die Reise zu begeben?";
+  // ----------------------------------
 
+  // Wrapper for all main content (used in both mobile and desktop)
   const MainContent = (
     <Box
       className="page-content-wrapper"
@@ -39,6 +54,7 @@ const Homescreen: React.FC = () => {
         color: theme.palette.text.primary,
       }}
     >
+      {/* Main Title */}
       <Typography
         className="title"
         sx={{
@@ -50,6 +66,7 @@ const Homescreen: React.FC = () => {
         {mainTitle}
       </Typography>
 
+      {/* Subtitle */}
       <Typography
         variant="body1"
         className="subtitle"
@@ -58,17 +75,21 @@ const Homescreen: React.FC = () => {
         {subTitle}
       </Typography>
 
-      {/*box for the info texts*/}
+      {/* box for the info texts (Container for explanatory paragraphs) */}
       <Box
         className="info-text"
         sx={{
           mt: 2,
           mb: 6,
+          mx: "auto",
         }}
       >
         <Typography
           variant="body1"
-          sx={{ px: { xs: 2, sm: 1, lineHeight: 1.3 } }}
+          sx={{
+            px: { xs: 2, sm: 1, lineHeight: 1.3 },
+            maxWidth: { xs: "90%", sm: 400 },
+          }}
         >
           {infoText1}
           <br />
@@ -76,7 +97,7 @@ const Homescreen: React.FC = () => {
         </Typography>
       </Box>
 
-      {/*card box*/}
+      {/* card box (The green interactive card) */}
       <CardStack currentIndex={1} totalCards={1}>
         <Box
           sx={{
@@ -89,6 +110,7 @@ const Homescreen: React.FC = () => {
             maxWidth: "400px",
           }}
         >
+          {/* Mascot Image (positioned absolutely relative to the card box) */}
           <Box
             component="img"
             src={mascotImage}
@@ -96,15 +118,19 @@ const Homescreen: React.FC = () => {
             sx={{
               position: "absolute",
               width: { xs: 40, sm: 40 },
-              height: "absolute",
+              height: "auto",
               top: {
-                xs: -80,
+                xs: -60,
                 sm: -58,
               },
-              right: { xs: 20, sm: 20 },
+              right: {
+                xs: 20,
+                sm: 20,
+              },
             }}
           />
 
+          {/* Card Question Text */}
           <Typography
             variant="subtitle1"
             sx={{
@@ -115,6 +141,7 @@ const Homescreen: React.FC = () => {
             {cardQuestion}
           </Typography>
 
+          {/* Start Quiz Button */}
           <StartButton
             label="Quiz beginnen"
             onClick={handleQuizStart}
@@ -141,15 +168,19 @@ const Homescreen: React.FC = () => {
       style={{
         overflow: "hidden",
         height: "100svh",
+        margin: 0,
+        padding: 0,
       }}
     >
+      {/* Conditional Rendering based on viewport size */}
       {isDesktop ? (
-        // DESKTOP: Umschließe den Hauptinhalt mit dem DesktopLayout
+        // DESKTOP VIEW: Content is placed inside the structured layout
+
         <DesktopLayout onMenuToggle={toggleSidebar}>
           {MainContent}
         </DesktopLayout>
       ) : (
-        // MOBIL: LogoMenu und Navigationbar als separate Elemente, gefolgt vom Inhalt
+        // MOBILE VIEW: Logo menu and navigation bar are rendered outside the main content flow
         <>
           <LogoMenu />
           <Navigationbar />

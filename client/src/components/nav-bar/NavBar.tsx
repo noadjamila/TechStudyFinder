@@ -12,28 +12,49 @@ import ResultIcon from "@mui/icons-material/Bookmark";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Props for the NavBar component.
+ * Controls the display mode of the navigation (sidebar for desktop or bottom bar for mobile).
+ *
+ * @interface NavBarProps
+ * @property {boolean} [isSidebarMode=false] - If true, renders the vertical desktop sidebar; otherwise, renders the mobile bottom bar.
+ */
 interface NavBarProps {
   isSidebarMode?: boolean;
 }
 
+/**
+ * NavBar component.
+ * Renders the primary application navigation, adapting between a vertical sidebar (desktop)
+ * and a horizontal bottom bar (mobile) based on the `isSidebarMode` prop.
+ *
+ * @param {NavBarProps} props - The component's props.
+ * @returns {React.FC} The rendered navigation component.
+ */
 const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
   const [value, setValue] = useState(0);
   const navigate = useNavigate();
   const theme = useTheme();
 
-  // Navigation Elements
+  // Navigation Elements configuration
   const navItems = [
     { label: "Home", icon: HomeIcon, path: "/" },
     { label: "Ergebnisse", icon: ResultIcon, path: "/results" },
     { label: "Favoriten", icon: FavoriteIcon, path: "/favorites" },
   ];
 
+  /**
+   * Handles the navigation click event. Updates the selected index and navigates to the new path.
+   *
+   * @param {number} newValue - The index of the selected item.
+   * @param {string} path - The route path to navigate to.
+   */
   const handleNavigation = (newValue: number, path: string) => {
     setValue(newValue);
     navigate(path);
   };
 
-  //desktop view
+  // desktop view (Vertical Sidebar)
   if (isSidebarMode) {
     return (
       <Box
@@ -47,6 +68,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
           ml: 2,
         }}
       >
+        {/* Iterate over navigation items */}
         {navItems.map((item, index) => (
           <Box
             key={item.label}
@@ -62,15 +84,17 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
               mb: 1,
               bgcolor: "transparent",
               color: theme.palette.text.secondary,
+              WebkitTapHighlightColor: "transparent",
+              userSelect: "none",
             }}
           >
+            {/* Icon Wrapper (Handles the active background style) */}
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
 
-                // **1. Hintergrund (Rosa Pille)**
                 ...(value === index && {
                   width: 50,
                   height: 40,
@@ -80,6 +104,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
                 mb: 0.5,
               }}
             >
+              {/* Render the icon component */}
               <item.icon
                 sx={{
                   fontSize: 24,
@@ -90,6 +115,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
                 }}
               />
             </Box>
+            {/* Navigation Label */}
             <Typography
               variant="caption"
               sx={{
@@ -108,7 +134,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
     );
   }
 
-  // mobile view
+  // mobile view (Horizontal Bottom Bar)
   return (
     <Paper
       sx={{
@@ -150,6 +176,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
           },
         }}
       >
+        {/* Iterate over navigation items */}
         {navItems.map((item, index) => (
           <BottomNavigationAction
             key={item.label}
