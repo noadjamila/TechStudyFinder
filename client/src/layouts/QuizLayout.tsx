@@ -75,33 +75,18 @@ const QuizLayout = ({
         >
           <Box
             sx={{
-              display: "grid",
-              gap: 2,
-              gridTemplateColumns: "auto 1fr auto",
+              display: "flex",
               alignItems: "center",
+              justifyContent: "space-between",
               mb: 4,
             }}
           >
-            {_showBackButton && (
-              <BackButton
-                label="Zurück"
-                onClick={_oneBack}
-                sx={{
-                  height: 48,
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              />
-            )}
-            <Box />
-            <HomeButton
-              onClick={() => setDialogOpen(true)}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            />
+            <Box>
+              {_showBackButton && (
+                <BackButton label="Zurück" onClick={_oneBack} />
+              )}
+            </Box>
+            <HomeButton onClick={() => setDialogOpen(true)} />
           </Box>
 
           <Progressbar
