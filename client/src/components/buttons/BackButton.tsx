@@ -39,7 +39,6 @@ export default function BackButton({
           },
         },
         ...sx,
-        mb: 7,
       }}
     >
       {label}

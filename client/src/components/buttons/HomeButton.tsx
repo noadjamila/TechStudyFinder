@@ -4,6 +4,7 @@ import HomeIcon from "@mui/icons-material/Home";
 interface HomeButtonProps {
   onClick?: () => void;
   size?: number;
+  sx?: object;
 }
 
 export default function HomeButton({ size = 45, onClick }: HomeButtonProps) {
