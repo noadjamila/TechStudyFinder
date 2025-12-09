@@ -44,63 +44,70 @@ export default function LevelSuccessScreen({
       sx={{
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
+        justifyContent: "flex-center",
         alignItems: "center",
         minHeight: "100vh",
         padding: theme.spacing(2),
       }}
     >
-      <Box
-        role="dialog"
-        aria-labelledby="ls-title"
+      <Typography
+        id="ls-title"
+        variant="h4"
         sx={{
-          textAlign: "center",
-          backgroundColor: theme.palette.background.paper,
-          borderRadius: "8px",
-          padding: theme.spacing(4),
-          boxShadow: 3,
-          width: "100%",
-          maxWidth: 500,
+          color: theme.palette.text.primary,
+          marginBottom: theme.spacing(2),
+          display: phase === "won" ? "block" : "none",
+          fontFamily: theme.typography.fontFamily,
+        }}
+        aria-live="polite"
+      >
+        Level {currentLevel} geschafft!
+      </Typography>
+
+      <Typography
+        variant="h5"
+        sx={{
+          color: theme.palette.text.primary,
+          marginTop: theme.spacing(4),
+          display: phase === "next" ? "block" : "none",
+          fontFamily: theme.typography.h5.fontFamily,
+        }}
+        aria-live="polite"
+      >
+        Level {currentLevel + 1}
+      </Typography>
+
+      <Typography
+        variant="h6"
+        sx={{
+          color: theme.palette.text.primary,
+          marginTop: theme.spacing(4),
+          display: phase === "next" ? "block" : "none",
+          fontFamily: theme.typography.h6.fontFamily,
+        }}
+        aria-live="polite"
+      >
+        {nextText}
+      </Typography>
+
+      <Box
+        sx={{
+          position: "absolute", // Fixiere den Button am unteren Rand
+          bottom: theme.spacing(3), // Abstand vom unteren Rand
+          right: theme.spacing(2), // Abstand vom rechten Rand
         }}
       >
-        <Typography
-          id="ls-title"
-          variant="h4"
-          sx={{
-            color: theme.palette.text.primary,
-            marginBottom: theme.spacing(2),
-            display: phase === "won" ? "block" : "none",
-            fontFamily: theme.typography.fontFamily,
-          }}
-          aria-live="polite"
-        >
-          Level {currentLevel} geschafft!
-        </Typography>
-
-        <Typography
-          variant="h6"
-          sx={{
-            color: theme.palette.text.primary,
-            marginTop: theme.spacing(2),
-            display: phase === "next" ? "block" : "none",
-            fontFamily: theme.typography.h6.fontFamily,
-          }}
-          aria-live="polite"
-        >
-          {nextText}
-        </Typography>
-
         <Button
           variant="contained"
           color="primary"
           onClick={onContinue}
           sx={{
-            marginTop: theme.spacing(3),
             padding: theme.spacing(1.5, 4),
             backgroundColor: theme.palette.primary.main,
             "&:hover": {
               backgroundColor: theme.palette.primary.dark,
             },
+            display: phase === "next" ? "block" : "none", // Zeige Button nur bei der Beschreibung
           }}
         >
           Weiter
