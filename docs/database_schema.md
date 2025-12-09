@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-This database stores information about **institutions** (universities, colleges), **degree programmes**, their subjects, disciplines, teaching details, and related meta-information.
+This database stores information about **institutions** (universities, colleges), **degree programmes**, their subjects, disciplines, curriculums, and related meta-information.
 For improved clarity of the data variables, the tables were named in German.
 
 It is divided into **two main domains**:
