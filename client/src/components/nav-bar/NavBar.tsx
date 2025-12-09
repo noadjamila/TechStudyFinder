@@ -157,7 +157,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
         sx={{
           height: 70,
           borderRadius: 999,
-          backgroundColor: theme.palette.navigation.background,
+          backgroundColor: theme.palette.navigation.navbar,
           "& .MuiBottomNavigationAction-root": {
             minWidth: "auto",
             padding: "6px 20px",
