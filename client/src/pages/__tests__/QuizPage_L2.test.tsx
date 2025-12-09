@@ -261,6 +261,8 @@ describe("QuizPage_L2", () => {
 
     expect(await screen.findByText("Debug-Screen")).toBeInTheDocument();
   });
+  // For Back Button when back in Layout
+  /*
   test("calls oneLevelBack when currentIndex = 0", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
@@ -343,4 +345,5 @@ describe("QuizPage_L2", () => {
 
     fireEvent.click(screen.getByText("Ja"));
   });
+  */
 });
