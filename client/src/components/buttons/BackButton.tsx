@@ -3,7 +3,7 @@ import { ButtonProps } from "../../types/Button.types";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useTheme } from "@mui/material";
 
-export default function Back_Button({
+export default function BackButton({
   label = "Zurück Button",
   onClick,
   disabled = false,

@@ -35,8 +35,7 @@ export interface QuizPageL2Props {
 const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   previousIds,
   onNextLevel,
-  // For Back Button when back in Layout
-  //oneLevelBack,
+  oneLevelBack,
 }) => {
   // TODO: Remove both debugs once database works
   console.debug(
@@ -72,13 +71,11 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   // Advances to the next question without exceeding the total count.
   const next = () => setCurrentIndex((i) => Math.min(TOTAL_QUESTIONS, i + 1));
 
-  // For Back Button when back in Layout
-  /*
-    Handles  the option to go back one Question.
-    Updates the scores based on the previous selcted answer.
-    Switches Levels if user is on the first Question.
- */
-  /*
+  /**
+   * Handles  the option to go back one Question.
+   * Updates the scores based on the previous selcted answer.
+   * Switches Levels if user is on the first Question.
+   */
   const goBack = () => {
     if (currentIndex == 0) {
       oneLevelBack();
@@ -116,7 +113,6 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
       }, 300);
     }
   };
-  */
 
   /**
    * Returns the top three RIASEC scores sorted in descending order.
@@ -138,13 +134,9 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
    *
    * @param {"yes" | "no" | "skip"} option - The selected answer option.
    */
-
-  // For Back Button when back in Layout
-  /*
   const [answers, setAnswers] = useState<Record<string, "yes" | "no" | "skip">>(
     {},
   );
-  */
 
   const handleSelect = (option: string) => {
     if (!currentQuestion || isTransitioning) return;
@@ -158,8 +150,7 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
       skip: 0,
     };
     const points = pointsMap[option] ?? 0;
-    // For Back Button when back in Layout
-    //setAnswers((prev) => ({ ...prev, [currentIndex]: option }));
+    setAnswers((prev) => ({ ...prev, [currentIndex]: option }));
 
     setScores((prev) => {
       const newScores = { ...prev, [currentType]: prev[currentType] + points };
@@ -268,8 +259,8 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
         <QuizLayout
           currentIndex={currentIndex + 1}
           questionsTotal={TOTAL_QUESTIONS}
-          //oneBack={goBack}
-          //showBackButton={true}
+          _oneBack={goBack}
+          _showBackButton={true}
         >
           <CardStack
             currentIndex={currentIndex + 1}

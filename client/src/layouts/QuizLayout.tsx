@@ -4,7 +4,7 @@ import { Box, useTheme } from "@mui/material";
 import HomeButton from "../components/buttons/HomeButton";
 import { useNavigate } from "react-router-dom";
 import StyledDialog from "../components/dialogs/Dialog";
-//import Back_Button from "../components/buttons/Back_Button";
+import BackButton from "../components/buttons/BackButton";
 
 /**
  * Props of {@link QuizLayout}.
@@ -17,17 +17,16 @@ export interface QuizLayoutProps {
   questionsTotal: number;
   // Main content (react components) which is placed within the layout.
   children: React.ReactNode;
-
   // For Back Button when back in Layout
   // Function for the back Button to go back one Question.
-  //oneBack?: () => void;
-  // Boolean to handle if the Back Button is be visible on a page.
-  //showBackButton?: boolean;
+  _oneBack?: () => void;
+  // Boolean to handle if the Back Button is visible on a page.
+  _showBackButton?: boolean;
 }
 
 /**
  * The `QuizLayout` is the base layout for all quiz pages.
- * It shows a progressbar and a Back Button and renders the embedded component (e.g. a quiz question).
+ * It shows a progressbar and a back button and renders the embedded component (e.g. a quiz question).
  *
  * @example
  * <QuizLayout currentIndex={2} questionsTotal={10} oneBack={goBack} showBackButton={true}>
@@ -41,9 +40,8 @@ const QuizLayout = ({
   currentIndex,
   questionsTotal,
   children,
-  // For Back Button when back in Layout
-  // oneBack,
-  //showBackButton = true,
+  _oneBack,
+  _showBackButton = true,
 }: QuizLayoutProps) => {
   const theme = useTheme();
   const [openDialog, setDialogOpen] = useState(false);
@@ -84,7 +82,7 @@ const QuizLayout = ({
               mb: 4,
             }}
           >
-            <HomeButton />
+            <BackButton />
             <HomeButton onClick={() => setDialogOpen(true)} />
           </Box>
 

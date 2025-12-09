@@ -55,7 +55,11 @@ describe("QuizPage_L2", () => {
     });
 
     renderWithProviders(
-      <QuizPage_L2 previousIds={[]} onNextLevel={() => {}} />,
+      <QuizPage_L2
+        previousIds={[]}
+        onNextLevel={() => {}}
+        oneLevelBack={() => {}}
+      />,
     );
 
     await screen.findByText("Magst du forschen?");
@@ -265,7 +269,11 @@ describe("QuizPage_L2", () => {
     });
 
     renderWithProviders(
-      <QuizPage_L2 previousIds={[1, 2]} onNextLevel={() => {}} />,
+      <QuizPage_L2
+        previousIds={[1, 2]}
+        onNextLevel={() => {}}
+        oneLevelBack={() => {}}
+      />,
     );
 
     await screen.findByText("Magst du forschen?");
