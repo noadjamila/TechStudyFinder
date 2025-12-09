@@ -25,6 +25,11 @@ declare module "@mui/material/styles" {
     favorites: {
       inactive: string;
     };
+    results: {
+      filterUnselected: string;
+      favoriteIconToggled: string;
+      favoriteIconUntoggled: string;
+    };
   }
 
   interface PaletteOptions {
@@ -45,6 +50,11 @@ declare module "@mui/material/styles" {
     };
     favorites?: {
       inactive?: string;
+    };
+    results?: {
+      filterUnselected?: string;
+      favoriteIconToggled?: string;
+      favoriteIconUntoggled?: string;
     };
   }
 }

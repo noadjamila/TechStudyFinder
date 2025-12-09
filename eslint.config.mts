@@ -11,7 +11,13 @@ import prettier from "eslint-config-prettier";
 
 export default defineConfig([
   {
-    ignores: ["client/public/**"],
+    ignores: [
+      "client/public/**",
+      "client/build/**",
+      "server/dist/**",
+      "**/*.js.map",
+      "**/*.d.ts.map",
+    ],
   },
 
   // Server

@@ -31,6 +31,9 @@ export default function QuizFlow() {
     return (
       <QuizPage_L2
         previousIds={idsFromLevel1}
+        oneLevelBack={() => {
+          setLevel(1);
+        }}
         onNextLevel={() => setLevel(3)}
         // uncomment once QuizPage_L3 is implemented
         // navigate("/quiz/level/3");

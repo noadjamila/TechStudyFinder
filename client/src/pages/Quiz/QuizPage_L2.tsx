@@ -9,6 +9,7 @@ import { Stack } from "@mui/material";
 export interface QuizPageL2Props {
   previousIds: number[];
   onNextLevel: () => void;
+  oneLevelBack: () => void;
 }
 
 /**
@@ -34,6 +35,8 @@ export interface QuizPageL2Props {
 const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   previousIds,
   onNextLevel,
+  // For Back Button when back in Layout
+  //oneLevelBack,
 }) => {
   // TODO: Remove both debugs once database works
   console.debug(
@@ -53,6 +56,7 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   const [error, setError] = useState<{ title: string; message: string } | null>(
     null,
   );
+  const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
   const [scores, setScores] =
     useState<Record<RiasecType, number>>(initialScores);
@@ -67,6 +71,52 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
 
   // Advances to the next question without exceeding the total count.
   const next = () => setCurrentIndex((i) => Math.min(TOTAL_QUESTIONS, i + 1));
+
+  // For Back Button when back in Layout
+  /*
+    Handles  the option to go back one Question.
+    Updates the scores based on the previous selcted answer.
+    Switches Levels if user is on the first Question.
+ */
+  /*
+  const goBack = () => {
+    if (currentIndex == 0) {
+      oneLevelBack();
+    } else if (!isTransitioning) {
+      setIsTransitioning(true);
+      const previousAnswer = answers[currentIndex - 1];
+      if (!previousAnswer) {
+        setIsTransitioning(false);
+        return;
+      }
+      const lastQuestion = questions[currentIndex - 1];
+      const lastType = lastQuestion.riasec_type;
+
+      const pointsMap: Record<string, number> = {
+        yes: 1,
+        no: -1,
+        skip: 0,
+      };
+      const points = pointsMap[previousAnswer];
+
+      setScores((prev) => {
+        const newScores = { ...prev, [lastType]: prev[lastType] - points };
+        if (currentIndex === TOTAL_QUESTIONS - 1) {
+          const topScores = getTopThreeScores(newScores);
+          setHighestScores(topScores);
+          sendData(topScores);
+        }
+        return newScores;
+      });
+      setTimeout(() => {
+        if (currentIndex > 0) {
+          setCurrentIndex(currentIndex - 1);
+        }
+        setIsTransitioning(false);
+      }, 300);
+    }
+  };
+  */
 
   /**
    * Returns the top three RIASEC scores sorted in descending order.
@@ -83,12 +133,22 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
 
   /**
    * Handles the user’s answer selection for the current question.
+   * Saves the current selected Option.
    * Updates scores, logs results for debugging, and triggers progression.
    *
    * @param {"yes" | "no" | "skip"} option - The selected answer option.
    */
+
+  // For Back Button when back in Layout
+  /*
+  const [answers, setAnswers] = useState<Record<string, "yes" | "no" | "skip">>(
+    {},
+  );
+  */
+
   const handleSelect = (option: string) => {
-    if (!currentQuestion) return;
+    if (!currentQuestion || isTransitioning) return;
+    setIsTransitioning(true);
 
     const currentType = currentQuestion.riasec_type;
 
@@ -98,6 +158,8 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
       skip: 0,
     };
     const points = pointsMap[option] ?? 0;
+    // For Back Button when back in Layout
+    //setAnswers((prev) => ({ ...prev, [currentIndex]: option }));
 
     setScores((prev) => {
       const newScores = { ...prev, [currentType]: prev[currentType] + points };
@@ -108,7 +170,6 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
         setHighestScores(topScores);
         void sendData(topScores);
       }
-
       return newScores;
     });
 
@@ -117,6 +178,7 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
       if (currentIndex < TOTAL_QUESTIONS) {
         next();
       }
+      setIsTransitioning(false);
     }, 300);
   };
 
@@ -206,6 +268,8 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
         <QuizLayout
           currentIndex={currentIndex + 1}
           questionsTotal={TOTAL_QUESTIONS}
+          //oneBack={goBack}
+          //showBackButton={true}
         >
           <CardStack
             currentIndex={currentIndex + 1}

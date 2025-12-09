@@ -48,7 +48,11 @@ export default function QuizPage_L1({ onNextLevel }: QuizPageL1Props) {
   };
 
   return (
-    <QuizLayout currentIndex={selected ? 1 : 0} questionsTotal={1}>
+    <QuizLayout
+      currentIndex={selected ? 1 : 0}
+      questionsTotal={1}
+      showBackButton={false}
+    >
       <Box
         sx={{
           display: "flex",
@@ -70,6 +74,7 @@ export default function QuizPage_L1({ onNextLevel }: QuizPageL1Props) {
         <QuizCard_L1
           question="Möchtest du ..."
           onSelect={handleSelectAndNext}
+          selected={selected}
         />
       </Box>
     </QuizLayout>
