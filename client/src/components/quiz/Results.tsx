@@ -2,22 +2,17 @@ import React, { useState, useMemo } from "react";
 import {
   Box,
   Typography,
-  IconButton,
   Stack,
-  Card,
-  CardContent,
   Select,
   MenuItem,
   FormControl,
-  Grid,
 } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import theme from "../../theme/theme";
 import { StudyProgramme } from "../../types/StudyProgramme.types";
 import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import StudyProgrammeCard from "./StudyProgrammeCard";
 
 interface ResultsProps {
   studyProgrammes: StudyProgramme[];
@@ -254,81 +249,12 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
 
           <Stack spacing={2}>
             {filteredProgrammes.map((programme) => (
-              <Card
+              <StudyProgrammeCard
                 key={programme.id}
-                sx={{
-                  backgroundColor: `${theme.palette.primary.main}33`,
-                  boxShadow: 3,
-                  borderRadius: 2,
-                  transition: "background-color 0.3s",
-                  "&:hover": {
-                    backgroundColor: `${theme.palette.primary.main}80`,
-                  },
-                }}
-              >
-                <CardContent sx={{ padding: 2 }}>
-                  <Grid
-                    container
-                    spacing={2}
-                    alignItems="flex-start"
-                    sx={{ width: "100%" }}
-                  >
-                    <Grid
-                      size={12}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Typography variant="h6" sx={{ fontWeight: 500 }}>
-                        {programme.name}
-                      </Typography>
-                      <IconButton
-                        aria-label={
-                          favorites.has(programme.id)
-                            ? "Remove from favorites"
-                            : "Add to favorites"
-                        }
-                        onClick={() => toggleFavorite(programme.id)}
-                        sx={{ ml: 1 }}
-                      >
-                        {favorites.has(programme.id) ? (
-                          <FavoriteIcon
-                            sx={{
-                              color: theme.palette.secondary.main,
-                            }}
-                          />
-                        ) : (
-                          <FavoriteBorderIcon
-                            sx={{
-                              color: theme.palette.favorites.inactive,
-                            }}
-                          />
-                        )}
-                      </IconButton>
-                    </Grid>
-
-                    <Grid size={{ xs: 12, sm: 6 }}>
-                      <Stack direction="row" alignItems="center" gap={0.5}>
-                        <PlaceIcon sx={{ fontSize: 20 }} />
-                        <Typography variant="body1">
-                          {programme.university}
-                        </Typography>
-                      </Stack>
-                    </Grid>
-
-                    <Grid size={{ xs: 12, sm: 6 }}>
-                      <Stack direction="row" alignItems="center" gap={0.5}>
-                        <StarsIcon sx={{ fontSize: 20 }} />
-                        <Typography variant="body1">
-                          {programme.degree}
-                        </Typography>
-                      </Stack>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
+                programme={programme}
+                isFavorite={favorites.has(programme.id)}
+                onToggleFavorite={toggleFavorite}
+              />
             ))}
           </Stack>
         </>
