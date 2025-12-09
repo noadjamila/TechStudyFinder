@@ -3,9 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import QuizFlow from "./pages/Quiz/QuizFlow";
 import ResultsPage from "./pages/ResultsPage";
 import LevelSuccessScreen from "./components/quiz/level-success/LevelSuccessScreen";
-import { useParams } from "react-router-dom";
-
-type Level = 1 | 2 | 3;
 
 export default function App() {
   return (
@@ -13,26 +10,23 @@ export default function App() {
       <Route path="/" element={<Homescreen />} />
       <Route path="/quiz/level/:level" element={<QuizFlow />} />
       <Route path="/results" element={<ResultsPage />} />
-      <Route
-        path="/level-1"
-        element={<LevelSuccessScreen currentLevel={1} />}
-      />
 
       <Route
-        path="/level-success/:level"
-        element={<LevelSuccessScreenWithParams />}
+        path="/level-success/1"
+        element={<LevelSuccessScreen currentLevel={1} />}
+      />
+      <Route
+        path="/level-success/2"
+        element={<LevelSuccessScreen currentLevel={2} />}
+      />
+      <Route
+        path="/level-success/3"
+        element={<LevelSuccessScreen currentLevel={3} />}
+      />
+      <Route
+        path="/level-success/4"
+        element={<LevelSuccessScreen currentLevel={4} />}
       />
     </Routes>
   );
 }
-
-const LevelSuccessScreenWithParams = () => {
-  const { level } = useParams();
-  const currentLevel = parseInt(level || "1", 10) as Level;
-
-  if (currentLevel < 1 || currentLevel > 4) {
-    return <div>Level nicht verfügbar</div>;
-  }
-
-  return <LevelSuccessScreen currentLevel={currentLevel} />;
-};

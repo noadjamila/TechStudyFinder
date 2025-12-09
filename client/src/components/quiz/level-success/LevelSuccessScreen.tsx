@@ -5,27 +5,21 @@ import { useTheme } from "@mui/material/styles";
 type Level = 1 | 2 | 3 | 4;
 
 export type LevelSuccessScreenProps = {
-  /* The level the user has just completed (1, 2 or 3)*/
   currentLevel: Level;
-  /* callback */
   onContinue?: () => void;
 };
-/*Short descriptions for what happens in the next level*/
+
 const NEXT_LEVEL_TEXT: Record<Level, string> = {
   1: "Deine Rahmenbedingungen",
   2: "Deine Interessen",
   3: "Dein Arbeitsstil",
-  4: "Verfeinerung",
+  4: "Du hast alle Level abgeschlossen",
 };
 
 export default function LevelSuccessScreen({
   currentLevel,
   onContinue = () => {},
 }: LevelSuccessScreenProps) {
-  /*Component phase:
-   * "won" then show “Level X completed!”
-   * "next" then show “Next Level: …”
-   */
   const [phase, setPhase] = useState<"won" | "next">("won");
   const theme = useTheme();
 
@@ -39,7 +33,7 @@ export default function LevelSuccessScreen({
   }, [currentLevel]);
 
   const nextText =
-    currentLevel === 3
+    currentLevel === 4
       ? NEXT_LEVEL_TEXT[4]
       : NEXT_LEVEL_TEXT[(currentLevel + 1) as Level];
 
@@ -65,7 +59,7 @@ export default function LevelSuccessScreen({
             }}
             aria-live="polite"
           >
-            Level {currentLevel}
+            Level 1
           </Typography>
           <Typography
             variant="h6"
@@ -79,10 +73,9 @@ export default function LevelSuccessScreen({
             {NEXT_LEVEL_TEXT[1]}
           </Typography>
         </>
-      ) : (
+      ) : currentLevel === 2 ? (
         <>
           <Typography
-            id="ls-title"
             variant="h4"
             sx={{
               color: theme.palette.text.primary,
@@ -92,20 +85,20 @@ export default function LevelSuccessScreen({
             }}
             aria-live="polite"
           >
-            Level {currentLevel} geschafft!
+            Level 1 geschafft!
           </Typography>
 
           <Typography
-            variant="h5"
+            variant="h4"
             sx={{
               color: theme.palette.text.primary,
-              marginTop: theme.spacing(4),
+              marginBottom: theme.spacing(2),
               display: phase === "next" ? "block" : "none",
-              fontFamily: theme.typography.h5.fontFamily,
+              fontFamily: theme.typography.fontFamily,
             }}
             aria-live="polite"
           >
-            Level {currentLevel + 1}
+            Level 2
           </Typography>
 
           <Typography
@@ -121,7 +114,74 @@ export default function LevelSuccessScreen({
             {nextText}
           </Typography>
         </>
-      )}
+      ) : currentLevel === 3 ? (
+        <>
+          <Typography
+            variant="h4"
+            sx={{
+              color: theme.palette.text.primary,
+              marginBottom: theme.spacing(2),
+              display: phase === "won" ? "block" : "none",
+              fontFamily: theme.typography.fontFamily,
+            }}
+            aria-live="polite"
+          >
+            Level 2 geschafft!
+          </Typography>
+
+          <Typography
+            variant="h4"
+            sx={{
+              color: theme.palette.text.primary,
+              marginBottom: theme.spacing(2),
+              display: phase === "next" ? "block" : "none",
+              fontFamily: theme.typography.fontFamily,
+            }}
+            aria-live="polite"
+          >
+            Level 3
+          </Typography>
+
+          <Typography
+            variant="h6"
+            sx={{
+              color: theme.palette.text.primary,
+              marginTop: theme.spacing(2),
+              display: phase === "next" ? "block" : "none",
+              fontFamily: theme.typography.h6.fontFamily,
+            }}
+            aria-live="polite"
+          >
+            {nextText}
+          </Typography>
+        </>
+      ) : currentLevel === 4 ? (
+        <>
+          <Typography
+            variant="h4"
+            sx={{
+              color: theme.palette.text.primary,
+              marginBottom: theme.spacing(2),
+              fontFamily: theme.typography.fontFamily,
+            }}
+            aria-live="polite"
+          >
+            Level 3 geschafft!
+          </Typography>
+
+          <Typography
+            variant="h6"
+            sx={{
+              color: theme.palette.text.primary,
+              marginTop: theme.spacing(2),
+              fontFamily: theme.typography.h6.fontFamily,
+            }}
+            aria-live="polite"
+          >
+            {nextText}
+          </Typography>
+        </>
+      ) : null}
 
       <Box
         sx={{
