@@ -3,12 +3,12 @@ import { ButtonProps } from "../../types/Button.types";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useTheme } from "@mui/material";
 
-export default function ZurueckButton({
+export default function Back_Button({
   label = "Zurück Button",
   onClick,
   disabled = false,
   fullWidth = false,
-  //sx = {},
+  sx = {},
 }: ButtonProps) {
   const theme = useTheme();
   return (
@@ -38,10 +38,8 @@ export default function ZurueckButton({
             fontSize: 16,
           },
         },
-
+        ...sx,
         mb: 7,
-        // ...sx,
-        //...sx,
       }}
     >
       {label}
