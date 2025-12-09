@@ -32,11 +32,6 @@ export default function LevelSuccessScreen({
     }
   }, [currentLevel]);
 
-  const nextText =
-    currentLevel === 4
-      ? NEXT_LEVEL_TEXT[4]
-      : NEXT_LEVEL_TEXT[(currentLevel + 1) as Level];
-
   return (
     <Box
       sx={{
@@ -111,7 +106,7 @@ export default function LevelSuccessScreen({
             }}
             aria-live="polite"
           >
-            {nextText}
+            {NEXT_LEVEL_TEXT[2]}
           </Typography>
         </>
       ) : currentLevel === 3 ? (
@@ -152,7 +147,7 @@ export default function LevelSuccessScreen({
             }}
             aria-live="polite"
           >
-            {nextText}
+            {NEXT_LEVEL_TEXT[3]}
           </Typography>
         </>
       ) : currentLevel === 4 ? (
@@ -178,7 +173,7 @@ export default function LevelSuccessScreen({
             }}
             aria-live="polite"
           >
-            {nextText}
+            {NEXT_LEVEL_TEXT[4]}
           </Typography>
         </>
       ) : null}
