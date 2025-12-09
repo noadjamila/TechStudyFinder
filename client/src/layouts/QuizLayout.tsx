@@ -82,7 +82,10 @@ const QuizLayout = ({
               mb: 4,
             }}
           >
-            <BackButton />
+              {_showBackButton && (
+            <BackButton label="Zurück" onClick={_oneBack} sx={{}} />
+              )}
+                <Box />
             <HomeButton onClick={() => setDialogOpen(true)} />
           </Box>
 
