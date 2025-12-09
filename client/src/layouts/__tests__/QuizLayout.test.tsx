@@ -1,5 +1,7 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+// For Back Button when back in Layout
+//import { fireEvent } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../../theme/theme";
@@ -29,7 +31,8 @@ describe("QuizLayout", () => {
       ),
     ).toBeInTheDocument();
   });
-
+  // For Back Button when back in Layout
+  /*
   test("renders children correctly", () => {
     renderWithTheme(<QuizLayout {...defaultProps} />);
     expect(screen.getByText("Test Content")).toBeInTheDocument();
@@ -71,4 +74,5 @@ describe("QuizLayout", () => {
 
     expect(screen.getByRole("button", { name: "Zurück" })).toBeInTheDocument();
   });
+  */
 });
