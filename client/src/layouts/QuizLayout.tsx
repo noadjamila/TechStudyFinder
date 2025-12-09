@@ -77,7 +77,7 @@ const QuizLayout = ({
             sx={{
               display: "grid",
               gap: 2,
-              gridTemplateColumns: "1fr auto auto",
+              gridTemplateColumns: "auto 1fr auto",
               alignItems: "center",
               mb: 4,
             }}
