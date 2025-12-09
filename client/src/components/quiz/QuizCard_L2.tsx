@@ -1,6 +1,6 @@
 import React from "react";
 import { Stack, Typography } from "@mui/material";
-import BaseCard from "./BaseCard";
+import BaseCard from "../BaseCard";
 import PrimaryButton from "../buttons/PrimaryButton";
 import SecondaryButton from "../buttons/SecondaryButton";
 import theme from "../../theme/theme";
@@ -26,13 +26,14 @@ const QuizCard_L2: React.FC<QuizCardProps> = ({ question, onSelect }) => {
   return (
     <>
       <BaseCard
-        question={question}
+        cardText={question}
         sx={{
           height: {
             xs: 300,
             md: 200,
           },
         }}
+        cardColor={theme.palette.decorative.green}
       ></BaseCard>
 
       <Stack

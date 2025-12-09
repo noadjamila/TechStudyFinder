@@ -1,15 +1,16 @@
 import React from "react";
 import { SxProps, Theme } from "@mui/material/styles";
 import { Box } from "@mui/material";
-import BaseCard from "./BaseCard";
+import BaseCard from "../BaseCard";
 import SecondaryButton from "../buttons/SecondaryButton";
+import theme from "../../theme/theme";
 
 /**
  * Props for the QuizCard_L1 component.
  * Allows parent-components the interaction and modification of this component.
  * Contains the question text and a callback for when an option is selected.
  */
-export interface QuizCardBaseProps<T = string> {
+export interface QuizCardL1Props<T = string> {
   question: string;
   onSelect: (value: T) => void;
   sx?: SxProps<Theme>;
@@ -22,7 +23,7 @@ export interface QuizCardBaseProps<T = string> {
  * @param onSelect: Callback function when an option is selected.
  * @constructor
  */
-const QuizCard_L1 = <T,>({ question, onSelect }: QuizCardBaseProps<T>) => {
+const QuizCard_L1 = <T,>({ question, onSelect }: QuizCardL1Props<T>) => {
   return (
     <>
       <Box
@@ -35,11 +36,12 @@ const QuizCard_L1 = <T,>({ question, onSelect }: QuizCardBaseProps<T>) => {
         }}
       >
         <BaseCard
-          question={question}
+          cardText={question}
           sx={{
             pt: 2,
             pb: 4,
           }}
+          cardColor={theme.palette.decorative.green}
         ></BaseCard>
 
         <Box sx={{ display: "grid", gap: 2, mt: 3 }}>

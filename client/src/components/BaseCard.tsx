@@ -10,9 +10,10 @@ import { SxProps, Theme } from "@mui/material/styles";
  * Contains the question text and optional styling and children.
  */
 export interface QuizCardBaseProps {
-  question: string;
+  cardText: string;
   sx?: SxProps<Theme>;
   children?: React.ReactNode;
+  cardColor: string;
 }
 
 /**
@@ -20,12 +21,13 @@ export interface QuizCardBaseProps {
  *
  * It uses Material UI (MUI) components (Card, Typography, etc.)
  * and applies custom theming for card colors.
- * @param question: The question text to display on the card.
+ * @param cardText: The question text to display on the card.
  * @param sx: Optional styling overrides for the card.
  * @param children: Optional child components to render inside the card.
+ * @param cardColor: The background color of the card.
  * @constructor
  */
-const BaseCard = ({ question, sx, children }: QuizCardBaseProps) => {
+const BaseCard = ({ cardText, sx, children, cardColor }: QuizCardBaseProps) => {
   const theme = useTheme();
 
   return (
@@ -42,7 +44,7 @@ const BaseCard = ({ question, sx, children }: QuizCardBaseProps) => {
         mx: "auto",
         boxShadow: 3,
         borderRadius: 2,
-        backgroundColor: theme.palette.decorative.green,
+        backgroundColor: cardColor,
         color: theme.palette.text.primary,
         overflow: "visible",
         display: "flex",
@@ -63,7 +65,7 @@ const BaseCard = ({ question, sx, children }: QuizCardBaseProps) => {
           textAlign: "center",
         }}
       >
-        {question}
+        {cardText}
       </Typography>
 
       {children && <div style={{ marginTop: "1rem" }}>{children}</div>}
