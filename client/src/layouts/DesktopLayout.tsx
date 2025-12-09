@@ -148,13 +148,13 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
       {/* Main Content Wrapper (sets up space for the white box) */}
       <Box
         sx={{
-          width: "100%",
+          width: "calc(100% + 90px)",
           height: "100%",
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "flex-start",
-          pl: "200px",
           pt: 11,
+          pr: 5,
           px: 14,
         }}
       >
@@ -162,15 +162,11 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
         <Box
           component="main"
           sx={{
-            width: "80%",
+            width: "100%",
             maxWidth: 1200,
-            height: "80%",
+            height: "140%",
             bgcolor: theme.palette.background.default,
             borderRadius: 10,
-            px: 5,
-
-            pb: 7,
-
             display: "flex",
             flexDirection: "column",
             overflow: "hidden",

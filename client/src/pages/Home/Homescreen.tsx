@@ -44,7 +44,7 @@ const Homescreen: React.FC = () => {
     <Box
       className="page-content-wrapper"
       sx={{
-        overflow: "hidden",
+        overflow: "visible",
         maxWidth: "100%",
         mx: "auto",
         px: { xs: 1, sm: 0 },
@@ -88,6 +88,7 @@ const Homescreen: React.FC = () => {
           variant="body1"
           sx={{
             px: { xs: 2, sm: 1, lineHeight: 1.3 },
+            pt: { xs: 1 },
             maxWidth: { xs: "90%", sm: 400 },
           }}
         >
@@ -101,13 +102,19 @@ const Homescreen: React.FC = () => {
       <CardStack currentIndex={1} totalCards={1}>
         <Box
           sx={{
-            p: 6,
-            backgroundColor: theme.palette.decorative.green,
-            borderRadius: 2,
-            boxShadow: 3,
-            mt: 8,
+            width: { xs: "100%", md: "120%" },
+            maxWidth: { xs: 360, sm: 520, md: 900 },
+            px: { xs: 1, md: 8 },
+            py: { xs: 2, md: 3 },
+            mt: { xs: "17svh", md: 0 },
             mx: "auto",
-            maxWidth: "400px",
+            backgroundColor: theme.palette.decorative.green,
+            borderRadius: 4,
+            boxShadow: 3,
+            justifyContent: "center",
+            position: "relative",
+            left: { md: "50%" },
+            transform: { md: "translateX(-55%)" },
           }}
         >
           {/* Mascot Image (positioned absolutely relative to the card box) */}
@@ -124,8 +131,9 @@ const Homescreen: React.FC = () => {
                 sm: -58,
               },
               right: {
-                xs: 20,
-                sm: 20,
+                xs: 60,
+                sm: 50,
+                md: 20,
               },
             }}
           />
