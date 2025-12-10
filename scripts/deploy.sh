@@ -10,6 +10,8 @@ DEPLOY_DIR="${DEPLOY_DIR:-/home/deployuser/projects/TechStudyFinder}"
 echo "--- Start deployment $(date) ---"
 
 cd "$DEPLOY_DIR"
+export PATH="$DEPLOY_DIR/server/node_modules/.bin:$PATH"
+export PATH="$DEPLOY_DIR/client/node_modules/.bin:$PATH"
 
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [ "$CURRENT_BRANCH" != "main" ]; then
@@ -21,19 +23,10 @@ echo "Pulling latest changes..."
 git pull origin main
 
 echo "Installing root dependencies..."
-npm ci
+npm ci --workspaces
 
-echo "Installing server workspace dependencies..."
-npm --workspace server install
-
-echo "Installing client workspace dependencies..."
-npm --workspace client install
-
-echo "Building server..."
-npm --workspace server run build
-
-echo "Building client..."
-npm --workspace client run build
+echo "Building server and client..."
+npm run build --workspaces
 
 echo "Restarting PM2..."
 pm2 restart techstudyfinder
