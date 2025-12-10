@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   BottomNavigation,
@@ -10,7 +10,7 @@ import {
 import HomeIcon from "@mui/icons-material/Home";
 import ResultIcon from "@mui/icons-material/Bookmark";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 /**
  * Props for the NavBar component.
@@ -32,8 +32,8 @@ interface NavBarProps {
  * @returns {React.FC} The rendered navigation component.
  */
 const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
-  const [value, setValue] = useState(0);
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
 
   // Navigation Elements configuration
@@ -42,6 +42,19 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
     { label: "Ergebnisse", icon: ResultIcon, path: "/results" },
     { label: "Favoriten", icon: FavoriteIcon, path: "/favorites" },
   ];
+
+  // Determine the current active index based on the current path
+  const getCurrentIndex = () => {
+    const index = navItems.findIndex((item) => item.path === location.pathname);
+    return index !== -1 ? index : 0;
+  };
+
+  const [value, setValue] = useState(getCurrentIndex());
+
+  // Update the selected value when the route changes
+  useEffect(() => {
+    setValue(getCurrentIndex());
+  }, [location.pathname]);
 
   /**
    * Handles the navigation click event. Updates the selected index and navigates to the new path.
