@@ -67,6 +67,7 @@ const QuizCard_L1 = <T,>({
         borderRadius: 2,
         backgroundColor: theme.palette.decorative.green,
         color: theme.palette.text.primary,
+        mt: 8,
         pt: 2,
         pb: 6,
         overflow: "visible",
@@ -85,6 +86,7 @@ const QuizCard_L1 = <T,>({
             right: 40,
             width: 60,
             height: 90,
+            mx: 2,
           }}
         />
       )}

@@ -38,7 +38,7 @@ const theme = createTheme({
     },
 
     navigation: {
-      background: "#EFEFEF",
+      navbar: "#E6E6E6",
     },
 
     favorites: {
