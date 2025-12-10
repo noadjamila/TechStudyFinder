@@ -34,7 +34,7 @@ async function main() {
 
   await client.connect();
 
-  const xmlPath = path.join("db/scripts", "../xml/degreeprogrammes.xml");
+  const xmlPath = path.join(__dirname, "../xml/degreeprogrammes.xml");
 
   if (!fs.existsSync(xmlPath)) {
     console.error("XML file not found:", xmlPath);
