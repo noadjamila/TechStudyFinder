@@ -5,7 +5,8 @@ module.exports = {
       script: "server/dist/index.js",
       cwd: "/home/deployuser/projects/TechStudyFinder",
       env: {
-        DEPLOY_SCRIPT_PATH: "/home/deployuser/projects/TechStudyFinder/scripts/deploy.sh",
+        DEPLOY_SCRIPT_PATH:
+          "/home/deployuser/projects/TechStudyFinder/scripts/deploy.sh",
       },
     },
   ],
