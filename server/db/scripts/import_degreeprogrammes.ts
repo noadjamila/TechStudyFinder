@@ -136,7 +136,7 @@ async function main() {
           degree_id,
         ],
       );
-      console.log(`Programme ${subject_name} (${id}) insterted.`);
+      console.log(`Programme ${subject_name} (${id}) inserted.`);
     } catch (error) {
       console.error(`Error with programme ${id}:`, error);
       process.exit(1);
