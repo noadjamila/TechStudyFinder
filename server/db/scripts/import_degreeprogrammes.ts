@@ -23,6 +23,45 @@ function getTextDe(nameField: any): string | null {
   return null;
 }
 
+// Helper for batch-inserts
+const BATCH_SIZE = 500;
+
+async function batchInsert(
+  client: Client,
+  table: string,
+  columns: string[],
+  rows: any[][],
+  conflict?: string,
+) {
+  if (!rows.length) return;
+
+  for (let i = 0; i < rows.length; i += BATCH_SIZE) {
+    const batch = rows.slice(i, i + BATCH_SIZE);
+
+    const values: string[] = [];
+    const params: any[] = [];
+    let paramIndex = 1;
+
+    for (const row of batch) {
+      if (row.length !== columns.length) {
+        throw new Error(
+          `Row length ${row.length} does not match columns length ${columns.length}`,
+        );
+      }
+      const placeholders = row.map(() => `$${paramIndex++}`);
+      values.push(`(${placeholders.join(",")})`);
+      params.push(...row);
+    }
+
+    const query = `
+      INSERT INTO ${table} (${columns.join(",")})
+      VALUES ${values.join(",")}
+      ${conflict ? `ON CONFLICT ${conflict} DO NOTHING` : ""}
+    `;
+    await client.query(query, params);
+  }
+}
+
 async function main() {
   const client = new Client({
     user: process.env.DB_USER,
@@ -56,12 +95,11 @@ async function main() {
 
   for (const delivery of deliveries) {
     if (!delivery.degreeProgramme) continue;
-
-    if (Array.isArray(delivery.degreeProgramme)) {
-      degreeprogrammes.push(...delivery.degreeProgramme);
-    } else {
-      degreeprogrammes.push(delivery.degreeProgramme);
-    }
+    degreeprogrammes.push(
+      ...(Array.isArray(delivery.degreeProgramme)
+        ? delivery.degreeProgramme
+        : [delivery.degreeProgramme]),
+    );
   }
   if (degreeprogrammes.length === 0) {
     console.error("No programmeDegrees found!");
@@ -69,20 +107,30 @@ async function main() {
   }
   console.log(`✅ ${degreeprogrammes.length} programmes found.`);
 
+  // Prepare arrays for batch inserts
+  const degrees: any[] = [];
+  const programmes: any[] = [];
+  const deadlines: any[] = [];
+  const disciplines: any[] = [];
+  const programme_disciplines: any[] = [];
+  const fields: any[] = [];
+  const programme_fields: any[] = [];
+  const modes: any[] = [];
+  const programme_modes: any[] = [];
+  const languages: any[] = [];
+  const programme_languages: any[] = [];
+  const locations: any[] = [];
+  const programme_locations: any[] = [];
+
   for (const programme of degreeprogrammes) {
     // degrees
     const degree_id = programme.degree?.id || null;
     const degree_name = getTextDe(programme.degree?.name);
-    if (degree_id && degree_name) {
-      await client.query(
-        `INSERT INTO abschlussart (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
-        [degree_id, degree_name],
-      );
-    }
+    if (degree_id && degree_name) degrees.push([degree_id, degree_name]);
 
     // degree_programmes
-    const id = programme.id ? programme.id : null;
-    const type = programme.type ? programme.type : null;
+    const id = programme.id || null;
+    const type = programme.type || null;
     const subject_name = getTextDe(programme.subject?.name);
     const institution_id = programme.institution?.id || null;
     const homepage = programme.homepage || null;
@@ -104,220 +152,213 @@ async function main() {
     );
     const admission_link = programme.admission_link || null;
 
-    // insert degree_programmes
-    try {
-      await client.query(
-        `INSERT INTO studiengaenge (
-          id, typ, hochschule_id, studienbeitrag, beitrag_kommentar, akkreditiert, homepage, anmerkungen,
-          abschluss_intern, mastertyp, lehramtstypen, regelstudienzeit, zielgruppe, zulassungssemester,
-          zulassungsmodus, zulassungsvoraussetzungen, zulassungs_link, name, abschlussart_id
-        ) VALUES (
-          $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19
-        ) ON CONFLICT (id) DO NOTHING`,
-        [
-          id,
-          type,
-          institution_id,
-          fee_amount,
-          fee_comment,
-          accredited,
-          homepage,
-          comment,
-          internal_degree,
-          master_type,
-          teachingdegrees,
-          duration,
-          target_group,
-          admission_term,
-          admission_mode,
-          admission_requirement,
-          admission_link,
-          subject_name,
-          degree_id,
-        ],
-      );
-      console.log(`Programme ${subject_name} (${id}) inserted.`);
-    } catch (error) {
-      console.error(`Error with programme ${id}:`, error);
-      process.exit(1);
-    }
+    programmes.push([
+      id,
+      type,
+      institution_id,
+      fee_amount,
+      fee_comment,
+      accredited,
+      homepage,
+      comment,
+      internal_degree,
+      master_type,
+      teachingdegrees,
+      duration,
+      target_group,
+      admission_term,
+      admission_mode,
+      admission_requirement,
+      admission_link,
+      subject_name,
+      degree_id,
+    ]);
 
     // deadlines
-    const deadlines = programme.deadlines;
-    if (deadlines && deadlines.deadline) {
-      const deadlineArray = Array.isArray(deadlines.deadline)
-        ? deadlines.deadline
-        : [deadlines.deadline];
-
-      for (const deadline of deadlineArray) {
-        const deadline_name = deadline.name ? deadline.name : null;
-        const deadline_term = deadline.term ? deadline.term : null;
-        const deadline_type = deadline.type ? deadline.type : null;
-        const deadline_begin = deadline.begin ? deadline.begin : null;
-        const deadline_end = deadline.end ? deadline.end : null;
-        const deadline_comment = getTextDe(deadline.comment?.name);
-
-        if (deadline_name) {
-          await client.query(
-            `INSERT INTO fristen (studiengang_id, name, semester, typ, start, ende, kommentar) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-            [
-              id,
-              deadline_name,
-              deadline_term,
-              deadline_type,
-              deadline_begin,
-              deadline_end,
-              deadline_comment,
-            ],
-          );
-        }
+    if (programme.deadlines?.deadline) {
+      const deadlineArray = Array.isArray(programme.deadlines.deadline)
+        ? programme.deadlines.deadline
+        : [programme.deadlines.deadline];
+      for (const d of deadlineArray) {
+        deadlines.push([
+          id,
+          d.name || null,
+          d.term || null,
+          d.type || null,
+          d.begin || null,
+          d.end || null,
+          getTextDe(d.comment?.name),
+        ]);
       }
     }
 
-    // disciplines
-    const disciplines = programme.disciplines;
-    if (disciplines && disciplines.discipline) {
-      const disciplineArray = Array.isArray(disciplines.discipline)
-        ? disciplines.discipline
-        : [disciplines.discipline];
-
-      for (const discipline of disciplineArray) {
-        const discipline_id = discipline.id || null;
-        const discipline_name = getTextDe(discipline.name);
-
-        if (discipline_id && discipline_name) {
-          await client.query(
-            `INSERT INTO studienfelder (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
-            [discipline_id, discipline_name],
-          );
-        }
-
-        // Many-to-Many relation
-        if (discipline_id) {
-          await client.query(
-            `INSERT INTO studiengang_studienfelder_relation (studiengang_id, studienfeld_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-            [id, discipline_id],
-          );
-        }
+    // disciplines & relations
+    if (programme.disciplines?.discipline) {
+      const arr = Array.isArray(programme.disciplines.discipline)
+        ? programme.disciplines.discipline
+        : [programme.disciplines.discipline];
+      for (const d of arr) {
+        if (d.id && getTextDe(d.name))
+          disciplines.push([d.id, getTextDe(d.name)]);
+        if (d.id) programme_disciplines.push([id, d.id]);
       }
     }
 
-    // fields_of_study
-    const fields_of_study = programme.fields_of_study;
-    if (fields_of_study && fields_of_study.field_of_study) {
-      const fieldArray = Array.isArray(fields_of_study.field_of_study)
-        ? fields_of_study.field_of_study
-        : [fields_of_study.field_of_study];
-
-      for (const field of fieldArray) {
-        const field_id = field.id || null;
-        const field_name = getTextDe(field.name);
-
-        if (field_id && field_name) {
-          await client.query(
-            `INSERT INTO schwerpunkte (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
-            [field_id, field_name],
-          );
-        }
-
-        // Many-to-Many relation
-        if (field_id) {
-          await client.query(
-            `INSERT INTO studiengang_schwerpunkte_relation (studiengang_id, schwerpunkt_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-            [id, field_id],
-          );
-        }
+    // fields_of_study & relations
+    if (programme.fields_of_study?.field_of_study) {
+      const arr = Array.isArray(programme.fields_of_study.field_of_study)
+        ? programme.fields_of_study.field_of_study
+        : [programme.fields_of_study.field_of_study];
+      for (const f of arr) {
+        if (f.id && getTextDe(f.name)) fields.push([f.id, getTextDe(f.name)]);
+        if (f.id) programme_fields.push([id, f.id]);
       }
     }
 
-    // modes_of_study
-    const modes_of_study = programme.modes_of_study;
-    if (modes_of_study && modes_of_study.mode_of_study) {
-      const modeArray = Array.isArray(modes_of_study.mode_of_study)
-        ? modes_of_study.mode_of_study
-        : [modes_of_study.mode_of_study];
-
-      for (const mode of modeArray) {
-        const mode_id = mode.id || null;
-        const mode_name = getTextDe(mode.name);
-
-        if (mode_id && mode_name) {
-          await client.query(
-            `INSERT INTO studienform (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
-            [mode_id, mode_name],
-          );
-        }
-
-        // Many-to-Many relation
-        if (mode_id) {
-          await client.query(
-            `INSERT INTO studiengang_studienform_relation (studiengang_id, studienform_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-            [id, mode_id],
-          );
-        }
+    // modes_of_study & relations
+    if (programme.modes_of_study?.mode_of_study) {
+      const arr = Array.isArray(programme.modes_of_study.mode_of_study)
+        ? programme.modes_of_study.mode_of_study
+        : [programme.modes_of_study.mode_of_study];
+      for (const m of arr) {
+        if (m.id && getTextDe(m.name)) modes.push([m.id, getTextDe(m.name)]);
+        if (m.id) programme_modes.push([id, m.id]);
       }
     }
 
-    // teaching_languages
-    const teaching_languages = programme.teaching_languages;
-    if (teaching_languages && teaching_languages.teaching_language) {
-      const langArray = Array.isArray(teaching_languages.teaching_language)
-        ? teaching_languages.teaching_language
-        : [teaching_languages.teaching_language];
-
-      for (const lang of langArray) {
-        const lang_id = lang.id || null;
-        const lang_name = getTextDe(lang.name);
-        const lang_isMain = lang.isMain === "true" ? true : false;
-
-        if (lang_id && lang_name) {
-          await client.query(
-            `INSERT INTO unterrichtssprachen (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
-            [lang_id, lang_name],
-          );
-        }
-
-        // Many-to-Many relation
-        if (lang_id) {
-          await client.query(
-            `INSERT INTO studiengang_sprachen_relation (studiengang_id, sprache_id, is_main) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
-            [id, lang_id, lang_isMain],
-          );
-        }
+    // teaching_languages & relations
+    if (programme.teaching_languages?.teaching_language) {
+      const arr = Array.isArray(programme.teaching_languages.teaching_language)
+        ? programme.teaching_languages.teaching_language
+        : [programme.teaching_languages.teaching_language];
+      for (const l of arr) {
+        if (l.id && getTextDe(l.name))
+          languages.push([l.id, getTextDe(l.name)]);
+        if (l.id) programme_languages.push([id, l.id, l.isMain === "true"]);
       }
     }
 
-    // locations
-    const locations = programme.locations;
-    if (locations && locations.location) {
-      const locationArray = Array.isArray(locations.location)
-        ? locations.location
-        : [locations.location];
-
-      for (const location of locationArray) {
-        const location_id = location.id || null;
-        const location_name = getTextDe(location.name);
-
-        if (location_id && location_name) {
-          await client.query(
-            `INSERT INTO standorte (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
-            [location_id, location_name],
-          );
-        }
-
-        // Many-to-Many relation
-        if (location_id) {
-          await client.query(
-            `INSERT INTO studiengang_standorte_relation (studiengang_id, standort_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-            [id, location_id],
-          );
-        }
+    // locations & relations
+    if (programme.locations?.location) {
+      const arr = Array.isArray(programme.locations.location)
+        ? programme.locations.location
+        : [programme.locations.location];
+      for (const loc of arr) {
+        if (loc.id && getTextDe(loc.name))
+          locations.push([loc.id, getTextDe(loc.name)]);
+        if (loc.id) programme_locations.push([id, loc.id]);
       }
     }
   }
 
-  await client.end();
-  console.log("Import succeeded!");
+  try {
+    await client.query("BEGIN");
+
+    await batchInsert(client, "abschlussart", ["id", "name"], degrees, "(id)");
+    await batchInsert(
+      client,
+      "studiengaenge",
+      [
+        "id",
+        "typ",
+        "hochschule_id",
+        "studienbeitrag",
+        "beitrag_kommentar",
+        "akkreditiert",
+        "homepage",
+        "anmerkungen",
+        "abschluss_intern",
+        "mastertyp",
+        "lehramtstypen",
+        "regelstudienzeit",
+        "zielgruppe",
+        "zulassungssemester",
+        "zulassungsmodus",
+        "zulassungsvoraussetzungen",
+        "zulassungs_link",
+        "name",
+        "abschlussart_id",
+      ],
+      programmes,
+      "(id)",
+    );
+    await batchInsert(
+      client,
+      "fristen",
+      [
+        "studiengang_id",
+        "name",
+        "semester",
+        "typ",
+        "start",
+        "ende",
+        "kommentar",
+      ],
+      deadlines,
+    );
+    await batchInsert(
+      client,
+      "studienfelder",
+      ["id", "name"],
+      disciplines,
+      "(id)",
+    );
+    await batchInsert(
+      client,
+      "studiengang_studienfelder_relation",
+      ["studiengang_id", "studienfeld_id"],
+      programme_disciplines,
+      "(studiengang_id, studienfeld_id)",
+    );
+    await batchInsert(client, "schwerpunkte", ["id", "name"], fields, "(id)");
+    await batchInsert(
+      client,
+      "studiengang_schwerpunkte_relation",
+      ["studiengang_id", "schwerpunkt_id"],
+      programme_fields,
+      "(studiengang_id, schwerpunkt_id)",
+    );
+    await batchInsert(client, "studienform", ["id", "name"], modes, "(id)");
+    await batchInsert(
+      client,
+      "studiengang_studienform_relation",
+      ["studiengang_id", "studienform_id"],
+      programme_modes,
+      "(studiengang_id, studienform_id)",
+    );
+    await batchInsert(
+      client,
+      "unterrichtssprachen",
+      ["id", "name"],
+      languages,
+      "(id)",
+    );
+    await batchInsert(
+      client,
+      "studiengang_sprachen_relation",
+      ["studiengang_id", "sprache_id", "is_main"],
+      programme_languages,
+      "(studiengang_id, sprache_id)",
+    );
+    await batchInsert(client, "standorte", ["id", "name"], locations, "(id)");
+    await batchInsert(
+      client,
+      "studiengang_standorte_relation",
+      ["studiengang_id", "standort_id"],
+      programme_locations,
+      "(studiengang_id, standort_id)",
+    );
+
+    await client.query("COMMIT");
+    console.log("Import succeeded!");
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Import failed, rollback executed.", err);
+  } finally {
+    await client.end();
+  }
 }
 
-main().catch((err) => console.error(err));
+main().catch((err) => {
+  console.error("Unexpected error:", err);
+});

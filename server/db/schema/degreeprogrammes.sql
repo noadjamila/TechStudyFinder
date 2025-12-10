@@ -3,33 +3,33 @@
 -- ------------------------------
 
 CREATE TABLE abschlussart (
-    id TEXT PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     name TEXT NOT NULL
 );
 
 CREATE TABLE studienfelder (
-    id TEXT PRIMARY KEY,
-    name TEXT
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL
 );
 
 CREATE TABLE schwerpunkte (
-    id TEXT PRIMARY KEY,
-    name TEXT
+    id TEXT PRIMARY KEY, -- Ids in format = 'w6191'
+    name TEXT NOT NULL
 );
 
 CREATE TABLE studienform (
-    id TEXT PRIMARY KEY,
-    name TEXT
+    id TEXT PRIMARY KEY, -- Ids in format = 'v'
+    name TEXT NOT NULL
 );
 
 CREATE TABLE unterrichtssprachen (
-    id TEXT PRIMARY KEY,
-    name TEXT
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL
 );
 
 CREATE TABLE standorte (
-    id TEXT PRIMARY KEY,
-    name TEXT
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL
 );
 
 -- ------------------------------
@@ -37,17 +37,17 @@ CREATE TABLE standorte (
 -- ------------------------------
 
 CREATE TABLE studiengaenge (
-    id TEXT PRIMARY KEY,
+    id TEXT PRIMARY KEY, -- Ids in format = 'g1234'
     typ TEXT,
-    name TEXT,
+    name TEXT NOT NULL,
     homepage TEXT,
     studienbeitrag TEXT,
     beitrag_kommentar TEXT,
     akkreditiert BOOLEAN,
     anmerkungen TEXT,
-    hochschule_id TEXT REFERENCES hochschule(id),
+    hochschule_id INTEGER NOT NULL REFERENCES hochschule(id) ON DELETE CASCADE,
     abschluss_intern TEXT,
-    abschlussart_id TEXT REFERENCES abschlussart(id),
+    abschlussart_id INTEGER NOT NULL REFERENCES abschlussart(id) ON DELETE CASCADE,
     mastertyp TEXT,
     lehramtstypen BOOLEAN,
     regelstudienzeit TEXT,
@@ -64,8 +64,8 @@ CREATE TABLE studiengaenge (
 
 CREATE TABLE fristen (
     id SERIAL PRIMARY KEY,
-    studiengang_id TEXT REFERENCES studiengaenge(id),
-    name TEXT,
+    studiengang_id TEXT REFERENCES studiengaenge(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
     semester TEXT,
     typ TEXT,
     start DATE,
@@ -78,32 +78,32 @@ CREATE TABLE fristen (
 -- ------------------------------
 
 CREATE TABLE studiengang_studienfelder_relation (
-    studiengang_id TEXT REFERENCES studiengaenge(id),
-    studienfeld_id TEXT REFERENCES studienfelder(id),
+    studiengang_id TEXT REFERENCES studiengaenge(id) ON DELETE CASCADE,
+    studienfeld_id INTEGER REFERENCES studienfelder(id) ON DELETE CASCADE,
     PRIMARY KEY (studiengang_id, studienfeld_id)
 );
 
 CREATE TABLE studiengang_schwerpunkte_relation (
-    studiengang_id TEXT REFERENCES studiengaenge(id),
-    schwerpunkt_id TEXT REFERENCES schwerpunkte(id),
+    studiengang_id TEXT REFERENCES studiengaenge(id) ON DELETE CASCADE,
+    schwerpunkt_id TEXT REFERENCES schwerpunkte(id) ON DELETE CASCADE,
     PRIMARY KEY (studiengang_id, schwerpunkt_id)
 );
 
 CREATE TABLE studiengang_studienform_relation (
-    studiengang_id TEXT REFERENCES studiengaenge(id),
-    studienform_id TEXT REFERENCES studienform(id),
+    studiengang_id TEXT REFERENCES studiengaenge(id) ON DELETE CASCADE,
+    studienform_id TEXT REFERENCES studienform(id) ON DELETE CASCADE,
     PRIMARY KEY (studiengang_id, studienform_id)
 );
 
 CREATE TABLE studiengang_sprachen_relation (
-    studiengang_id TEXT REFERENCES studiengaenge(id),
-    sprache_id TEXT REFERENCES unterrichtssprachen(id),
+    studiengang_id TEXT REFERENCES studiengaenge(id) ON DELETE CASCADE,
+    sprache_id INTEGER REFERENCES unterrichtssprachen(id) ON DELETE CASCADE,
     is_main BOOLEAN,
     PRIMARY KEY (studiengang_id, sprache_id)
 );
 
 CREATE TABLE studiengang_standorte_relation (
-    studiengang_id TEXT REFERENCES studiengaenge(id),
-    standort_id TEXT REFERENCES standorte(id),
+    studiengang_id TEXT REFERENCES studiengaenge(id) ON DELETE CASCADE,
+    standort_id INTEGER REFERENCES standorte(id) ON DELETE CASCADE,
     PRIMARY KEY (studiengang_id, standort_id)
 );

@@ -32,6 +32,34 @@ function getPhone(field: any): string | null {
   return full.length > 0 ? full : null;
 }
 
+// Helper for batch-inserts
+async function batchInsert(
+  client: Client,
+  table: string,
+  columns: string[],
+  rows: any[][],
+  conflict?: string,
+) {
+  if (!rows.length) return;
+
+  const values: string[] = [];
+  const params: any[] = [];
+  let paramIndex = 1;
+
+  for (const row of rows) {
+    const placeholders = row.map(() => `$${paramIndex++}`);
+    values.push(`(${placeholders.join(",")})`);
+    params.push(...row);
+  }
+
+  const query = `
+    INSERT INTO ${table} (${columns.join(",")})
+    VALUES ${values.join(",")}
+    ${conflict ? `ON CONFLICT ${conflict} DO NOTHING` : ""}
+  `;
+  await client.query(query, params);
+}
+
 async function main() {
   const client = new Client({
     user: process.env.DB_USER,
@@ -62,20 +90,23 @@ async function main() {
     : [result.institutions.delivery];
 
   let institutions: any[] = [];
-
   for (const delivery of deliveries) {
     if (!delivery.institution) continue;
-
-    if (Array.isArray(delivery.institution)) {
-      institutions.push(...delivery.institution);
-    } else {
-      institutions.push(delivery.institution);
-    }
+    institutions.push(
+      ...(Array.isArray(delivery.institution)
+        ? delivery.institution
+        : [delivery.institution]),
+    );
   }
   if (institutions.length === 0) {
     console.error("No institutions found!");
     process.exit(1);
   }
+  console.log(`✅ ${institutions.length} institutions found.`);
+
+  const hochschultypRows: any[][] = [];
+  const traegerschaftRows: any[][] = [];
+  const hochschuleRows: any[][] = [];
 
   for (const inst of institutions) {
     const id = inst.id ? inst.id : null;
@@ -103,12 +134,8 @@ async function main() {
       ? parseInt(inst.institution_type.id)
       : null;
     const institution_type_name = getTextDe(inst.institution_type?.name);
-
     if (institution_type_id && institution_type_name) {
-      await client.query(
-        `INSERT INTO hochschultyp (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
-        [institution_type_id, institution_type_name],
-      );
+      hochschultypRows.push([institution_type_id, institution_type_name]);
     }
 
     // institutional_control
@@ -118,51 +145,87 @@ async function main() {
     const institutional_control_name = getTextDe(
       inst.institutional_control?.name,
     );
-
     if (institutional_control_id && institutional_control_name) {
-      await client.query(
-        `INSERT INTO traegerschaft (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
-        [institutional_control_id, institutional_control_name],
-      );
+      traegerschaftRows.push([
+        institutional_control_id,
+        institutional_control_name,
+      ]);
     }
 
-    try {
-      await client.query(
-        `INSERT INTO hochschule (
-          id, name, kurzname, bundesland, stadt, telefon, fax, homepage, email, logo,
-          hochschultyp_id, traegerschaft_id, gruendungsjahr, promotionsrecht, habilitationsrecht, uniklinik,
-          student_statistik
-        ) VALUES (
-          $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17
-        ) ON CONFLICT (id) DO NOTHING`,
-        [
-          id,
-          name,
-          shortname,
-          state,
-          city,
-          phone,
-          fax,
-          homepage,
-          email,
-          logo,
-          institution_type_id,
-          institutional_control_id,
-          foundation_year,
-          award_phd,
-          award_habil,
-          clinic,
-          student_statistic,
-        ],
-      );
-      console.log(`Institution ${name} (${id}) inserted.`);
-    } catch (error) {
-      console.error(`Error with institution ${id}:`, error);
-    }
+    hochschuleRows.push([
+      id,
+      name,
+      shortname,
+      state,
+      city,
+      phone,
+      fax,
+      homepage,
+      email,
+      logo,
+      institution_type_id,
+      institutional_control_id,
+      foundation_year,
+      award_phd,
+      award_habil,
+      clinic,
+      student_statistic,
+    ]);
   }
 
-  await client.end();
-  console.log("Import succeeded!");
+  try {
+    await client.query("BEGIN");
+
+    await batchInsert(
+      client,
+      "hochschultyp",
+      ["id", "name"],
+      hochschultypRows,
+      "(id)",
+    );
+    await batchInsert(
+      client,
+      "traegerschaft",
+      ["id", "name"],
+      traegerschaftRows,
+      "(id)",
+    );
+    await batchInsert(
+      client,
+      "hochschule",
+      [
+        "id",
+        "name",
+        "kurzname",
+        "bundesland",
+        "stadt",
+        "telefon",
+        "fax",
+        "homepage",
+        "email",
+        "logo",
+        "hochschultyp_id",
+        "traegerschaft_id",
+        "gruendungsjahr",
+        "promotionsrecht",
+        "habilitationsrecht",
+        "uniklinik",
+        "student_statistik",
+      ],
+      hochschuleRows,
+      "(id)",
+    );
+
+    await client.query("COMMIT");
+    console.log("Import succeeded!");
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Import failed, rollback executed.", err);
+  } finally {
+    await client.end();
+  }
 }
 
-main().catch((err) => console.error(err));
+main().catch((err) => {
+  console.error("Unexpected error:", err);
+});

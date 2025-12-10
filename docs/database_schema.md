@@ -52,13 +52,15 @@ It is divided into **two main domains**:
 | homepage           | TEXT    |     |                              | ✅       | Website                |
 | email              | TEXT    |     |                              | ✅       | Contact email          |
 | logo               | TEXT    |     |                              | ✅       | Logo file/path         |
-| hochschultyp_id    | INTEGER |     | ✅ → institution_type(id)    | ❌       | Type                   |
-| traegerschaft_id   | INTEGER |     | ✅ → institution_control(id) | ❌       | Control type           |
+| hochschultyp_id    | INTEGER |     | ✅ → institution_type(id)    | ✅       | Type                   |
+| traegerschaft_id   | INTEGER |     | ✅ → institution_control(id) | ✅       | Control type           |
 | gruendungsjahr     | INTEGER |     |                              | ✅       | Year founded           |
 | promotionsrecht    | BOOLEAN |     |                              | ✅       | Can award PhD          |
 | habilitationsrecht | BOOLEAN |     |                              | ✅       | Can award habilitation |
 | uniklinik          | BOOLEAN |     |                              | ✅       | Has a clinic           |
 | student_statistik  | JSONB   |     |                              | ✅       | Student statistics     |
+
+For more details, refer to the [institution schema](../server/db/schema/institutions.sql).
 
 ---
 
@@ -90,9 +92,9 @@ It is divided into **two main domains**:
 | beitrag_kommentar         | TEXT    |     |                       | ✅       | Fee notes             |
 | akkreditiert              | BOOLEAN |     |                       | ✅       | Accreditation status  |
 | anmerkungen               | TEXT    |     |                       | ✅       | Free-text comment     |
-| hochschule_id             | TEXT    |     | ✅ → hochschule(id)   | ❌       | Institution           |
+| hochschule_id             | INTEGER |     | ✅ → hochschule(id)   | ❌       | Institution           |
 | abschluss_intern          | TEXT    |     |                       | ✅       | Internal degree name  |
-| abschlussart_id           | TEXT    |     | ✅ → abschlussart(id) | ✅       | Degree type           |
+| abschlussart_id           | INTEGER |     | ✅ → abschlussart(id) | ❌       | Degree type           |
 | mastertyp                 | TEXT    |     |                       | ✅       | Master programme type |
 | lehramtstypen             | BOOLEAN |     |                       | ✅       | Teaching degree flag  |
 | regelstudienzeit          | TEXT    |     |                       | ✅       | Duration of programme |
@@ -124,3 +126,5 @@ It is divided into **two main domains**:
 | start          | DATE   | Start date             |
 | ende           | DATE   | End date               |
 | kommentar      | TEXT   | Notes                  |
+
+For more details, refer to the [degree programme schema](../server/db/schema/degreeprogrammes.sql).
