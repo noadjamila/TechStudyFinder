@@ -146,7 +146,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
         borderRadius: 50,
         zIndex: 1000,
       }}
-      elevation={3}
+      elevation={0}
     >
       <BottomNavigation
         showLabels
