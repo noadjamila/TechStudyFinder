@@ -89,7 +89,7 @@ const Homescreen: React.FC = () => {
           sx={{
             px: { xs: 2, sm: 1, lineHeight: 1.3 },
             pt: { xs: 1 },
-            maxWidth: { xs: "90%", sm: 400 },
+            maxWidth: { xs: "100%", sm: 400 },
           }}
         >
           {infoText1}
@@ -114,7 +114,7 @@ const Homescreen: React.FC = () => {
             justifyContent: "center",
             position: "relative",
             left: { md: "50%" },
-            transform: { xs: "translateX(-8.5%)", md: "translateX(-55%)" },
+            transform: { xs: "translateX(-8.5%)", md: "translateX(-50%)" },
           }}
         >
           {/* Mascot Image (positioned absolutely relative to the card box) */}
