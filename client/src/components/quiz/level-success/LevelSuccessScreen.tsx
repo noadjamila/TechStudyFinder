@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 type Level = 1 | 2 | 3 | 4;
@@ -18,7 +18,6 @@ const NEXT_LEVEL_TEXT: Record<Level, string> = {
 
 export default function LevelSuccessScreen({
   currentLevel,
-  onContinue = () => {},
 }: LevelSuccessScreenProps) {
   const [phase, setPhase] = useState<"won" | "next">("won");
   const theme = useTheme();
@@ -177,30 +176,6 @@ export default function LevelSuccessScreen({
           </Typography>
         </>
       ) : null}
-
-      <Box
-        sx={{
-          position: "absolute",
-          bottom: theme.spacing(3),
-          right: theme.spacing(2),
-        }}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={onContinue}
-          sx={{
-            padding: theme.spacing(1.5, 4),
-            backgroundColor: theme.palette.primary.main,
-            "&:hover": {
-              backgroundColor: theme.palette.primary.dark,
-            },
-            display: phase === "next" ? "block" : "none",
-          }}
-        >
-          Weiter
-        </Button>
-      </Box>
     </Box>
   );
 }

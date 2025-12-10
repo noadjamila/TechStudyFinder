@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import LevelSuccessScreen from "../level-success/LevelSuccessScreen";
 import { vi } from "vitest";
 import "@testing-library/jest-dom";
@@ -38,16 +38,5 @@ describe("LevelSuccessScreen", () => {
     expect(
       screen.getByText("Du hast alle Level abgeschlossen"),
     ).toBeInTheDocument();
-  });
-
-  it("should call 'onContinue' function when 'Weiter' is clicked", () => {
-    render(<LevelSuccessScreen currentLevel={1} onContinue={mockOnContinue} />);
-
-    const button = screen.getByText("Weiter");
-    expect(button).toBeInTheDocument();
-
-    fireEvent.click(button);
-
-    expect(mockOnContinue).toHaveBeenCalledTimes(1);
   });
 });
