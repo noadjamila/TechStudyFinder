@@ -4,7 +4,7 @@
 
 CREATE TABLE abschlussart (
     id TEXT PRIMARY KEY,
-    name TEXT
+    name TEXT NOT NULL
 );
 
 CREATE TABLE studienfelder (
