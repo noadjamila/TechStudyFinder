@@ -9,12 +9,6 @@ DEPLOY_DIR="${DEPLOY_DIR:-/home/deployuser/projects/TechStudyFinder}"
 
 echo "--- Start deployment $(date) ---"
 
-#echo "Verifying commit signature..."
-#git verify-commit HEAD || {
-#  echo "Error: Commit signature verification failed"
-#  exit 1
-#}
-
 cd "$DEPLOY_DIR"
 
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -23,17 +17,25 @@ if [ "$CURRENT_BRANCH" != "main" ]; then
   exit 1
 fi
 
-
-echo "Starting git pull..."
+echo "Pulling latest changes..."
 git pull origin main
 
-echo "Install node dependencies..."
+echo "Installing root dependencies..."
 npm ci
 
-echo "Rebuild frontend and backend..."
-npm run build
+echo "Installing server workspace dependencies..."
+npm --workspace server install
 
-echo "Restart application via PM2..."
+echo "Installing client workspace dependencies..."
+npm --workspace client install
+
+echo "Building server..."
+npm --workspace server run build
+
+echo "Building client..."
+npm --workspace client run build
+
+echo "Restarting PM2..."
 pm2 restart techstudyfinder
 
 echo "--- Deployment finished successfully ---"
