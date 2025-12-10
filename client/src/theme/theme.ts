@@ -51,13 +51,12 @@ const theme = createTheme({
     h2: {
       fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
     },
-    h6: {
-      fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
-    },
     h5: {
       fontSize: "1.25rem",
-      fontWeight: 500,
       lineHeight: 1.6,
+    },
+    h6: {
+      fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
     },
   },
   components: {
@@ -66,8 +65,8 @@ const theme = createTheme({
         root: {
           textTransform: "none",
           borderRadius: "9px",
-          fontWeight: "600",
           height: "50px",
+          fontWeight: 400,
         },
       },
     },

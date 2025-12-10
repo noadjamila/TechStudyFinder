@@ -58,6 +58,7 @@ const QuizCard_L2: React.FC<QuizCardProps> = ({ question, onSelect }) => {
           aria-label="Antwort Überspringen"
           onClick={() => onSelect("skip")}
           sx={{
+            fontSize: "0.875rem",
             cursor: "pointer",
             color: theme.palette.text.skipButton,
             textAlign: "center",

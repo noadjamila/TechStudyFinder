@@ -31,6 +31,7 @@ export default function BackButton({
         height: "35px",
         padding: "0px 10px",
         fontSize: "0.80rem",
+        fontWeight: 600,
 
         "& .MuiButton-startIcon": {
           marginRight: 1,

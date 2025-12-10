@@ -1,12 +1,12 @@
 import React from "react";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
-import StartButton from "../../components/buttons/Button";
 import { useNavigate } from "react-router-dom";
 import CardStack from "../../../src/components/quiz/CardStack";
 import theme from "../../theme/theme";
 import LogoMenu from "../../components/logo-menu/LogoMenu";
 import Navigationbar from "../../components/nav-bar/NavBar";
 import DesktopLayout from "../../layouts/DesktopLayout";
+import PrimaryButton from "../../components/buttons/PrimaryButton";
 
 /**
  * Homescreen component.
@@ -150,21 +150,7 @@ const Homescreen: React.FC = () => {
           </Typography>
 
           {/* Start Quiz Button */}
-          <StartButton
-            label="Quiz beginnen"
-            onClick={handleQuizStart}
-            sx={{
-              borderRadius: 3,
-              padding: "8px 16x",
-              fontSize: "1.0rem",
-              width: "fit-content",
-              mx: "auto",
-              display: "block",
-              backgroundColor: theme.palette.primary.main,
-              color: theme.palette.text.primary,
-              fontWeight: "normal",
-            }}
-          />
+          <PrimaryButton label="Quiz beginnen" onClick={handleQuizStart} />
         </Box>
       </CardStack>
     </Box>

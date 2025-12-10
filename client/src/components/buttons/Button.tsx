@@ -18,7 +18,6 @@ export default function Button({
       fullWidth={fullWidth}
       sx={{
         borderRadius: "20px",
-        fontWeight: "bold",
         textTransform: "none",
         boxShadow: 3,
         ...sx,
