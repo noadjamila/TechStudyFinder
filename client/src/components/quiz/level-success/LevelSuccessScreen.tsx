@@ -13,7 +13,7 @@ const NEXT_LEVEL_TEXT: Record<Level, string> = {
   1: "Deine Rahmenbedingungen",
   2: "Deine Interessen",
   3: "Dein Arbeitsstil",
-  4: "Du hast alle Level abgeschlossen",
+  4: "Du hast alle Schritte abgeschlossen",
 };
 
 export default function LevelSuccessScreen({
@@ -53,7 +53,7 @@ export default function LevelSuccessScreen({
             }}
             aria-live="polite"
           >
-            Level 1
+            Schritt 1
           </Typography>
           <Typography
             variant="h6"
@@ -79,7 +79,7 @@ export default function LevelSuccessScreen({
             }}
             aria-live="polite"
           >
-            Level 1 geschafft!
+            Schritt 1 geschafft!
           </Typography>
 
           <Typography
@@ -92,7 +92,7 @@ export default function LevelSuccessScreen({
             }}
             aria-live="polite"
           >
-            Level 2
+            Schritt 2
           </Typography>
 
           <Typography
@@ -120,7 +120,7 @@ export default function LevelSuccessScreen({
             }}
             aria-live="polite"
           >
-            Level 2 geschafft!
+            Schritt 2 geschafft!
           </Typography>
 
           <Typography
@@ -133,7 +133,7 @@ export default function LevelSuccessScreen({
             }}
             aria-live="polite"
           >
-            Level 3
+            Schritt 3
           </Typography>
 
           <Typography
@@ -160,7 +160,7 @@ export default function LevelSuccessScreen({
             }}
             aria-live="polite"
           >
-            Level 3 geschafft!
+            Schritt 3 geschafft!
           </Typography>
 
           <Typography
