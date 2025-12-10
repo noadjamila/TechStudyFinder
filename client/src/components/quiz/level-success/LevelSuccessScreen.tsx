@@ -16,12 +16,20 @@ const NEXT_LEVEL_TEXT: Record<Level, string> = {
   4: "Du hast alle Schritte abgeschlossen",
 };
 
+/**
+ * LevelSuccessScreen component displays a screen showing the progress of the user through the different levels.
+ * It shows a title for the current level and the description for the next level.
+ * After each level is completed, the description for the next level is shown after a brief delay.
+ * When the user reaches the final level, a message indicating completion is displayed.
+ */
+
 export default function LevelSuccessScreen({
   currentLevel,
 }: LevelSuccessScreenProps) {
   const [phase, setPhase] = useState<"won" | "next">("won");
   const theme = useTheme();
 
+  // Use the effect hook to switch the phase after 1.2 seconds, so that the description for the next level appears.
   useEffect(() => {
     if (currentLevel === 1) {
       setPhase("next");
@@ -48,7 +56,10 @@ export default function LevelSuccessScreen({
             variant="h4"
             sx={{
               color: theme.palette.text.primary,
-              marginBottom: theme.spacing(2),
+              marginBottom: theme.spacing(0.5),
+              marginTop: theme.spacing(10),
+              fontWeight: "bold",
+              fontSize: "3rem",
               fontFamily: theme.typography.fontFamily,
             }}
             aria-live="polite"
@@ -59,7 +70,8 @@ export default function LevelSuccessScreen({
             variant="h6"
             sx={{
               color: theme.palette.text.primary,
-              marginTop: theme.spacing(2),
+              marginTop: theme.spacing(1),
+              fontWeight: "bold",
               fontFamily: theme.typography.h6.fontFamily,
             }}
             aria-live="polite"
@@ -73,13 +85,30 @@ export default function LevelSuccessScreen({
             variant="h4"
             sx={{
               color: theme.palette.text.primary,
-              marginBottom: theme.spacing(2),
+              marginBottom: theme.spacing(1),
+              marginTop: theme.spacing(10),
+              fontWeight: "bold",
+              fontSize: "3rem",
               display: phase === "won" ? "block" : "none",
               fontFamily: theme.typography.fontFamily,
             }}
             aria-live="polite"
           >
-            Schritt 1 geschafft!
+            Schritt 1
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              color: theme.palette.text.primary,
+              marginTop: theme.spacing(0.5),
+              fontWeight: "bold",
+              fontSize: "3rem",
+              display: phase === "won" ? "block" : "none",
+              fontFamily: theme.typography.h6.fontFamily,
+            }}
+            aria-live="polite"
+          >
+            geschafft!
           </Typography>
 
           <Typography
@@ -88,6 +117,9 @@ export default function LevelSuccessScreen({
               color: theme.palette.text.primary,
               marginBottom: theme.spacing(2),
               display: phase === "next" ? "block" : "none",
+              marginTop: theme.spacing(10),
+              fontWeight: "bold",
+              fontSize: "3rem",
               fontFamily: theme.typography.fontFamily,
             }}
             aria-live="polite"
@@ -115,12 +147,29 @@ export default function LevelSuccessScreen({
             sx={{
               color: theme.palette.text.primary,
               marginBottom: theme.spacing(2),
+              marginTop: theme.spacing(10),
+              fontWeight: "bold",
+              fontSize: "3rem",
               display: phase === "won" ? "block" : "none",
               fontFamily: theme.typography.fontFamily,
             }}
             aria-live="polite"
           >
-            Schritt 2 geschafft!
+            Schritt 2
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              color: theme.palette.text.primary,
+              marginTop: theme.spacing(0.5),
+              fontWeight: "bold",
+              fontSize: "3rem",
+              display: phase === "won" ? "block" : "none",
+              fontFamily: theme.typography.h6.fontFamily,
+            }}
+            aria-live="polite"
+          >
+            geschafft!
           </Typography>
 
           <Typography
@@ -128,6 +177,9 @@ export default function LevelSuccessScreen({
             sx={{
               color: theme.palette.text.primary,
               marginBottom: theme.spacing(2),
+              marginTop: theme.spacing(10),
+              fontWeight: "bold",
+              fontSize: "3rem",
               display: phase === "next" ? "block" : "none",
               fontFamily: theme.typography.fontFamily,
             }}
@@ -156,11 +208,14 @@ export default function LevelSuccessScreen({
             sx={{
               color: theme.palette.text.primary,
               marginBottom: theme.spacing(2),
+              marginTop: theme.spacing(10),
+              fontWeight: "bold",
+              fontSize: "3rem",
               fontFamily: theme.typography.fontFamily,
             }}
             aria-live="polite"
           >
-            Schritt 3 geschafft!
+            Schritt 3
           </Typography>
 
           <Typography
