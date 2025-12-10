@@ -94,7 +94,7 @@ async function main() {
     const internal_degree = getTextDe(programme.internalDegree?.name);
     const master_type = getTextDe(programme.master_type?.name);
     const teachingdegrees =
-      programme.teachingdegress?.possible === "true" ? true : false;
+      programme.teachingdegrees?.possible === "true" ? true : false;
     const duration = getTextDe(programme.duration?.name);
     const target_group = getTextDe(programme.target_group?.name);
     const admission_term = getTextDe(programme.admission_term?.name);
