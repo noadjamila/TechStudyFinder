@@ -4,7 +4,6 @@ import StartButton from "../../components/buttons/Button";
 import { useNavigate } from "react-router-dom";
 import CardStack from "../../../src/components/quiz/CardStack";
 import theme from "../../theme/theme";
-import mascotImage from "../../assets/Männchen_Home_Level1.png";
 import LogoMenu from "../../components/logo-menu/LogoMenu";
 import Navigationbar from "../../components/nav-bar/NavBar";
 import DesktopLayout from "../../layouts/DesktopLayout";
@@ -22,6 +21,7 @@ const Homescreen: React.FC = () => {
   const muiTheme = useTheme();
   const toggleSidebar = () => {};
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
+  const mascotImage = "/mascot_standing_blue.svg";
 
   /**
    * Handles the start of the quiz by navigating to the first level.
