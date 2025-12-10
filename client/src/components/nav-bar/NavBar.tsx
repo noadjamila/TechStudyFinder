@@ -161,7 +161,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
           "& .MuiBottomNavigationAction-root": {
             minWidth: "auto",
             padding: "6px 20px",
-            color: "#999",
+            color: theme.palette.text.secondary,
           },
           "& .Mui-selected": {
             color: "#999",
