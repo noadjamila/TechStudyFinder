@@ -91,11 +91,11 @@ export default function StyledDialog({
 
       <Actions>
         <OptionBox onClick={onCancel ?? (() => onClose?.({}, "backdropClick"))}>
-          <Typography sx={{ fontWeight: 600 }}>{cancelLabel}</Typography>
+          <Typography>{cancelLabel}</Typography>
         </OptionBox>
 
         <OptionBox onClick={onConfirm}>
-          <Typography sx={{ fontWeight: 600 }}>{confirmLabel}</Typography>
+          <Typography>{confirmLabel}</Typography>
         </OptionBox>
       </Actions>
     </CustomDialog>
