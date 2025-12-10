@@ -13,6 +13,7 @@ declare module "@mui/material/styles" {
       green: string;
       blue: string;
       yellow: string;
+      blueDark: string;
     };
     quiz: {
       secondary: string;
@@ -38,6 +39,7 @@ declare module "@mui/material/styles" {
       green?: string;
       blue?: string;
       yellow?: string;
+      blueDark?: string;
     };
     quiz?: {
       secondary?: string;

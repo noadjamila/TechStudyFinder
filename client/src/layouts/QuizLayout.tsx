@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import Progressbar from "../components/quiz/Progressbar";
 import { Box, useTheme } from "@mui/material";
-//import Back_Button from "../components/buttons/Back_Button";
+import HomeButton from "../components/buttons/HomeButton";
+import { useNavigate } from "react-router-dom";
+import StyledDialog from "../components/dialogs/Dialog";
+import BackButton from "../components/buttons/BackButton";
 
 /**
  * Props of {@link QuizLayout}.
@@ -14,17 +17,16 @@ export interface QuizLayoutProps {
   questionsTotal: number;
   // Main content (react components) which is placed within the layout.
   children: React.ReactNode;
-
   // For Back Button when back in Layout
   // Function for the back Button to go back one Question.
-  //oneBack?: () => void;
-  // Boolean to handle if the Back Button is be visible on a page.
-  //showBackButton?: boolean;
+  _oneBack?: () => void;
+  // Boolean to handle if the Back Button is visible on a page.
+  _showBackButton?: boolean;
 }
 
 /**
  * The `QuizLayout` is the base layout for all quiz pages.
- * It shows a progressbar and a Back Button and renders the embedded component (e.g. a quiz question).
+ * It shows a progressbar and a back button and renders the embedded component (e.g. a quiz question).
  *
  * @example
  * <QuizLayout currentIndex={2} questionsTotal={10} oneBack={goBack} showBackButton={true}>
@@ -38,57 +40,95 @@ const QuizLayout = ({
   currentIndex,
   questionsTotal,
   children,
-  // For Back Button when back in Layout
-  // oneBack,
-  //showBackButton = true,
+  _oneBack,
+  _showBackButton = true,
 }: QuizLayoutProps) => {
   const theme = useTheme();
+  const [openDialog, setDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        maxWidth: 420,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        px: 2,
-        mt: 2,
-        boxSizing: "border-box",
-        margin: "0 auto",
-      }}
-    >
-      <Box sx={{ width: "100%", maxWidth: 420, px: 2, pt: 4 }}>
-        <Progressbar
-          current={currentIndex}
-          total={questionsTotal}
-          bgColor={theme.palette.quiz.progressUnfilled}
-          fillColor={theme.palette.secondary.main}
-        />
-
-        <Box
-          sx={{
-            mt: 1,
-            textAlign: "left",
-            color: theme.palette.text.primary,
-            fontSize: "0.9rem",
-          }}
-        >
-          Frage {currentIndex} von {questionsTotal}
-        </Box>
-      </Box>
-
+    <>
       <Box
         sx={{
           width: "100%",
-          maxWidth: 420,
-          mt: 4,
+          maxWidth: {
+            xs: 420,
+            md: 600,
+            lg: 900,
+          },
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           px: 2,
+          mt: 2,
+          boxSizing: "border-box",
+          margin: "0 auto",
         }}
       >
-        {children}
+        <Box
+          sx={{
+            width: "100%",
+            px: 2,
+            pt: 4,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              mb: 4,
+            }}
+          >
+            <Box>
+              {_showBackButton && (
+                <BackButton label="Zurück" onClick={_oneBack} />
+              )}
+            </Box>
+            <HomeButton onClick={() => setDialogOpen(true)} />
+          </Box>
+
+          <Progressbar
+            current={currentIndex}
+            total={questionsTotal}
+            bgColor={theme.palette.quiz.progressUnfilled}
+            fillColor={theme.palette.secondary.main}
+          />
+
+          <Box
+            sx={{
+              mt: 1,
+              textAlign: "left",
+              color: theme.palette.text.primary,
+              fontSize: "0.9rem",
+            }}
+          >
+            Frage {currentIndex} von {questionsTotal}
+          </Box>
+        </Box>
+
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: 420,
+            mt: 4,
+            px: 2,
+          }}
+        >
+          {children}
+        </Box>
       </Box>
-    </Box>
+      <StyledDialog
+        open={openDialog}
+        onClose={() => setDialogOpen(false)}
+        title="Quiz beenden?"
+        text="Deine Antworten gehen verloren."
+        cancelLabel="NEIN"
+        confirmLabel="JA"
+        onConfirm={() => navigate("/")}
+      />
+    </>
   );
 };
 
