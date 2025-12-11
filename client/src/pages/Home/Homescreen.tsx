@@ -1,12 +1,12 @@
 import React from "react";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import StartButton from "../../components/buttons/Button";
 import { useNavigate } from "react-router-dom";
 import CardStack from "../../../src/components/quiz/CardStack";
 import theme from "../../theme/theme";
 import LogoMenu from "../../components/logo-menu/LogoMenu";
 import Navigationbar from "../../components/nav-bar/NavBar";
 import DesktopLayout from "../../layouts/DesktopLayout";
-import PrimaryButton from "../../components/buttons/PrimaryButton";
 
 /**
  * Homescreen component.
@@ -21,7 +21,6 @@ const Homescreen: React.FC = () => {
   const muiTheme = useTheme();
   const toggleSidebar = () => {};
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
-  const mascotImage = "/mascot_standing_blue.svg";
 
   /**
    * Handles the start of the quiz by navigating to the first level.
@@ -49,7 +48,7 @@ const Homescreen: React.FC = () => {
         mx: "auto",
         px: { xs: 1, sm: 0 },
         textAlign: "center",
-        mt: 4,
+        mt: { xs: 4, sm: 15, md: 9 },
         position: "relative",
         color: theme.palette.text.primary,
       }}
@@ -59,8 +58,9 @@ const Homescreen: React.FC = () => {
         className="title"
         sx={{
           fontWeight: "bold",
-          fontSize: "1.8rem",
+          fontSize: { xs: "1.8rem", md: "2.2rem" },
           mb: 2,
+          mt: { md: 3 },
         }}
       >
         {mainTitle}
@@ -79,21 +79,35 @@ const Homescreen: React.FC = () => {
       <Box
         className="info-text"
         sx={{
-          mt: 2,
-          mb: 6,
           mx: "auto",
         }}
       >
+        {/*text: Kein problem*/}
         <Typography
           variant="body1"
           sx={{
-            px: { xs: 2, sm: 1, lineHeight: 1.3 },
+            px: { xs: 2, sm: 0 },
             pt: { xs: 1 },
-            maxWidth: { xs: "100%", sm: 400 },
+            mb: { xs: 1, md: 3 },
+            mt: 3,
+            fontWeight: "bold",
+            transform: { md: "translateX(0%)" },
           }}
         >
           {infoText1}
-          <br />
+        </Typography>
+
+        {/*text: techstudyfinder hilt die dabei*/}
+        <Typography
+          variant="body1"
+          sx={{
+            px: { xs: 2, sm: 0 },
+            lineHeight: 1.3,
+            maxWidth: { xs: "100%", sm: 400 },
+            transform: { md: "translateX(7.5%)" },
+            mb: { xs: 0, md: 10 },
+          }}
+        >
           {infoText2}
         </Typography>
       </Box>
@@ -114,13 +128,22 @@ const Homescreen: React.FC = () => {
             justifyContent: "center",
             position: "relative",
             left: { md: "50%" },
-            transform: { xs: "translateX(-8.5%)", md: "translateX(-50%)" },
+            transform: {
+              xs: "translateX(-5.6%)",
+              sm: "translateX(-8%)",
+              md: "translateX(-50%)",
+            },
+            "@media (max-width: 375px)": {
+              transform: "translateX(0%)",
+              width: "90%",
+              mt: 7.5,
+            },
           }}
         >
           {/* Mascot Image (positioned absolutely relative to the card box) */}
           <Box
             component="img"
-            src={mascotImage}
+            src="/mascot_standing_blue.svg"
             alt="Maskottchen"
             sx={{
               position: "absolute",
@@ -150,7 +173,21 @@ const Homescreen: React.FC = () => {
           </Typography>
 
           {/* Start Quiz Button */}
-          <PrimaryButton label="Quiz beginnen" onClick={handleQuizStart} />
+          <StartButton
+            label="Quiz beginnen"
+            onClick={handleQuizStart}
+            sx={{
+              borderRadius: 3,
+              padding: "8px 16x",
+              fontSize: "1.0rem",
+              width: "fit-content",
+              mx: "auto",
+              display: "block",
+              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.text.primary,
+              fontWeight: "normal",
+            }}
+          />
         </Box>
       </CardStack>
     </Box>
