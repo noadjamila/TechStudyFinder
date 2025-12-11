@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import {
   Box,
   BottomNavigation,
@@ -11,6 +10,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import ResultIcon from "@mui/icons-material/Bookmark";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 
 /**
  * Props for the NavBar component.

@@ -154,16 +154,17 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
           alignItems: "flex-start",
           justifyContent: "flex-start",
           pt: 11,
-          pr: 5,
           px: 14,
+          pl: 13,
+          pr: 1,
         }}
       >
         {/* The White Main Content Box */}
         <Box
           component="main"
           sx={{
-            width: "100%",
-            maxWidth: 1200,
+            width: "150%",
+            maxWidth: 1600,
             height: "calc(100vh - 88px)",
             bgcolor: theme.palette.background.default,
             borderTopLeftRadius: 80,
@@ -174,6 +175,8 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
             flexDirection: "column",
             overflow: "auto",
             alignItems: "center",
+            marginLeft: "0%",
+            marginRight: "8%",
           }}
         >
           {children}
