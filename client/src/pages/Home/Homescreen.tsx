@@ -1,55 +1,186 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
-import LogoMenu from "../../components/logo-menu/LogoMenu";
-import Button from "../../components/buttons/Button";
-import "./Homescreen.css";
+import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import CardStack from "../../../src/components/quiz/CardStack";
+import theme from "../../theme/theme";
+import LogoMenu from "../../components/logo-menu/LogoMenu";
+import Navigationbar from "../../components/nav-bar/NavBar";
+import DesktopLayout from "../../layouts/DesktopLayout";
+import PrimaryButton from "../../components/buttons/PrimaryButton";
 
+/**
+ * Homescreen component.
+ * Renders the landing page of the application, presenting key information
+ * and offering a quiz start option. It adapts its layout based on whether
+ * the screen size corresponds to a desktop or mobile view.
+ *
+ * @returns {React.FC} The rendered Homescreen component.
+ */
 const Homescreen: React.FC = () => {
   const navigate = useNavigate();
+  const muiTheme = useTheme();
+  const toggleSidebar = () => {};
+  const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
+  const mascotImage = "/mascot_standing_blue.svg";
 
+  /**
+   * Handles the start of the quiz by navigating to the first level.
+   */
   const handleQuizStart = () => {
     navigate("/quiz/level/1");
   };
 
-  return (
-    <div className="homescreen-container">
-      <LogoMenu />
+  // --- Static Content Definitions ---
+  const mainTitle = "Finde dein Studium";
+  const subTitle = "Du weißt nicht, was du studieren möchtest?";
+  const infoText1 = "Kein Problem!";
+  const infoText2 =
+    "Tech Study Finder unterstützt dich dabei, Studiengänge zu finden, die zu deinen persönlichen Interessen passen.";
+  const cardQuestion = "Bist du bereit, dich auf die Reise zu begeben?";
+  // ----------------------------------
 
-      <Box
-        className="text-content"
+  // Wrapper for all main content (used in both mobile and desktop)
+  const MainContent = (
+    <Box
+      className="page-content-wrapper"
+      sx={{
+        overflow: "visible",
+        maxWidth: "100%",
+        mx: "auto",
+        px: { xs: 1, sm: 0 },
+        textAlign: "center",
+        mt: 4,
+        position: "relative",
+        color: theme.palette.text.primary,
+      }}
+    >
+      {/* Main Title */}
+      <Typography
+        className="title"
         sx={{
-          maxWidth: { xs: "90%", sm: "600px", md: "700px" },
-          mx: "auto",
-          textAlign: "center",
-          mt: 4,
+          fontWeight: "bold",
+          fontSize: "1.8rem",
+          mb: 2,
         }}
       >
-        <Typography variant="h4" className="title">
-          Tech Study Finder
-        </Typography>
+        {mainTitle}
+      </Typography>
 
-        <Typography variant="h6" className="subtitle">
-          Finde den Studiengang, der zu dir passt!
-        </Typography>
+      {/* Subtitle */}
+      <Typography
+        variant="body1"
+        className="subtitle"
+        sx={{ fontWeight: "bold", lineHeight: 1.3, mb: 3 }}
+      >
+        {subTitle}
+      </Typography>
 
-        <Box className="info-text" sx={{ mt: 2, mb: 4 }}>
-          <Typography variant="body1">
-            Das Quiz dauert etwa 15 Minuten. Es wird dir helfen, den Studiengang
-            zu finden, der am besten zu dir passt.
-          </Typography>
-        </Box>
-
-        <Button
-          label="Quiz starten"
-          onClick={handleQuizStart}
-          color="primary"
+      {/* box for the info texts (Container for explanatory paragraphs) */}
+      <Box
+        className="info-text"
+        sx={{
+          mt: 2,
+          mb: 6,
+          mx: "auto",
+        }}
+      >
+        <Typography
+          variant="body1"
           sx={{
-            padding: "10px 20px",
-            fontSize: "1.1rem",
+            px: { xs: 2, sm: 1, lineHeight: 1.3 },
+            pt: { xs: 1 },
+            maxWidth: { xs: "100%", sm: 400 },
           }}
-        />
+        >
+          {infoText1}
+          <br />
+          {infoText2}
+        </Typography>
       </Box>
+
+      {/* card box (The green interactive card) */}
+      <CardStack currentIndex={1} totalCards={1}>
+        <Box
+          sx={{
+            width: { xs: "120%", md: "120%" },
+            maxWidth: { xs: 360, sm: 520, md: 900 },
+            px: { xs: 1, md: 8 },
+            py: { xs: 2, md: 3 },
+            mt: { xs: "17svh", md: 0 },
+            mx: "auto",
+            backgroundColor: theme.palette.decorative.green,
+            borderRadius: 4,
+            boxShadow: 3,
+            justifyContent: "center",
+            position: "relative",
+            left: { md: "50%" },
+            transform: { xs: "translateX(-8.5%)", md: "translateX(-50%)" },
+          }}
+        >
+          {/* Mascot Image (positioned absolutely relative to the card box) */}
+          <Box
+            component="img"
+            src={mascotImage}
+            alt="Maskottchen"
+            sx={{
+              position: "absolute",
+              width: { xs: 40, sm: 40 },
+              height: "auto",
+              top: {
+                xs: -60,
+                sm: -58,
+              },
+              right: {
+                xs: 60,
+                sm: 50,
+                md: 20,
+              },
+            }}
+          />
+
+          {/* Card Question Text */}
+          <Typography
+            variant="subtitle1"
+            sx={{
+              mb: 3,
+              lineHeight: 1.3,
+            }}
+          >
+            {cardQuestion}
+          </Typography>
+
+          {/* Start Quiz Button */}
+          <PrimaryButton label="Quiz beginnen" onClick={handleQuizStart} />
+        </Box>
+      </CardStack>
+    </Box>
+  );
+
+  return (
+    <div
+      className="homescreen-container"
+      style={{
+        overflow: "hidden",
+        height: "100svh",
+        margin: 0,
+        padding: 0,
+      }}
+    >
+      {/* Conditional Rendering based on viewport size */}
+      {isDesktop ? (
+        // DESKTOP VIEW: Content is placed inside the structured layout
+
+        <DesktopLayout onMenuToggle={toggleSidebar}>
+          {MainContent}
+        </DesktopLayout>
+      ) : (
+        // MOBILE VIEW: Logo menu and navigation bar are rendered outside the main content flow
+        <>
+          <LogoMenu />
+          <Navigationbar />
+          {MainContent}
+        </>
+      )}
     </div>
   );
 };

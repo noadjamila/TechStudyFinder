@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import BackButton from "../buttons/Back_Button";
+import BackButton from "../buttons/BackButton";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 const theme = createTheme({

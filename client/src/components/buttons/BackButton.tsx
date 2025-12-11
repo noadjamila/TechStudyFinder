@@ -3,7 +3,7 @@ import { ButtonProps } from "../../types/Button.types";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useTheme } from "@mui/material";
 
-export default function Back_Button({
+export default function BackButton({
   label = "Zurück Button",
   onClick,
   disabled = false,
@@ -31,6 +31,7 @@ export default function Back_Button({
         height: "35px",
         padding: "0px 10px",
         fontSize: "0.80rem",
+        fontWeight: 600,
 
         "& .MuiButton-startIcon": {
           marginRight: 1,
@@ -39,7 +40,6 @@ export default function Back_Button({
           },
         },
         ...sx,
-        mb: 7,
       }}
     >
       {label}
