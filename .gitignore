@@ -54,3 +54,4 @@ Thumbs.db       # Windows
 /.idea/
 /server/dist/
 /client/dist/
+.DS_Store
