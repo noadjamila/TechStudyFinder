@@ -164,12 +164,15 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
           sx={{
             width: "100%",
             maxWidth: 1200,
-            height: "140%",
+            height: "calc(100vh - 88px)",
             bgcolor: theme.palette.background.default,
-            borderRadius: 10,
+            borderTopLeftRadius: 80,
+            borderTopRightRadius: 80,
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
             display: "flex",
             flexDirection: "column",
-            overflow: "hidden",
+            overflow: "auto",
             alignItems: "center",
           }}
         >
