@@ -41,6 +41,8 @@ client/yarn-error.log*
 # ======================
 # OS / IDE / Misc
 # ======================
+
+**/.DS_Store
 .DS_Store       # macOS
 Thumbs.db       # Windows
 .vscode/        # VSCode Projektkonfiguration
@@ -54,3 +56,5 @@ Thumbs.db       # Windows
 /.idea/
 /server/dist/
 /client/dist/
+.DS_Store
+
