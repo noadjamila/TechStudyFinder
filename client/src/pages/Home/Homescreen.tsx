@@ -48,7 +48,7 @@ const Homescreen: React.FC = () => {
         mx: "auto",
         px: { xs: 1, sm: 0 },
         textAlign: "center",
-        mt: 4,
+        mt: { xs: 4, sm: 15, md: 9 },
         position: "relative",
         color: theme.palette.text.primary,
       }}
@@ -91,7 +91,7 @@ const Homescreen: React.FC = () => {
             mb: { xs: 1, md: 3 },
             mt: 3,
             fontWeight: "bold",
-            transform: { md: "translateX(-2%)" },
+            transform: { md: "translateX(0%)" },
           }}
         >
           {infoText1}
@@ -104,7 +104,7 @@ const Homescreen: React.FC = () => {
             px: { xs: 2, sm: 0 },
             lineHeight: 1.3,
             maxWidth: { xs: "100%", sm: 400 },
-            transform: { md: "translateX(8%)" },
+            transform: { md: "translateX(7.5%)" },
             mb: { xs: 0, md: 10 },
           }}
         >
@@ -131,7 +131,7 @@ const Homescreen: React.FC = () => {
             transform: {
               xs: "translateX(-5.6%)",
               sm: "translateX(-8%)",
-              md: "translateX(-51%)",
+              md: "translateX(-50%)",
             },
             "@media (max-width: 375px)": {
               transform: "translateX(0%)",
