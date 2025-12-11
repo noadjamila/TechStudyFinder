@@ -67,8 +67,9 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
     <Box
       sx={{
         maxWidth: 800,
-        margin: "0 auto",
+        margin: { xs: "0 auto", sm: "0" },
         padding: 3,
+        paddingBottom: { xs: "120px", sm: 3 },
         minHeight: "100vh",
       }}
     >

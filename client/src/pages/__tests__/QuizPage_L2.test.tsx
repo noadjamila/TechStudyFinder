@@ -261,8 +261,27 @@ describe("QuizPage_L2", () => {
 
     expect(await screen.findByText("Debug-Screen")).toBeInTheDocument();
   });
-  // For Back Button when back in Layout
-  /*
+
+  test("renders mascot image", async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ questions: sampleQuestions }),
+    });
+
+    renderWithProviders(
+      <QuizPage_L2
+        previousIds={[1, 2]}
+        onNextLevel={() => {}}
+        oneLevelBack={() => {}}
+      />,
+    );
+
+    await screen.findByText("Magst du forschen?");
+
+    const mascot = screen.getByAltText("Mascot");
+    expect(mascot).toBeInTheDocument();
+  });
+
   test("calls oneLevelBack when currentIndex = 0", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
@@ -282,7 +301,6 @@ describe("QuizPage_L2", () => {
 
     await screen.findByText("Magst du forschen?");
 
-    // Back Button klicken
     fireEvent.click(screen.getByRole("button", { name: "Zurück" }));
 
     expect(oneLevelBack).toHaveBeenCalledTimes(1);
@@ -305,12 +323,10 @@ describe("QuizPage_L2", () => {
 
     await screen.findByText("Magst du forschen?");
 
-    // Frage 1 ⇒ Ja
     fireEvent.click(screen.getByText("Ja"));
 
     await screen.findByText("Arbeitest du gern kreativ?");
 
-    // Zurück klicken
     fireEvent.click(screen.getByRole("button", { name: "Zurück" }));
 
     expect(screen.getByText("Arbeitest du gern kreativ?")).toBeInTheDocument();
@@ -333,17 +349,15 @@ describe("QuizPage_L2", () => {
 
     await screen.findByText("Magst du forschen?");
 
-    // YES → +1 auf Typ R
+    // YES → +1 for type R
     fireEvent.click(screen.getByText("Ja"));
 
     await screen.findByText("Arbeitest du gern kreativ?");
 
-    // Zurück → sollte +1 rückgängig machen
+    // back → should remove +1 for type R
     fireEvent.click(screen.getByRole("button", { name: "Zurück" }));
-    // Debug-Screen anzeigen erzwingen (3 Fragen beantworten)
     fireEvent.click(screen.getByText("Ja"));
 
     fireEvent.click(screen.getByText("Ja"));
   });
-  */
 });

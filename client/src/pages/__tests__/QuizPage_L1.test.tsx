@@ -1,7 +1,7 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { vi, describe, test, expect, beforeEach } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { Mock } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../../theme/theme";
 
@@ -25,10 +25,16 @@ describe("QuizPage_L1", () => {
   test("renders question and options", () => {
     renderWithTheme(<QuizPage_L1 />);
 
-    expect(screen.getByText("Möchtest du...")).toBeInTheDocument();
-    expect(screen.getByText("ein Studium beginnen?")).toBeInTheDocument();
-    expect(screen.getByText("dein Studium fortsetzen?")).toBeInTheDocument();
-    expect(screen.getByText("dich erstmal umschauen?")).toBeInTheDocument();
+    expect(screen.getByText("Möchtest du ...")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Ein Studium beginnen/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Einen Master studieren/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Dich erstmal umschauen/i }),
+    ).toBeInTheDocument();
   });
 
   test("calls API and onNextLevel after selecting an option", async () => {

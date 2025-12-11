@@ -1,6 +1,9 @@
 import React from "react";
-import { Card, Typography, useTheme } from "@mui/material";
-import QuizButtons_L2 from "../buttons/QuizButtons_L2";
+import { Stack, Typography } from "@mui/material";
+import BaseCard from "../BaseCard";
+import PrimaryButton from "../buttons/PrimaryButton";
+import SecondaryButton from "../buttons/SecondaryButton";
+import theme from "../../theme/theme";
 
 /**
  * Props for the QuizCard_L2 component.
@@ -13,64 +16,61 @@ export interface QuizCardProps {
 }
 
 /**
- * This component displays a question with three answer options ("yes", "no", "skip").
- * The user can select an option, whereupon a short animation is played
- * before the result is passed to the parent component.
+ * A quiz card component for level 2 questions with "Yes", "No", and "Skip" options.
  *
- * @example
- * ```tsx
- * <QuizCard_L2
- *   question="..."
- *   onSelect={(answer) => handleSelect(answer)}
- * />
- * ```
- *
- * @param props - Props for the component.
- * @returns {JSX.Element} Interactive quiz card with three answer options.
+ * @param question: The question text to display on the card.
+ * @param onSelect: Callback function when an option is selected.
+ * @constructor
  */
 const QuizCard_L2: React.FC<QuizCardProps> = ({ question, onSelect }) => {
-  const theme = useTheme();
-
   return (
     <>
-      <Card
+      <BaseCard
+        cardText={question}
         sx={{
-          width: "100%",
-          height: "300px",
-          maxWidth: 280,
-          mx: "auto",
-          boxSizing: "border-box",
-          boxShadow: 3,
-          borderRadius: 2,
-          backgroundColor: theme.palette.decorative.green,
-          pb: 3,
-          px: 0.5,
-          overflow: "visible",
+          height: {
+            xs: 300,
+            md: 200,
+          },
+        }}
+        cardColor={theme.palette.decorative.green}
+      ></BaseCard>
+
+      <Stack
+        spacing={2}
+        sx={{
+          mt: 3,
           justifyContent: "center",
-          alignItems: "center",
-          display: "flex",
+          padding: "0 2em",
         }}
       >
+        <PrimaryButton
+          label={"Ja"}
+          onClick={() => onSelect("yes")}
+          ariaText="Antwort Ja"
+        />
+        <SecondaryButton
+          label={"Nein"}
+          onClick={() => onSelect("no")}
+          ariaText="Antwort Nein"
+        />
         <Typography
-          variant="h5"
+          aria-label="Antwort Überspringen"
+          onClick={() => onSelect("skip")}
           sx={{
-            mb: 4,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            minHeight: "80px",
+            fontSize: "0.875rem",
+            cursor: "pointer",
+            color: theme.palette.text.skipButton,
             textAlign: "center",
-            margin: "2em",
+            textDecoration: "underline",
+            "&:hover": {
+              color: theme.palette.text.primary,
+            },
           }}
         >
-          {question}
+          Überspringen
         </Typography>
-      </Card>
-      <QuizButtons_L2
-        onYes={() => onSelect("yes")}
-        onNo={() => onSelect("no")}
-        onSkip={() => onSelect("skip")}
-      />
+      </Stack>
     </>
   );
 };

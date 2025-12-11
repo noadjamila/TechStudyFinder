@@ -19,8 +19,15 @@ export default function CardStack({
       sx={{
         position: "relative",
         width: "100%",
-        height: "300px",
-        maxWidth: 280,
+        height: {
+          xs: 300,
+          md: 200,
+        },
+        maxWidth: {
+          xs: 320,
+          md: 540,
+          lg: 700,
+        },
         mx: "auto",
       }}
     >
@@ -30,7 +37,10 @@ export default function CardStack({
           sx={{
             position: "absolute",
             top: 10,
-            left: -35,
+            left: {
+              xs: -35,
+              md: -45,
+            },
             width: "100%",
             height: "90%",
             borderRadius: 2,
@@ -49,7 +59,10 @@ export default function CardStack({
           sx={{
             position: "absolute",
             top: 10,
-            right: -35,
+            right: {
+              xs: -35,
+              md: -45,
+            },
             width: "100%",
             height: "90%",
             borderRadius: 2,

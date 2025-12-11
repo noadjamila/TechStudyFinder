@@ -13,6 +13,7 @@ declare module "@mui/material/styles" {
       green: string;
       blue: string;
       yellow: string;
+      blueDark: string;
     };
     quiz: {
       secondary: string;
@@ -20,6 +21,7 @@ declare module "@mui/material/styles" {
     };
     navigation: {
       background: string;
+      navbar: string;
     };
     favorites: {
       inactive: string;
@@ -37,6 +39,7 @@ declare module "@mui/material/styles" {
       green?: string;
       blue?: string;
       yellow?: string;
+      blueDark?: string;
     };
     quiz?: {
       secondary?: string;
@@ -45,6 +48,7 @@ declare module "@mui/material/styles" {
     };
     navigation?: {
       background?: string;
+      navbar?: string;
     };
     favorites?: {
       inactive?: string;
@@ -54,5 +58,14 @@ declare module "@mui/material/styles" {
       favoriteIconToggled?: string;
       favoriteIconUntoggled?: string;
     };
+  }
+  declare module "*.png" {
+    const content: string;
+    export default content;
+  }
+
+  declare module "*.jpg" {
+    const content: string;
+    export default content;
   }
 }
