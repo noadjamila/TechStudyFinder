@@ -29,6 +29,7 @@ const theme = createTheme({
       green: "#E7F9CE", // card backgrounds
       blue: "#D8E7FF",
       yellow: "#FFF8AD",
+      blueDark: "#A6B8D5", // primary button hover
     },
 
     // Feature-specific
@@ -38,7 +39,7 @@ const theme = createTheme({
     },
 
     navigation: {
-      background: "#EFEFEF",
+      navbar: "#E6E6E6",
     },
 
     favorites: {
@@ -50,13 +51,12 @@ const theme = createTheme({
     h2: {
       fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
     },
-    h6: {
-      fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
-    },
     h5: {
       fontSize: "1.25rem",
-      fontWeight: 500,
       lineHeight: 1.6,
+    },
+    h6: {
+      fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
     },
   },
   components: {
@@ -65,8 +65,8 @@ const theme = createTheme({
         root: {
           textTransform: "none",
           borderRadius: "9px",
-          fontWeight: "600",
           height: "50px",
+          fontWeight: 400,
         },
       },
     },

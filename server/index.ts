@@ -29,7 +29,7 @@ if (!process.env.GITHUB_WEBHOOK_SECRET) {
 }
 
 const app = express();
-app.set("trust proxy", true);
+app.set("trust proxy", 1);
 const PORT = process.env.PORT || 5001;
 const clientDistPath = path.join(__dirname, "..", "..", "client", "dist");
 
