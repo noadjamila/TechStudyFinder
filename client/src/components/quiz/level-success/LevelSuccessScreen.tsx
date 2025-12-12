@@ -29,12 +29,12 @@ export default function LevelSuccessScreen({
   const [phase, setPhase] = useState<"won" | "next">("won");
   const theme = useTheme();
 
-  // Use the effect hook to switch the phase after 1.2 seconds, so that the description for the next level appears.
+  // Use the effect hook to switch the phase after 1.8 seconds, so that the description for the next level appears.
   useEffect(() => {
     if (currentLevel === 1) {
       setPhase("next");
     } else {
-      const id = setTimeout(() => setPhase("next"), 1200);
+      const id = setTimeout(() => setPhase("next"), 1800);
       return () => clearTimeout(id);
     }
   }, [currentLevel]);
@@ -53,26 +53,21 @@ export default function LevelSuccessScreen({
       {currentLevel === 1 ? (
         <>
           <Typography
-            variant="h4"
+            variant="h6"
             sx={{
               color: theme.palette.text.primary,
               marginBottom: theme.spacing(0.5),
               marginTop: theme.spacing(10),
-              fontWeight: "bold",
-              fontSize: "3rem",
-              fontFamily: theme.typography.fontFamily,
             }}
             aria-live="polite"
           >
             Schritt 1
           </Typography>
           <Typography
-            variant="h6"
+            variant="subtitle1"
             sx={{
               color: theme.palette.text.primary,
-              marginTop: theme.spacing(1),
-              fontWeight: "bold",
-              fontFamily: theme.typography.h6.fontFamily,
+              marginTop: theme.spacing(2),
             }}
             aria-live="polite"
           >
@@ -81,46 +76,50 @@ export default function LevelSuccessScreen({
         </>
       ) : currentLevel === 2 ? (
         <>
-          <Typography
-            variant="h4"
-            sx={{
-              color: theme.palette.text.primary,
-              marginBottom: theme.spacing(1),
-              marginTop: theme.spacing(10),
-              fontWeight: "bold",
-              fontSize: "3rem",
-              display: phase === "won" ? "block" : "none",
-              fontFamily: theme.typography.fontFamily,
-            }}
-            aria-live="polite"
-          >
-            Schritt 1
-          </Typography>
+          {/* Desktop / Tablet one row*/}
           <Typography
             variant="h6"
             sx={{
               color: theme.palette.text.primary,
-              marginTop: theme.spacing(0.5),
+              marginBottom: theme.spacing(0.5),
+              marginTop: theme.spacing(10),
               fontWeight: "bold",
-              fontSize: "3rem",
-              display: phase === "won" ? "block" : "none",
+              display: phase === "won" ? { xs: "none", sm: "block" } : "none",
               fontFamily: theme.typography.h6.fontFamily,
+              textAlign: "center",
             }}
             aria-live="polite"
           >
+            Schritt 1 geschafft!
+          </Typography>
+
+          {/* Mobile: two rows*/}
+          <Typography
+            variant="h6"
+            sx={{
+              color: theme.palette.text.primary,
+              marginBottom: theme.spacing(0.5),
+              marginTop: theme.spacing(10),
+              fontWeight: "bold",
+              display: phase === "won" ? { xs: "block", sm: "none" } : "none",
+              fontFamily: theme.typography.h6.fontFamily,
+              textAlign: "center",
+            }}
+            aria-live="polite"
+          >
+            Schritt 1<br />
             geschafft!
           </Typography>
 
           <Typography
-            variant="h4"
+            variant="h6"
             sx={{
               color: theme.palette.text.primary,
-              marginBottom: theme.spacing(2),
-              display: phase === "next" ? "block" : "none",
+              marginBottom: theme.spacing(0.5),
               marginTop: theme.spacing(10),
+              display: phase === "next" ? "block" : "none",
               fontWeight: "bold",
-              fontSize: "3rem",
-              fontFamily: theme.typography.fontFamily,
+              fontFamily: theme.typography.h6.fontFamily,
             }}
             aria-live="polite"
           >
@@ -128,12 +127,12 @@ export default function LevelSuccessScreen({
           </Typography>
 
           <Typography
-            variant="h6"
+            variant="subtitle1"
             sx={{
               color: theme.palette.text.primary,
               marginTop: theme.spacing(2),
               display: phase === "next" ? "block" : "none",
-              fontFamily: theme.typography.h6.fontFamily,
+              fontWeight: "normal",
             }}
             aria-live="polite"
           >
@@ -143,45 +142,28 @@ export default function LevelSuccessScreen({
       ) : currentLevel === 3 ? (
         <>
           <Typography
-            variant="h4"
+            variant="h6"
             sx={{
               color: theme.palette.text.primary,
-              marginBottom: theme.spacing(2),
+              marginBottom: theme.spacing(0.5),
               marginTop: theme.spacing(10),
               fontWeight: "bold",
-              fontSize: "3rem",
               display: phase === "won" ? "block" : "none",
-              fontFamily: theme.typography.fontFamily,
+              fontFamily: theme.typography.h6.fontFamily,
+              textAlign: "center",
             }}
             aria-live="polite"
           >
-            Schritt 2
+            Schritt 2 <br /> geschafft!
           </Typography>
+
           <Typography
             variant="h6"
             sx={{
               color: theme.palette.text.primary,
-              marginTop: theme.spacing(0.5),
-              fontWeight: "bold",
-              fontSize: "3rem",
-              display: phase === "won" ? "block" : "none",
-              fontFamily: theme.typography.h6.fontFamily,
-            }}
-            aria-live="polite"
-          >
-            geschafft!
-          </Typography>
-
-          <Typography
-            variant="h4"
-            sx={{
-              color: theme.palette.text.primary,
-              marginBottom: theme.spacing(2),
+              marginBottom: theme.spacing(0.5),
               marginTop: theme.spacing(10),
-              fontWeight: "bold",
-              fontSize: "3rem",
               display: phase === "next" ? "block" : "none",
-              fontFamily: theme.typography.fontFamily,
             }}
             aria-live="polite"
           >
@@ -189,12 +171,12 @@ export default function LevelSuccessScreen({
           </Typography>
 
           <Typography
-            variant="h6"
+            variant="subtitle1"
             sx={{
               color: theme.palette.text.primary,
               marginTop: theme.spacing(2),
               display: phase === "next" ? "block" : "none",
-              fontFamily: theme.typography.h6.fontFamily,
+              fontWeight: "normal",
             }}
             aria-live="polite"
           >
@@ -204,26 +186,25 @@ export default function LevelSuccessScreen({
       ) : currentLevel === 4 ? (
         <>
           <Typography
-            variant="h4"
-            sx={{
-              color: theme.palette.text.primary,
-              marginBottom: theme.spacing(2),
-              marginTop: theme.spacing(10),
-              fontWeight: "bold",
-              fontSize: "3rem",
-              fontFamily: theme.typography.fontFamily,
-            }}
-            aria-live="polite"
-          >
-            Schritt 3
-          </Typography>
-
-          <Typography
             variant="h6"
             sx={{
               color: theme.palette.text.primary,
+              marginBottom: theme.spacing(0.5),
+              marginTop: theme.spacing(10),
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
+            aria-live="polite"
+          >
+            Schritt 3 <br /> geschafft!
+          </Typography>
+
+          <Typography
+            variant="subtitle1"
+            sx={{
+              color: theme.palette.text.primary,
               marginTop: theme.spacing(2),
-              fontFamily: theme.typography.h6.fontFamily,
+              fontWeight: "normal",
             }}
             aria-live="polite"
           >
