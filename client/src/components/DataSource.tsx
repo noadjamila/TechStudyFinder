@@ -13,7 +13,7 @@ export default function DataSource() {
     <Box
       sx={{
         maxWidth: 800,
-        margin: "0 auto",
+        margin: { xs: "0 auto", sm: "0" },
         padding: 3,
         display: "flex",
         flexDirection: "column",

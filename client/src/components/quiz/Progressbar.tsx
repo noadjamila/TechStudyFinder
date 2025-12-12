@@ -11,8 +11,8 @@ export interface ProgressbarProps {
   // Total number of steps.
   // Needs to be greater than 0 so that percentage progress can be calculated.
   total: number;
-  bgColor: string;
-  fillColor: string;
+  bgColor?: string;
+  fillColor?: string;
 }
 
 /**
