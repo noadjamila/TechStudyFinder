@@ -7,9 +7,15 @@ CREATE TABLE abschlussart (
     name TEXT NOT NULL
 );
 
-CREATE TABLE studienfelder (
+CREATE TABLE studiengebiete (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL
+);
+
+CREATE TABLE studienfelder (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    studiengebiet_id INTEGER NOT NULL REFERENCES studiengebiete(id) ON DELETE CASCADE
 );
 
 CREATE TABLE schwerpunkte (
