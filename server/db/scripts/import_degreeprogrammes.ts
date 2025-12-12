@@ -111,6 +111,7 @@ async function main() {
   const degrees: any[] = [];
   const programmes: any[] = [];
   const deadlines: any[] = [];
+  const area_of_study: any[] = [];
   const disciplines: any[] = [];
   const programme_disciplines: any[] = [];
   const fields: any[] = [];
@@ -199,7 +200,17 @@ async function main() {
         : [programme.disciplines.discipline];
       for (const d of arr) {
         if (d.id && getTextDe(d.name))
-          disciplines.push([d.id, getTextDe(d.name)]);
+          if (d.area_of_study) {
+            area_of_study.push([
+              d.area_of_study.id,
+              getTextDe(d.area_of_study.name),
+            ]);
+          }
+        disciplines.push([
+          d.id,
+          getTextDe(d.name),
+          d.area_of_study?.id || null,
+        ]);
         if (d.id) programme_disciplines.push([id, d.id]);
       }
     }
@@ -298,8 +309,15 @@ async function main() {
     );
     await batchInsert(
       client,
-      "studienfelder",
+      "studiengebiete",
       ["id", "name"],
+      area_of_study,
+      "(id)",
+    );
+    await batchInsert(
+      client,
+      "studienfelder",
+      ["id", "name", "studiengebiet_id"],
       disciplines,
       "(id)",
     );
