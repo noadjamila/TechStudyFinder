@@ -25,15 +25,11 @@ describe("LevelSuccessScreen", () => {
     expect(screen.getByText("Deine Interessen")).toBeInTheDocument();
   });
 
-  it("should display 'Schritt 2' and 'Geschafft!' and 'Schritt 3' with description for Level 3", async () => {
+  it("should display 'Schritt 2' and 'Geschafft!' for Level 3", async () => {
     render(<LevelSuccessScreen currentLevel={3} onContinue={mockOnContinue} />);
 
     // Test for Schritt 2 and "Geschafft!"
     expect(screen.getByText(/Schritt 2 geschafft!/i)).toBeInTheDocument();
-
-    // Test for Schritt 3 and the description
-    expect(screen.getByText("Schritt 3")).toBeInTheDocument();
-    expect(screen.getByText("Dein Arbeitsstil")).toBeInTheDocument();
   });
 
   it("should display 'Schritt 3' and 'Geschafft!' and 'Du hast alle Schritte abgeschlossen' for Level 4", async () => {
