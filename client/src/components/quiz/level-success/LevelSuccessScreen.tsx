@@ -57,7 +57,7 @@ export default function LevelSuccessScreen({
         return () => clearTimeout(id);
       } else if (currentLevel === 3) {
         const id = setTimeout(() => {
-          navigate("/quiz/level/3");
+          navigate("/results");
         }, 2500);
         return () => clearTimeout(id);
       } else if (currentLevel === 4) {
