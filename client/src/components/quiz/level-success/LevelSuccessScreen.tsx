@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 
 type Level = 1 | 2 | 3 | 4;
 
@@ -28,16 +29,43 @@ export default function LevelSuccessScreen({
 }: LevelSuccessScreenProps) {
   const [phase, setPhase] = useState<"won" | "next">("won");
   const theme = useTheme();
+  const navigate = useNavigate();
 
   // Use the effect hook to switch the phase after 1.8 seconds, so that the description for the next level appears.
   useEffect(() => {
     if (currentLevel === 1) {
       setPhase("next");
+      const id = setTimeout(() => {
+        navigate("/quiz/level/1");
+      }, 1800);
+      return () => clearTimeout(id);
     } else {
       const id = setTimeout(() => setPhase("next"), 1800);
       return () => clearTimeout(id);
     }
-  }, [currentLevel]);
+  }, [currentLevel, navigate]);
+
+  // After phase changes to "next", navigate to the next quiz level
+  useEffect(() => {
+    if (phase === "next") {
+      if (currentLevel === 2) {
+        const id = setTimeout(() => {
+          navigate("/quiz/level/2");
+        }, 2500);
+        return () => clearTimeout(id);
+      } else if (currentLevel === 3) {
+        const id = setTimeout(() => {
+          navigate("/quiz/level/3");
+        }, 2500);
+        return () => clearTimeout(id);
+      } else if (currentLevel === 4) {
+        const id = setTimeout(() => {
+          navigate("/results");
+        }, 2500);
+        return () => clearTimeout(id);
+      }
+    }
+  }, [phase, currentLevel, navigate]);
 
   return (
     <Box

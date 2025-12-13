@@ -1,6 +1,6 @@
 import { useState } from "react";
-import QuizPage_L1 from "./QuizPage_L1";
-import QuizPage_L2 from "./QuizPage_L2";
+import QuizPage_L1 from "../../pages/Quiz/QuizPage_L1";
+import QuizPage_L2 from "../../pages/Quiz/QuizPage_L2";
 import { useNavigate, useParams } from "react-router-dom";
 
 /**
