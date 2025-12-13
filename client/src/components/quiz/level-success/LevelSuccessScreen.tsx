@@ -22,6 +22,8 @@ const NEXT_LEVEL_TEXT: Record<Level, string> = {
  * It shows a title for the current level and the description for the next level.
  * After each level is completed, the description for the next level is shown after a brief delay.
  * When the user reaches the final level, a message indicating completion is displayed.
+ *
+ * Still needs to be connected to Level 3 and the level success screens.
  */
 
 export default function LevelSuccessScreen({
