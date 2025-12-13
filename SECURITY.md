@@ -3,116 +3,126 @@
 This document outlines the security best practices applied to the
 TechStudyFinder CI/CD pipeline, server setup, and deployment process.
 
----
-
-# 1. Webhook Security
-
-## HMAC Signature Validation
-
-All incoming GitHub webhook requests are validated using:
-
-- SHA-256 HMAC
-- A shared secret stored in `.env` (`GITHUB_WEBHOOK_SECRET`)
-- Timing-safe comparison (`crypto.timingSafeEqual`)
-
-The server rejects any request where:
-
-- The signature is missing
-- The signature does not match
-- The raw body is modified
-- The event is not a `push`
-
-## Best Practices
-
-- Never store webhook secrets in GitHub or commit them to the repo.
-- Rotate secrets periodically.
+The system uses a **Docker-based Continuous Deployment model**.
+The production server acts as a **runtime-only environment** and does not
+perform builds or execute deployment logic.
 
 ---
 
-# 2. Environment Variable Security
+# 1. Continuous Deployment Security
 
-## Recommended Variables
+## Deployment Model
 
-    GITHUB_WEBHOOK_SECRET=<secret>
-    DEPLOYMENT_SCRIPT_PATH=/absolute/path/to/deploy.sh
-    NODE_ENV=production
+- Deployments are triggered exclusively by **GitHub Actions**.
+- No GitHub webhooks are configured on the production server.
+- The server does not accept inbound deployment requests.
+- The server pulls pre-built Docker images from GitHub Container Registry (GHCR).
+
+This eliminates the need for:
+
+- Webhook endpoints
+- HMAC signature validation
+- Server-side deployment scripts
+- Branch validation on the server
+
+---
+
+# 2. Authentication & Authorization
+
+## GitHub Actions
+
+- GitHub Actions uses the built-in `GITHUB_TOKEN` to authenticate against GHCR.
+- No long-lived Docker credentials are stored.
+- Deployment access is restricted to the repository CI pipeline.
+
+## Server Access
+
+- The production server is accessed via SSH using key-based authentication.
+- Password-based SSH authentication is disabled.
+- Root login via SSH is disabled.
+
+---
+
+# 3. Environment Variable Security
+
+## Runtime Configuration
+
+Environment variables are provided via a `.env` file on the server and
+loaded by Docker Compose at runtime.
 
 ## Guidelines
 
-- Keep `.env` files out of version control.
-- Store secrets only on the server and GitHub (as webhook secret).
+- `.env` files are never committed to version control.
+- Secrets are stored only on the production server.
+- No secrets are embedded in Docker images.
 
 ---
 
-# 3. Server Security
+# 4. Server Security
 
 ## User & Permissions
 
-- Use a non-root user (`ubuntu`, `deploy`, etc.).
-- Ensure scripts are executable but not world-writable.
-- Avoid giving `sudo` access to the Node.js process.
+- A dedicated non-root user (`deployuser`) is used for operations.
+- The application does not run directly on the host.
+- The Docker container runs with restricted privileges.
+- The server does not contain application source code.
+
+## Hardening Measures
+
+- Only required ports are exposed (HTTP/HTTPS).
+- Internal application ports are not publicly accessible.
+- Unused services and packages are removed from the server.
 
 ---
 
-# 4. PM2 Security
+# 5. Container Security
 
-PM2 runs the application continuously. Secure it by:
-
-- Never running PM2 as root
-- Using absolute paths for scripts
-- Logging minimal sensitive data
-- Restarting automatically on failure
-
----
-
-# 5. Deployment Script Security
-
-`deploy.sh` performs system-level operations (`git pull`, `npm ci`,
-etc.).\
-Security measures:
-
-- Must not be writable by the web server user.
-- Must be executable.
-- Must not contain secrets or credentials.
+- Multi-stage Docker builds are used to separate build and runtime environments.
+- The runtime image contains only production dependencies.
+- Development tools (npm, TypeScript, Vite, PM2) are not present at runtime.
+- Containers are restarted automatically by Docker on failure.
 
 ---
 
 # 6. Network Security
 
-- Use Nginx reverse proxy to hide internal ports.
-- Ensure GitHub can reach public webhook endpoint.
-- Block all unused ports.
+- Nginx is used as a reverse proxy.
+- Internal application ports are hidden from the public network.
+- HTTPS is enforced using TLS certificates.
+- Only Docker and Nginx expose network services.
 
 ---
 
 # 7. GitHub Security
 
-## Enable:
+## Enabled Controls
 
-- Branch protection
-- Required reviews before merging
+- Branch protection on `main`
+- Required pull request reviews
 - Required status checks (CI)
 - Secret scanning
 - Dependabot alerts
 
-## Avoid:
+## Prohibited Actions
 
+- Direct pushes to `main`
 - Committing `.env` files
-- Exposing secrets in logs
-- Pushing directly to `main`
+- Committing secrets or credentials
+- Bypassing CI checks
 
 ---
 
 # 8. Logging & Monitoring
 
-Use PM2:
+## Container Logs
 
-    pm2 logs TechStudyFinder
+```
+docker logs studyfinder
+```
 
-Monitor Nginx:
+## Nginx Logs
 
-    sudo tail -f /var/log/nginx/access.log
-    sudo tail -f /var/log/nginx/error.log
+No application-level logs are written to the host filesystem outside Docker.
 
 ---
 
@@ -120,15 +130,16 @@ Monitor Nginx:
 
 ## ✅ Do
 
-- Use HMAC signature verification
-- Use absolute script paths
-- Use a non-root server user
-- Protect `.env` and deploy scripts
-- Use branch protection + CI
+- Use GitHub Actions for deployments
+- Use Docker images as immutable artifacts
+- Restrict server responsibilities to runtime only
+- Use SSH key-based authentication
+- Keep secrets out of the repository
 
 ## ❌ Do NOT
 
-- Store secrets in GitHub
-- Use relative script paths
-- Give unnecessary sudo permissions
-- Commit private keys or secrets
+- Expose deployment endpoints on the server
+- Use webhooks for production deployments
+- Run application processes directly on the host
+- Store secrets in Docker images or source code
+- Allow builds on the production server

@@ -21,7 +21,6 @@
 | /api/auth/logout          | User logout                                                   |
 | /api/users/favorites      | Add a study programme to a user's list of favorites           |
 | /api/quiz/filter/progress | Filter quiz questions based on user progress after each level |
-| /deploy/webhook           | Webhook for deployment triggers                               |
 
 ## PUT
 

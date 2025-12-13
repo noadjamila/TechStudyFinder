@@ -1,51 +1,22 @@
 ## Continuous Deployment (CD)
 
-CD is triggered through a GitHub webhook when a push occurs on the
-`main` branch.
+CD is triggered by GitHub Actions (GHA) when a push occurs on the
+`main` branch. The production server does not execute build or deployment logic. It only runs Docker containers pulled from the registry.
 
 ### Deployment Flow:
 
-1.  GitHub sends a `push` event to `/deploy/webhook`.
-2.  The server validates:
-    - HMAC SHA-256 signature
-    - Event type (must be `push`)
-    - Branch reference (`refs/heads/main`)
-3.  If valid, the server runs `deploy.sh`, which performs:
-    - `git pull origin main`
-    - `npm ci`
-    - `npm run build`
-    - `pm2 restart TechStudyFinder`
+1. GHA builds the Docker image and pushes it to GitHub Container Registry (GHCR).
+2. GHA connects to the server via SSH.
+3. GHA pulls the latest Docker image from GHCR and restarts the container using Docker Compose.
 
 ## Server Setup
 
 - Ubuntu Linux server
-- Node.js LTS
-- pm2 as process manager
+- Docker Engine
+- Docker Compose plugin
 - Nginx reverse proxy
-- Deployment script referenced via absolute path
 
 ## Example `.env`
 
     NODE_ENV=production
     PORT=your-port
-    GITHUB_WEBHOOK_SECRET=your-secret
-    DEPLOYMENT_SCRIPT_PATH=/home/ubuntu/TechStudyFinder/server/scripts/deploy.sh
-
-## Deployment Script
-
-Path:
-
-    /home/ubuntu/TechStudyFinder/server/scripts/deploy.sh
-
-Make executable:
-
-    chmod +x deploy.sh
-
-## Webhook Setup
-
-GitHub → Repository → Settings → Webhooks → Add Webhook
-
-- Payload URL: `https://<domain>/deploy/webhook`
-- Content-Type: `application/json`
-- Secret: matches the `.env` value
-- Event: only `push`
