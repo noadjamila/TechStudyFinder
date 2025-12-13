@@ -13,7 +13,7 @@ export type LevelSuccessScreenProps = {
 const NEXT_LEVEL_TEXT: Record<Level, string> = {
   1: "Deine Rahmenbedingungen",
   2: "Deine Interessen",
-  3: "Dein Arbeitsstil",
+  3: "", //later probably: "Dein Arbeitsstil"
   4: "Du hast alle Schritte abgeschlossen",
 };
 
@@ -197,7 +197,7 @@ export default function LevelSuccessScreen({
             }}
             aria-live="polite"
           >
-            Schritt 3
+            Deine Ergebnisse
           </Typography>
 
           <Typography
