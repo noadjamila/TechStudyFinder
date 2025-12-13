@@ -1,12 +1,13 @@
 import { useState } from "react";
-import QuizPage_L1 from "./QuizPage_L1";
-import QuizPage_L2 from "./QuizPage_L2";
+import QuizPage_L1 from "../../pages/Quiz/QuizPage_L1";
+import QuizPage_L2 from "../../pages/Quiz/QuizPage_L2";
 import { useNavigate, useParams } from "react-router-dom";
 
 /**
  * Manages the multi-level quiz flow.
  * It handles transitions between the quiz levels,
  * maintaining state for selected IDs from level to level.
+ * Still needs to be connected to Level 3 and the level success screens
  *
  * @returns {JSX.Element | null} The current level's quiz page or null if completed.
  */

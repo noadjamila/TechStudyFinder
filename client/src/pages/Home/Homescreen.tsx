@@ -23,10 +23,10 @@ const Homescreen: React.FC = () => {
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
 
   /**
-   * Handles the start of the quiz by navigating to the first level.
+   * Handles the start of the quiz by navigating to the level success screen first.
    */
   const handleQuizStart = () => {
-    navigate("/quiz/level/1");
+    navigate("/level-success/1");
   };
 
   // --- Static Content Definitions ---
