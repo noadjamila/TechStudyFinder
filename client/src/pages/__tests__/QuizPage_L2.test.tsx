@@ -27,6 +27,7 @@ describe("QuizPage_L2", () => {
   beforeEach(() => {
     fetchMock = vi.fn();
     (globalThis as any).fetch = fetchMock;
+    localStorage.clear();
   });
 
   test("should load questions from backend", async () => {
@@ -328,7 +329,6 @@ describe("QuizPage_L2", () => {
     await screen.findByText("Arbeitest du gern kreativ?");
 
     fireEvent.click(screen.getByRole("button", { name: "Zurück" }));
-
     expect(screen.getByText("Arbeitest du gern kreativ?")).toBeInTheDocument();
   });
 
