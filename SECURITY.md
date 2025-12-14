@@ -117,7 +117,7 @@ loaded by Docker Compose at runtime.
 ## Container Logs
 
 ```
-docker logs studyfinder
+docker logs techstudyfinder
 ```
 
 ## Nginx Logs
