@@ -12,7 +12,7 @@ import deployRouter from "./src/routes/deploy.route";
 import quizRoutes from "./src/routes/quiz.route";
 import { pool } from "./db";
 import "express-async-errors";
-import loginRouter from "./src/routes/auth.route";
+import authRouter from "./src/routes/auth.route";
 import session from "express-session";
 
 const isTesting =
@@ -53,12 +53,6 @@ app.use("/deploy", deployRouter);
 // Standard JSON parsing middleware
 app.use(express.json());
 
-// API routes
-app.use("/api", testRouter);
-app.use("/api/quiz", quizRoutes);
-app.use("api/auth/login", loginRouter);
-app.use("api/auth/logout", loginRouter);
-
 // Session configuration
 app.use(
   session({
@@ -71,6 +65,11 @@ app.use(
     }, // 24 hours
   }),
 );
+
+// API routes
+app.use("/api", testRouter);
+app.use("/api/quiz", quizRoutes);
+app.use("/api/auth", authRouter);
 
 // Test DB route
 app.get("/api/test-db", async (_req, res) => {
