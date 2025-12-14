@@ -1,7 +1,9 @@
 ## Continuous Deployment (CD)
 
-CD is triggered by GitHub Actions (GHA) when a push occurs on the
-`main` branch. The production server does not execute build or deployment logic. It only runs Docker containers pulled from the registry.
+CD is triggered by GitHub Actions (GHA) when a push occurs on the `main` branch.
+The production server does not execute build logic or application-level
+deployment scripts. It only manages Docker containers by pulling images from
+the registry and restarting them as needed.
 
 ### Deployment Flow:
 
@@ -19,7 +21,7 @@ CD is triggered by GitHub Actions (GHA) when a push occurs on the
 ## Example `.env`
 
     PORT=your-port
-    GITHUB_REPO_OWNER=your-github-username
+    GITHUB_REPO_OWNER=your-github-username # must match the GitHub repository owner exactly for the image pull to work
     DB_HOST=your-database-host
     DB_PORT=your-database-port
     DB_USER=your-database-username
