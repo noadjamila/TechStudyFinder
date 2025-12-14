@@ -1,4 +1,6 @@
+#----------------------------------------
 # Build stage
+#----------------------------------------
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -17,7 +19,9 @@ COPY server ./server
 RUN npm run build --workspace=client
 RUN npm run build --workspace=server
 
+#----------------------------------------
 # Runtime stage
+#----------------------------------------
 FROM node:20-alpine
 
 WORKDIR /app

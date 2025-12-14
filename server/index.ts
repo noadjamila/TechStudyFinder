@@ -57,6 +57,9 @@ app.use("/api", (_req, res) => {
 app.use(express.static(clientDistPath));
 
 // SPA fallback
+// This handler only serves index.html for HTML navigation requests.
+// API routes never reach this point because /api routes and the /api 404
+// handler are registered earlier in the middleware chain.
 app.get("*", (req, res, next) => {
   if (!req.accepts("html")) {
     return next();
