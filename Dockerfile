@@ -25,7 +25,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV CLIENT_DIST_PATH=/app/client/dist
 
-COPY server/package.json server/package.json
+COPY server/package.json server/
 COPY package.json package-lock.json ./
 
 # Install only server dependencies
