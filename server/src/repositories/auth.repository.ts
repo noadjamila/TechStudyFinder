@@ -32,7 +32,7 @@ export async function findUserForLogin(
     return { id: localHit.id, username: localHit.username };
   }
 
-  const dbUser = await findUserByUsernameFromDb(username);
+  const dbUser = await findUserByUsername(username);
   if (!dbUser) return null;
 
   const isValid = await bcrypt.compare(password, dbUser.password_hash);
@@ -44,7 +44,7 @@ export async function findUserForLogin(
  * @param username
  * @returns The user object if found, otherwise null.
  */
-export async function findUserByUsernameFromDb(
+export async function findUserByUsername(
   username: string,
 ): Promise<AuthUser | null> {
   const { rows } = await pool.query(
