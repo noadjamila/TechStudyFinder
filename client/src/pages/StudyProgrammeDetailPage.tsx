@@ -135,7 +135,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
 
   // Content that's the same for both desktop and mobile
   const pageContent = (
-    <Box sx={{ padding: 3 }}>
+    <Box sx={{ pt: 1, px: 3, pb: { xs: "100px", sm: 3 } }}>
       {/* Back button */}
       <Back_Button
         label="Zurück"
@@ -289,7 +289,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
           {/* Additional details section */}
           <Box
             sx={{
-              marginTop: 4,
+              marginTop: { xs: 0, sm: 4 },
               padding: 3,
             }}
           >
