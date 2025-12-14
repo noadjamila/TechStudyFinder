@@ -73,6 +73,7 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
                 fontWeight: 500,
                 marginBottom: 1,
                 color: theme.palette.text.primary,
+                fontSize: { xs: "1rem", sm: "1.25rem" },
               }}
             >
               {programme.name}
@@ -104,6 +105,7 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
                 variant="body1"
                 sx={{
                   color: theme.palette.text.primary,
+                  fontSize: { xs: "0.875rem", sm: "1rem" },
                 }}
               >
                 {programme.university}
@@ -135,6 +137,7 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
                 variant="body1"
                 sx={{
                   color: theme.palette.text.primary,
+                  fontSize: { xs: "0.875rem", sm: "1rem" },
                 }}
               >
                 {programme.degree}
@@ -147,18 +150,20 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
               aria-label={
                 isFavorite ? "Remove from favorites" : "Add to favorites"
               }
-              sx={{ ml: 1 }}
+              sx={{ ml: 1, padding: { xs: 0.5, sm: 1 } }}
             >
               {isFavorite ? (
                 <FavoriteIcon
                   sx={{
                     color: theme.palette.secondary.main,
+                    fontSize: { xs: 24, sm: 28 },
                   }}
                 />
               ) : (
                 <FavoriteBorderIcon
                   sx={{
                     color: theme.palette.favorites.inactive,
+                    fontSize: { xs: 24, sm: 28 },
                   }}
                 />
               )}
