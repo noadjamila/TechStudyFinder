@@ -1,42 +1,85 @@
 import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 
+/**
+ * LevelSuccessScreen component.
+ * Displays a success message upon completing a quiz level
+ * and transitions to the next level information after a delay.
+ * note: Level 3 and 4 are curretly placeholders for future use.
+ *
+ * @param {number} currentLevel - The current level of the quiz (1, 2, 3, or 4).
+ * @param {function} onContinue - Optional callback to proceed after displaying the success message.
+ *
+ * @returns {JSX.Element} The rendered LevelSuccessScreen component.
+ */
 type Level = 1 | 2 | 3 | 4;
+type Phase = "won" | "next";
 
 export type LevelSuccessScreenProps = {
   currentLevel: Level;
   onContinue?: () => void;
 };
 
+type LevelConfig = {
+  wonTitle?: string;
+  nextTitle?: string;
+  nextText?: string;
+};
+
 const NEXT_LEVEL_TEXT: Record<Level, string> = {
   1: "Deine Rahmenbedingungen",
   2: "Deine Interessen",
-  3: "Dein Arbeitsstil",
-  4: "Du hast alle Schritte abgeschlossen",
+  3: "Du hast alle Schritte abgeschlossen",
+  4: "",
 };
 
-/**
- * LevelSuccessScreen component displays a screen showing the progress of the user through the different levels.
- * It shows a title for the current level and the description for the next level.
- * After each level is completed, the description for the next level is shown after a brief delay.
- * When the user reaches the final level, a message indicating completion is displayed.
- */
+const LEVEL_CONFIG: Record<Level, LevelConfig> = {
+  1: {
+    nextTitle: "Schritt 1",
+    nextText: NEXT_LEVEL_TEXT[1],
+  },
+  2: {
+    wonTitle: "Schritt 1 geschafft!",
+    nextTitle: "Schritt 2",
+    nextText: NEXT_LEVEL_TEXT[2],
+  },
+  3: {
+    wonTitle: "Schritt 2 geschafft!",
+    nextTitle: "Deine Ergebnisse",
+    nextText: NEXT_LEVEL_TEXT[3],
+  },
+  4: {
+    wonTitle: "",
+    nextText: NEXT_LEVEL_TEXT[4],
+  },
+};
+
+const titleSx = {
+  mt: 10,
+  mb: 0.5,
+  textAlign: "center",
+  fontWeight: "bold",
+};
+
+const subtitleSx = {
+  mt: 2,
+  textAlign: "center",
+};
 
 export default function LevelSuccessScreen({
   currentLevel,
 }: LevelSuccessScreenProps) {
-  const [phase, setPhase] = useState<"won" | "next">("won");
-  const theme = useTheme();
+  const [phase, setPhase] = useState<Phase>("won");
+  const config = LEVEL_CONFIG[currentLevel];
 
-  // Use the effect hook to switch the phase after 1.8 seconds, so that the description for the next level appears.
   useEffect(() => {
     if (currentLevel === 1) {
       setPhase("next");
-    } else {
-      const id = setTimeout(() => setPhase("next"), 1800);
-      return () => clearTimeout(id);
+      return;
     }
+
+    const id = setTimeout(() => setPhase("next"), 1800);
+    return () => clearTimeout(id);
   }, [currentLevel]);
 
   return (
@@ -44,174 +87,32 @@ export default function LevelSuccessScreen({
       sx={{
         display: "flex",
         flexDirection: "column",
-        justifyContent: "flex-start",
         alignItems: "center",
-        minHeight: "100vh",
-        padding: theme.spacing(2),
+        minHeight: "100dvh",
+        p: 2,
       }}
     >
-      {currentLevel === 1 ? (
+      {phase === "won" && config.wonTitle && (
+        <Typography variant="h6" sx={titleSx} aria-live="polite">
+          {config.wonTitle}
+        </Typography>
+      )}
+
+      {phase === "next" && (
         <>
-          <Typography
-            variant="h6"
-            sx={{
-              color: theme.palette.text.primary,
-              marginBottom: theme.spacing(0.5),
-              marginTop: theme.spacing(10),
-            }}
-            aria-live="polite"
-          >
-            Schritt 1
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            sx={{
-              color: theme.palette.text.primary,
-              marginTop: theme.spacing(2),
-            }}
-            aria-live="polite"
-          >
-            {NEXT_LEVEL_TEXT[1]}
-          </Typography>
+          {config.nextTitle && (
+            <Typography variant="h6" sx={titleSx} aria-live="polite">
+              {config.nextTitle}
+            </Typography>
+          )}
+
+          {config.nextText && (
+            <Typography variant="subtitle1" sx={subtitleSx} aria-live="polite">
+              {config.nextText}
+            </Typography>
+          )}
         </>
-      ) : currentLevel === 2 ? (
-        <>
-          {/* Desktop / Tablet one row*/}
-          <Typography
-            variant="h6"
-            sx={{
-              color: theme.palette.text.primary,
-              marginBottom: theme.spacing(0.5),
-              marginTop: theme.spacing(10),
-              fontWeight: "bold",
-              display: phase === "won" ? { xs: "none", sm: "block" } : "none",
-              fontFamily: theme.typography.h6.fontFamily,
-              textAlign: "center",
-            }}
-            aria-live="polite"
-          >
-            Schritt 1 geschafft!
-          </Typography>
-
-          {/* Mobile: two rows*/}
-          <Typography
-            variant="h6"
-            sx={{
-              color: theme.palette.text.primary,
-              marginBottom: theme.spacing(0.5),
-              marginTop: theme.spacing(10),
-              fontWeight: "bold",
-              display: phase === "won" ? { xs: "block", sm: "none" } : "none",
-              fontFamily: theme.typography.h6.fontFamily,
-              textAlign: "center",
-            }}
-            aria-live="polite"
-          >
-            Schritt 1<br />
-            geschafft!
-          </Typography>
-
-          <Typography
-            variant="h6"
-            sx={{
-              color: theme.palette.text.primary,
-              marginBottom: theme.spacing(0.5),
-              marginTop: theme.spacing(10),
-              display: phase === "next" ? "block" : "none",
-              fontWeight: "bold",
-              fontFamily: theme.typography.h6.fontFamily,
-            }}
-            aria-live="polite"
-          >
-            Schritt 2
-          </Typography>
-
-          <Typography
-            variant="subtitle1"
-            sx={{
-              color: theme.palette.text.primary,
-              marginTop: theme.spacing(2),
-              display: phase === "next" ? "block" : "none",
-              fontWeight: "normal",
-            }}
-            aria-live="polite"
-          >
-            {NEXT_LEVEL_TEXT[2]}
-          </Typography>
-        </>
-      ) : currentLevel === 3 ? (
-        <>
-          <Typography
-            variant="h6"
-            sx={{
-              color: theme.palette.text.primary,
-              marginBottom: theme.spacing(0.5),
-              marginTop: theme.spacing(10),
-              fontWeight: "bold",
-              display: phase === "won" ? "block" : "none",
-              fontFamily: theme.typography.h6.fontFamily,
-              textAlign: "center",
-            }}
-            aria-live="polite"
-          >
-            Schritt 2 <br /> geschafft!
-          </Typography>
-
-          <Typography
-            variant="h6"
-            sx={{
-              color: theme.palette.text.primary,
-              marginBottom: theme.spacing(0.5),
-              marginTop: theme.spacing(10),
-              display: phase === "next" ? "block" : "none",
-            }}
-            aria-live="polite"
-          >
-            Schritt 3
-          </Typography>
-
-          <Typography
-            variant="subtitle1"
-            sx={{
-              color: theme.palette.text.primary,
-              marginTop: theme.spacing(2),
-              display: phase === "next" ? "block" : "none",
-              fontWeight: "normal",
-            }}
-            aria-live="polite"
-          >
-            {NEXT_LEVEL_TEXT[3]}
-          </Typography>
-        </>
-      ) : currentLevel === 4 ? (
-        <>
-          <Typography
-            variant="h6"
-            sx={{
-              color: theme.palette.text.primary,
-              marginBottom: theme.spacing(0.5),
-              marginTop: theme.spacing(10),
-              fontWeight: "bold",
-              textAlign: "center",
-            }}
-            aria-live="polite"
-          >
-            Schritt 3 <br /> geschafft!
-          </Typography>
-
-          <Typography
-            variant="subtitle1"
-            sx={{
-              color: theme.palette.text.primary,
-              marginTop: theme.spacing(2),
-              fontWeight: "normal",
-            }}
-            aria-live="polite"
-          >
-            {NEXT_LEVEL_TEXT[4]}
-          </Typography>
-        </>
-      ) : null}
+      )}
     </Box>
   );
 }
