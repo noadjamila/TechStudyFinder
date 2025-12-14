@@ -1,0 +1,92 @@
+name: Docker Deploy
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push Image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/techstudyfinder:latest .
+          docker push ghcr.io/${{ github.repository_owner }}/techstudyfinder:latest
+
+      - name: Deploy on Server
+        # Pinned to v1.0.3 for reproducibility; see https://github.com/appleboy/ssh-action/releases for updates
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            set -e
+
+            cd "${{ secrets.SERVER_DEPLOY_PATH }}"
+
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
+              -u "${{ github.actor }}" \
+              --password-stdin
+
+            # Save currently running image tag for rollback
+            CURRENT_IMAGE=$(docker compose ps --format json | jq -r '.[0].Image' || echo "")
+            if [ -n "$CURRENT_IMAGE" ]; then
+              docker tag "$CURRENT_IMAGE" rollback_image:latest || true
+            fi
+            rollback() {
+              echo "Deployment failed. Attempting rollback..."
+              if docker image inspect rollback_image:latest > /dev/null 2>&1; then
+                # Update docker-compose.yml to use rollback_image:latest temporarily
+                sed -i.bak 's|ghcr.io/.*/techstudyfinder:latest|rollback_image:latest|g' docker-compose.yml
+                docker compose up -d
+                mv docker-compose.yml.bak docker-compose.yml
+                echo "Rollback complete."
+                # Health check after rollback
+                echo "Checking application health after rollback..."
+                if ! curl -fsSL http://localhost:80/health; then
+                  echo "Health check failed after rollback. Manual intervention required."
+                  exit 1
+                else
+                  echo "Application is healthy after rollback."
+                fi
+              else
+                echo "No rollback image found. Manual intervention required."
+              fi
+            }
+            trap rollback ERR
+            docker compose pull
+            docker compose up -d
+            # Wait for the container to become healthy
+            SERVICE_NAME=$(docker compose ps --format json | jq -r '.[0].Name')
+            echo "Waiting for service $SERVICE_NAME to become healthy..."
+            for i in {1..30}; do
+              STATUS=$(docker inspect --format='{{.State.Health.Status}}' "$SERVICE_NAME" 2>/dev/null || echo "unknown")
+              if [ "$STATUS" = "healthy" ]; then
+                echo "Service $SERVICE_NAME is healthy."
+                break
+              elif [ "$STATUS" = "unhealthy" ]; then
+                echo "Service $SERVICE_NAME is unhealthy."
+                exit 1
+              else
+                echo "Current status: $STATUS. Waiting..."
+                sleep 2
+              fi
+              if [ $i -eq 30 ]; then
+                echo "Timed out waiting for service $SERVICE_NAME to become healthy."
+                exit 1
+              fi
+            done
+            # If successful, remove rollback image
+            docker image rm rollback_image:latest || true
