@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   app:
-    image: ghcr.io/${USER}/techstudyfinder:latest
+    image: ghcr.io/${GITHUB_REPO_OWNER}/techstudyfinder:latest
     container_name: techstudyfinder
     restart: unless-stopped
     ports:
