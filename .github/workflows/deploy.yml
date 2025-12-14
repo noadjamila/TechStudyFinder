@@ -39,5 +39,25 @@ jobs:
               -u "${{ github.actor }}" \
               --password-stdin
 
+            # Save currently running image tag for rollback
+            CURRENT_IMAGE=$(docker compose ps --format json | jq -r '.[0].Image' || echo "")
+            if [ -n "$CURRENT_IMAGE" ]; then
+              docker tag "$CURRENT_IMAGE" rollback_image:latest || true
+            fi
+            rollback() {
+              echo "Deployment failed. Attempting rollback..."
+              if docker image inspect rollback_image:latest > /dev/null 2>&1; then
+                # Update docker-compose.yml to use rollback_image:latest temporarily
+                sed -i.bak 's|ghcr.io/.*/techstudyfinder:latest|rollback_image:latest|g' docker-compose.yml
+                docker compose up -d
+                mv docker-compose.yml.bak docker-compose.yml
+                echo "Rollback complete."
+              else
+                echo "No rollback image found. Manual intervention required."
+              fi
+            }
+            trap rollback ERR
             docker compose pull
             docker compose up -d
+            # If successful, remove rollback image
+            docker image rm rollback_image:latest || true
