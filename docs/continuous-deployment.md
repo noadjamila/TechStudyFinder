@@ -19,6 +19,7 @@ CD is triggered by GitHub Actions (GHA) when a push occurs on the
 ## Example `.env`
 
     PORT=your-port
+    GITHUB_REPO_OWNER=your-github-username
     DB_HOST=your-database-host
     DB_PORT=your-database-port
     DB_USER=your-database-username
