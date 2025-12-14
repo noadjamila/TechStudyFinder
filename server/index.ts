@@ -12,6 +12,8 @@ import deployRouter from "./src/routes/deploy.route";
 import quizRoutes from "./src/routes/quiz.route";
 import { pool } from "./db";
 import "express-async-errors";
+import loginRouter from "./src/routes/auth.route";
+import session from "express-session";
 
 const isTesting =
   process.env.NODE_ENV === "test" || !!process.env.JEST_WORKER_ID;
@@ -54,6 +56,21 @@ app.use(express.json());
 // API routes
 app.use("/api", testRouter);
 app.use("/api/quiz", quizRoutes);
+app.use("api/auth/login", loginRouter);
+app.use("api/auth/logout", loginRouter);
+
+// Session configuration
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000,
+    }, // 24 hours
+  }),
+);
 
 // Test DB route
 app.get("/api/test-db", async (_req, res) => {
