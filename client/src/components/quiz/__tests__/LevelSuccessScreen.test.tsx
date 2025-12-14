@@ -57,6 +57,7 @@ describe("LevelSuccessScreen", () => {
   test("Level 4 renders no text content", () => {
     render(<LevelSuccessScreen currentLevel={4} />);
 
+    // Es soll bewusst nichts angezeigt werden
     expect(screen.queryByRole("heading")).not.toBeInTheDocument();
     expect(screen.queryByText(/./)).not.toBeInTheDocument();
   });

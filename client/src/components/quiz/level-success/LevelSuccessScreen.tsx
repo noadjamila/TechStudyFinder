@@ -1,17 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 
-/**
- * LevelSuccessScreen component.
- * Displays a success message upon completing a quiz level
- * and transitions to the next level information after a delay.
- * note: Level 3 and 4 are curretly placeholders for future use.
- *
- * @param {number} currentLevel - The current level of the quiz (1, 2, 3, or 4).
- * @param {function} onContinue - Optional callback to proceed after displaying the success message.
- *
- * @returns {JSX.Element} The rendered LevelSuccessScreen component.
- */
 type Level = 1 | 2 | 3 | 4;
 type Phase = "won" | "next";
 
@@ -19,7 +8,6 @@ export type LevelSuccessScreenProps = {
   currentLevel: Level;
   onContinue?: () => void;
 };
-
 type LevelConfig = {
   wonTitle?: string;
   nextTitle?: string;
@@ -34,10 +22,7 @@ const NEXT_LEVEL_TEXT: Record<Level, string> = {
 };
 
 const LEVEL_CONFIG: Record<Level, LevelConfig> = {
-  1: {
-    nextTitle: "Schritt 1",
-    nextText: NEXT_LEVEL_TEXT[1],
-  },
+  1: { nextTitle: "Schritt 1", nextText: NEXT_LEVEL_TEXT[1] },
   2: {
     wonTitle: "Schritt 1 geschafft!",
     nextTitle: "Schritt 2",
@@ -48,10 +33,7 @@ const LEVEL_CONFIG: Record<Level, LevelConfig> = {
     nextTitle: "Deine Ergebnisse",
     nextText: NEXT_LEVEL_TEXT[3],
   },
-  4: {
-    wonTitle: "",
-    nextText: NEXT_LEVEL_TEXT[4],
-  },
+  4: { wonTitle: "", nextText: NEXT_LEVEL_TEXT[4] },
 };
 
 const titleSx = {
@@ -71,13 +53,11 @@ export default function LevelSuccessScreen({
 }: LevelSuccessScreenProps) {
   const [phase, setPhase] = useState<Phase>("won");
   const config = LEVEL_CONFIG[currentLevel];
-
   useEffect(() => {
     if (currentLevel === 1) {
       setPhase("next");
       return;
     }
-
     const id = setTimeout(() => setPhase("next"), 1800);
     return () => clearTimeout(id);
   }, [currentLevel]);
@@ -94,6 +74,7 @@ export default function LevelSuccessScreen({
     >
       {phase === "won" && config.wonTitle && (
         <Typography variant="h6" sx={titleSx} aria-live="polite">
+          {" "}
           {config.wonTitle}
         </Typography>
       )}
@@ -102,10 +83,10 @@ export default function LevelSuccessScreen({
         <>
           {config.nextTitle && (
             <Typography variant="h6" sx={titleSx} aria-live="polite">
+              {" "}
               {config.nextTitle}
             </Typography>
           )}
-
           {config.nextText && (
             <Typography variant="subtitle1" sx={subtitleSx} aria-live="polite">
               {config.nextText}
