@@ -13,9 +13,7 @@ import { pool } from "./db";
 import "express-async-errors";
 
 const app = express();
-if (process.env.NODE_ENV === "production") {
-  app.set("trust proxy", 1);
-}
+app.set("trust proxy", 1);
 const PORT = process.env.PORT || 5001;
 const clientDistPath =
   process.env.CLIENT_DIST_PATH ??
