@@ -290,7 +290,6 @@ const StudyProgrammeDetailPage: React.FC = () => {
           <Box
             sx={{
               marginTop: { xs: 0, sm: 4 },
-              padding: 3,
             }}
           >
             <Typography
