@@ -7,11 +7,20 @@ type AuthUser = {
   password_hash: string;
 };
 
-// Temporary hardcoded users for local testing (plain passwords!)
+/**
+ * Hardcoded users for quick testing without DB (plain passwords!).
+ * In production, use only database-stored users.
+ */
 const hardcodedUsers: { id: number; username: string; password: string }[] = [
   { id: 1, username: "demo", password: "demo1234" },
 ];
 
+/**
+ * Finds a user by username and password for login.
+ * @param username
+ * @param password
+ * @returns The user object with id and username if credentials are valid, otherwise null.
+ */
 export async function findUserForLogin(
   username: string,
   password: string,
@@ -30,6 +39,11 @@ export async function findUserForLogin(
   return isValid ? { id: dbUser.id, username: dbUser.username } : null;
 }
 
+/**
+ * Finds a user by username from the database.
+ * @param username
+ * @returns The user object if found, otherwise null.
+ */
 export async function findUserByUsernameFromDb(
   username: string,
 ): Promise<AuthUser | null> {
