@@ -18,6 +18,12 @@ import session from "express-session";
 const isTesting =
   process.env.NODE_ENV === "test" || !!process.env.JEST_WORKER_ID;
 
+// Ensure SESSION_SECRET is set
+const sessionSecret = process.env.SESSION_SECRET;
+if (!sessionSecret) {
+  throw new Error("SESSION_SECRET is required for session handling");
+}
+
 // Safety check for webhook secret
 if (!process.env.GITHUB_WEBHOOK_SECRET) {
   if (process.env.NODE_ENV === "production") {
@@ -56,13 +62,13 @@ app.use(express.json());
 // Session configuration
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production",
-      maxAge: 24 * 60 * 60 * 1000,
-    }, // 24 hours
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    },
   }),
 );
 
