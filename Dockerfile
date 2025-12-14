@@ -5,10 +5,14 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+ENV NODE_ENV=development
+
+# Copy metadata for all workspaces
 COPY package.json package-lock.json ./
 COPY client/package.json client/
 COPY server/package.json server/
 
+# Install full dependencies for build
 RUN npm ci
 
 # Copy source
@@ -18,6 +22,7 @@ COPY server ./server
 # Frontend & backend build
 RUN npm run build --workspace=client
 RUN npm run build --workspace=server
+
 
 #----------------------------------------
 # Runtime stage
@@ -29,14 +34,25 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV CLIENT_DIST_PATH=/app/client/dist
 
-COPY server/package.json server/
-COPY package.json package-lock.json ./
+# Create non-root user (RUNTIME ONLY)
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-# Install only server dependencies
+# Copy metadata
+COPY package.json package-lock.json ./
+COPY server/package.json server/
+
+# Install only server runtime dependencies
 RUN npm ci --omit=dev --workspace=server
 
 # Copy build artifacts
 COPY --from=builder /app/server/dist ./server/dist
+COPY --from=builder /app/client/dist ./client/dist
+
+# Fix ownership
+RUN chown -R appuser:appgroup /app
+
+# Drop privileges
+USER appuser
 
 EXPOSE 5001
 
