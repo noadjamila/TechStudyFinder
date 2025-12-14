@@ -50,28 +50,33 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   const [questions, setQuestions] = useState<
     { text: string; riasec_type: RiasecType }[]
   >([]);
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  //Saves Current Question Index
+  const savedIndex = localStorage.getItem("currentIndex");
+  const index = Number(savedIndex || 0);
+  const [currentIndex, setCurrentIndex] = useState<number>(index);
   const [responseCount, setResponseCount] = useState<number>(0);
   const [error, setError] = useState<{ title: string; message: string } | null>(
     null,
   );
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
-  const [scores, setScores] =
-    useState<Record<RiasecType, number>>(initialScores);
+  //Saves Current Scores
+  const savedScores = localStorage.getItem("scores");
+  let neueScores = initialScores;
+  if (savedScores) {
+    neueScores = JSON.parse(savedScores);
+  }
+  const [scores, setScores] = useState<Record<RiasecType, number>>(neueScores);
 
   const [highestScores, setHighestScores] = useState<
     { type: RiasecType; score: number }[]
   >([]);
 
-  // Saving answers in localStorage
-  const [userAnswers, setUserAnswers] = useState<string[]>([]);
-
   const TOTAL_QUESTIONS = questions.length;
   const currentQuestion = questions[currentIndex];
   const quizFinished = TOTAL_QUESTIONS > 0 && currentIndex >= TOTAL_QUESTIONS;
 
-  // Loading progress (level and answers) from localStorage
+  /* Loading progress (level and answers) from localStorage
   useEffect(() => {
     const savedLevel = localStorage.getItem("currentLevel");
     const savedAnswers = localStorage.getItem("userAnswers");
@@ -84,9 +89,15 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
       setUserAnswers(JSON.parse(savedAnswers));
     }
   }, []);
+  */
 
   // Advances to the next question without exceeding the total count.
-  const next = () => setCurrentIndex((i) => Math.min(TOTAL_QUESTIONS, i + 1));
+  const next = () => {
+    const nextIndex = Math.min(TOTAL_QUESTIONS, currentIndex + 1);
+    //Saves Index of current Question
+    setCurrentIndex(nextIndex);
+    localStorage.setItem("currentIndex", nextIndex.toString());
+  };
 
   /**
    * Handles  the option to go back one Question.
@@ -115,6 +126,7 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
 
       setScores((prev) => {
         const newScores = { ...prev, [lastType]: prev[lastType] - points };
+        localStorage.setItem("scores", JSON.stringify(newScores));
         if (currentIndex === TOTAL_QUESTIONS - 1) {
           const topScores = getTopThreeScores(newScores);
           setHighestScores(topScores);
@@ -124,7 +136,9 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
       });
       setTimeout(() => {
         if (currentIndex > 0) {
-          setCurrentIndex(currentIndex - 1);
+          const prevoiusIndex = currentIndex - 1;
+          localStorage.setItem("currentIndex", prevoiusIndex.toString());
+          setCurrentIndex(prevoiusIndex);
         }
         setIsTransitioning(false);
       }, 300);
@@ -171,7 +185,8 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
 
     setScores((prev) => {
       const newScores = { ...prev, [currentType]: prev[currentType] + points };
-
+      localStorage.setItem("scores", JSON.stringify(newScores));
+      console.log("******Neue Scores:", newScores);
       // last question -> compute top 3 and send to backend
       if (currentIndex === TOTAL_QUESTIONS - 1) {
         const topScores = getTopThreeScores(newScores);
@@ -182,12 +197,12 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
     });
 
     // Saving the answer in localStorage
-    const updatedAnswers = [...userAnswers, option];
-    setUserAnswers(updatedAnswers);
+    // const updatedAnswers = [...userAnswers, option];
+    // setUserAnswers(updatedAnswers);
 
-    localStorage.setItem("userAnswers", JSON.stringify(updatedAnswers));
+    // localStorage.setItem("userAnswers", JSON.stringify(updatedAnswers));
 
-    localStorage.setItem("currentLevel", (currentIndex + 1).toString());
+    // localStorage.setItem("currentLevel", (currentIndex + 1).toString());
 
     // Move to next question (or to debug screen at the end)
     setTimeout(() => {
@@ -249,8 +264,14 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
         if (!data.questions || data.questions.length === 0) {
           throw new Error("No questions found in the response.");
         }
-
-        setQuestions(data.questions);
+        //Stores order of Questions when loading Level 2
+        const storedQuestions = localStorage.getItem("questions");
+        if (storedQuestions) {
+          setQuestions(JSON.parse(storedQuestions));
+        } else {
+          setQuestions(data.questions);
+          localStorage.setItem("questions", JSON.stringify(data.questions));
+        }
       } catch (err) {
         console.error(err);
         setError({

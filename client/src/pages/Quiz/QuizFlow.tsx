@@ -11,7 +11,9 @@ import { useNavigate } from "react-router-dom";
  * @returns {JSX.Element | null} The current level's quiz page or null if completed.
  */
 export default function QuizFlow() {
-  const [level, setLevel] = useState<1 | 2 | 3>(1);
+  const savedLevel = localStorage.getItem("currentLevel");
+  const initialLevel = parseInt(savedLevel || "1") as 1 | 2 | 3;
+  const [level, setLevel] = useState<1 | 2 | 3>(initialLevel);
   const [idsFromLevel1, setIdsFromLevel1] = useState<number[]>([]);
   const navigate = useNavigate();
 
@@ -21,6 +23,8 @@ export default function QuizFlow() {
         onNextLevel={(ids) => {
           setIdsFromLevel1(ids);
           setLevel(2);
+          //Saves Level
+          localStorage.setItem("currentLevel", "2");
           navigate("/quiz/level/2");
         }}
       />
@@ -33,6 +37,8 @@ export default function QuizFlow() {
         previousIds={idsFromLevel1}
         oneLevelBack={() => {
           setLevel(1);
+          //Saves Level when going one Level Back
+          localStorage.setItem("currentLevel", "1");
         }}
         onNextLevel={() => setLevel(3)}
         // uncomment once QuizPage_L3 is implemented
