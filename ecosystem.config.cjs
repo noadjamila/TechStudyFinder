@@ -3,9 +3,10 @@ module.exports = {
     {
       name: "techstudyfinder",
       script: "server/dist/index.js",
-      cwd: process.env.CWD_PATH,
+      cwd: "/home/deployuser/projects/TechStudyFinder",
       env: {
-        DEPLOY_SCRIPT_PATH: process.env.DEPLOYMENT_SCRIPT_PATH,
+        DEPLOY_SCRIPT_PATH:
+          "/home/deployuser/projects/TechStudyFinder/scripts/deploy.sh",
       },
     },
   ],

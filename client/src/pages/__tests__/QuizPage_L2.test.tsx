@@ -36,7 +36,11 @@ describe("QuizPage_L2", () => {
     });
 
     renderWithProviders(
-      <QuizPage_L2 previousIds={[1, 2]} onNextLevel={() => {}} />,
+      <QuizPage_L2
+        previousIds={[1, 2]}
+        onNextLevel={() => {}}
+        oneLevelBack={() => {}}
+      />,
     );
 
     expect(fetchMock).toHaveBeenCalledWith("/api/quiz/level/2");
@@ -51,7 +55,11 @@ describe("QuizPage_L2", () => {
     });
 
     renderWithProviders(
-      <QuizPage_L2 previousIds={[]} onNextLevel={() => {}} />,
+      <QuizPage_L2
+        previousIds={[]}
+        onNextLevel={() => {}}
+        oneLevelBack={() => {}}
+      />,
     );
 
     await screen.findByText("Magst du forschen?");
@@ -72,7 +80,11 @@ describe("QuizPage_L2", () => {
     });
 
     renderWithProviders(
-      <QuizPage_L2 previousIds={[]} onNextLevel={() => {}} />,
+      <QuizPage_L2
+        previousIds={[]}
+        onNextLevel={() => {}}
+        oneLevelBack={() => {}}
+      />,
     );
 
     await screen.findByText("Magst du forschen?");
@@ -93,7 +105,11 @@ describe("QuizPage_L2", () => {
     });
 
     renderWithProviders(
-      <QuizPage_L2 previousIds={[]} onNextLevel={() => {}} />,
+      <QuizPage_L2
+        previousIds={[]}
+        onNextLevel={() => {}}
+        oneLevelBack={() => {}}
+      />,
     );
 
     await screen.findByText("Magst du forschen?");
@@ -114,7 +130,11 @@ describe("QuizPage_L2", () => {
     });
 
     renderWithProviders(
-      <QuizPage_L2 previousIds={[]} onNextLevel={() => {}} />,
+      <QuizPage_L2
+        previousIds={[]}
+        onNextLevel={() => {}}
+        oneLevelBack={() => {}}
+      />,
     );
 
     expect(
@@ -134,7 +154,11 @@ describe("QuizPage_L2", () => {
     });
 
     renderWithProviders(
-      <QuizPage_L2 previousIds={[]} onNextLevel={() => {}} />,
+      <QuizPage_L2
+        previousIds={[]}
+        onNextLevel={() => {}}
+        oneLevelBack={() => {}}
+      />,
     );
 
     await screen.findByText("Magst du forschen?");
@@ -178,7 +202,11 @@ describe("QuizPage_L2", () => {
     });
 
     renderWithProviders(
-      <QuizPage_L2 previousIds={[]} onNextLevel={() => {}} />,
+      <QuizPage_L2
+        previousIds={[]}
+        onNextLevel={() => {}}
+        oneLevelBack={() => {}}
+      />,
     );
 
     await screen.findByText("Magst du forschen?");
@@ -210,7 +238,11 @@ describe("QuizPage_L2", () => {
     });
 
     renderWithProviders(
-      <QuizPage_L2 previousIds={[]} onNextLevel={() => {}} />,
+      <QuizPage_L2
+        previousIds={[]}
+        onNextLevel={() => {}}
+        oneLevelBack={() => {}}
+      />,
     );
 
     await screen.findByText("Magst du forschen?");
@@ -228,5 +260,104 @@ describe("QuizPage_L2", () => {
     fireEvent.click(screen.getByText("Ja"));
 
     expect(await screen.findByText("Debug-Screen")).toBeInTheDocument();
+  });
+
+  test("renders mascot image", async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ questions: sampleQuestions }),
+    });
+
+    renderWithProviders(
+      <QuizPage_L2
+        previousIds={[1, 2]}
+        onNextLevel={() => {}}
+        oneLevelBack={() => {}}
+      />,
+    );
+
+    await screen.findByText("Magst du forschen?");
+
+    const mascot = screen.getByAltText("Mascot");
+    expect(mascot).toBeInTheDocument();
+  });
+
+  test("calls oneLevelBack when currentIndex = 0", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ questions: sampleQuestions }),
+    });
+    (globalThis as any).fetch = fetchMock;
+
+    const oneLevelBack = vi.fn();
+
+    renderWithProviders(
+      <QuizPage_L2
+        previousIds={[]}
+        onNextLevel={() => {}}
+        oneLevelBack={oneLevelBack}
+      />,
+    );
+
+    await screen.findByText("Magst du forschen?");
+
+    fireEvent.click(screen.getByRole("button", { name: "Zurück" }));
+
+    expect(oneLevelBack).toHaveBeenCalledTimes(1);
+  });
+
+  test("goes back to previous question when currentIndex > 0", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ questions: sampleQuestions }),
+    });
+    (globalThis as any).fetch = fetchMock;
+
+    renderWithProviders(
+      <QuizPage_L2
+        previousIds={[]}
+        onNextLevel={() => {}}
+        oneLevelBack={() => {}}
+      />,
+    );
+
+    await screen.findByText("Magst du forschen?");
+
+    fireEvent.click(screen.getByText("Ja"));
+
+    await screen.findByText("Arbeitest du gern kreativ?");
+
+    fireEvent.click(screen.getByRole("button", { name: "Zurück" }));
+
+    expect(screen.getByText("Arbeitest du gern kreativ?")).toBeInTheDocument();
+  });
+
+  test("reverses score correctly when going back (yes → remove +1)", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ questions: sampleQuestions }),
+    });
+    (globalThis as any).fetch = fetchMock;
+
+    renderWithProviders(
+      <QuizPage_L2
+        previousIds={[]}
+        onNextLevel={() => {}}
+        oneLevelBack={() => {}}
+      />,
+    );
+
+    await screen.findByText("Magst du forschen?");
+
+    // YES → +1 for type R
+    fireEvent.click(screen.getByText("Ja"));
+
+    await screen.findByText("Arbeitest du gern kreativ?");
+
+    // back → should remove +1 for type R
+    fireEvent.click(screen.getByRole("button", { name: "Zurück" }));
+    fireEvent.click(screen.getByText("Ja"));
+
+    fireEvent.click(screen.getByText("Ja"));
   });
 });

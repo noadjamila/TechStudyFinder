@@ -2,23 +2,13 @@ import React, { useState } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
 import QuizCard_L1 from "../../components/quiz/QuizCard_L1";
 import { postFilterLevel } from "../../api/quizApi";
-import QuizMascot from "../../assets/Männchen_Home_Level1.png";
+import { Box } from "@mui/material";
 
 /** Callback function executed upon successful completion of the level.
  * It receives an array of filtered IDs from the backend. */
 export interface QuizPageL1Props {
   onNextLevel?: (_ids: number[]) => void;
 }
-
-/**
- * Constants defining the options for the Level 1 question.
- * The value field is used in the API payload.
- */
-const L1_OPTIONS = [
-  { label: "ein Studium beginnen?", value: "grundständig" },
-  { label: "dein Studium fortsetzen?", value: "weiterführend" },
-  { label: "dich erstmal umschauen?", value: "all" },
-];
 
 /**
  * The QuizPage_L1 component handles the first question of the quiz.
@@ -58,14 +48,34 @@ export default function QuizPage_L1({ onNextLevel }: QuizPageL1Props) {
   };
 
   return (
-    <QuizLayout currentIndex={selected ? 1 : 0} questionsTotal={1}>
-      <QuizCard_L1
-        question="Möchtest du..."
-        options={L1_OPTIONS}
-        selected={selected}
-        onSelect={handleSelectAndNext}
-        imageSrc={QuizMascot}
-      />
+    <QuizLayout
+      currentIndex={selected ? 1 : 0}
+      questionsTotal={1}
+      _showBackButton={false}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <img
+          src="/mascot_standing_blue.svg"
+          width={62}
+          height={90}
+          alt="Mascot"
+          style={{
+            alignSelf: "flex-start",
+            marginLeft: "55px",
+          }}
+        />
+        <QuizCard_L1
+          question="Möchtest du ..."
+          onSelect={handleSelectAndNext}
+        />
+      </Box>
     </QuizLayout>
   );
 }
