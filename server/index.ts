@@ -16,7 +16,7 @@ const app = express();
 app.set("trust proxy", 1);
 const PORT = process.env.PORT || 5001;
 const clientDistPath =
-  process.env.CLIENT_DIST_PATH ??
+  process.env.CLIENT_DIST_PATH ||
   path.join(__dirname, "..", "..", "client", "dist");
 
 let server: import("http").Server | null = null;
