@@ -48,21 +48,21 @@ app.get("/api/test-db", async (_req, res) => {
   }
 });
 
+// 404 handler
+app.use("/api", (_req, res) => {
+  res.status(404).json({ error: "Route not found" });
+});
+
 // Serve static files from the frontend
 app.use(express.static(clientDistPath));
 
 // SPA fallback
 app.get("*", (req, res, next) => {
-  if (req.url.startsWith("/api/")) {
+  if (!req.accepts("html")) {
     return next();
   }
 
   res.sendFile(path.join(clientDistPath, "index.html"));
-});
-
-// 404 handler
-app.use("/api", (_req, res) => {
-  res.status(404).json({ error: "Route not found" });
 });
 
 // Error handler
