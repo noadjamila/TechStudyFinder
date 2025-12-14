@@ -68,5 +68,25 @@ jobs:
             trap rollback ERR
             docker compose pull
             docker compose up -d
+            # Wait for the container to become healthy
+            SERVICE_NAME=$(docker compose ps --format json | jq -r '.[0].Name')
+            echo "Waiting for service $SERVICE_NAME to become healthy..."
+            for i in {1..30}; do
+              STATUS=$(docker inspect --format='{{.State.Health.Status}}' "$SERVICE_NAME" 2>/dev/null || echo "unknown")
+              if [ "$STATUS" = "healthy" ]; then
+                echo "Service $SERVICE_NAME is healthy."
+                break
+              elif [ "$STATUS" = "unhealthy" ]; then
+                echo "Service $SERVICE_NAME is unhealthy."
+                exit 1
+              else
+                echo "Current status: $STATUS. Waiting..."
+                sleep 2
+              fi
+              if [ $i -eq 30 ]; then
+                echo "Timed out waiting for service $SERVICE_NAME to become healthy."
+                exit 1
+              fi
+            done
             # If successful, remove rollback image
             docker image rm rollback_image:latest || true
