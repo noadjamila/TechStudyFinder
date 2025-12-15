@@ -31,6 +31,9 @@ vi.mock("../Quiz/QuizPage_L2", () => ({
 import QuizFlow from "../Quiz/QuizFlow";
 
 describe("QuizFlow", () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
   test("renders level 1 initially", () => {
     render(<QuizFlow />);
 
