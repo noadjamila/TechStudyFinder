@@ -70,7 +70,7 @@ const Homescreen: React.FC = () => {
       <Typography
         variant="body1"
         className="subtitle"
-        sx={{ fontWeight: "bold", lineHeight: 1.3, mb: 3 }}
+        sx={{ fontWeight: "normal", lineHeight: 1.3, mb: 3 }}
       >
         {subTitle}
       </Typography>
