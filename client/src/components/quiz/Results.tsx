@@ -159,6 +159,10 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                 )}
                 sx={{
                   borderRadius: "25px",
+                  "& .MuiSelect-select": {
+                    paddingTop: "10px",
+                    paddingBottom: "10px",
+                  },
                   "& .MuiSelect-icon": {
                     color: theme.palette.text.primary,
                   },
@@ -230,6 +234,10 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                 )}
                 sx={{
                   borderRadius: "25px",
+                  "& .MuiSelect-select": {
+                    paddingTop: "10px",
+                    paddingBottom: "10px",
+                  },
                   "& .MuiSelect-icon": {
                     color: theme.palette.text.primary,
                   },

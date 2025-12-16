@@ -155,7 +155,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
       <DataSource />
 
       {/* Study programme card */}
-      <Box sx={{ px: 3 }}>
+      <Box sx={{ px: 3, pt: 5 }}>
         <Card
           sx={{
             padding: { xs: 2, sm: 4 },

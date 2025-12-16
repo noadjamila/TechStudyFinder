@@ -57,10 +57,10 @@ const ResultsPage: React.FC = () => {
       <Results studyProgrammes={studyProgrammes} />
     </Box>
   ) : (
-    <>
+    <Box sx={{ pt: "50px" }}>
       <DataSource />
       <Results studyProgrammes={studyProgrammes} />
-    </>
+    </Box>
   );
 
   return (

@@ -40,11 +40,12 @@ const LogoMenu: React.FC = () => {
 
   return (
     <AppBar
-      position="static"
+      position="fixed"
       sx={{
-        backgroundColor: "transparent",
+        backgroundColor: theme.palette.background.default,
         boxShadow: "none",
-        mt: 1.5,
+        top: 0,
+        zIndex: 1100,
       }}
     >
       <Toolbar
