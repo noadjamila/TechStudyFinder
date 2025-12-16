@@ -5,6 +5,7 @@ import { RiasecType, initialScores } from "../../types/RiasecTypes";
 import ErrorScreen from "../../components/error-screen/ErrorScreen";
 import CardStack from "../../components/quiz/CardStack";
 import { Stack } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export interface QuizPageL2Props {
   previousIds: number[];
@@ -42,6 +43,8 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
     "Will contain IDs from L1, once response from backend is successful:",
     previousIds,
   );
+
+  const navigate = useNavigate();
 
   const [questions, setQuestions] = useState<
     { text: string; riasec_type: RiasecType }[]
@@ -234,6 +237,16 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
 
     fetchQuestions();
   }, []);
+
+  // Navigate to success screen after quiz is finished (debug screen timeout), later to be removed
+  useEffect(() => {
+    if (quizFinished) {
+      const timer = setTimeout(() => {
+        navigate("/level-success/3");
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [quizFinished, navigate]);
 
   // In case of an error, display the ErrorScreen component.
   if (error != null) {
