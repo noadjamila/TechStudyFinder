@@ -17,8 +17,6 @@ import { StudyProgramme } from "../types/StudyProgramme.types";
 import theme from "../theme/theme";
 import DataSource from "../components/DataSource";
 import Back_Button from "../components/buttons/BackButton";
-import LogoMenu from "../components/logo-menu/LogoMenu";
-import Navigationbar from "../components/nav-bar/NavBar";
 import DesktopLayout from "../layouts/DesktopLayout";
 
 /**
@@ -127,11 +125,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
             {NotFoundContent}
           </DesktopLayout>
         ) : (
-          <>
-            <LogoMenu />
-            <Navigationbar />
-            {NotFoundContent}
-          </>
+          NotFoundContent
         )}
       </div>
     );
@@ -141,7 +135,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
   const pageContent = (
     <Box sx={{ pb: { xs: "100px", sm: 3 } }}>
       {/* Back button */}
-      <Box sx={{ pt: { xs: 1, sm: 1.5 }, px: 3 }}>
+      <Box sx={{ pt: { xs: 7, sm: 1.5 }, px: 3 }}>
         <Back_Button
           label="Zurück"
           onClick={() => navigate("/results")}
@@ -362,12 +356,8 @@ const StudyProgrammeDetailPage: React.FC = () => {
           {MainContent}
         </DesktopLayout>
       ) : (
-        // MOBILE VIEW: Logo menu and navigation bar are rendered outside the main content flow
-        <>
-          <LogoMenu />
-          <Navigationbar />
-          {MainContent}
-        </>
+        // MOBILE VIEW
+        MainContent
       )}
     </div>
   );
