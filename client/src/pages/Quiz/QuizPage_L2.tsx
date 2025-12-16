@@ -8,7 +8,7 @@ import { Stack } from "@mui/material";
 
 export interface QuizPageL2Props {
   previousIds: number[];
-  onNextLevel: () => void;
+  navigateToResults: () => void;
   oneLevelBack: () => void;
 }
 
@@ -34,17 +34,13 @@ export interface QuizPageL2Props {
  */
 const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   previousIds,
-  onNextLevel,
+  navigateToResults,
   oneLevelBack,
 }) => {
   // TODO: Remove both debugs once database works
   console.debug(
     "Will contain IDs from L1, once response from backend is successful:",
     previousIds,
-  );
-  console.debug(
-    "Will send user from L2 to L3 after finishing the questions, once response from backend is successful:",
-    onNextLevel,
   );
 
   const [questions, setQuestions] = useState<
@@ -198,7 +194,7 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
       const result = await res.json();
       setResponseCount(result.ids.length);
 
-      // TODO: Call onNextLevel with the received IDs once backend works and proceed to the next quiz level.
+      navigateToResults();
     } catch (err) {
       console.error("Error sending the data: ", err);
       setError({
