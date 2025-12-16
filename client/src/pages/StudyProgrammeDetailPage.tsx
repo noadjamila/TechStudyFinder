@@ -135,7 +135,22 @@ const StudyProgrammeDetailPage: React.FC = () => {
   const pageContent = (
     <Box sx={{ pb: { xs: "100px", sm: 3 } }}>
       {/* Back button */}
-      <Box sx={{ pt: { xs: 7, sm: 1.5 }, px: 3 }}>
+      <Box
+        sx={{
+          position: { xs: "fixed", sm: "static" },
+          top: { xs: 0, sm: "auto" },
+          left: { xs: 0, sm: "auto" },
+          right: { xs: 0, sm: "auto" },
+          zIndex: { xs: 1100, sm: "auto" },
+          backgroundColor: {
+            xs: theme.palette.background.default,
+            sm: "transparent",
+          },
+          pt: { xs: 6, sm: 1.5 },
+          px: 3,
+          pb: { xs: 1, sm: 0 },
+        }}
+      >
         <Back_Button
           label="Zurück"
           onClick={() => navigate("/results")}
@@ -152,7 +167,9 @@ const StudyProgrammeDetailPage: React.FC = () => {
         />
       </Box>
 
-      <DataSource />
+      <Box sx={{ pt: { xs: "80px", sm: 0 } }}>
+        <DataSource />
+      </Box>
 
       {/* Study programme card */}
       <Box sx={{ px: 3, pt: 5 }}>
