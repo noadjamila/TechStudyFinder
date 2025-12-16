@@ -55,11 +55,9 @@ const Homescreen: React.FC = () => {
     >
       {/* Main Title */}
       <Typography
+        variant="h2"
         className="title"
         sx={{
-          fontWeight: "bold",
-          fontSize: { xs: "1.8rem", md: "2.2rem" },
-          mb: 2,
           mt: { md: 3 },
         }}
       >

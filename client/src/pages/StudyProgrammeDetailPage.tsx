@@ -168,19 +168,18 @@ const StudyProgrammeDetailPage: React.FC = () => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "flex-start",
-              gap: { xs: 1, sm: 2 },
+              gap: { xs: 1.5, sm: 2 },
               marginBottom: 3,
             }}
           >
-            <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Box sx={{ flex: 1, minWidth: 0, maxWidth: "calc(100% - 40px)" }}>
               <Typography
                 variant="h2"
                 component="h1"
                 sx={{
-                  fontWeight: 700,
-                  marginBottom: 2,
                   color: theme.palette.text.header,
-                  fontSize: { xs: "1.5rem", sm: "2.5rem" },
+                  wordBreak: "break-word",
+                  overflowWrap: "break-word",
                 }}
               >
                 {programme.name}
