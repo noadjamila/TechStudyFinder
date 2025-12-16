@@ -1,6 +1,7 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, test, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, test, expect, vi, beforeEach } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 
 vi.mock("../Quiz/QuizPage_L1", () => ({
   __esModule: true,
@@ -28,39 +29,41 @@ vi.mock("../Quiz/QuizPage_L2", () => ({
   ),
 }));
 
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useParams: vi.fn(() => ({ level: "1" })),
+  };
+});
+
 import QuizFlow from "../Quiz/QuizFlow";
+import * as ReactRouterDOM from "react-router-dom";
 
 describe("QuizFlow", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   test("renders level 1 initially", () => {
-    render(<QuizFlow />);
+    vi.mocked(ReactRouterDOM.useParams).mockReturnValue({ level: "1" } as any);
+    render(
+      <MemoryRouter initialEntries={["/quiz/level/1"]}>
+        <QuizFlow />
+      </MemoryRouter>,
+    );
 
     expect(screen.getByText("Mock Level 1")).toBeInTheDocument();
   });
 
-  test("moves from level 1 to level 2 and passes ids from level 1", () => {
-    render(<QuizFlow />);
+  test("renders level 2 when level param is 2", () => {
+    vi.mocked(ReactRouterDOM.useParams).mockReturnValue({ level: "2" } as any);
+    render(
+      <MemoryRouter initialEntries={["/quiz/level/2"]}>
+        <QuizFlow />
+      </MemoryRouter>,
+    );
 
-    // Level 1 to level 2
-    fireEvent.click(screen.getByText("go-to-l2"));
-
-    expect(
-      screen.getByText("Mock Level 2 - previous IDs: 1,2"),
-    ).toBeInTheDocument();
-    expect(screen.queryByText("Mock Level 1")).not.toBeInTheDocument();
-  });
-
-  test("moves to level 3 (renders nothing) after level 2 onNextLevel", () => {
-    const { container } = render(<QuizFlow />);
-
-    // Level 1 to level 2
-    fireEvent.click(screen.getByText("go-to-l2"));
-    // Level 2 to level 3
-    fireEvent.click(screen.getByText("go-to-l3"));
-
-    expect(screen.queryByText("Mock Level 1")).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(/Mock Level 2 - previous IDs/),
-    ).not.toBeInTheDocument();
-    expect(container).toBeEmptyDOMElement();
+    expect(screen.getByText(/Mock Level 2 - previous IDs/)).toBeInTheDocument();
   });
 });
