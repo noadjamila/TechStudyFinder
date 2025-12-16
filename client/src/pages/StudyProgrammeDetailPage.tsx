@@ -82,7 +82,6 @@ const StudyProgrammeDetailPage: React.FC = () => {
           margin: "0 auto",
         }}
       >
-        <DataSource />
         <Box sx={{ padding: 3 }}>
           <Back_Button
             label="Zurück"
@@ -91,12 +90,14 @@ const StudyProgrammeDetailPage: React.FC = () => {
               marginBottom: 2,
             }}
           />
+        </Box>
+        <DataSource />
+        <Box sx={{ padding: 3, paddingTop: 0 }}>
           <Typography variant="h6">Studiengang nicht gefunden</Typography>
         </Box>
       </Box>
     ) : (
       <>
-        <DataSource />
         <Box sx={{ padding: 3 }}>
           <Back_Button
             label="Zurück"
@@ -105,6 +106,9 @@ const StudyProgrammeDetailPage: React.FC = () => {
               marginBottom: 2,
             }}
           />
+        </Box>
+        <DataSource />
+        <Box sx={{ padding: 3, paddingTop: 0 }}>
           <Typography variant="h6">Studiengang nicht gefunden</Typography>
         </Box>
       </>
@@ -135,187 +139,195 @@ const StudyProgrammeDetailPage: React.FC = () => {
 
   // Content that's the same for both desktop and mobile
   const pageContent = (
-    <Box sx={{ pt: 1, px: 3, pb: { xs: "100px", sm: 3 } }}>
+    <Box sx={{ pb: { xs: "100px", sm: 3 } }}>
       {/* Back button */}
-      <Back_Button
-        label="Zurück"
-        onClick={() => navigate("/results")}
-        sx={{
-          marginBottom: 3,
-          height: { xs: "35px", sm: "45px" },
-          fontSize: { xs: "0.80rem", sm: "1rem" },
-          "& .MuiButton-startIcon": {
-            "& .MuiSvgIcon-root": {
-              fontSize: { xs: 16, sm: 20 },
+      <Box sx={{ pt: { xs: 1, sm: 1.5 }, px: 3 }}>
+        <Back_Button
+          label="Zurück"
+          onClick={() => navigate("/results")}
+          sx={{
+            marginBottom: { xs: 0, sm: 1.5 },
+            height: { xs: "35px", sm: "45px" },
+            fontSize: { xs: "0.80rem", sm: "1rem" },
+            "& .MuiButton-startIcon": {
+              "& .MuiSvgIcon-root": {
+                fontSize: { xs: 16, sm: 20 },
+              },
             },
-          },
-        }}
-      />
+          }}
+        />
+      </Box>
+
+      <DataSource />
 
       {/* Study programme card */}
-      <Card
-        sx={{
-          padding: { xs: 2, sm: 4 },
-          backgroundColor: `${theme.palette.primary.main}33`,
-          boxShadow: 3,
-          borderRadius: 2,
-          marginBottom: 3,
-        }}
-      >
-        <CardContent sx={{ padding: 0, "&:last-child": { paddingBottom: 0 } }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              gap: { xs: 1.5, sm: 2 },
-              marginBottom: 3,
-            }}
+      <Box sx={{ px: 3 }}>
+        <Card
+          sx={{
+            padding: { xs: 2, sm: 4 },
+            backgroundColor: `${theme.palette.primary.main}33`,
+            boxShadow: 3,
+            borderRadius: 2,
+            marginBottom: 3,
+          }}
+        >
+          <CardContent
+            sx={{ padding: 0, "&:last-child": { paddingBottom: 0 } }}
           >
-            <Box sx={{ flex: 1, minWidth: 0, maxWidth: "calc(100% - 40px)" }}>
-              <Typography
-                variant="h2"
-                component="h1"
-                sx={{
-                  color: theme.palette.text.header,
-                  wordBreak: "break-word",
-                  overflowWrap: "break-word",
-                }}
-              >
-                {programme.name}
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                  marginBottom: 2,
-                }}
-              >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                gap: { xs: 1.5, sm: 2 },
+                marginBottom: 3,
+              }}
+            >
+              <Box sx={{ flex: 1, minWidth: 0, maxWidth: "calc(100% - 40px)" }}>
+                <Typography
+                  variant="h2"
+                  component="h1"
+                  sx={{
+                    color: theme.palette.text.header,
+                    wordBreak: "break-word",
+                    overflowWrap: "break-word",
+                  }}
+                >
+                  {programme.name}
+                </Typography>
                 <Box
                   sx={{
-                    width: 24,
-                    height: 24,
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
+                    gap: 0.5,
+                    marginBottom: 2,
                   }}
                 >
-                  <PlaceIcon
+                  <Box
                     sx={{
-                      fontSize: 24,
-                      color: theme.palette.text.subHeader,
+                      width: 24,
+                      height: 24,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
-                  />
+                  >
+                    <PlaceIcon
+                      sx={{
+                        fontSize: 24,
+                        color: theme.palette.text.subHeader,
+                      }}
+                    />
+                  </Box>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: theme.palette.text.subHeader,
+                      fontSize: "1.1rem",
+                    }}
+                  >
+                    {programme.university}
+                  </Typography>
                 </Box>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: theme.palette.text.subHeader,
-                    fontSize: "1.1rem",
-                  }}
-                >
-                  {programme.university}
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                }}
-              >
                 <Box
                   sx={{
-                    width: 24,
-                    height: 24,
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
+                    gap: 0.5,
                   }}
                 >
-                  <StarsIcon
+                  <Box
                     sx={{
-                      fontSize: 22,
+                      width: 24,
+                      height: 24,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <StarsIcon
+                      sx={{
+                        fontSize: 22,
+                        color: theme.palette.text.subHeader,
+                      }}
+                    />
+                  </Box>
+                  <Typography
+                    variant="body1"
+                    sx={{
                       color: theme.palette.text.subHeader,
+                      fontSize: "1.1rem",
+                    }}
+                  >
+                    {programme.degree}
+                  </Typography>
+                </Box>
+              </Box>
+              <IconButton
+                onClick={toggleFavorite}
+                aria-label={
+                  isFavorite
+                    ? "Aus Favoriten entfernen"
+                    : "Zu Favoriten hinzufügen"
+                }
+                sx={{
+                  padding: { xs: 0.25, sm: 1 },
+                  flexShrink: 0,
+                  "&:hover": {
+                    backgroundColor: "transparent",
+                  },
+                }}
+              >
+                {isFavorite ? (
+                  <FavoriteIcon
+                    sx={{
+                      color: theme.palette.secondary.main,
+                      fontSize: { xs: 24, sm: 36 },
                     }}
                   />
-                </Box>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: theme.palette.text.subHeader,
-                    fontSize: "1.1rem",
-                  }}
-                >
-                  {programme.degree}
-                </Typography>
-              </Box>
+                ) : (
+                  <FavoriteBorderIcon
+                    sx={{
+                      color: theme.palette.favorites.inactive,
+                      fontSize: { xs: 24, sm: 36 },
+                    }}
+                  />
+                )}
+              </IconButton>
             </Box>
-            <IconButton
-              onClick={toggleFavorite}
-              aria-label={
-                isFavorite
-                  ? "Aus Favoriten entfernen"
-                  : "Zu Favoriten hinzufügen"
-              }
-              sx={{
-                padding: { xs: 0.25, sm: 1 },
-                flexShrink: 0,
-                "&:hover": {
-                  backgroundColor: "transparent",
-                },
-              }}
-            >
-              {isFavorite ? (
-                <FavoriteIcon
-                  sx={{
-                    color: theme.palette.secondary.main,
-                    fontSize: { xs: 24, sm: 36 },
-                  }}
-                />
-              ) : (
-                <FavoriteBorderIcon
-                  sx={{
-                    color: theme.palette.favorites.inactive,
-                    fontSize: { xs: 24, sm: 36 },
-                  }}
-                />
-              )}
-            </IconButton>
-          </Box>
 
-          {/* Additional details section */}
-          <Box
-            sx={{
-              marginTop: { xs: 0, sm: 4 },
-            }}
-          >
-            <Typography
-              variant="h5"
+            {/* Additional details section */}
+            <Box
               sx={{
-                fontWeight: 600,
-                marginBottom: 2,
-                color: theme.palette.text.header,
+                marginTop: { xs: 0, sm: 4 },
               }}
             >
-              Studiengangs-Details
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                color: theme.palette.text.primary,
-                lineHeight: 1.8,
-              }}
-            >
-              Weitere Informationen zu diesem Studiengang werden hier angezeigt.
-              Dies kann eine Beschreibung des Studiengangs,
-              Zulassungsvoraussetzungen, Studiendauer und andere relevante
-              Details enthalten.
-            </Typography>
-          </Box>
-        </CardContent>
-      </Card>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: 600,
+                  marginBottom: 2,
+                  color: theme.palette.text.header,
+                }}
+              >
+                Studiengangs-Details
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: theme.palette.text.primary,
+                  lineHeight: 1.8,
+                }}
+              >
+                Weitere Informationen zu diesem Studiengang werden hier
+                angezeigt. Dies kann eine Beschreibung des Studiengangs,
+                Zulassungsvoraussetzungen, Studiendauer und andere relevante
+                Details enthalten.
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
     </Box>
   );
 
@@ -326,16 +338,13 @@ const StudyProgrammeDetailPage: React.FC = () => {
         width: "100%",
         maxWidth: 800,
         margin: "0 auto",
+        pt: 3,
       }}
     >
-      <DataSource />
       {pageContent}
     </Box>
   ) : (
-    <>
-      <DataSource />
-      {pageContent}
-    </>
+    <>{pageContent}</>
   );
 
   return (
