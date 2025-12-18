@@ -12,7 +12,7 @@ describe("Users Registration Endpoint", () => {
   });
 
   it("registers a new user with valid credentials", async () => {
-    const response = await request(app).post("/api/users/register").send({
+    const response = await request(app).post("/api/auth/register").send({
       username: "test_user1",
       password: "SecurePass123!",
     });
@@ -24,7 +24,7 @@ describe("Users Registration Endpoint", () => {
   });
 
   it("rejects registration with weak password (no special char)", async () => {
-    const response = await request(app).post("/api/users/register").send({
+    const response = await request(app).post("/api/auth/register").send({
       username: "test_user2",
       password: "WeakPass123",
     });
@@ -34,12 +34,12 @@ describe("Users Registration Endpoint", () => {
   });
 
   it("rejects registration with duplicate username", async () => {
-    await request(app).post("/api/users/register").send({
+    await request(app).post("/api/auth/register").send({
       username: "duplicate_user",
       password: "FirstPass123!",
     });
 
-    const response = await request(app).post("/api/users/register").send({
+    const response = await request(app).post("/api/auth/register").send({
       username: "duplicate_user",
       password: "SecondPass123!",
     });
@@ -49,7 +49,7 @@ describe("Users Registration Endpoint", () => {
   });
 
   it("rejects registration without username", async () => {
-    const response = await request(app).post("/api/users/register").send({
+    const response = await request(app).post("/api/auth/register").send({
       password: "ValidPass123!",
     });
 
@@ -58,7 +58,7 @@ describe("Users Registration Endpoint", () => {
   });
 
   it("rejects registration without password", async () => {
-    const response = await request(app).post("/api/users/register").send({
+    const response = await request(app).post("/api/auth/register").send({
       username: "test_user",
     });
 

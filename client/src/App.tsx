@@ -3,11 +3,13 @@ import { Routes, Route } from "react-router-dom";
 import QuizFlow from "./pages/Quiz/QuizFlow";
 import ResultsPage from "./pages/ResultsPage";
 import LevelSuccessScreen from "./components/quiz/level-success/LevelSuccessScreen";
+import Register from "./pages/Register/Register";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Homescreen />} />
+      <Route path="/register" element={<Register />} />
       <Route path="/quiz/level/:level" element={<QuizFlow />} />
       <Route path="/results" element={<ResultsPage />} />
 

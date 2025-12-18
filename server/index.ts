@@ -9,7 +9,7 @@ import "dotenv/config";
 import path from "path";
 import testRouter from "./src/routes/health.route";
 import quizRoutes from "./src/routes/quiz.route";
-import usersRoutes from "./src/routes/users.route";
+import authRoutes from "./src/routes/auth.route";
 import { pool } from "./db";
 import "express-async-errors";
 
@@ -38,7 +38,7 @@ app.use(express.json());
 // API routes
 app.use("/api", testRouter);
 app.use("/api/quiz", quizRoutes);
-app.use("/api/users", usersRoutes);
+app.use("/api/auth", authRoutes);
 
 // Test DB route
 app.get("/api/test-db", async (_req, res) => {
