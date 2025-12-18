@@ -49,6 +49,7 @@ const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
       sx={{
         backgroundColor: theme.palette.background.default,
         boxShadow: "none",
+        pt: 1.5,
         top: 0,
         zIndex: fixed ? 1100 : "auto",
       }}
