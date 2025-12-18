@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 type Level = 1 | 2 | 3 | 4;
 type Phase = "won" | "next";
@@ -54,6 +54,7 @@ export default function LevelSuccessScreen({
 }: LevelSuccessScreenProps) {
   const [phase, setPhase] = useState<Phase>("won");
   const navigate = useNavigate();
+  const location = useLocation();
   const config = LEVEL_CONFIG[currentLevel];
 
   useEffect(() => {
@@ -80,7 +81,7 @@ export default function LevelSuccessScreen({
       }
 
       if (currentLevel === 3) {
-        navigate("/results");
+        navigate("/results", { state: location.state });
       }
     }, 1200);
 

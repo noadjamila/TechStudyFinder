@@ -1,8 +1,10 @@
 import React from "react";
 import { useMediaQuery, useTheme, Box } from "@mui/material";
+import { useLocation } from "react-router-dom";
 import Results from "../components/quiz/Results";
 import DataSource from "../components/DataSource";
 import { StudyProgramme } from "../types/StudyProgramme.types";
+import { RiasecType } from "../types/RiasecTypes";
 import LogoMenu from "../components/logo-menu/LogoMenu";
 import Navigationbar from "../components/nav-bar/NavBar";
 import DesktopLayout from "../layouts/DesktopLayout";
@@ -11,6 +13,15 @@ const ResultsPage: React.FC = () => {
   const muiTheme = useTheme();
   const toggleSidebar = () => {};
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
+  const location = useLocation();
+
+  // Access RIASEC scores passed from QuizPage_L2 via navigation state
+  const riasecScores = location.state?.riasecScores as
+    | { type: RiasecType; score: number }[]
+    | undefined;
+
+  // TODO: Use riasecScores for filtering or displaying results
+  console.log("Received RIASEC scores:", riasecScores);
 
   const studyProgrammes: StudyProgramme[] = [
     {

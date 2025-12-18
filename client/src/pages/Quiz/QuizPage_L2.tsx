@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 
 export interface QuizPageL2Props {
   previousIds: number[];
-  navigateToResults: () => void;
   oneLevelBack: () => void;
 }
 
@@ -35,7 +34,6 @@ export interface QuizPageL2Props {
  */
 const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   previousIds,
-  navigateToResults,
   oneLevelBack,
 }) => {
   // TODO: Remove both debugs once database works
@@ -197,7 +195,7 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
       const result = await res.json();
       setResponseCount(result.ids.length);
 
-      navigateToResults();
+      // Navigation to /results happens via /level-success/3 screen
     } catch (err) {
       console.error("Error sending the data: ", err);
       setError({
@@ -242,11 +240,13 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   useEffect(() => {
     if (quizFinished) {
       const timer = setTimeout(() => {
-        navigate("/level-success/3");
+        navigate("/level-success/3", {
+          state: { riasecScores: highestScores },
+        });
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [quizFinished, navigate]);
+  }, [quizFinished, navigate, highestScores]);
 
   // In case of an error, display the ErrorScreen component.
   if (error != null) {

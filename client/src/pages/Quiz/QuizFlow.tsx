@@ -34,10 +34,6 @@ export default function QuizFlow() {
         oneLevelBack={() => {
           navigate("/quiz/level/1");
         }}
-        onNextLevel={() => {
-          navigate("/level-success/3");
-        }}
-        navigateToResults={() => navigate("/results")}
       />
     );
   }
