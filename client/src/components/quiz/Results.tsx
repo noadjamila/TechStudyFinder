@@ -102,12 +102,14 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
           <Stack
             direction={{ xs: "column", sm: "row" }}
             spacing={2}
-            alignItems={{ xs: "flex-start", sm: "center" }}
-            sx={{ marginBottom: 3 }}
+            alignItems={{ xs: "stretch", sm: "center" }}
+            sx={{ marginBottom: 3, width: "100%" }}
           >
             <FormControl
               sx={{
-                minWidth: { xs: 250, sm: 250 },
+                minWidth: { xs: "100%", sm: 250 },
+                maxWidth: { xs: "100%", sm: 400 },
+                flex: { sm: 1 },
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "25px",
                   backgroundColor: theme.palette.background.default,
@@ -125,7 +127,11 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   PaperProps: {
                     sx: {
                       backgroundColor: theme.palette.background.default,
+                      maxWidth: { xs: "calc(100vw - 32px)", sm: 400 },
                       "& .MuiMenuItem-root": {
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                         "&:hover": {
                           backgroundColor: `${theme.palette.primary.main}33`,
                         },
@@ -140,10 +146,18 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   },
                 }}
                 renderValue={(selected) => (
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      minWidth: 0,
+                    }}
+                  >
                     <PlaceIcon
                       sx={{
                         fontSize: 20,
+                        flexShrink: 0,
                       }}
                     />
                     <Typography
@@ -151,6 +165,9 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         color: selected
                           ? theme.palette.text.primary
                           : theme.palette.text.skipButton,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       {selected || "Universität/Hochschule"}
@@ -171,10 +188,30 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   },
                 }}
               >
-                <MenuItem value="">Alle Universitäten/Hochschulen</MenuItem>
+                <MenuItem value="">
+                  <Box
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      width: "100%",
+                    }}
+                  >
+                    Alle Universitäten/Hochschulen
+                  </Box>
+                </MenuItem>
                 {universities.map((university) => (
                   <MenuItem key={university} value={university}>
-                    {university}
+                    <Box
+                      sx={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        width: "100%",
+                      }}
+                    >
+                      {university}
+                    </Box>
                   </MenuItem>
                 ))}
               </Select>
@@ -182,7 +219,9 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
 
             <FormControl
               sx={{
-                minWidth: { xs: 250, sm: 250 },
+                minWidth: { xs: "100%", sm: 250 },
+                maxWidth: { xs: "100%", sm: 400 },
+                flex: { sm: 1 },
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "25px",
                   backgroundColor: theme.palette.background.default,
@@ -200,7 +239,11 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   PaperProps: {
                     sx: {
                       backgroundColor: theme.palette.background.default,
+                      maxWidth: { xs: "calc(100vw - 32px)", sm: 400 },
                       "& .MuiMenuItem-root": {
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                         "&:hover": {
                           backgroundColor: `${theme.palette.primary.main}33`,
                         },
@@ -215,10 +258,18 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   },
                 }}
                 renderValue={(selected) => (
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      minWidth: 0,
+                    }}
+                  >
                     <StarsIcon
                       sx={{
                         fontSize: 20,
+                        flexShrink: 0,
                       }}
                     />
                     <Typography
@@ -226,6 +277,9 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         color: selected
                           ? theme.palette.text.primary
                           : theme.palette.text.skipButton,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       {selected || "Abschluss"}
@@ -246,10 +300,30 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   },
                 }}
               >
-                <MenuItem value="">Alle Abschlüsse</MenuItem>
+                <MenuItem value="">
+                  <Box
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      width: "100%",
+                    }}
+                  >
+                    Alle Abschlüsse
+                  </Box>
+                </MenuItem>
                 {degrees.map((degree) => (
                   <MenuItem key={degree} value={degree}>
-                    {degree}
+                    <Box
+                      sx={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        width: "100%",
+                      }}
+                    >
+                      {degree}
+                    </Box>
                   </MenuItem>
                 ))}
               </Select>

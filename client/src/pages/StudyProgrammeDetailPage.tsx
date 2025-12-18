@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -30,6 +30,11 @@ const StudyProgrammeDetailPage: React.FC = () => {
   const muiTheme = useTheme();
   const toggleSidebar = () => {};
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
+
+  // Scroll to top when component mounts or id changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
 
   // Mock data - replace with actual data fetching based on ID
   const studyProgrammes: StudyProgramme[] = [
