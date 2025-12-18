@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Box, Alert } from "@mui/material";
+import { Box, Alert, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
+import BackButton from "../../components/buttons/BackButton";
 import FormField from "../../components/login-register/FormField";
 import FormHeader from "../../components/login-register/FormHeader";
 import theme from "../../theme/theme";
@@ -20,15 +21,15 @@ export default function Register() {
 
     // Validation
     if (!username.trim()) {
-      setError("Username is required");
+      setError("Bitte gib einen Username ein");
       return;
     }
     if (!password.trim()) {
-      setError("Password is required");
+      setError("Bitte gib ein Passwort ein");
       return;
     }
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError("Passwörter stimmen nicht überein");
       return;
     }
 
@@ -45,14 +46,18 @@ export default function Register() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Registration failed");
+        setError(data.error || "Registrierung fehlgeschlagen");
         return;
       }
 
-      // still needs a navigation to home or login page
-      navigate("/");
+      // Navigate to login page after successful registration
+      navigate("/login");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Ein unbekannter Fehler ist aufgetreten",
+      );
     } finally {
       setLoading(false);
     }
@@ -67,14 +72,25 @@ export default function Register() {
         alignItems: "center",
         minHeight: "100vh",
         padding: theme.spacing(2),
+        pt: { xs: 8, sm: 12, md: 16, lg: 18 },
+        pl: 2,
+        pr: 2,
+        pb: 4,
+        "@media (max-width: 375px)": {
+          pt: 6,
+          pb: 2,
+          pl: 2,
+          pr: 2,
+        },
       }}
     >
       <Box
         sx={{
           width: "100%",
-          maxWidth: "400px",
+          maxWidth: { xs: 360, sm: 400, md: 400 },
           position: "relative",
           zIndex: 1,
+          pb: { xs: 18, sm: 20, md: 22 },
         }}
       >
         <FormHeader />
@@ -109,7 +125,12 @@ export default function Register() {
           sx={{ mb: 3 }}
         />
 
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+          <BackButton
+            label="Zurück"
+            onClick={() => navigate("/")}
+            disabled={loading}
+          />
           <PrimaryButton
             label={loading ? "Registrierung..." : "Registrieren"}
             onClick={handleRegister}
@@ -118,6 +139,27 @@ export default function Register() {
               width: "auto",
             }}
           />
+        </Box>
+
+        <Box sx={{ textAlign: "center", mt: 3 }}>
+          <Typography variant="body2">
+            Bereits registriert?{" "}
+            <Typography
+              component="span"
+              variant="body2"
+              sx={{
+                color: theme.palette.text.primary,
+                cursor: "pointer",
+                fontWeight: "bold",
+                "&:hover": {
+                  textDecoration: "underline",
+                },
+              }}
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </Typography>
+          </Typography>
         </Box>
       </Box>
       <BottomHills />

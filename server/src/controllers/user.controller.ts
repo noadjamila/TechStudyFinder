@@ -17,9 +17,12 @@ export async function register(req: Request, res: Response) {
   }
 
   try {
+    console.log("[register] Attempting to register user:", username);
     const user = await registerUser(username, password);
+    console.log("[register] Registration successful for:", username);
     return res.status(201).json({ user });
   } catch (err: any) {
+    console.error("[register] Registration error:", err);
     const status = err?.status ?? 500;
     return res
       .status(status)

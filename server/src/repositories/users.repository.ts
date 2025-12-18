@@ -2,6 +2,7 @@ import { pool } from "../../db";
 import { UserRecord } from "../types/user";
 
 async function ensureUsersTable(): Promise<void> {
+  // First, try to create the table if it doesn't exist
   await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
@@ -10,6 +11,21 @@ async function ensureUsersTable(): Promise<void> {
       created_at TIMESTAMPTZ DEFAULT NOW()
     )
   `);
+
+  // Then, check if password_hash column exists, and add it if it doesn't
+  const result = await pool.query(`
+    SELECT column_name 
+    FROM information_schema.columns 
+    WHERE table_name = 'users' AND column_name = 'password_hash'
+  `);
+
+  if (result.rows.length === 0) {
+    // Column doesn't exist, add it
+    await pool.query(`
+      ALTER TABLE users ADD COLUMN password_hash TEXT NOT NULL DEFAULT ''
+    `);
+    console.log("[DB] Added password_hash column to users table");
+  }
 }
 
 export async function findByUsername(

@@ -20,13 +20,14 @@ export default function FormField({ label, sx, ...props }: TextFieldProps) {
           mb: 0,
           "& .MuiOutlinedInput-root": {
             borderRadius: "7px",
-            height: "40px",
+            height: "36px",
           },
           "& .MuiOutlinedInput-input": {
+            //fix for less padding in smaller height
             padding: "8px 12px",
             fontSize: "14px",
           },
-          ...sx, // Merge any custom sx passed in
+          ...sx,
         }}
         {...props}
         label=""
