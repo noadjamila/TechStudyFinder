@@ -50,11 +50,11 @@ const theme = createTheme({
     fontFamily: "Fira Sans, sans-serif",
     h2: {
       fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
-      fontSize: "2.2rem", // 40px on desktop
+      fontSize: "2.2rem", // 35.2px on desktop
       fontWeight: "bold",
       marginBottom: "16px", // 2 * 8px (MUI spacing unit)
       "@media (max-width:600px)": {
-        fontSize: "1.8rem", // 24px on mobile
+        fontSize: "1.8rem", // 28.8px on mobile
       },
     },
     h4: {

@@ -16,7 +16,7 @@ import StarsIcon from "@mui/icons-material/Stars";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 import theme from "../theme/theme";
 import DataSource from "../components/DataSource";
-import Back_Button from "../components/buttons/BackButton";
+import BackButton from "../components/buttons/BackButton";
 import DesktopLayout from "../layouts/DesktopLayout";
 
 /**
@@ -72,32 +72,10 @@ const StudyProgrammeDetailPage: React.FC = () => {
   };
 
   if (!programme) {
-    const NotFoundContent = isDesktop ? (
-      <Box
-        sx={{
-          width: "100%",
-          maxWidth: 800,
-          margin: "0 auto",
-        }}
-      >
-        <Box sx={{ padding: 3 }}>
-          <Back_Button
-            label="Zurück"
-            onClick={() => navigate("/results")}
-            sx={{
-              marginBottom: 2,
-            }}
-          />
-        </Box>
-        <DataSource />
-        <Box sx={{ padding: 3, paddingTop: 0 }}>
-          <Typography variant="h6">Studiengang nicht gefunden</Typography>
-        </Box>
-      </Box>
-    ) : (
+    const notFoundContent = (
       <>
         <Box sx={{ padding: 3 }}>
-          <Back_Button
+          <BackButton
             label="Zurück"
             onClick={() => navigate("/results")}
             sx={{
@@ -110,6 +88,20 @@ const StudyProgrammeDetailPage: React.FC = () => {
           <Typography variant="h6">Studiengang nicht gefunden</Typography>
         </Box>
       </>
+    );
+
+    const NotFoundContent = isDesktop ? (
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: 800,
+          margin: "0 auto",
+        }}
+      >
+        {notFoundContent}
+      </Box>
+    ) : (
+      notFoundContent
     );
 
     return (
@@ -146,12 +138,12 @@ const StudyProgrammeDetailPage: React.FC = () => {
             xs: theme.palette.background.default,
             sm: "transparent",
           },
-          pt: { xs: 6, sm: 1.5 },
+          pt: { xs: 6, sm: 1.5 }, // extra top padding for mobile to account for navbar
           px: 3,
           pb: { xs: 1, sm: 0 },
         }}
       >
-        <Back_Button
+        <BackButton
           label="Zurück"
           onClick={() => navigate("/results")}
           sx={{
@@ -168,6 +160,8 @@ const StudyProgrammeDetailPage: React.FC = () => {
       </Box>
 
       <Box sx={{ pt: { xs: "80px", sm: 0 } }}>
+        {" "}
+        {/* Offset for fixed back button on mobile */}
         <DataSource />
       </Box>
 

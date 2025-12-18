@@ -33,6 +33,13 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (clickable && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      navigate(`/study-programme/${programme.id}`);
+    }
+  };
+
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onToggleFavorite) {
@@ -55,6 +62,12 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
           : {},
       }}
       onClick={handleCardClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={clickable ? 0 : undefined}
+      role={clickable ? "button" : undefined}
+      aria-label={
+        clickable ? `Details anzeigen für ${programme.name}` : undefined
+      }
     >
       <CardContent sx={{ padding: 2 }}>
         <Box
@@ -148,7 +161,9 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
             <IconButton
               onClick={handleFavoriteClick}
               aria-label={
-                isFavorite ? "Remove from favorites" : "Add to favorites"
+                isFavorite
+                  ? "Aus Favoriten entfernen"
+                  : "Zu Favoriten hinzufügen"
               }
               sx={{ ml: 1, padding: { xs: 0.5, sm: 1 } }}
             >
