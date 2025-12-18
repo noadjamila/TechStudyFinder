@@ -29,54 +29,33 @@ The following mapping process is a combination of manuel and automatic mapping. 
 
 ## RIASEC Determination
 
-The scoring process is based on a checklist of characteristics for each RIASEC type. Each checkbox corresponds to a feature commonly found in the study area. The total number of checked boxes determines the score (1–5) for that type. This systematic approach ensures consistency, transparency, and ease of maintenance, allowing new study fields to be added or updated without disrupting the framework.
+To evaluate areas of study using the RIASEC model, each type is scored on a scale from **1 to 5**:
 
-**Example**: If you check 1 box under Realistic, the score is R = 1. Maximum score is 5.
+- 1 – The type does not apply at all
+- 5 – The type matches completely
+
+The RIASEC types represent different interests and strengths:
 
 ### R - Realistic
 
-- [ ] Practical work or manual tasks
-- [ ] Laboratory, machinery, or technical equipment
-- [ ] Engineering or craftsmanship activities
-- [ ] Agricultural work
-- [ ] Producing tangible, visible results
+_Practical, manual, technical, mechanical, or agricultural activities with visible results._
 
 ### I - Investigative
 
-- [ ] Analytical work, theory, or research
-- [ ] Mathematics, natural sciences, or technical analysis
-- [ ] Problem solving and model building
-- [ ] Experimentation and hypothesis testing
-- [ ] Critical thinking and data interpretation
+_Analytical, research, scientific activities; solving complex or theoretical problems._
 
 ### A - Artistic
 
-- [ ] Creative production (art, music, writing)
-- [ ] Design, visual arts, or digital media
-- [ ] Originality and innovation
-- [ ] Open-ended problem solving
-- [ ] Conceptual or aesthetic exploration
+_Creative expression through art, music, language, design_
 
 ### S - Social
 
-- [ ] Counseling or psychological support
-- [ ] Education or teaching
-- [ ] Healthcare or caregiving
-- [ ] Teamwork and collaboration
-- [ ] Communication and social engagement
+_Helping, teaching, advising, social interaction, empathy_
 
 ### E - Enterprising
 
-- [ ] Entrepreneurship or starting initiatives
-- [ ] Leadership or management
-- [ ] Organization and planning
-- [ ] Influencing or persuading others
-- [ ] Taking responsibility for projects
+_Lead, persuade, sell, organize, act entrepreneurially_
 
 ### C - Conventional
 
-- [ ] Office or administrative work
-- [ ] Data management or routine processes
-- [ ] Compliance with rules, laws, or regulations
-- [ ] Systematic record keeping
-- [ ] Standardized procedures and documentation
+_Structured, bureaucratic, organizational activities with clear guidelines_

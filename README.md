@@ -63,27 +63,21 @@ Run the application locally with the following steps:
 
 ## Initialize the Database
 
-To set up the database, follow the steps below:
+To set up and populate the database, follow these steps:
 
-1. **Create the tables**
-   Execute the SQL scripts for the required tables. To avoid dependency issues, run the institutions script first:
-
-- [Institution schema](server/db/schema/institutions.sql)
-- [Degree programme schema](server/db/schema/degreeprogrammes.sql)
-
-2. **Insert the data**
-   The data for institutions and degree programmes is provided via a private XML document.
-   To import this data into the database, run the following commands:
+1. Configure your environment variables:
+   Ensure your `.env` file contains the correct database connection details (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`).
+2. Store the XML files with the data under server/db/xml.
+3. Run the following command to create the necessary tables and to fill them with your XML and RIASEC data:
 
 ```bash
- cd server
- npx ts-node db/scripts/import_institutions.ts
+cd server
+npx ts-node db/scripts/init_data.ts
 ```
 
-```bash
- cd server
- npx ts-node db/scripts/import_degreeprogrammes.ts
-```
+After completing these steps, the database will be fully initialized and ready for use.
+
+**To update the data**, simply replace the XML files with new ones and run the `init_data.ts` script again. The table values will be overwritten with the new ones and the RIASEC values will be added again. If there are new areas of study in the data, you will receive a warning via the terminal that the table contains NULL values. You will then have to add the RIASEC values manually. See [here](docs/riasec-mapping.md) for an explanation of how to determine the RIASEC types.
 
 ## Tech Stack
 

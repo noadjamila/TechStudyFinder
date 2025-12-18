@@ -105,7 +105,7 @@ async function main() {
     console.error("No programmeDegrees found!");
     process.exit(1);
   }
-  console.log(`✅ ${degreeprogrammes.length} programmes found.`);
+  console.debug(`✅ ${degreeprogrammes.length} programmes found.`);
 
   // Prepare arrays for batch inserts
   const degrees: any[] = [];
@@ -368,7 +368,7 @@ async function main() {
     );
 
     await client.query("COMMIT");
-    console.log("Import succeeded!");
+    console.debug("Import succeeded!");
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("Import failed, rollback executed.", err);

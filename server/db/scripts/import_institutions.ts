@@ -102,7 +102,7 @@ async function main() {
     console.error("No institutions found!");
     process.exit(1);
   }
-  console.log(`✅ ${institutions.length} institutions found.`);
+  console.debug(`✅ ${institutions.length} institutions found.`);
 
   const hochschultypRows: any[][] = [];
   const traegerschaftRows: any[][] = [];
@@ -217,7 +217,7 @@ async function main() {
     );
 
     await client.query("COMMIT");
-    console.log("Import succeeded!");
+    console.debug("Import succeeded!");
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("Import failed, rollback executed.", err);
