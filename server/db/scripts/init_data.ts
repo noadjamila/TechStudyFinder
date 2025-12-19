@@ -23,7 +23,8 @@ function runCommand(command: string, cwd?: string, env?: NodeJS.ProcessEnv) {
       env: { ...process.env, ...env },
     });
   } catch (err) {
-    throw new Error(`Command failed: ${command} \n${err}`);
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    throw new Error(`Command failed: ${command} \n${errorMessage}`);
   }
 }
 
