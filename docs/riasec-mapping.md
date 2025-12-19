@@ -10,7 +10,7 @@ This allows us to match programmes to the individual preferences and interests o
 
 ## Mapping Process
 
-The following mapping process is a combination of manuel and automatic mapping. Due to the limited amount of information available about the degree programs, a mapping with an integrated AI is not possible (external information sourcing would be necessary). In order to make the application as maintainable as possible, mapping is carried out using the areas of study. These rarely change, and degree programs are subordinate to them. This means that when new degree programs are added, adaptation is no problem.
+The following mapping process is a combination of manual and automatic mapping. Due to the limited amount of information available about the degree programs, a mapping with an integrated AI is not possible (external information sourcing would be necessary). In order to make the application as maintainable as possible, mapping is carried out using the areas of study. These rarely change, and degree programs are subordinate to them. This means that when new degree programs are added, adaptation is no problem.
 
 ### Initial Data Situation
 
