@@ -1,81 +1,14 @@
 import fs from "fs";
 import { parseStringPromise } from "xml2js";
 import { Client } from "pg";
-import dotenv from "dotenv";
 import path from "path";
+import { getTextDe, getPhone, batchInsert } from "./xml_import_helpers";
 
-dotenv.config();
-
-// Extraxt german text from possible multilingual fields
-function getTextDe(nameField: any): string | null {
-  if (!nameField) return null;
-
-  const namesArray = Array.isArray(nameField) ? nameField : [nameField];
-
-  for (const n of namesArray) {
-    if (n?.lang === "de" && typeof n._ === "string") {
-      return n._.trim();
-    }
-    if (n?.lang === "de" && typeof n === "string") {
-      return n.trim();
-    }
-  }
-  return null;
-}
-
-// Extract phone and fax number with prefix from field
-function getPhone(field: any): string | null {
-  if (!field) return null;
-  const prefix = field.prefix || "";
-  const number = field._?.trim() || "";
-  const full = (prefix + number).trim();
-  return full.length > 0 ? full : null;
-}
-
-// Helper for batch-inserts
-async function batchInsert(
-  client: Client,
-  table: string,
-  columns: string[],
-  rows: any[][],
-  conflict?: string,
-) {
-  if (!rows.length) return;
-
-  const values: string[] = [];
-  const params: any[] = [];
-  let paramIndex = 1;
-
-  for (const row of rows) {
-    const placeholders = row.map(() => `$${paramIndex++}`);
-    values.push(`(${placeholders.join(",")})`);
-    params.push(...row);
-  }
-
-  const query = `
-    INSERT INTO ${table} (${columns.join(",")})
-    VALUES ${values.join(",")}
-    ${conflict ? `ON CONFLICT ${conflict} DO NOTHING` : ""}
-  `;
-  await client.query(query, params);
-}
-
-async function main() {
-  const client = new Client({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: Number(process.env.DB_PORT),
-  });
-
-  await client.connect();
-
-  const xmlPath = path.join("db/scripts", "../xml/institutions.xml");
+export async function importInstitutions(client: Client) {
+  const xmlPath = path.join(__dirname, "../xml/institutions.xml");
 
   if (!fs.existsSync(xmlPath)) {
-    console.error("XML file not found:", xmlPath);
-    process.exit(1);
+    throw new Error(`XML file not found: ${xmlPath}`);
   }
 
   const xmlData = fs.readFileSync(xmlPath, "utf-8");
@@ -99,8 +32,7 @@ async function main() {
     );
   }
   if (institutions.length === 0) {
-    console.error("No institutions found!");
-    process.exit(1);
+    throw new Error("No institutions found!");
   }
   console.debug(`✅ ${institutions.length} institutions found.`);
 
@@ -174,8 +106,6 @@ async function main() {
   }
 
   try {
-    await client.query("BEGIN");
-
     await batchInsert(
       client,
       "hochschultyp",
@@ -216,16 +146,9 @@ async function main() {
       "(id)",
     );
 
-    await client.query("COMMIT");
     console.debug("Import succeeded!");
   } catch (err) {
-    await client.query("ROLLBACK");
-    console.error("Import failed, rollback executed.", err);
-  } finally {
-    await client.end();
+    console.error("Import failed.", err);
+    throw err;
   }
 }
-
-main().catch((err) => {
-  console.error("Unexpected error:", err);
-});

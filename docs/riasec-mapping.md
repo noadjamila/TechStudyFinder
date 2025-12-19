@@ -10,7 +10,7 @@ This allows us to match programmes to the individual preferences and interests o
 
 ## Mapping Process
 
-The following mapping process is a combination of manual and automatic mapping. Due to the limited amount of information available about the degree programs, a mapping with an integrated AI is not possible (external information sourcing would be necessary). In order to make the application as maintainable as possible, mapping is carried out using the areas of study. These rarely change, and degree programs are subordinate to them. This means that when new degree programs are added, adaptation is no problem.
+The following mapping process is a combination of manual and automatic mapping. Due to the limited amount of information available about the degree programmes, a mapping with an integrated AI is not possible (external information sourcing would be necessary). In order to make the application as maintainable as possible, mapping is carried out using the areas of study. These rarely change, and degree programmes are subordinate to them. This means that when new degree programmes are added, adaptation is no problem.
 
 ### Initial Data Situation
 
@@ -25,7 +25,7 @@ The following mapping process is a combination of manual and automatic mapping. 
 2. Fine-tuning with disciplines
    - Automatically inherit the values of the associated area of study
    - Individual values can be overwritten if necessary
-3. Calculate the arithmetic mean of the RIASEC types for all disciplines in a degree program in order to obtain the scores for the degree programs
+3. Calculate the arithmetic mean of the RIASEC types for all disciplines in a degree programme in order to obtain the scores for the degree programmes
 
 ## RIASEC Determination
 
