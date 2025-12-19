@@ -189,13 +189,20 @@ runInTransaction(() => {
 
   // Import CSV data (RIASEC)
   console.debug("\n Importing CSV data");
+  const CSV_TABLE_MAP: Record<string, string> = {
+    "studiengebiete_riasec.csv": "studiengebiete",
+    "studienfelder_riasec.csv": "studienfelder",
+  };
   CSV_FILES.forEach((file) => {
     const csvPath = path.join(CSV_DIR, file);
     console.debug(`  - Importing ${file}`);
-    importRiasecCsv(
-      file === "studiengebiete_riasec.csv" ? "studiengebiete" : "studienfelder",
-      csvPath,
-    );
+    const tableName = CSV_TABLE_MAP[file];
+    if (!tableName) {
+      throw new Error(
+        `No table mapping configured for CSV file "${file}". Please update CSV_TABLE_MAP in init_data.ts.`,
+      );
+    }
+    importRiasecCsv(tableName, csvPath);
   });
 
   // NULL-Checks on studiengebiete
