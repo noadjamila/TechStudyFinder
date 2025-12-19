@@ -16,7 +16,7 @@ BEGIN
 
     IF null_count > 0 THEN
       RAISE NOTICE '⚠️ Table "%": % NULL values in column "%"',
-        'riasec_studiengebiete', null_count, r.column_name;
+        'studiengebiete', null_count, r.column_name;
     END IF;
   END LOOP;
 END
