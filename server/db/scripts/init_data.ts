@@ -52,9 +52,6 @@ async function main() {
         .filter((s) => s.length > 0);
 
       for (const stmt of statements) {
-        console.debug(
-          `  - Executing statement from ${file}, part ${statements.indexOf(stmt) + 1}`,
-        );
         await client.query(stmt);
       }
     }
