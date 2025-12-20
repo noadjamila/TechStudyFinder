@@ -131,4 +131,4 @@ process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection:", promise, "reason:", reason);
 });
 
-export { server, pool };
+export { app, server, pool };
