@@ -1,7 +1,15 @@
+import { findUserForLogin } from "../../repositories/auth.repository";
+
+jest.mock("../repositories/auth.repository", () => ({
+  findUserForLogin: jest.fn(),
+}));
+
 import express from "express";
 import session from "express-session";
 import request from "supertest";
 import authRouter from "../auth.route";
+
+const mockFindUserForLogin = findUserForLogin as jest.Mock;
 
 const buildApp = () => {
   const app = express();
@@ -31,6 +39,8 @@ describe("auth routes", () => {
   });
 
   it("returns 401 for invalid credentials", async () => {
+    mockFindUserForLogin.mockResolvedValueOnce(null);
+
     const app = buildApp();
 
     const res = await request(app)
