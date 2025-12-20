@@ -1,6 +1,6 @@
 import { findUserForLogin } from "../../repositories/auth.repository";
 
-jest.mock("../repositories/auth.repository", () => ({
+jest.mock("../../repositories/auth.repository", () => ({
   findUserForLogin: jest.fn(),
 }));
 
