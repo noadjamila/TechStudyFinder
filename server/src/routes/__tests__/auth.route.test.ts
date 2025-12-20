@@ -27,7 +27,10 @@ const buildApp = () => {
 };
 
 describe("auth routes", () => {
-  it("returns 200 and a session user for valid demo credentials", async () => {
+  it("returns 200 and a session user for valid credentials", async () => {
+    const mockFindUserForLogin = findUserForLogin as jest.Mock;
+    mockFindUserForLogin.mockResolvedValueOnce({ id: 1, username: "demo" });
+
     const app = buildApp();
 
     const res = await request(app)
