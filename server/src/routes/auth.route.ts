@@ -4,6 +4,21 @@ import { findUserForLogin } from "../repositories/auth.repository";
 export const authRouter = Router();
 
 /**
+ * GET /api/auth/me
+ * Response: { id: number, username: string }
+ * Retrieves the currently authenticated user's information.
+ * Errors:
+ * - 401: Not authenticated
+ */
+authRouter.get("/me", async (req: Request, res: Response) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  res.json(req.session.user);
+});
+
+/**
  * POST /api/auth/login
  * Body: { username: string, password: string }
  * Response: { message: string, user?: { id: number, username: string } }
@@ -13,7 +28,7 @@ export const authRouter = Router();
  * - 400: Missing credentials
  * - 401: Invalid credentials
  */
-authRouter.post("/login", async (req: any, res: any) => {
+authRouter.post("/login", async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
