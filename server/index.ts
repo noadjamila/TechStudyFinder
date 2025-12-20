@@ -12,6 +12,7 @@ import quizRoutes from "./src/routes/quiz.route";
 import { pool } from "./db";
 import "express-async-errors";
 import authRouter from "./src/routes/auth.route";
+import "./types/express-session";
 import session from "express-session";
 
 const isTesting =
