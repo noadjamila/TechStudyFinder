@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Response, Request, Router } from "express";
 import { findUserForLogin } from "../repositories/auth.repository";
 
 export const authRouter = Router();
@@ -38,8 +38,8 @@ authRouter.post("/login", async (req: any, res: any) => {
  * Errors:
  * - 500: Logout failed
  */
-authRouter.post("/logout", (req: any, res: any) => {
-  req.session.destroy((err: any) => {
+authRouter.post("/logout", (req: Request, res: Response) => {
+  req.session.destroy((err: Error | null) => {
     if (err) return res.status(500).json({ message: "Logout failed" });
     res.clearCookie("connect.sid");
     return res.status(200).json({ message: "Logout successful" });
