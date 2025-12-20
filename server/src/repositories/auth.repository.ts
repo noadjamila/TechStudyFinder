@@ -24,7 +24,7 @@ const hardcodedUsers: { id: number; username: string; password: string }[] = [
 export async function findUserForLogin(
   username: string,
   password: string,
-): Promise<Pick<AuthUser, "id" | "username"> | null> {
+): Promise<{ id: number; username: string } | null> {
   const localHit = hardcodedUsers.find(
     (u) => u.username === username && u.password === password,
   );
@@ -47,9 +47,10 @@ export async function findUserForLogin(
 export async function findUserByUsername(
   username: string,
 ): Promise<AuthUser | null> {
-  const { rows } = await pool.query(
+  const { rows } = await pool.query<AuthUser>(
     "SELECT id, username, password_hash FROM users WHERE username = $1",
     [username],
   );
+
   return rows[0] ?? null;
 }
