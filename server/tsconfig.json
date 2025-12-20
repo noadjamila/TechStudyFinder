@@ -13,6 +13,6 @@
     "sourceMap": true,
     "types": ["jest"]
   },
-  "include": ["src/**/*", "index.ts"],
+  "include": ["src/**/*", "index.ts", "db/scripts/**/*.ts", "jest.setup.ts"],
   "exclude": ["node_modules", "client", "**/*.test.ts"]
 }
