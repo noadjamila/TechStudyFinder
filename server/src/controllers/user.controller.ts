@@ -3,7 +3,13 @@ import {
   registerUser,
   validatePassword,
   validateUsername,
+  AppError,
 } from "../services/user.service";
+
+// Type guard to check if error is AppError
+function isAppError(error: unknown): error is AppError {
+  return error instanceof AppError;
+}
 
 // Controller function to handle user registration
 
@@ -35,11 +41,15 @@ export async function register(req: Request, res: Response) {
   try {
     const user = await registerUser(username, password);
     return res.status(201).json({ user });
-  } catch (err: any) {
-    console.error("[register] Registration error:", err);
-    const status = err?.status ?? 500;
-    return res
-      .status(status)
-      .json({ error: err?.message ?? "Registration failed" });
+  } catch (error: unknown) {
+    console.error("[register] Registration error:", error);
+
+    if (isAppError(error)) {
+      const status = error.status ?? 500;
+      return res.status(status).json({ error: error.message });
+    }
+
+    // Fallback for unknown error types
+    return res.status(500).json({ error: "Registration failed" });
   }
 }

@@ -3,6 +3,20 @@ import { createUser, findByUsername } from "../repositories/users.repository";
 import { PublicUser } from "../types/user";
 
 /**
+ * Custom error class with HTTP status code
+ * Used for API error responses
+ */
+export class AppError extends Error {
+  constructor(
+    message: string,
+    public status: number = 500,
+  ) {
+    super(message);
+    Object.setPrototypeOf(this, AppError.prototype);
+  }
+}
+
+/**
  * Validates username against security and format requirements
  * - Length: 5-30 characters
  * - Pattern: Must start and end with alphanumeric, can contain underscores/hyphens in middle
@@ -13,15 +27,21 @@ export function validateUsername(username: string): {
   message?: string;
 } {
   if (typeof username !== "string") {
-    return { valid: false, message: "Username must be a string." };
+    return { valid: false, message: "Username muss ein Text sein." };
   }
 
   if (username.length < 5) {
-    return { valid: false, message: "Username must be at least 5 characters." };
+    return {
+      valid: false,
+      message: "Username muss mindestens 5 Zeichen lang sein.",
+    };
   }
 
   if (username.length > 30) {
-    return { valid: false, message: "Username must be at most 30 characters." };
+    return {
+      valid: false,
+      message: "Username darf maximal 30 Zeichen lang sein.",
+    };
   }
 
   // Pattern: starts with alphanumeric, can contain alphanumeric/underscore/hyphen in middle, ends with alphanumeric
@@ -32,7 +52,7 @@ export function validateUsername(username: string): {
     return {
       valid: false,
       message:
-        "Username must start and end with alphanumeric characters. Only letters, numbers, underscores, and hyphens are allowed.",
+        "Username muss mit einem Buchstaben oder einer Zahl beginnen und enden. Nur Buchstaben, Zahlen, Unterstriche und Bindestriche sind erlaubt.",
     };
   }
 
@@ -44,30 +64,33 @@ export function validatePassword(password: string): {
   message?: string;
 } {
   if (typeof password !== "string" || password.length < 8) {
-    return { valid: false, message: "Password must be at least 8 characters." };
+    return {
+      valid: false,
+      message: "Passwort muss mindestens 8 Zeichen lang sein.",
+    };
   }
   if (password.length > 72) {
     return {
       valid: false,
-      message: "Password must be at most 72 characters.",
+      message: "Passwort darf maximal 72 Zeichen lang sein.",
     };
   }
   if (!/[A-Za-z]/.test(password)) {
     return {
       valid: false,
-      message: "Password must contain at least one letter.",
+      message: "Passwort muss mindestens einen Buchstaben enthalten.",
     };
   }
   if (!/\d/.test(password)) {
     return {
       valid: false,
-      message: "Password must contain at least one number.",
+      message: "Passwort muss mindestens eine Zahl enthalten.",
     };
   }
   if (!/[^A-Za-z0-9]/.test(password)) {
     return {
       valid: false,
-      message: "Password must contain at least one special character.",
+      message: "Passwort muss mindestens ein Sonderzeichen enthalten.",
     };
   }
   return { valid: true };
@@ -97,9 +120,7 @@ export async function registerUser(
 ): Promise<PublicUser> {
   const existing = await findByUsername(username);
   if (existing) {
-    const error: any = new Error("username already in use");
-    error.status = 409;
-    throw error;
+    throw new AppError("username already in use", 409);
   }
 
   const passwordHash = await hashPassword(password);

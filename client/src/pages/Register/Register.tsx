@@ -8,6 +8,44 @@ import FormHeader from "../../components/login-register/FormHeader";
 import theme from "../../theme/theme";
 import BottomHills from "../../components/login-register/BottomHills";
 
+// Password validation rules (must match server-side)
+function validatePassword(password: string): {
+  valid: boolean;
+  message?: string;
+} {
+  if (!password || password.length < 8) {
+    return {
+      valid: false,
+      message: "Passwort muss mindestens 8 Zeichen lang sein.",
+    };
+  }
+  if (password.length > 72) {
+    return {
+      valid: false,
+      message: "Passwort darf maximal 72 Zeichen lang sein.",
+    };
+  }
+  if (!/[A-Za-z]/.test(password)) {
+    return {
+      valid: false,
+      message: "Passwort muss mindestens einen Buchstaben enthalten.",
+    };
+  }
+  if (!/\d/.test(password)) {
+    return {
+      valid: false,
+      message: "Passwort muss mindestens eine Zahl enthalten.",
+    };
+  }
+  if (!/[^A-Za-z0-9]/.test(password)) {
+    return {
+      valid: false,
+      message: "Passwort muss mindestens ein Sonderzeichen enthalten.",
+    };
+  }
+  return { valid: true };
+}
+
 // Registration page component
 export default function Register() {
   const navigate = useNavigate();
@@ -29,6 +67,14 @@ export default function Register() {
       setError("Bitte gib ein Passwort ein");
       return;
     }
+
+    // Validate password strength
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.valid) {
+      setError(passwordValidation.message || "Password is invalid");
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError("Passwörter stimmen nicht überein");
       return;
@@ -51,6 +97,7 @@ export default function Register() {
         if (response.status === 409) {
           setError("Username existiert bereits");
         } else {
+          // Server errors are already in German
           setError(data.error || "Registrierung fehlgeschlagen");
         }
         return;
@@ -145,7 +192,8 @@ export default function Register() {
               !username.trim() ||
               !password.trim() ||
               !confirmPassword.trim() ||
-              password !== confirmPassword
+              password !== confirmPassword ||
+              !validatePassword(password).valid
             }
             sx={{
               width: "auto",
