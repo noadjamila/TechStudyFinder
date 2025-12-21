@@ -9,7 +9,7 @@ export default function BottomHills() {
         bottom: 0,
         left: 0,
         width: "100%",
-        height: { xs: 80, sm: 100, md: 120, lg: 150 },
+        height: { xs: "12vh", sm: "23vh", md: "18vh", lg: "18vh" },
         display: "flex",
         zIndex: 0,
       }}
@@ -25,8 +25,18 @@ export default function BottomHills() {
           sx={{
             flex: 1,
             backgroundColor: color,
-            borderTopLeftRadius: "50% 35%",
-            borderTopRightRadius: "50% 35%",
+            borderTopLeftRadius: {
+              xs: "50% 60%",
+              sm: "50% 40%",
+              md: "50% 50%",
+              lg: "50% 80%",
+            },
+            borderTopRightRadius: {
+              xs: "50% 60%",
+              sm: "50% 40%",
+              md: "50% 50%",
+              lg: "50% 80%",
+            },
           }}
         />
       ))}
@@ -38,12 +48,11 @@ export default function BottomHills() {
         alt="Mascot"
         sx={{
           position: "absolute",
-          bottom: 0,
-          left: { xs: "30%", md: "30%" },
-          width: { xs: 60, md: 80, lg: 100 },
+          bottom: "100%",
+          left: { xs: "30%", sm: "35%", md: "33%", lg: "35%" },
+          width: { xs: 60, sm: 55, md: 55, lg: 55 },
           zIndex: 1,
           objectFit: "contain",
-          pb: 9.8,
         }}
       />
     </Box>
