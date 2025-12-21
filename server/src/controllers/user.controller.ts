@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { registerUser, validatePassword } from "../services/user.service";
+import { registerUser, validatePassword, validateUsername } from "../services/user.service";
 
 // Controller function to handle user registration
 
@@ -11,6 +11,11 @@ export async function register(req: Request, res: Response) {
   }
   if (!password || typeof password !== "string") {
     return res.status(400).json({ error: "Invalid password" });
+  }
+
+  const user = validateUsername(username);
+  if (!user.valid) {
+    return res.status(400).json({ error: user.message });
   }
 
   const pw = validatePassword(password);

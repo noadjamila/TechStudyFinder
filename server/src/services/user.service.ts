@@ -2,6 +2,35 @@ import bcrypt from "bcrypt";
 import { createUser, findByUsername } from "../repositories/users.repository";
 import { PublicUser } from "../types/user";
 
+export function validateUsername(username: string): {
+  valid: boolean;
+  message?: string;
+} {
+  if (typeof username !== "string" || username.trim().length === 0) {
+    return { valid: false, message: "Username is required." };
+  }
+
+  const trimmedUsername = username.trim();
+
+  if (trimmedUsername.length < 3) {
+    return { valid: false, message: "Username must be at least 3 characters." };
+  }
+
+  if (trimmedUsername.length > 30) {
+    return { valid: false, message: "Username must not exceed 30 characters." };
+  }
+
+  // Allow alphanumeric characters, underscores, and hyphens
+  if (!/^[a-zA-Z0-9_-]+$/.test(trimmedUsername)) {
+    return {
+      valid: false,
+      message: "Username can only contain letters, numbers, underscores, and hyphens.",
+    };
+  }
+
+  return { valid: true };
+}
+
 export function validatePassword(password: string): {
   valid: boolean;
   message?: string;

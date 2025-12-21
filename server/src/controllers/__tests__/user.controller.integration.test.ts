@@ -68,4 +68,95 @@ describe("Users Registration Endpoint - Integration Tests", () => {
     expect(response.status).toBe(409);
     expect(response.body.error).toContain("username");
   });
+
+  it("rejects registration with invalid username - too short", async () => {
+    if (!dbAvailable) {
+      console.warn("Skipping test - database not available");
+      return;
+    }
+
+    const response = await request(app).post("/api/auth/register").send({
+      username: "ab",
+      password: "ValidPass123!",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toContain("at least 3 characters");
+  });
+
+  it("rejects registration with invalid username - too long", async () => {
+    if (!dbAvailable) {
+      console.warn("Skipping test - database not available");
+      return;
+    }
+
+    const response = await request(app).post("/api/auth/register").send({
+      username: "a".repeat(31),
+      password: "ValidPass123!",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toContain("must not exceed 30 characters");
+  });
+
+  it("rejects registration with invalid username - special characters", async () => {
+    if (!dbAvailable) {
+      console.warn("Skipping test - database not available");
+      return;
+    }
+
+    const response = await request(app).post("/api/auth/register").send({
+      username: "user@name",
+      password: "ValidPass123!",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toContain("can only contain");
+  });
+
+  it("rejects registration with SQL injection attempt in username", async () => {
+    if (!dbAvailable) {
+      console.warn("Skipping test - database not available");
+      return;
+    }
+
+    const response = await request(app).post("/api/auth/register").send({
+      username: "admin'; DROP TABLE users--",
+      password: "ValidPass123!",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toContain("can only contain");
+  });
+
+  it("rejects registration with XSS attempt in username", async () => {
+    if (!dbAvailable) {
+      console.warn("Skipping test - database not available");
+      return;
+    }
+
+    const response = await request(app).post("/api/auth/register").send({
+      username: "<script>alert('xss')</script>",
+      password: "ValidPass123!",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toContain("can only contain");
+  });
+
+  it("accepts registration with valid username containing underscores and hyphens", async () => {
+    if (!dbAvailable) {
+      console.warn("Skipping test - database not available");
+      return;
+    }
+
+    const response = await request(app).post("/api/auth/register").send({
+      username: "user_name-123",
+      password: "ValidPass123!",
+    });
+
+    expect(response.status).toBe(201);
+    expect(response.body.user).toBeDefined();
+    expect(response.body.user.username).toBe("user_name-123");
+  });
 });
