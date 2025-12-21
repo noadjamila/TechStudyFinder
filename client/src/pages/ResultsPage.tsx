@@ -20,39 +20,84 @@ const ResultsPage: React.FC = () => {
     | { type: RiasecType; score: number }[]
     | undefined;
 
-  // TODO: Use riasecScores for filtering or displaying results
   console.log("Received RIASEC scores:", riasecScores);
 
   const studyProgrammes: StudyProgramme[] = [
     {
       id: 1,
       name: "Communication Systems and Networks",
-      university: "Technische Hochschule Köln",
-      degree: "Master",
+      hochschule: "Technische Universität Berlin",
+      abschluss: "Master of Science",
+      homepage:
+        "https://www.tu.berlin/en/studying/study-programs/all-study-programs/communication-systems-and-networks-msc/",
+      studienbeitrag: "300 EUR per semester",
+      beitrag_kommentar: "Includes semester ticket for public transport",
+      anmerkungen: "Focus on modern communication technologies",
+      regelstudienzeit: "4 semesters",
+      zulassungssemester: "Winter semester",
+      zulassungsmodus: "Direct admission",
+      zulassungsvoraussetzungen:
+        "Bachelor's degree in related field, proof of English proficiency",
+      zulassungslink:
+        "https://www.tu.berlin/en/studying/application-admission/online-application/",
+      schwerpunkte: ["Wireless Communications", "Network Security", "IoT"],
+      sprachen: ["English", "German"],
+      standorte: ["Berlin"],
+      studienfelder: ["Engineering", "Computer Science"],
+      studienform: "Full-time",
     },
     {
       id: 2,
       name: "Betriebliche Umweltinformatik",
-      university: "Hochschule für Technik und Wirtschaft Berlin",
-      degree: "Master",
+      hochschule: "Hochschule für Technik und Wirtschaft Berlin",
+      abschluss: "Bachelor of Engineering",
+      homepage:
+        "https://www.htw-berlin.de/studium/studienangebot/betriebliche-umweltinformatik-b-eng/",
+      studienbeitrag: "300 EUR per semester",
+      beitrag_kommentar: "Includes semester ticket for public transport",
+      anmerkungen: "Combination of environmental science and IT",
+      regelstudienzeit: "7 semesters",
+      zulassungssemester: "Winter semester",
+      zulassungsmodus: "Direct admission",
+      zulassungsvoraussetzungen:
+        "General university entrance qualification, proof of German proficiency",
+      zulassungslink:
+        "https://www.htw-berlin.de/studium/bewerbung-und-zulassung/bewerbung/",
+      schwerpunkte: [
+        "Environmental Data Management",
+        "Sustainability Reporting",
+      ],
+      sprachen: ["German"],
+      standorte: ["Berlin"],
+      studienfelder: ["Environmental Science", "Information Technology"],
+      studienform: "Full-time",
     },
     {
       id: 3,
       name: "Informatik",
-      university: "Rheinische Friedrich-Wilhelms-Universität Bonn",
-      degree: "Bachelor of Science",
-    },
-    {
-      id: 4,
-      name: "Medieninformatik",
-      university: "Universität zu Lübeck",
-      degree: "Bachelor of Science",
-    },
-    {
-      id: 5,
-      name: "Data Science",
-      university: "Ludwig-Maximilians-Universität München",
-      degree: "Master of Science",
+      hochschule: "Rheinische Friedrich-Wilhelms-Universität Bonn",
+      abschluss: "Bachelor of Science",
+      homepage:
+        "https://www.uni-bonn.de/en/study/study-programs/all-study-programs/informatics-bsc",
+      studienbeitrag: "300 EUR per semester",
+      beitrag_kommentar: "Includes semester ticket for public transport",
+      anmerkungen: "Strong theoretical foundation",
+      regelstudienzeit: "6 semesters",
+      zulassungssemester: "Winter semester",
+      zulassungsmodus: "Direct admission",
+      zulassungsvoraussetzungen:
+        "General university entrance qualification, proof of German proficiency",
+      zulassungslink:
+        "https://www.uni-bonn.de/en/study/application-admission/online-application/",
+      schwerpunkte: [
+        "Algorithms",
+        "Software Engineering",
+        "Artificial Intelligence",
+      ],
+      sprachen: ["German", "English"],
+      standorte: ["Bonn"],
+      studienfelder: ["Computer Science"],
+      studienform: "Full-time",
     },
   ]; // Replace with actual data retrieval logic
 

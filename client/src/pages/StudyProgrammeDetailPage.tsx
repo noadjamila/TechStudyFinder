@@ -36,40 +36,8 @@ const StudyProgrammeDetailPage: React.FC = () => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  // Mock data - replace with actual data fetching based on ID
-  const studyProgrammes: StudyProgramme[] = [
-    {
-      id: 1,
-      name: "Communication Systems and Networks",
-      university: "Technische Hochschule Köln",
-      degree: "Master",
-    },
-    {
-      id: 2,
-      name: "Betriebliche Umweltinformatik",
-      university: "Hochschule für Technik und Wirtschaft Berlin",
-      degree: "Master",
-    },
-    {
-      id: 3,
-      name: "Informatik",
-      university: "Rheinische Friedrich-Wilhelms-Universität Bonn",
-      degree: "Bachelor of Science",
-    },
-    {
-      id: 4,
-      name: "Medieninformatik",
-      university: "Universität zu Lübeck",
-      degree: "Bachelor of Science",
-    },
-    {
-      id: 5,
-      name: "Data Science",
-      university: "Ludwig-Maximilians-Universität München",
-      degree: "Master of Science",
-    },
-  ];
-
+  // Mock data - replace with data from results page
+  const studyProgrammes: StudyProgramme[] = [];
   const programme = studyProgrammes.find((p) => p.id === Number(id));
 
   const toggleFavorite = () => {
@@ -236,7 +204,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                       fontSize: "1.1rem",
                     }}
                   >
-                    {programme.university}
+                    {programme.hochschule}
                   </Typography>
                 </Box>
                 <Box
@@ -269,7 +237,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                       fontSize: "1.1rem",
                     }}
                   >
-                    {programme.degree}
+                    {programme.abschluss}
                   </Typography>
                 </Box>
               </Box>
