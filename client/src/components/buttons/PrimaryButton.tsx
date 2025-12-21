@@ -21,12 +21,15 @@ export default function PrimaryButton({
   label,
   onClick: action,
   ariaText,
+  disabled,
+  ...rest
 }: PrimaryButtonProps) {
   return (
     <Button
       aria-label={ariaText}
-      variant="outlined"
+      variant="contained"
       onClick={action}
+      disabled={disabled}
       sx={{
         bgcolor: theme.palette.primary.main,
         borderColor: theme.palette.primary.main,
@@ -35,10 +38,18 @@ export default function PrimaryButton({
         padding: "8px 16px",
         borderRadius: "9px",
         fontWeight: "normal",
-        "&:hover": {
-          bgcolor: theme.palette.decorative.blueDark,
+        "&:hover:not(:disabled)": {
+          color: theme.palette.decorative.blueDark,
+        },
+        "&:disabled": {
+          bgcolor: theme.palette.primary.main,
+          borderColor: theme.palette.primary.main,
+          color: theme.palette.text.primary,
+          opacity: 0.5,
+          cursor: "not-allowed",
         },
       }}
+      {...rest}
     >
       {label}
     </Button>
