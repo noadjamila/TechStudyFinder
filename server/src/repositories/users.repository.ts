@@ -22,7 +22,7 @@ async function ensureUsersTable(): Promise<void> {
   if (result.rows.length === 0) {
     // Column doesn't exist, add it
     await pool.query(`
-      ALTER TABLE users ADD COLUMN password_hash TEXT NOT NULL DEFAULT ''
+      ALTER TABLE users ADD COLUMN password_hash TEXT NOT NULL
     `);
     console.log("[DB] Added password_hash column to users table");
   }
