@@ -8,8 +8,7 @@ describe("validateUsername", () => {
       "user123",
       "test_user",
       "admin-user",
-      "john_doe-2024",
-      "a1b",
+      "a1b2c",
       "User123",
     ];
     validUsernames.forEach((username) => {
@@ -18,10 +17,10 @@ describe("validateUsername", () => {
     });
   });
 
-  it("rejects usernames shorter than 3 characters", () => {
-    const result = validateUsername("ab");
+  it("rejects usernames shorter than 5 characters", () => {
+    const result = validateUsername("test");
     expect(result.valid).toBe(false);
-    expect(result.message).toContain("at least 3 characters");
+    expect(result.message).toContain("at least 5 characters");
   });
 
   it("rejects usernames longer than 30 characters", () => {

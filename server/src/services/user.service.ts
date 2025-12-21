@@ -4,7 +4,7 @@ import { PublicUser } from "../types/user";
 
 /**
  * Validates username against security and format requirements
- * - Length: 3-30 characters
+ * - Length: 5-30 characters
  * - Pattern: Must start and end with alphanumeric, can contain underscores/hyphens in middle
  * - Prevents SQL injection, XSS, and confusing patterns
  */
@@ -16,8 +16,8 @@ export function validateUsername(username: string): {
     return { valid: false, message: "Username must be a string." };
   }
 
-  if (username.length < 3) {
-    return { valid: false, message: "Username must be at least 3 characters." };
+  if (username.length < 5) {
+    return { valid: false, message: "Username must be at least 5 characters." };
   }
 
   if (username.length > 30) {
@@ -26,7 +26,8 @@ export function validateUsername(username: string): {
 
   // Pattern: starts with alphanumeric, can contain alphanumeric/underscore/hyphen in middle, ends with alphanumeric
   // This prevents SQL injection, XSS, and confusing patterns like __admin or --user
-  const usernamePattern = /^[a-zA-Z0-9]([a-zA-Z0-9_-]*[a-zA-Z0-9])?$/;
+  // For 5+ character requirement: first char + (middle chars* + last char)
+  const usernamePattern = /^[a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]$/;
   if (!usernamePattern.test(username)) {
     return {
       valid: false,

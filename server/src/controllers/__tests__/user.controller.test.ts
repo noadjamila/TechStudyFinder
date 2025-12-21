@@ -14,12 +14,12 @@ describe("Users Registration Endpoint - Unit Tests", () => {
 
   it("rejects registration with username too short", async () => {
     const response = await request(app).post("/api/auth/register").send({
-      username: "ab",
+      username: "user",
       password: "ValidPass123!",
     });
 
     expect(response.status).toBe(400);
-    expect(response.body.error).toContain("at least 3 characters");
+    expect(response.body.error).toContain("at least 5 characters");
   });
 
   it("rejects registration with username too long", async () => {
