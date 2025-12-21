@@ -8,6 +8,7 @@ import FormHeader from "../../components/login-register/FormHeader";
 import theme from "../../theme/theme";
 import BottomHills from "../../components/login-register/BottomHills";
 
+// Registration page component
 export default function Register() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -19,7 +20,7 @@ export default function Register() {
   const handleRegister = async () => {
     setError(null);
 
-    // Validation
+    // Validation of Username and Password
     if (!username.trim()) {
       setError("Bitte gib einen Username ein");
       return;
@@ -46,13 +47,19 @@ export default function Register() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Registrierung fehlgeschlagen");
+        // Handle specific error responses from the server
+        if (response.status === 409) {
+          setError("Username existiert bereits");
+        } else {
+          setError(data.error || "Registrierung fehlgeschlagen");
+        }
         return;
       }
 
       // Navigate to login page after successful registration
       navigate("/login");
     } catch (err) {
+      console.error("[Register] Error:", err);
       setError(
         err instanceof Error
           ? err.message

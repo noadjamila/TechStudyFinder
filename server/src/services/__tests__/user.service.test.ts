@@ -1,5 +1,7 @@
 import { validatePassword } from "../user.service";
 
+// Unit tests for password validation logic
+
 describe("validatePassword", () => {
   it("validates strong passwords", () => {
     const tests = ["Password123!", "MySecure@Pass99", "Test1234#Secure"];

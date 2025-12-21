@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { registerUser, validatePassword } from "../services/user.service";
 
+// Controller function to handle user registration
+
 export async function register(req: Request, res: Response) {
   const { username, password } = req.body ?? {};
 
@@ -15,6 +17,8 @@ export async function register(req: Request, res: Response) {
   if (!pw.valid) {
     return res.status(400).json({ error: pw.message });
   }
+
+  // Attempt to register the user
 
   try {
     console.log("[register] Attempting to register user:", username);

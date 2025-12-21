@@ -3,6 +3,7 @@ import theme from "../../theme/theme";
 
 export default function BottomHills() {
   return (
+    // Container for the bottom hills, colors used from theme
     <Box
       sx={{
         position: "absolute",
