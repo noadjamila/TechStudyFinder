@@ -59,7 +59,6 @@ export default function Register() {
       // Navigate to login page after successful registration
       navigate("/login");
     } catch (err) {
-      console.error("[Register] Error:", err);
       setError(
         err instanceof Error
           ? err.message
