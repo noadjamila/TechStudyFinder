@@ -13,9 +13,9 @@ export async function register(req: Request, res: Response) {
     return res.status(400).json({ error: "Invalid password" });
   }
 
-  const pw = validatePassword(password);
-  if (!pw.valid) {
-    return res.status(400).json({ error: pw.message });
+  const passwordValidation = validatePassword(password);
+  if (!passwordValidation.valid) {
+    return res.status(400).json({ error: passwordValidation.message });
   }
 
   // Attempt to register the user
