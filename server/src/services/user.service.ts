@@ -9,6 +9,12 @@ export function validatePassword(password: string): {
   if (typeof password !== "string" || password.length < 8) {
     return { valid: false, message: "Password must be at least 8 characters." };
   }
+  if (password.length > 72) {
+    return {
+      valid: false,
+      message: "Password must be at most 72 characters.",
+    };
+  }
   if (!/[A-Za-z]/.test(password)) {
     return {
       valid: false,
