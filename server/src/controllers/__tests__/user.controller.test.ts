@@ -4,11 +4,21 @@ import { app } from "../../../index";
 
 describe("Users Registration Endpoint", () => {
   beforeEach(async () => {
-    await pool.query(`DROP TABLE IF EXISTS users`);
+    try {
+      await pool.query(`DROP TABLE IF EXISTS users`);
+    } catch (err) {
+      // Ignore errors if pool is not available in test environment
+      console.warn("Could not drop users table in beforeEach", err);
+    }
   });
 
   afterAll(async () => {
-    await pool.query(`DROP TABLE IF EXISTS users`);
+    try {
+      await pool.query(`DROP TABLE IF EXISTS users`);
+    } catch (err) {
+      // Ignore errors if pool is not available in test environment
+      console.warn("Could not drop users table in afterAll", err);
+    }
   });
 
   it("registers a new user with valid credentials", async () => {
