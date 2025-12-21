@@ -140,7 +140,13 @@ export default function Register() {
           <PrimaryButton
             label={loading ? "Registrierung..." : "Registrieren"}
             onClick={handleRegister}
-            disabled={loading}
+            disabled={
+              loading ||
+              !username.trim() ||
+              !password.trim() ||
+              !confirmPassword.trim() ||
+              password !== confirmPassword
+            }
             sx={{
               width: "auto",
             }}
