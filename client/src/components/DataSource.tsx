@@ -15,6 +15,7 @@ export default function DataSource() {
         maxWidth: 800,
         margin: { xs: "0 auto", sm: "0" },
         padding: 3,
+        pb: 0,
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
@@ -50,7 +51,6 @@ export default function DataSource() {
         align="left"
         sx={{
           maxWidth: 600,
-          px: 2,
         }}
       >
         Die Informationen über die Hochschulen und deren Studienangebote werden

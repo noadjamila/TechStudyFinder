@@ -2,22 +2,17 @@ import React, { useState, useMemo } from "react";
 import {
   Box,
   Typography,
-  IconButton,
   Stack,
-  Card,
-  CardContent,
   Select,
   MenuItem,
   FormControl,
-  Grid,
 } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import theme from "../../theme/theme";
 import { StudyProgramme } from "../../types/StudyProgramme.types";
 import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import StudyProgrammeCard from "./StudyProgrammeCard";
 
 interface ResultsProps {
   studyProgrammes: StudyProgramme[];
@@ -107,12 +102,14 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
           <Stack
             direction={{ xs: "column", sm: "row" }}
             spacing={2}
-            alignItems={{ xs: "flex-start", sm: "center" }}
-            sx={{ marginBottom: 3 }}
+            alignItems={{ xs: "stretch", sm: "center" }}
+            sx={{ marginBottom: 3, width: "100%" }}
           >
             <FormControl
               sx={{
-                minWidth: { xs: 250, sm: 250 },
+                minWidth: { xs: "100%", sm: 250 },
+                maxWidth: { xs: "100%", sm: 400 },
+                flex: { sm: 1 },
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "25px",
                   backgroundColor: theme.palette.background.default,
@@ -130,7 +127,11 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   PaperProps: {
                     sx: {
                       backgroundColor: theme.palette.background.default,
+                      maxWidth: { xs: "calc(100vw - 32px)", sm: 400 },
                       "& .MuiMenuItem-root": {
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                         "&:hover": {
                           backgroundColor: `${theme.palette.primary.main}33`,
                         },
@@ -145,10 +146,18 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   },
                 }}
                 renderValue={(selected) => (
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      minWidth: 0,
+                    }}
+                  >
                     <PlaceIcon
                       sx={{
                         fontSize: 20,
+                        flexShrink: 0,
                       }}
                     />
                     <Typography
@@ -156,6 +165,9 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         color: selected
                           ? theme.palette.text.primary
                           : theme.palette.text.skipButton,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       {selected || "Universität/Hochschule"}
@@ -164,6 +176,10 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                 )}
                 sx={{
                   borderRadius: "25px",
+                  "& .MuiSelect-select": {
+                    paddingTop: "10px",
+                    paddingBottom: "10px",
+                  },
                   "& .MuiSelect-icon": {
                     color: theme.palette.text.primary,
                   },
@@ -172,10 +188,30 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   },
                 }}
               >
-                <MenuItem value="">Alle Universitäten/Hochschulen</MenuItem>
+                <MenuItem value="">
+                  <Box
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      width: "100%",
+                    }}
+                  >
+                    Alle Universitäten/Hochschulen
+                  </Box>
+                </MenuItem>
                 {universities.map((university) => (
                   <MenuItem key={university} value={university}>
-                    {university}
+                    <Box
+                      sx={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        width: "100%",
+                      }}
+                    >
+                      {university}
+                    </Box>
                   </MenuItem>
                 ))}
               </Select>
@@ -183,7 +219,9 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
 
             <FormControl
               sx={{
-                minWidth: { xs: 250, sm: 250 },
+                minWidth: { xs: "100%", sm: 250 },
+                maxWidth: { xs: "100%", sm: 400 },
+                flex: { sm: 1 },
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "25px",
                   backgroundColor: theme.palette.background.default,
@@ -201,7 +239,11 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   PaperProps: {
                     sx: {
                       backgroundColor: theme.palette.background.default,
+                      maxWidth: { xs: "calc(100vw - 32px)", sm: 400 },
                       "& .MuiMenuItem-root": {
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                         "&:hover": {
                           backgroundColor: `${theme.palette.primary.main}33`,
                         },
@@ -216,10 +258,18 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   },
                 }}
                 renderValue={(selected) => (
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      minWidth: 0,
+                    }}
+                  >
                     <StarsIcon
                       sx={{
                         fontSize: 20,
+                        flexShrink: 0,
                       }}
                     />
                     <Typography
@@ -227,6 +277,9 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         color: selected
                           ? theme.palette.text.primary
                           : theme.palette.text.skipButton,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       {selected || "Abschluss"}
@@ -235,6 +288,10 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                 )}
                 sx={{
                   borderRadius: "25px",
+                  "& .MuiSelect-select": {
+                    paddingTop: "10px",
+                    paddingBottom: "10px",
+                  },
                   "& .MuiSelect-icon": {
                     color: theme.palette.text.primary,
                   },
@@ -243,10 +300,30 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                   },
                 }}
               >
-                <MenuItem value="">Alle Abschlüsse</MenuItem>
+                <MenuItem value="">
+                  <Box
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      width: "100%",
+                    }}
+                  >
+                    Alle Abschlüsse
+                  </Box>
+                </MenuItem>
                 {degrees.map((degree) => (
                   <MenuItem key={degree} value={degree}>
-                    {degree}
+                    <Box
+                      sx={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        width: "100%",
+                      }}
+                    >
+                      {degree}
+                    </Box>
                   </MenuItem>
                 ))}
               </Select>
@@ -255,81 +332,12 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
 
           <Stack spacing={2}>
             {filteredProgrammes.map((programme) => (
-              <Card
+              <StudyProgrammeCard
                 key={programme.id}
-                sx={{
-                  backgroundColor: `${theme.palette.primary.main}33`,
-                  boxShadow: 3,
-                  borderRadius: 2,
-                  transition: "background-color 0.3s",
-                  "&:hover": {
-                    backgroundColor: `${theme.palette.primary.main}80`,
-                  },
-                }}
-              >
-                <CardContent sx={{ padding: 2 }}>
-                  <Grid
-                    container
-                    spacing={2}
-                    alignItems="flex-start"
-                    sx={{ width: "100%" }}
-                  >
-                    <Grid
-                      size={12}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Typography variant="h6" sx={{ fontWeight: 500 }}>
-                        {programme.name}
-                      </Typography>
-                      <IconButton
-                        aria-label={
-                          favorites.has(programme.id)
-                            ? "Remove from favorites"
-                            : "Add to favorites"
-                        }
-                        onClick={() => toggleFavorite(programme.id)}
-                        sx={{ ml: 1 }}
-                      >
-                        {favorites.has(programme.id) ? (
-                          <FavoriteIcon
-                            sx={{
-                              color: theme.palette.secondary.main,
-                            }}
-                          />
-                        ) : (
-                          <FavoriteBorderIcon
-                            sx={{
-                              color: theme.palette.favorites.inactive,
-                            }}
-                          />
-                        )}
-                      </IconButton>
-                    </Grid>
-
-                    <Grid size={{ xs: 12, sm: 6 }}>
-                      <Stack direction="row" alignItems="center" gap={0.5}>
-                        <PlaceIcon sx={{ fontSize: 20 }} />
-                        <Typography variant="body1">
-                          {programme.university}
-                        </Typography>
-                      </Stack>
-                    </Grid>
-
-                    <Grid size={{ xs: 12, sm: 6 }}>
-                      <Stack direction="row" alignItems="center" gap={0.5}>
-                        <StarsIcon sx={{ fontSize: 20 }} />
-                        <Typography variant="body1">
-                          {programme.degree}
-                        </Typography>
-                      </Stack>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
+                programme={programme}
+                isFavorite={favorites.has(programme.id)}
+                onToggleFavorite={toggleFavorite}
+              />
             ))}
           </Stack>
         </>
