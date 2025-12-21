@@ -27,6 +27,7 @@
     "express-async-errors": "^3.1.1",
     "express-rate-limit": "^8.2.1",
     "express-session": "^1.18.2",
+    "connect-pg-simple": "^9.0.0",
     "pg": "^8.16.3",
     "xml2js": "^0.6.2"
   },

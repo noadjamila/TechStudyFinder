@@ -14,6 +14,7 @@ import "express-async-errors";
 import authRouter from "./src/routes/auth.route";
 import "./src/types/express-session";
 import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
 
 const isTesting =
   process.env.NODE_ENV === "test" || !!process.env.JEST_WORKER_ID;
@@ -60,11 +61,21 @@ if (process.env.NODE_ENV !== "production") {
 app.use(express.json());
 
 // Session configuration
+const SessionStore = connectPgSimple(session);
+const sessionStore = isTesting
+  ? undefined
+  : new SessionStore({
+      pool,
+      tableName: "session",
+      createTableIfMissing: true,
+    });
+
 app.use(
   session({
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
+    store: sessionStore,
     cookie: {
       secure: process.env.NODE_ENV === "production",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
