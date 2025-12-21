@@ -68,10 +68,12 @@ const ResultsPage: React.FC = () => {
       <Results studyProgrammes={studyProgrammes} />
     </Box>
   ) : (
-    <>
+    <Box sx={{ pt: "50px" }}>
+      {" "}
+      {/* Offset for mobile navbar */}
       <DataSource />
       <Results studyProgrammes={studyProgrammes} />
-    </>
+    </Box>
   );
 
   return (
@@ -91,7 +93,7 @@ const ResultsPage: React.FC = () => {
       ) : (
         // MOBILE VIEW: Logo menu and navigation bar are rendered outside the main content flow
         <>
-          <LogoMenu />
+          <LogoMenu fixed={true} />
           <Navigationbar />
           {MainContent}
         </>
