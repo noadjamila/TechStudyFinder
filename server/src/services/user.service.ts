@@ -20,9 +20,13 @@ export function validateUsername(username: string): {
     return { valid: false, message: "Username must not exceed 30 characters." };
   }
 
-  // Allow alphanumeric characters, underscores, and hyphens
-  // Must start and end with alphanumeric characters
-  if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$/.test(trimmedUsername)) {
+  // Username must start and end with alphanumeric characters
+  // Can contain letters, numbers, underscores, and hyphens in between
+  const startsWithAlphanumeric = /^[a-zA-Z0-9]/.test(trimmedUsername);
+  const endsWithAlphanumeric = /[a-zA-Z0-9]$/.test(trimmedUsername);
+  const containsOnlyAllowedChars = /^[a-zA-Z0-9_-]+$/.test(trimmedUsername);
+
+  if (!startsWithAlphanumeric || !endsWithAlphanumeric || !containsOnlyAllowedChars) {
     return {
       valid: false,
       message: "Username must start and end with a letter or number, and can only contain letters, numbers, underscores, and hyphens.",
