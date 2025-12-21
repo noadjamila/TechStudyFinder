@@ -31,7 +31,7 @@ export function validatePassword(password: string): {
 }
 
 async function hashPassword(password: string): Promise<string> {
-  const saltRounds = 12;
+  const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS || "12", 10);
   return bcrypt.hash(password, saltRounds);
 }
 
