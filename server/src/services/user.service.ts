@@ -1,4 +1,4 @@
-import { randomBytes, scryptSync } from "crypto";
+import bcrypt from "bcrypt";
 import { createUser, findByUsername } from "../repositories/users.repository";
 import { PublicUser } from "../types/user";
 
@@ -30,10 +30,9 @@ export function validatePassword(password: string): {
   return { valid: true };
 }
 
-function hashPassword(password: string): string {
-  const salt = randomBytes(16).toString("hex");
-  const hash = scryptSync(password, salt, 64).toString("hex");
-  return `${salt}:${hash}`;
+async function hashPassword(password: string): Promise<string> {
+  const saltRounds = 12;
+  return bcrypt.hash(password, saltRounds);
 }
 
 export async function registerUser(
@@ -48,7 +47,7 @@ export async function registerUser(
       throw error;
     }
 
-    const passwordHash = hashPassword(password);
+    const passwordHash = await hashPassword(password);
     const created = await createUser(username, passwordHash);
     return {
       id: created.id,

@@ -1,11 +1,33 @@
-import { TextField, TextFieldProps, Box, Typography } from "@mui/material";
+import {
+  TextField,
+  TextFieldProps,
+  Box,
+  Typography,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
+import { useState } from "react";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 /**
  * A reusable form field component wrapping MUI TextField.
  * Can be used for login/register and other inputs.
  * Provides consistent styling across all forms in the app.
+ * For password fields, includes a visibility toggle icon.
  */
-export default function FormField({ label, sx, ...props }: TextFieldProps) {
+export default function FormField({
+  label,
+  sx,
+  type,
+  ...props
+}: TextFieldProps) {
+  const [showPassword, setShowPassword] = useState(false);
+  const isPasswordField = type === "password";
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <Box sx={{ mb: 2 }}>
       {label && (
@@ -16,6 +38,7 @@ export default function FormField({ label, sx, ...props }: TextFieldProps) {
       <TextField
         fullWidth
         variant="outlined"
+        type={isPasswordField && showPassword ? "text" : type}
         sx={{
           mb: 0,
           "& .MuiOutlinedInput-root": {
@@ -29,6 +52,26 @@ export default function FormField({ label, sx, ...props }: TextFieldProps) {
           },
           ...sx,
         }}
+        InputProps={
+          isPasswordField
+            ? {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                      size="small"
+                      sx={{
+                        marginRight: "-8px",
+                      }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }
+            : undefined
+        }
         {...props}
         label=""
       />
