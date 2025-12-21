@@ -111,7 +111,7 @@ describe("Users Registration Endpoint - Integration Tests", () => {
     });
 
     expect(response.status).toBe(400);
-    expect(response.body.error).toContain("can only contain");
+    expect(response.body.error).toContain("must start and end");
   });
 
   it("rejects registration with SQL injection attempt in username", async () => {
@@ -126,7 +126,7 @@ describe("Users Registration Endpoint - Integration Tests", () => {
     });
 
     expect(response.status).toBe(400);
-    expect(response.body.error).toContain("can only contain");
+    expect(response.body.error).toContain("must start and end");
   });
 
   it("rejects registration with XSS attempt in username", async () => {
@@ -141,7 +141,37 @@ describe("Users Registration Endpoint - Integration Tests", () => {
     });
 
     expect(response.status).toBe(400);
-    expect(response.body.error).toContain("can only contain");
+    expect(response.body.error).toContain("must start and end");
+  });
+
+  it("rejects registration with username starting with underscore", async () => {
+    if (!dbAvailable) {
+      console.warn("Skipping test - database not available");
+      return;
+    }
+
+    const response = await request(app).post("/api/auth/register").send({
+      username: "_username",
+      password: "ValidPass123!",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toContain("must start and end");
+  });
+
+  it("rejects registration with username ending with hyphen", async () => {
+    if (!dbAvailable) {
+      console.warn("Skipping test - database not available");
+      return;
+    }
+
+    const response = await request(app).post("/api/auth/register").send({
+      username: "username-",
+      password: "ValidPass123!",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toContain("must start and end");
   });
 
   it("accepts registration with valid username containing underscores and hyphens", async () => {

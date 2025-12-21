@@ -42,11 +42,17 @@ describe("validateUsername", () => {
       "user$name",
       "<script>alert('xss')</script>",
       "user'; DROP TABLE users--",
+      "_username",  // starts with underscore
+      "username_",  // ends with underscore
+      "-username",  // starts with hyphen
+      "username-",  // ends with hyphen
+      "__username__",  // starts and ends with underscores
+      "--username--",  // starts and ends with hyphens
     ];
     invalidUsernames.forEach((username) => {
       const result = validateUsername(username);
       expect(result.valid).toBe(false);
-      expect(result.message).toContain("can only contain");
+      expect(result.message).toContain("must start and end");
     });
   });
 

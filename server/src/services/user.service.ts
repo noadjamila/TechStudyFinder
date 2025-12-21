@@ -21,10 +21,11 @@ export function validateUsername(username: string): {
   }
 
   // Allow alphanumeric characters, underscores, and hyphens
-  if (!/^[a-zA-Z0-9_-]+$/.test(trimmedUsername)) {
+  // Must start and end with alphanumeric characters
+  if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$/.test(trimmedUsername)) {
     return {
       valid: false,
-      message: "Username can only contain letters, numbers, underscores, and hyphens.",
+      message: "Username must start and end with a letter or number, and can only contain letters, numbers, underscores, and hyphens.",
     };
   }
 
