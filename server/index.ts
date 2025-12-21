@@ -12,7 +12,7 @@ import quizRoutes from "./src/routes/quiz.route";
 import { pool } from "./db";
 import "express-async-errors";
 import authRouter from "./src/routes/auth.route";
-import "./types/express-session";
+import "./src/types/express-session";
 import session from "express-session";
 
 const isTesting =
@@ -38,7 +38,8 @@ if (!process.env.GITHUB_WEBHOOK_SECRET) {
 
 const app = express();
 app.set("trust proxy", 1);
-const PORT = process.env.PORT || 5001;
+const PORT = Number(process.env.PORT) || 5001;
+const HOST = process.env.HOST || "127.0.0.1";
 const clientDistPath =
   process.env.CLIENT_DIST_PATH ||
   path.join(__dirname, "..", "..", "client", "dist");
@@ -117,9 +118,9 @@ app.use(((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 }) as ErrorRequestHandler);
 
 if (require.main === module) {
-  server = app.listen(PORT, () => {
+  server = app.listen(PORT, HOST, () => {
     // eslint-disable-next-line no-console
-    console.log(`Backend running on http://localhost:${PORT}`);
+    console.log(`Backend running on http://${HOST}:${PORT}`);
   });
 }
 
