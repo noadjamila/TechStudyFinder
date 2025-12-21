@@ -2,6 +2,7 @@ import Homescreen from "./pages/Home/Homescreen";
 import { Routes, Route } from "react-router-dom";
 import QuizFlow from "./pages/Quiz/QuizFlow";
 import ResultsPage from "./pages/ResultsPage";
+import StudyProgrammeDetailPage from "./pages/StudyProgrammeDetailPage";
 import LevelSuccessScreen from "./components/quiz/level-success/LevelSuccessScreen";
 import Register from "./pages/Register/Register";
 
@@ -12,7 +13,10 @@ export default function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/quiz/level/:level" element={<QuizFlow />} />
       <Route path="/results" element={<ResultsPage />} />
-
+      <Route
+        path="/study-programme/:id"
+        element={<StudyProgrammeDetailPage />}
+      />
       <Route
         path="/level-success/1"
         element={<LevelSuccessScreen currentLevel={1} />}

@@ -45,8 +45,17 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
 
   // Determine the current active index based on the current path
   const getCurrentIndex = () => {
+    // Check for exact match first
     const index = navItems.findIndex((item) => item.path === location.pathname);
-    return index !== -1 ? index : 0;
+    if (index !== -1) return index;
+
+    // Check if we're on a study programme detail page - should highlight "Ergebnisse"
+    if (location.pathname.startsWith("/study-programme/")) {
+      return navItems.findIndex((item) => item.path === "/results");
+    }
+
+    // Default to Home (index 0)
+    return 0;
   };
 
   const [value, setValue] = useState(getCurrentIndex());
