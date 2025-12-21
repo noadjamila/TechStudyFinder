@@ -20,38 +20,46 @@ describe("validateUsername", () => {
   it("rejects usernames shorter than 5 characters", () => {
     const result = validateUsername("test");
     expect(result.valid).toBe(false);
-    expect(result.message).toContain("at least 5 characters");
+    expect(result.message).toContain("mindestens 5 Zeichen");
   });
 
   it("rejects usernames longer than 30 characters", () => {
     const longUsername = "a".repeat(31);
     const result = validateUsername(longUsername);
     expect(result.valid).toBe(false);
-    expect(result.message).toContain("at most 30 characters");
+    expect(result.message).toContain("maximal 30 Zeichen");
   });
 
   it("rejects usernames starting with underscore", () => {
     const result = validateUsername("_user123");
     expect(result.valid).toBe(false);
-    expect(result.message).toContain("start and end with alphanumeric");
+    expect(result.message).toContain(
+      "Buchstaben oder einer Zahl beginnen und enden",
+    );
   });
 
   it("rejects usernames starting with hyphen", () => {
     const result = validateUsername("-user123");
     expect(result.valid).toBe(false);
-    expect(result.message).toContain("start and end with alphanumeric");
+    expect(result.message).toContain(
+      "Buchstaben oder einer Zahl beginnen und enden",
+    );
   });
 
   it("rejects usernames ending with underscore", () => {
     const result = validateUsername("user123_");
     expect(result.valid).toBe(false);
-    expect(result.message).toContain("start and end with alphanumeric");
+    expect(result.message).toContain(
+      "Buchstaben oder einer Zahl beginnen und enden",
+    );
   });
 
   it("rejects usernames ending with hyphen", () => {
     const result = validateUsername("user123-");
     expect(result.valid).toBe(false);
-    expect(result.message).toContain("start and end with alphanumeric");
+    expect(result.message).toContain(
+      "Buchstaben oder einer Zahl beginnen und enden",
+    );
   });
 
   it("rejects usernames with invalid characters", () => {
@@ -96,31 +104,31 @@ describe("validatePassword", () => {
   it("rejects passwords shorter than 8 characters", () => {
     const result = validatePassword("Pass1!");
     expect(result.valid).toBe(false);
-    expect(result.message).toContain("at least 8 characters");
+    expect(result.message).toContain("mindestens 8 Zeichen");
   });
 
   it("rejects passwords without letters", () => {
     const result = validatePassword("12345678!");
     expect(result.valid).toBe(false);
-    expect(result.message).toContain("at least one letter");
+    expect(result.message).toContain("Buchstaben");
   });
 
   it("rejects passwords without numbers", () => {
     const result = validatePassword("Password!");
     expect(result.valid).toBe(false);
-    expect(result.message).toContain("at least one number");
+    expect(result.message).toContain("Zahl");
   });
 
   it("rejects passwords without special characters", () => {
     const result = validatePassword("Password123");
     expect(result.valid).toBe(false);
-    expect(result.message).toContain("at least one special character");
+    expect(result.message).toContain("Sonderzeichen");
   });
 
   it("rejects passwords longer than 72 characters", () => {
     const longPassword = "Pass1!".repeat(15); // 90 chars
     const result = validatePassword(longPassword);
     expect(result.valid).toBe(false);
-    expect(result.message).toContain("at most 72 characters");
+    expect(result.message).toContain("maximal 72 Zeichen");
   });
 });

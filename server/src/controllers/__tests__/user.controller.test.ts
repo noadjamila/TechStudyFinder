@@ -19,7 +19,7 @@ describe("Users Registration Endpoint - Unit Tests", () => {
     });
 
     expect(response.status).toBe(400);
-    expect(response.body.error).toContain("at least 5 characters");
+    expect(response.body.error).toContain("mindestens 5 Zeichen");
   });
 
   it("rejects registration with username too long", async () => {
@@ -31,7 +31,7 @@ describe("Users Registration Endpoint - Unit Tests", () => {
       });
 
     expect(response.status).toBe(400);
-    expect(response.body.error).toContain("at most 30 characters");
+    expect(response.body.error).toContain("maximal 30 Zeichen");
   });
 
   it("rejects registration with username containing special characters", async () => {
@@ -51,7 +51,7 @@ describe("Users Registration Endpoint - Unit Tests", () => {
     });
 
     expect(response.status).toBe(400);
-    expect(response.body.error).toContain("special character");
+    expect(response.body.error).toContain("Sonderzeichen");
   });
 
   it("rejects registration without username", async () => {
