@@ -1,16 +1,28 @@
 import { Request, Response } from "express";
-import { registerUser, validatePassword } from "../services/user.service";
+import {
+  registerUser,
+  validatePassword,
+  validateUsername,
+} from "../services/user.service";
 
 // Controller function to handle user registration
 
 export async function register(req: Request, res: Response) {
   const { username, password } = req.body ?? {};
 
+  // Validate username first
   if (!username || typeof username !== "string") {
-    return res.status(400).json({ error: "Invalid username" });
+    return res.status(400).json({ error: "Username is required" });
   }
+
+  const usernameValidation = validateUsername(username);
+  if (!usernameValidation.valid) {
+    return res.status(400).json({ error: usernameValidation.message });
+  }
+
+  // Then validate password
   if (!password || typeof password !== "string") {
-    return res.status(400).json({ error: "Invalid password" });
+    return res.status(400).json({ error: "Password is required" });
   }
 
   const passwordValidation = validatePassword(password);
@@ -21,9 +33,7 @@ export async function register(req: Request, res: Response) {
   // Attempt to register the user
 
   try {
-    console.log("[register] Attempting to register user:", username);
     const user = await registerUser(username, password);
-    console.log("[register] Registration successful for:", username);
     return res.status(201).json({ user });
   } catch (err: any) {
     console.error("[register] Registration error:", err);

@@ -61,6 +61,7 @@ export default function FormField({
                       onClick={handleClickShowPassword}
                       edge="end"
                       size="small"
+                      aria-label="Passwort-Sichtbarkeit umschalten"
                       sx={{
                         marginRight: "-8px",
                       }}
