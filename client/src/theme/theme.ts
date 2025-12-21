@@ -57,6 +57,12 @@ const theme = createTheme({
         fontSize: "1.8rem", // 28.8px on mobile
       },
     },
+    h3: {
+      fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
+      fontSize: "24px",
+      fontWeight: "bold",
+      lineHeight: 1.2,
+    },
     h4: {
       fontSize: "1.6rem",
       fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
