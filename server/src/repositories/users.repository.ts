@@ -24,7 +24,6 @@ async function ensureUsersTable(): Promise<void> {
     await pool.query(`
       ALTER TABLE users ADD COLUMN password_hash TEXT NOT NULL
     `);
-    console.log("[DB] Added password_hash column to users table");
   }
 }
 
