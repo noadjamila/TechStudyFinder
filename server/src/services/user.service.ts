@@ -22,8 +22,8 @@ export function validateUsername(username: string): {
 
   // Username must start and end with alphanumeric characters
   // Can contain letters, numbers, underscores, and hyphens in between
-  // Since min length is 3, we don't need special handling for single chars
-  const usernamePattern = /^[a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]$/;
+  // Pattern handles usernames of 1+ characters (but min length is enforced separately)
+  const usernamePattern = /^[a-zA-Z0-9]([a-zA-Z0-9_-]*[a-zA-Z0-9])?$/;
   
   if (!usernamePattern.test(trimmedUsername)) {
     return {
