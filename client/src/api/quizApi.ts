@@ -1,26 +1,4 @@
-interface Level1Answer {
-  studientyp: string;
-}
-
-interface Level2Answer {
-  type: string; // RiasecType
-  score: number;
-}
-
-type QuizAnswer = Level1Answer | Level2Answer;
-
-export interface QuizFilterPayload {
-  level: 1 | 2 | 3;
-  answers: QuizAnswer[];
-  studyProgrammeIds?: number[];
-}
-
-/**
- * Interface defining the expected response structure from the filtering endpoint.
- */
-interface FilterResponse {
-  ids: number[];
-}
+import { QuizFilterPayload, FilterResponse } from "../types/QuizApi.types";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
