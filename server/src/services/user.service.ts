@@ -2,6 +2,25 @@ import bcrypt from "bcrypt";
 import { createUser, findByUsername } from "../repositories/users.repository";
 import { PublicUser } from "../types/user";
 
+// Parse and validate salt rounds once at module load time
+const SALT_ROUNDS = (() => {
+  const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS || "12", 10);
+  
+  if (isNaN(saltRounds)) {
+    throw new Error(
+      `Invalid BCRYPT_SALT_ROUNDS value: "${process.env.BCRYPT_SALT_ROUNDS}". Must be a number between 4 and 20.`,
+    );
+  }
+  
+  if (saltRounds < 4 || saltRounds > 20) {
+    throw new Error(
+      `Invalid BCRYPT_SALT_ROUNDS value: ${saltRounds}. Must be between 4 and 20.`,
+    );
+  }
+  
+  return saltRounds;
+})();
+
 export function validatePassword(password: string): {
   valid: boolean;
   message?: string;
@@ -31,16 +50,7 @@ export function validatePassword(password: string): {
 }
 
 async function hashPassword(password: string): Promise<string> {
-  const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS || "12", 10);
-  
-  // Validate salt rounds is within a reasonable range
-  if (saltRounds < 4 || saltRounds > 20) {
-    throw new Error(
-      `Invalid BCRYPT_SALT_ROUNDS value: ${saltRounds}. Must be between 4 and 20.`,
-    );
-  }
-  
-  return bcrypt.hash(password, saltRounds);
+  return bcrypt.hash(password, SALT_ROUNDS);
 }
 
 export async function registerUser(
