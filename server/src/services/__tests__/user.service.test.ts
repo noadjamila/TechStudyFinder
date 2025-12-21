@@ -46,14 +46,11 @@ describe("registerUser", () => {
     const existingUser = { id: 1, username: "testuser", password_hash: "hash" };
     jest
       .spyOn(usersRepository, "findByUsername")
-      .mockResolvedValueOnce(existingUser as any);
-
-    await expect(registerUser("testuser", "Password123!")).rejects.toThrow(
-      AppError,
-    );
+      .mockResolvedValue(existingUser as any);
 
     try {
       await registerUser("testuser", "Password123!");
+      fail("Should have thrown AppError");
     } catch (error) {
       expect(error).toBeInstanceOf(AppError);
       expect((error as AppError).status).toBe(409);
