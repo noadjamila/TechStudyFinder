@@ -8,13 +8,21 @@ import cors from "cors";
 import "dotenv/config";
 import path from "path";
 import testRouter from "./src/routes/health.route";
-import deployRouter from "./src/routes/deploy.route";
 import quizRoutes from "./src/routes/quiz.route";
 import { pool } from "./db";
 import "express-async-errors";
+import authRouter from "./src/routes/auth.route";
+import "./src/types/express-session";
+import session from "express-session";
 
 const isTesting =
   process.env.NODE_ENV === "test" || !!process.env.JEST_WORKER_ID;
+
+// Ensure SESSION_SECRET is set
+const sessionSecret = process.env.SESSION_SECRET;
+if (!sessionSecret) {
+  throw new Error("SESSION_SECRET is required for session handling");
+}
 
 // Safety check for webhook secret
 if (!process.env.GITHUB_WEBHOOK_SECRET) {
@@ -30,8 +38,11 @@ if (!process.env.GITHUB_WEBHOOK_SECRET) {
 
 const app = express();
 app.set("trust proxy", 1);
-const PORT = process.env.PORT || 5001;
-const clientDistPath = path.join(__dirname, "..", "..", "client", "dist");
+const PORT = Number(process.env.PORT) || 5001;
+const HOST = process.env.HOST || "127.0.0.1";
+const clientDistPath =
+  process.env.CLIENT_DIST_PATH ||
+  path.join(__dirname, "..", "..", "client", "dist");
 
 let server: import("http").Server | null = null;
 
@@ -45,15 +56,26 @@ if (process.env.NODE_ENV !== "production") {
   );
 }
 
-// Deployment route
-app.use("/deploy", deployRouter);
-
 // Standard JSON parsing middleware
 app.use(express.json());
+
+// Session configuration
+app.use(
+  session({
+    secret: sessionSecret,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    },
+  }),
+);
 
 // API routes
 app.use("/api", testRouter);
 app.use("/api/quiz", quizRoutes);
+app.use("/api/auth", authRouter);
 
 // Test DB route
 app.get("/api/test-db", async (_req, res) => {
@@ -65,21 +87,24 @@ app.get("/api/test-db", async (_req, res) => {
   }
 });
 
+// 404 handler
+app.use("/api", (_req, res) => {
+  res.status(404).json({ error: "Route not found" });
+});
+
 // Serve static files from the frontend
 app.use(express.static(clientDistPath));
 
 // SPA fallback
+// This handler only serves index.html for HTML navigation requests.
+// API routes never reach this point because /api routes and the /api 404
+// handler are registered earlier in the middleware chain.
 app.get("*", (req, res, next) => {
-  if (req.url.startsWith("/api/") || req.url.startsWith("/deploy")) {
+  if (!req.accepts("html")) {
     return next();
   }
 
   res.sendFile(path.join(clientDistPath, "index.html"));
-});
-
-// 404 handler
-app.use((_req, res) => {
-  res.status(404).json({ error: "Route not found" });
 });
 
 // Error handler
@@ -93,9 +118,9 @@ app.use(((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 }) as ErrorRequestHandler);
 
 if (require.main === module) {
-  server = app.listen(PORT, () => {
+  server = app.listen(PORT, HOST, () => {
     // eslint-disable-next-line no-console
-    console.log(`Backend running on http://localhost:${PORT}`);
+    console.log(`Backend running on http://${HOST}:${PORT}`);
   });
 }
 
@@ -108,4 +133,4 @@ process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection:", promise, "reason:", reason);
 });
 
-export { server, pool };
+export { app, server, pool };

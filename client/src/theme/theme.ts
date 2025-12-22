@@ -50,6 +50,22 @@ const theme = createTheme({
     fontFamily: "Fira Sans, sans-serif",
     h2: {
       fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
+      fontSize: "2.2rem", // 35.2px on desktop
+      fontWeight: "bold",
+      marginBottom: "16px", // 2 * 8px (MUI spacing unit)
+      "@media (max-width:600px)": {
+        fontSize: "1.8rem", // 28.8px on mobile
+      },
+    },
+    h3: {
+      fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
+      fontSize: "24px",
+      fontWeight: "bold",
+      lineHeight: 1.2,
+    },
+    h4: {
+      fontSize: "1.6rem",
+      fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
     },
     h5: {
       fontSize: "1.25rem",
@@ -57,6 +73,14 @@ const theme = createTheme({
     },
     h6: {
       fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
+      fontSize: "35px",
+      fontWeight: "bold",
+      lineHeight: 1.2,
+    },
+    subtitle1: {
+      fontSize: "15px",
+      fontFamily: "Fira Sans, sans-serif",
+      fontWeight: "normal",
     },
   },
   components: {

@@ -52,12 +52,12 @@ describe("Homescreen Component", () => {
     expect(screen.getByText(/Quiz beginnen/i)).toBeInTheDocument();
   });
 
-  it("navigates to /quiz/level/1 when clicking the start button", () => {
+  it("navigates to /level-success/1 when clicking the start button", () => {
     renderWithProviders(<Homescreen />);
 
     const button = screen.getByText(/Quiz beginnen/i);
     fireEvent.click(button);
 
-    expect(mockedNavigate).toHaveBeenCalledWith("/quiz/level/1");
+    expect(mockedNavigate).toHaveBeenCalledWith("/level-success/1");
   });
 });

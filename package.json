@@ -13,7 +13,7 @@
     "dev:server": "npm start --workspace=server",
     "dev:client": "npm run dev --workspace=client",
     "build": "npm run build --workspace=server && npm run build --workspace=client",
-    "test": "npm-run-all2 -p test:client test:server",
+    "test": "concurrently \"npm run test:client\" \"npm run test:server\"",
     "test:client": "npm run test --workspace=client",
     "test:server": "npm run test --workspace=server",
     "test:integration": "npm run test:integration --workspace=server"
@@ -39,7 +39,6 @@
     "jest": "^30.2.0",
     "jiti": "^2.6.1",
     "lint-staged": "^16.2.7",
-    "npm-run-all2": "^8.0.4",
     "prettier": "^3.7.3",
     "source-map": "^0.7.6",
     "typescript": "^5.9.3",

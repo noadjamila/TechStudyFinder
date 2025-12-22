@@ -5,6 +5,7 @@
 | Endpoint                    | Description                                       |
 | --------------------------- | ------------------------------------------------- |
 | /home                       | Home Screen                                       |
+| /api/users/me               | Fetch authenticated user's profile information    |
 | /api/quiz/level/:levelId    | Fetch questions for a specific quiz level         |
 | /api/quiz/results/:resultId | Show results for a specific quiz attempt          |
 | /api/users/favorites        | Retrieve a user's favorite study programmes       |
@@ -21,7 +22,6 @@
 | /api/auth/logout          | User logout                                                   |
 | /api/users/favorites      | Add a study programme to a user's list of favorites           |
 | /api/quiz/filter/progress | Filter quiz questions based on user progress after each level |
-| /deploy/webhook           | Webhook for deployment triggers                               |
 
 ## PUT
 

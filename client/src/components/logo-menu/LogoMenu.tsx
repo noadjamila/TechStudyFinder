@@ -11,14 +11,19 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import theme from "../../theme/theme";
 
+interface LogoMenuProps {
+  fixed?: boolean;
+}
+
 /**
  * LogoMenu component.
  * Renders the top navigation bar primarily used in mobile view.
  * It includes a menu icon for a dropdown, the app title, and the logo, all horizontally arranged.
  *
+ * @param {boolean} fixed - Whether the AppBar should have fixed positioning. Defaults to false.
  * @returns {React.FC} The rendered App Bar component.
  */
-const LogoMenu: React.FC = () => {
+const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -40,11 +45,13 @@ const LogoMenu: React.FC = () => {
 
   return (
     <AppBar
-      position="static"
+      position={fixed ? "fixed" : "static"}
       sx={{
-        backgroundColor: "transparent",
+        backgroundColor: theme.palette.background.default,
         boxShadow: "none",
-        mt: 1.5,
+        pt: 1.5,
+        top: 0,
+        zIndex: fixed ? 1100 : "auto",
       }}
     >
       <Toolbar

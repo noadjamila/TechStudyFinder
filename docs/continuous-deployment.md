@@ -1,51 +1,40 @@
 ## Continuous Deployment (CD)
 
-CD is triggered through a GitHub webhook when a push occurs on the
-`main` branch.
+CD is triggered by GitHub Actions (GHA) when a push occurs on the `main` branch.
+The production server does not execute build logic or application-level
+deployment scripts. It only manages Docker containers by pulling images from
+the registry and restarting them as needed.
 
 ### Deployment Flow:
 
-1.  GitHub sends a `push` event to `/deploy/webhook`.
-2.  The server validates:
-    - HMAC SHA-256 signature
-    - Event type (must be `push`)
-    - Branch reference (`refs/heads/main`)
-3.  If valid, the server runs `deploy.sh`, which performs:
-    - `git pull origin main`
-    - `npm ci`
-    - `npm run build`
-    - `pm2 restart TechStudyFinder`
+1. GHA builds the Docker image and pushes it to GitHub Container Registry (GHCR).
+2. GHA connects to the server via SSH.
+3. GHA pulls the latest Docker image from GHCR and restarts the container using Docker Compose.
 
 ## Server Setup
 
 - Ubuntu Linux server
-- Node.js LTS
-- pm2 as process manager
+- Docker Engine
+- Docker Compose plugin
 - Nginx reverse proxy
-- Deployment script referenced via absolute path
 
 ## Example `.env`
 
-    NODE_ENV=production
     PORT=your-port
-    GITHUB_WEBHOOK_SECRET=your-secret
-    DEPLOYMENT_SCRIPT_PATH=/home/ubuntu/TechStudyFinder/server/scripts/deploy.sh
+    GITHUB_REPO_OWNER=your-github-username
+    DB_HOST=your-database-host
+    DB_PORT=your-database-port
+    DB_USER=your-database-username
+    DB_PASSWORD=your-database-password
+    DB_NAME=your-database-name
 
-## Deployment Script
+## Required GitHub Secrets for Deployment
 
-Path:
+The following GitHub secrets must be configured in your repository for the deployment workflow to function:
 
-    /home/ubuntu/TechStudyFinder/server/scripts/deploy.sh
-
-Make executable:
-
-    chmod +x deploy.sh
-
-## Webhook Setup
-
-GitHub → Repository → Settings → Webhooks → Add Webhook
-
-- Payload URL: `https://<domain>/deploy/webhook`
-- Content-Type: `application/json`
-- Secret: matches the `.env` value
-- Event: only `push`
+- **GITHUB_REPO_OWNER**: The GitHub username or organization that owns the repository.
+- **SERVER_HOST**: The hostname or IP address of your production server.
+- **SERVER_USER**: The SSH username used to connect to the server.
+- **SERVER_SSH_KEY**: The private SSH key (in PEM format) used for authentication to the server.
+- **SERVER_DEPLOY_PATH**: The absolute path on the server where the application should be deployed.
+  Make sure to add these secrets in your repository's **Settings > Secrets and variables > Actions** section.

@@ -79,10 +79,15 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
         }}
       >
         {/* Title and Subtitle of the Header */}
-        <Box sx={{ textAlign: "right" }}>
-          <Typography variant="h6" fontWeight="bold">
-            Tech Study Finder
-          </Typography>
+        <Box
+          sx={{
+            textAlign: "right",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <Typography variant="h3">Tech Study Finder</Typography>
           <Typography variant="caption">Deine Reise zum Studiengang</Typography>
         </Box>
 
@@ -91,7 +96,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
           component="img"
           src="/logo.png"
           alt="Logo"
-          sx={{ width: 40, height: 40 }}
+          sx={{ width: 55, height: 55 }}
         />
       </Box>
 

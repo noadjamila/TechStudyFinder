@@ -1,9 +1,24 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ThemeProvider } from "@mui/material";
+import { MemoryRouter } from "react-router-dom";
 import Results from "../Results";
 import theme from "../../../theme/theme";
 import { StudyProgramme } from "../../../types/StudyProgramme.types";
+
+const mockedNavigate = vi.fn();
+
+vi.mock("react-router-dom", async () => {
+  const actual =
+    await vi.importActual<typeof import("react-router-dom")>(
+      "react-router-dom",
+    );
+
+  return {
+    ...actual,
+    useNavigate: () => mockedNavigate,
+  };
+});
 
 const mockStudyProgrammes: StudyProgramme[] = [
   {
@@ -33,10 +48,18 @@ const mockStudyProgrammes: StudyProgramme[] = [
 ];
 
 const renderWithTheme = (component: React.ReactElement) => {
-  return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
+  return render(
+    <MemoryRouter>
+      <ThemeProvider theme={theme}>{component}</ThemeProvider>
+    </MemoryRouter>,
+  );
 };
 
 describe("Results Component", () => {
+  beforeEach(() => {
+    mockedNavigate.mockClear();
+  });
+
   it("renders the title", () => {
     renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
     expect(screen.getByText("Meine Ergebnisse")).toBeInTheDocument();
@@ -89,14 +112,16 @@ describe("Results Component", () => {
   it("toggles favorite state when clicking the favorite button", () => {
     renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
 
-    const favoriteButtons = screen.getAllByLabelText("Add to favorites");
+    const favoriteButtons = screen.getAllByLabelText("Zu Favoriten hinzufügen");
     const firstButton = favoriteButtons[0];
 
     fireEvent.click(firstButton);
 
-    expect(screen.getByLabelText("Remove from favorites")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Aus Favoriten entfernen"),
+    ).toBeInTheDocument();
 
-    fireEvent.click(screen.getByLabelText("Remove from favorites"));
+    fireEvent.click(screen.getByLabelText("Aus Favoriten entfernen"));
 
     expect(favoriteButtons[0]).toBeInTheDocument();
   });
@@ -108,5 +133,49 @@ describe("Results Component", () => {
 
     const svgs = container.querySelectorAll("svg");
     expect(svgs.length).toBeGreaterThan(0);
+  });
+
+  it("navigates to study programme detail page when card is clicked", () => {
+    renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
+
+    const firstCard = screen.getByRole("button", {
+      name: /Details anzeigen für Computer Science/i,
+    });
+    fireEvent.click(firstCard);
+
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
+  });
+
+  it("navigates to correct detail page when different cards are clicked", () => {
+    renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
+
+    const dataCard = screen.getByRole("button", {
+      name: /Details anzeigen für Data Science/i,
+    });
+    fireEvent.click(dataCard);
+
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/2");
+  });
+
+  it("makes cards keyboard accessible with Enter key", () => {
+    renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
+
+    const firstCard = screen.getByRole("button", {
+      name: /Details anzeigen für Computer Science/i,
+    });
+    fireEvent.keyDown(firstCard, { key: "Enter" });
+
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
+  });
+
+  it("makes cards keyboard accessible with Space key", () => {
+    renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
+
+    const firstCard = screen.getByRole("button", {
+      name: /Details anzeigen für Computer Science/i,
+    });
+    fireEvent.keyDown(firstCard, { key: " " });
+
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
   });
 });

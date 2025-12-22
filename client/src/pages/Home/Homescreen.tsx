@@ -23,10 +23,10 @@ const Homescreen: React.FC = () => {
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
 
   /**
-   * Handles the start of the quiz by navigating to the first level.
+   * Handles the start of the quiz by navigating to the level success screen first.
    */
   const handleQuizStart = () => {
-    navigate("/quiz/level/1");
+    navigate("/level-success/1");
   };
 
   // --- Static Content Definitions ---
@@ -55,11 +55,9 @@ const Homescreen: React.FC = () => {
     >
       {/* Main Title */}
       <Typography
+        variant="h2"
         className="title"
         sx={{
-          fontWeight: "bold",
-          fontSize: { xs: "1.8rem", md: "2.2rem" },
-          mb: 2,
           mt: { md: 3 },
         }}
       >
@@ -70,7 +68,7 @@ const Homescreen: React.FC = () => {
       <Typography
         variant="body1"
         className="subtitle"
-        sx={{ fontWeight: "bold", lineHeight: 1.3, mb: 3 }}
+        sx={{ fontWeight: "normal", lineHeight: 1.3, mb: 3 }}
       >
         {subTitle}
       </Typography>
