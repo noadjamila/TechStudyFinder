@@ -1,3 +1,5 @@
+import { RiasecType } from "./RiasecTypes";
+
 export interface Level1Answer {
   studientyp: string;
 }
@@ -8,6 +10,21 @@ export interface Level2Answer {
 }
 
 export type QuizAnswer = Level1Answer | Level2Answer;
+
+/**
+ * Interface for quiz questions returned from the backend.
+ */
+export interface QuizQuestion {
+  text: string;
+  riasec_type: RiasecType;
+}
+
+/**
+ * Interface for the response when fetching quiz level questions.
+ */
+export interface QuizLevelResponse {
+  questions: QuizQuestion[];
+}
 
 export interface QuizFilterPayload {
   level: 1 | 2 | 3;

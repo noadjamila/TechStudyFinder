@@ -6,6 +6,7 @@ import ErrorScreen from "../../components/error-screen/ErrorScreen";
 import CardStack from "../../components/quiz/CardStack";
 import { Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { postFilterLevel, getQuizLevel } from "../../api/quizApi";
 
 export interface QuizPageL2Props {
   previousIds: number[];
@@ -182,23 +183,12 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
    */
   const sendData = async (topScores: { type: RiasecType; score: number }[]) => {
     try {
-      const res = await fetch("http://localhost:5001/api/quiz/filter", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          answers: topScores,
-          level: 2,
-          studyProgrammeIds: [],
-        }),
+      const result = await postFilterLevel({
+        answers: topScores,
+        level: 2,
+        studyProgrammeIds: [],
       });
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
-      const result = await res.json();
       setResponseCount(result.ids.length);
 
       // TODO: Call onNextLevel with the received IDs once backend works and proceed to the next quiz level.
@@ -216,18 +206,7 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const res = await fetch(`/api/quiz/level/${2}`);
-
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        const data = await res.json();
-
-        if (!data.questions || data.questions.length === 0) {
-          throw new Error("No questions found in the response.");
-        }
-
+        const data = await getQuizLevel(2);
         setQuestions(data.questions);
       } catch (err) {
         console.error(err);
