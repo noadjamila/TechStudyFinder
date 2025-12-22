@@ -5,6 +5,7 @@
 | Endpoint                    | Description                                       |
 | --------------------------- | ------------------------------------------------- |
 | /home                       | Home Screen                                       |
+| /api/users/me               | Fetch authenticated user's profile information    |
 | /api/quiz/level/:levelId    | Fetch questions for a specific quiz level         |
 | /api/quiz/results/:resultId | Show results for a specific quiz attempt          |
 | /api/users/favorites        | Retrieve a user's favorite study programmes       |
