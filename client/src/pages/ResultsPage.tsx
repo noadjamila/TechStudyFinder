@@ -6,11 +6,17 @@ import { StudyProgramme } from "../types/StudyProgramme.types";
 import LogoMenu from "../components/logo-menu/LogoMenu";
 import Navigationbar from "../components/nav-bar/NavBar";
 import DesktopLayout from "../layouts/DesktopLayout";
+import { useLocation } from "react-router-dom";
 
 const ResultsPage: React.FC = () => {
   const muiTheme = useTheme();
   const toggleSidebar = () => {};
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
+
+  const location = useLocation();
+  const previousIds = location.state?.idsFromLevel2 || [];
+
+  console.log("IDs received in NextLevel:", previousIds);
 
   const studyProgrammes: StudyProgramme[] = [
     {

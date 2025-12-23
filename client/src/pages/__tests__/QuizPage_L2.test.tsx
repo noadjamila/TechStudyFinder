@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../../theme/theme";
 import { describe, test, beforeEach, expect, vi } from "vitest";
-import QuizPage_L2 from "../Quiz/QuizPage_L2";
+import QuizPage_L2 from "../../components/quiz/Quiz_L2";
 
 vi.useRealTimers();
 

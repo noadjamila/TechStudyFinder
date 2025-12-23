@@ -3,6 +3,7 @@ import {
   getQuestionsLevel2,
   getFilteredResultsLevel2,
 } from "../repositories/quiz.repository";
+import { RiasecScores } from "../types/riasecScores";
 
 /**
  * Handles filtering for level 1 based on the provided answers.
@@ -19,7 +20,7 @@ export async function filterLevel1(answers: any[]): Promise<number[]> {
 /**
  * Retrieves study IDs based on highest RIASEC scores.
  *
- * @param _answers array of answers from level 2 (three highest RIASEC types)
+ * @param _answers array of RIASEC-Score-Map from level 2
  * @param _studyProgrammeIds array of study programme IDs
  * @returns filtered study programme IDs
  */
@@ -27,15 +28,26 @@ export async function filterLevel2(
   _studyProgrammeIds: number[] | undefined,
   _answers: any[],
 ): Promise<any[]> {
-  if (!_answers || _answers.length === 0) {
+  if (!_answers) {
     return [];
   }
-  const types = _answers.map((s) => s.type).filter(Boolean);
-  if (types.length === 0) {
-    return [];
-  }
-  const minMatches = 2;
-  return await getFilteredResultsLevel2(_studyProgrammeIds, types, minMatches);
+
+  let userScores = _answers.reduce(
+    (acc: RiasecScores, curr: { type: string; score: number }) => {
+      acc[curr.type as keyof RiasecScores] = curr.score;
+      return acc;
+    },
+    {
+      R: 0,
+      I: 0,
+      A: 0,
+      S: 0,
+      E: 0,
+      C: 0,
+    },
+  );
+
+  return await getFilteredResultsLevel2(_studyProgrammeIds, userScores);
 }
 
 export async function filterLevel3(

@@ -1,24 +1,26 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
-import QuizCard_L1 from "../../components/quiz/QuizCard_L1";
+import SecondaryButton from "../buttons/SecondaryButton";
+import BaseCard from "../BaseCard";
+import theme from "../../theme/theme";
 import { postFilterLevel } from "../../api/quizApi";
 import { Box } from "@mui/material";
 
 /** Callback function executed upon successful completion of the level.
  * It receives an array of filtered IDs from the backend. */
-export interface QuizPageL1Props {
-  onNextLevel?: (_ids: number[]) => void;
+export interface QuizL1Props {
+  onNextLevel: (_ids: string[]) => void;
 }
 
 /**
- * The QuizPage_L1 component handles the first question of the quiz.
+ * The Quiz_L1 component handles the first question of the quiz.
  * It manages the user's selection and calls the filtering API to get
  * the initial set of filtered IDs.
  *
- * @param {QuizPageL1Props} { onNextLevel } The callback function to proceed to the next stage.
- * @returns {JSX.Element} The rendered Level 1 Quiz Page.
+ * @param {QuizL1Props} { onNextLevel } The callback function to proceed to the next stage.
+ * @returns {JSX.Element} The rendered Level 1 Quiz.
  */
-export default function QuizPage_L1({ onNextLevel }: QuizPageL1Props) {
+export default function Quiz_L1({ onNextLevel }: QuizL1Props) {
   const [selected, setSelected] = useState<string | undefined>();
 
   const handleSelectAndNext = async (selectedType: string) => {
@@ -38,8 +40,8 @@ export default function QuizPage_L1({ onNextLevel }: QuizPageL1Props) {
           level: 1,
           answers: answersPayload,
         });
-
-        onNextLevel?.(res.ids);
+        console.log("Filtered IDs from Level 1:", res.ids);
+        onNextLevel(res.ids);
       } catch (err) {
         console.error("Mistake while filtering", err);
         alert("Error appeared during loading. Please try again.");
@@ -71,10 +73,40 @@ export default function QuizPage_L1({ onNextLevel }: QuizPageL1Props) {
             marginLeft: "55px",
           }}
         />
-        <QuizCard_L1
-          question="Möchtest du ..."
-          onSelect={handleSelectAndNext}
-        />
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+          }}
+        >
+          <BaseCard
+            cardText="Möchtest du ..."
+            sx={{
+              pt: 2,
+              pb: 4,
+            }}
+            cardColor={theme.palette.decorative.green}
+          ></BaseCard>
+
+          <Box sx={{ display: "grid", gap: 2, mt: 3 }}>
+            <SecondaryButton
+              label={"Ein Studium beginnen?"}
+              onClick={() => handleSelectAndNext("undergraduate")}
+            />
+            <SecondaryButton
+              label={"Einen Master studieren?"}
+              onClick={() => handleSelectAndNext("graduate")}
+            />
+            <SecondaryButton
+              label={"Dich erstmal umschauen?"}
+              onClick={() => handleSelectAndNext("all")}
+            />
+          </Box>
+        </Box>
       </Box>
     </QuizLayout>
   );

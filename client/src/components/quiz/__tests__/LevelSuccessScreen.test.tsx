@@ -1,7 +1,7 @@
 import { render, screen, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, test, expect, beforeEach, afterEach, vi } from "vitest";
-import LevelSuccessScreen from "../level-success/LevelSuccessScreen";
+import LevelSuccessScreen from "../LevelSuccessScreen";
 
 beforeEach(() => {
   vi.useFakeTimers();
