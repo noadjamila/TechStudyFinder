@@ -6,10 +6,10 @@ import ErrorScreen from "../../components/error-screen/ErrorScreen";
 import CardStack from "../../components/quiz/CardStack";
 import { Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { postFilterLevel, getQuizLevel } from "../../api/quizApi";
 
 export interface QuizPageL2Props {
   previousIds: number[];
-  onNextLevel: () => void;
   oneLevelBack: () => void;
 }
 
@@ -35,17 +35,12 @@ export interface QuizPageL2Props {
  */
 const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   previousIds,
-  onNextLevel,
   oneLevelBack,
 }) => {
   // TODO: Remove both debugs once database works
   console.debug(
     "Will contain IDs from L1, once response from backend is successful:",
     previousIds,
-  );
-  console.debug(
-    "Will send user from L2 to L3 after finishing the questions, once response from backend is successful:",
-    onNextLevel,
   );
 
   const navigate = useNavigate();
@@ -182,26 +177,15 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
    */
   const sendData = async (topScores: { type: RiasecType; score: number }[]) => {
     try {
-      const res = await fetch("http://localhost:5001/api/quiz/filter", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          answers: topScores,
-          level: 2,
-          studyProgrammeIds: [],
-        }),
+      const result = await postFilterLevel({
+        answers: topScores,
+        level: 2,
+        studyProgrammeIds: [],
       });
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
-      const result = await res.json();
       setResponseCount(result.ids.length);
 
-      // TODO: Call onNextLevel with the received IDs once backend works and proceed to the next quiz level.
+      // Navigation to /results happens via /level-success/3 screen
     } catch (err) {
       console.error("Error sending the data: ", err);
       setError({
@@ -216,18 +200,7 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const res = await fetch(`/api/quiz/level/${2}`);
-
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        const data = await res.json();
-
-        if (!data.questions || data.questions.length === 0) {
-          throw new Error("No questions found in the response.");
-        }
-
+        const data = await getQuizLevel(2);
         setQuestions(data.questions);
       } catch (err) {
         console.error(err);
@@ -246,11 +219,13 @@ const QuizPage_L2: React.FC<QuizPageL2Props> = ({
   useEffect(() => {
     if (quizFinished) {
       const timer = setTimeout(() => {
-        navigate("/level-success/3");
+        navigate("/level-success/3", {
+          state: { riasecScores: highestScores },
+        });
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [quizFinished, navigate]);
+  }, [quizFinished, navigate, highestScores]);
 
   // In case of an error, display the ErrorScreen component.
   if (error != null) {
