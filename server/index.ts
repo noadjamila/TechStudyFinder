@@ -9,9 +9,9 @@ import "dotenv/config";
 import path from "path";
 import testRouter from "./src/routes/health.route";
 import quizRoutes from "./src/routes/quiz.route";
+import { authRouter } from "./src/routes/auth.route";
 import { pool } from "./db";
 import "express-async-errors";
-import authRouter from "./src/routes/auth.route";
 import "./src/types/express-session";
 import session from "express-session";
 
