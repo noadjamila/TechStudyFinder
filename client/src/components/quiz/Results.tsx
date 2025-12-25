@@ -12,7 +12,7 @@ import { StudyProgramme } from "../../types/StudyProgramme.types";
 import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import StudyProgrammeCard from "./StudyProgrammeCard";
+import StudyProgrammeCard from "../cards/StudyProgrammeCard";
 
 interface ResultsProps {
   studyProgrammes: StudyProgramme[];

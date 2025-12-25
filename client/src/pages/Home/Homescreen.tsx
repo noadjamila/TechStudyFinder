@@ -2,11 +2,12 @@ import React from "react";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import StartButton from "../../components/buttons/Button";
 import { useNavigate } from "react-router-dom";
-import CardStack from "../../../src/components/quiz/CardStack";
+import CardStack from "../../components/cards/CardStackLevel2";
 import theme from "../../theme/theme";
 import LogoMenu from "../../components/logo-menu/LogoMenu";
 import Navigationbar from "../../components/nav-bar/NavBar";
 import DesktopLayout from "../../layouts/DesktopLayout";
+import GreenCard from "../../components/cards/GreenCardBaseNotQuiz";
 
 /**
  * Homescreen component.
@@ -110,84 +111,61 @@ const Homescreen: React.FC = () => {
         </Typography>
       </Box>
 
-      {/* card box (The green interactive card) */}
-      <CardStack currentIndex={1} totalCards={1}>
-        <Box
-          sx={{
-            width: { xs: "120%", md: "120%" },
-            maxWidth: { xs: 360, sm: 520, md: 900 },
-            px: { xs: 1, md: 8 },
-            py: { xs: 2, md: 3 },
-            mt: { xs: "17svh", md: 0 },
-            mx: "auto",
-            backgroundColor: theme.palette.decorative.green,
-            borderRadius: 4,
-            boxShadow: 3,
-            justifyContent: "center",
-            position: "relative",
-            left: { md: "50%" },
-            transform: {
-              xs: "translateX(-5.6%)",
-              sm: "translateX(-8%)",
-              md: "translateX(-50%)",
-            },
-            "@media (max-width: 375px)": {
-              transform: "translateX(0%)",
-              width: "90%",
-              mt: 7.5,
-            },
-          }}
-        >
-          {/* Mascot Image (positioned absolutely relative to the card box) */}
-          <Box
-            component="img"
-            src="/mascot_standing_blue.svg"
-            alt="Maskottchen"
-            sx={{
-              position: "absolute",
-              width: { xs: 40, sm: 40 },
-              height: "auto",
-              top: {
-                xs: -60,
-                sm: -58,
-              },
-              right: {
-                xs: 60,
-                sm: 50,
-                md: 20,
-              },
-            }}
-          />
+      {/* card box (The green card) */}
+      <Box sx={{ mt: { xs: "65px", md: "40px" } }}>
+        <CardStack currentIndex={1} totalCards={1}>
+          <GreenCard>
+            {/* Mascot Image (positioned absolutely relative to the card box) */}
+            <Box
+              component="img"
+              src="/mascot_standing_blue.svg"
+              alt="Maskottchen"
+              sx={{
+                position: "absolute",
+                width: { xs: 40, sm: 40 },
+                height: "auto",
+                top: {
+                  xs: -60,
+                  sm: -58,
+                },
+                right: {
+                  xs: 60,
+                  sm: 50,
+                  md: 20,
+                },
+              }}
+            />
 
-          {/* Card Question Text */}
-          <Typography
-            variant="subtitle1"
-            sx={{
-              mb: 3,
-              lineHeight: 1.3,
-            }}
-          >
-            {cardQuestion}
-          </Typography>
+            {/* Card Question Text */}
+            <Typography
+              variant="subtitle1"
+              sx={{
+                mb: 3,
+                lineHeight: 1.3,
+              }}
+            >
+              {cardQuestion}
+            </Typography>
 
-          {/* Start Quiz Button */}
-          <StartButton
-            label="Quiz beginnen"
-            onClick={handleQuizStart}
-            sx={{
-              borderRadius: 3,
-              padding: "8px 16x",
-              fontSize: "1.0rem",
-              width: "fit-content",
-              mx: "auto",
-              display: "block",
-              backgroundColor: theme.palette.primary.main,
-              color: theme.palette.text.primary,
-              fontWeight: "normal",
-            }}
-          />
-        </Box>
-      </CardStack>
+            {/* Start Quiz Button */}
+            <StartButton
+              label="Quiz beginnen"
+              onClick={handleQuizStart}
+              sx={{
+                borderRadius: 3,
+                padding: "8px 16x",
+                fontSize: "1.0rem",
+                width: "fit-content",
+                mx: "auto",
+                display: "block",
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.text.primary,
+                fontWeight: "normal",
+              }}
+            />
+          </GreenCard>
+        </CardStack>
+      </Box>
     </Box>
   );
 

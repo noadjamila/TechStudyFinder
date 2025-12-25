@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ThemeProvider } from "@mui/material";
 import { MemoryRouter } from "react-router-dom";
-import StudyProgrammeCard from "../StudyProgrammeCard";
+import StudyProgrammeCard from "../../cards/StudyProgrammeCard";
 import theme from "../../../theme/theme";
 import { StudyProgramme } from "../../../types/StudyProgramme.types";
 

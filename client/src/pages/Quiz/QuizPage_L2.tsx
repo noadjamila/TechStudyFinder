@@ -3,7 +3,7 @@ import QuizCard from "../../components/quiz/QuizCard_L2";
 import QuizLayout from "../../layouts/QuizLayout";
 import { RiasecType, initialScores } from "../../types/RiasecTypes";
 import ErrorScreen from "../../components/error-screen/ErrorScreen";
-import CardStack from "../../components/quiz/CardStack";
+import CardStack from "../../components/cards/CardStackLevel2";
 import { Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 

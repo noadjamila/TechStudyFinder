@@ -1,7 +1,7 @@
 import React from "react";
 import { SxProps, Theme } from "@mui/material/styles";
 import { Box } from "@mui/material";
-import BaseCard from "../BaseCard";
+import BaseCard from "../cards/QuizCardBase";
 import SecondaryButton from "../buttons/SecondaryButton";
 import theme from "../../theme/theme";
 

@@ -6,6 +6,7 @@ import Navigationbar from "../../components/nav-bar/NavBar";
 import DesktopLayout from "../../layouts/DesktopLayout";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/buttons/PrimaryButton";
+import GreenCard from "../../components/cards/GreenCardBaseNotQuiz";
 
 /**
  * FavouritesEmpty component.
@@ -51,24 +52,7 @@ const FavouritesEmpty: React.FC = () => {
       }}
     >
       {/* Green Card Container */}
-      <Box
-        sx={{
-          width: {
-            xs: "90%",
-            sm: "80%",
-            md: 540,
-            lg: 700,
-          },
-          bgcolor: theme.palette.decorative.green,
-          borderRadius: 2,
-          p: { xs: 3, sm: 4 },
-          boxShadow: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+      <GreenCard>
         {/* Card Title */}
         <Typography
           variant="subtitle1"
@@ -90,7 +74,7 @@ const FavouritesEmpty: React.FC = () => {
         >
           Quiz beginnen
         </Button>
-      </Box>
+      </GreenCard>
     </Box>
   );
 
