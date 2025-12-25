@@ -95,7 +95,7 @@ const Homescreen: React.FC = () => {
           {infoText1}
         </Typography>
 
-        {/*text: techstudyfinder hilt die dabei*/}
+        {/*text: techstudyfinder hilft dir dabei*/}
         <Typography
           variant="body1"
           sx={{

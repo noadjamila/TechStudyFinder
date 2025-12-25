@@ -178,7 +178,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
             borderBottomRightRadius: 0,
             display: "flex",
             flexDirection: "column",
-            overflow: "auto",
+            overflow: "hidden",
             alignItems: "center",
             marginLeft: "0%",
             marginRight: "8%",
