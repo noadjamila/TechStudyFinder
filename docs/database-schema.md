@@ -71,6 +71,7 @@ For more details, refer to the [institution schema](../server/db/schema/institut
 | Table               | Description                                                                  |
 | ------------------- | ---------------------------------------------------------------------------- |
 | abschlussart        | Degree types (Bachelor, Master, etc.)                                        |
+| studiengebiete      | Area of studys                                                               |
 | studienfelder       | Specific disciplines                                                         |
 | schwerpunkte        | Focus areas / study fields                                                   |
 | studienform         | Full-time, part-time, etc.                                                   |
