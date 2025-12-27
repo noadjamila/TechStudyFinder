@@ -77,6 +77,10 @@ jobs:
             docker compose up -d
             # Wait for the container to become healthy
             SERVICE_NAME=$(docker compose ps --format '{{.Name}}' | head -n 1)
+            if [ -z "$SERVICE_NAME" ]; then
+              echo "No running docker compose services found; cannot perform health check."
+              exit 1
+            fi
             echo "Waiting for service $SERVICE_NAME to become healthy..."
             for i in {1..30}; do
               STATUS=$(docker inspect --format='{{.State.Health.Status}}' "$SERVICE_NAME" 2>/dev/null || echo "unknown")
