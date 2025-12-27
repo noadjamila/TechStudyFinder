@@ -52,23 +52,6 @@ describe("Quiz_L1", () => {
     expect(mockNext).toHaveBeenCalledWith([1, 2, 3]);
   });
 
-  test("sends empty answers array when 'all' is selected", async () => {
-    const mockNext = vi.fn();
-    (postFilterLevel as Mock).mockResolvedValue({ ids: [42] });
-
-    renderWithTheme(<Quiz_L1 onNextLevel={mockNext} />);
-
-    fireEvent.click(screen.getByText(/dich erstmal umschauen\?/i));
-
-    await waitFor(() => {
-      expect(postFilterLevel).toHaveBeenCalled();
-    });
-
-    const payload = (postFilterLevel as Mock).mock.calls[0][0];
-    expect(Array.isArray(payload.answers)).toBe(true);
-    expect(payload.answers.length).toBe(0);
-  });
-
   test("shows alert on API error", async () => {
     (postFilterLevel as Mock).mockRejectedValue(new Error("fail"));
 

@@ -62,7 +62,8 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
   const currentQuestion = questions[currentIndex];
 
   // Advances to the next question without exceeding the total count.
-  const next = () => setCurrentIndex((i) => Math.min(i + 1, TOTAL_QUESTIONS - 1)
+  const next = () =>
+    setCurrentIndex((i) => Math.min(i + 1, TOTAL_QUESTIONS - 1));
 
   /**
    * Converts the scores object into an array of type-score pairs.

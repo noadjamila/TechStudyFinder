@@ -28,13 +28,9 @@ export default function Quiz_L1({ onNextLevel }: QuizL1Props) {
 
     setTimeout(async () => {
       try {
-        let answersPayload: [{ studientyp: string }] | [];
-
-        if (selectedType === "all") {
-          answersPayload = [];
-        } else {
-          answersPayload = [{ studientyp: selectedType }];
-        }
+        const answersPayload: [{ studientyp: string }] = [
+          { studientyp: selectedType },
+        ];
 
         const res = await postFilterLevel({
           level: 1,

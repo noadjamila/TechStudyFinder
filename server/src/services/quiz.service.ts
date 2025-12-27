@@ -13,7 +13,7 @@ import { RiasecScores } from "../types/riasecScores";
  */
 export async function filterLevel1(answers: any[]): Promise<number[]> {
   // Extract studientyp from the first answer (level 1 only has one question)
-  const studientyp = answers[0]?.studientyp;
+  const studientyp = answers[0]?.studientyp ?? "all";
   return await getFilteredResultsLevel1(studientyp);
 }
 

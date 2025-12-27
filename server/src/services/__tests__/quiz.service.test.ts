@@ -59,7 +59,7 @@ describe("Quiz Service - filterLevel1", () => {
     const result = await filterLevel1(answers);
 
     // Assert
-    expect(mockGetFilteredResults).toHaveBeenCalledWith(undefined);
+    expect(mockGetFilteredResults).toHaveBeenCalledWith("all");
     expect(result).toEqual(mockIds);
   });
 
@@ -76,7 +76,7 @@ describe("Quiz Service - filterLevel1", () => {
     const result = await filterLevel1(answers);
 
     // Assert
-    expect(mockGetFilteredResults).toHaveBeenCalledWith(undefined);
+    expect(mockGetFilteredResults).toHaveBeenCalledWith("all");
     expect(result).toEqual(mockIds);
   });
 
