@@ -4,7 +4,7 @@ import StartButton from "../../components/buttons/Button";
 import { useNavigate } from "react-router-dom";
 import CardStack from "../../../src/components/quiz/CardStack";
 import theme from "../../theme/theme";
-import LogoMenu from "../../components/logo-menu/LogoMenu";
+import LogoMenu from "../../components/Header";
 import Navigationbar from "../../components/nav-bar/NavBar";
 import DesktopLayout from "../../layouts/DesktopLayout";
 

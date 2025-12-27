@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import LogoMenu from "../logo-menu/LogoMenu";
+import LogoMenu from "../Header";
 import "@testing-library/jest-dom";
 
 describe("LogoMenu Component", () => {

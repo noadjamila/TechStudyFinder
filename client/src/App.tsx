@@ -4,6 +4,7 @@ import QuizFlow from "./pages/Quiz/QuizFlow";
 import ResultsPage from "./pages/ResultsPage";
 import StudyProgrammeDetailPage from "./pages/StudyProgrammeDetailPage";
 import LevelSuccessScreen from "./components/quiz/level-success/LevelSuccessScreen";
+import Settings from "./pages/Settings";
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
       <Route path="/" element={<Homescreen />} />
       <Route path="/quiz/level/:level" element={<QuizFlow />} />
       <Route path="/results" element={<ResultsPage />} />
+      <Route path="/settings" element={<Settings />} />
       <Route
         path="/study-programme/:id"
         element={<StudyProgrammeDetailPage />}
