@@ -39,7 +39,8 @@ jobs:
             # Force bash so pipefail is available; dash on some hosts errors on set -o pipefail.
             bash -euo pipefail <<'EOS'
 
-            cd "${{ secrets.SERVER_DEPLOY_PATH }}"
+            # Fixed deployment directory on production server
+            cd /home/deployuser/projects/TechStudyFinder
 
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
               -u "${{ github.actor }}" \
@@ -49,6 +50,8 @@ jobs:
             CURRENT_IMAGE=$(docker compose ps app --format '{{.Image}}' | head -n 1 || true)
             if [ -n "$CURRENT_IMAGE" ]; then
               docker tag "$CURRENT_IMAGE" rollback_image:latest || true
+            else
+              echo "No running image found for app; skipping rollback tag."
             fi
             rollback() {
               echo "Deployment failed. Attempting rollback..."
