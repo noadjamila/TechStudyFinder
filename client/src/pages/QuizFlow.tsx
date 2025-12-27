@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Quiz_L1 from "../../components/quiz/Quiz_L1";
-import Quiz_L2 from "../../components/quiz/Quiz_L2";
-import LevelSuccessScreen from "../../components/quiz/LevelSuccessScreen";
+import Quiz_L1 from "../components/quiz/Quiz_L1";
+import Quiz_L2 from "../components/quiz/Quiz_L2";
+import LevelSuccessScreen from "../components/quiz/LevelSuccessScreen";
 
 type Level = 1 | 2 | 3;
 

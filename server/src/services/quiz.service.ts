@@ -28,7 +28,7 @@ export async function filterLevel2(
   _studyProgrammeIds: number[] | undefined,
   _answers: any[],
 ): Promise<any[]> {
-  if (!_answers) {
+  if (_answers.length < 6) {
     return [];
   }
 

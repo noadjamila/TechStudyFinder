@@ -1,6 +1,6 @@
 import Homescreen from "./pages/Home/Homescreen";
 import { Routes, Route } from "react-router-dom";
-import QuizFlow from "./pages/Quiz/QuizFlow";
+import QuizFlow from "./pages/QuizFlow";
 import ResultsPage from "./pages/ResultsPage";
 import StudyProgrammeDetailPage from "./pages/StudyProgrammeDetailPage";
 import LevelSuccessScreen from "./components/quiz/LevelSuccessScreen";
