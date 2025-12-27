@@ -36,7 +36,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            set -e
+            # Force bash so pipefail is available; dash on some hosts errors on set -o pipefail.
+            bash -euo pipefail <<'EOS'
 
             cd "${{ secrets.SERVER_DEPLOY_PATH }}"
 
@@ -45,7 +46,7 @@ jobs:
               --password-stdin
 
             # Save currently running image tag for rollback
-            CURRENT_IMAGE=$(docker compose ps --format json | jq -r '.[0].Image' || echo "")
+            CURRENT_IMAGE=$(docker compose ps app --format '{{.Image}}' | head -n 1 || true)
             if [ -n "$CURRENT_IMAGE" ]; then
               docker tag "$CURRENT_IMAGE" rollback_image:latest || true
             fi
@@ -73,7 +74,11 @@ jobs:
             docker compose pull
             docker compose up -d
             # Wait for the container to become healthy
-            SERVICE_NAME=$(docker compose ps --format json | jq -r '.[0].Name')
+            SERVICE_NAME=$(docker compose ps app --format '{{.Name}}' | head -n 1)
+            if [ -z "$SERVICE_NAME" ]; then
+              echo "No running 'app' service found; cannot perform health check."
+              exit 1
+            fi
             echo "Waiting for service $SERVICE_NAME to become healthy..."
             for i in {1..30}; do
               STATUS=$(docker inspect --format='{{.State.Health.Status}}' "$SERVICE_NAME" 2>/dev/null || echo "unknown")
@@ -94,3 +99,4 @@ jobs:
             done
             # If successful, remove rollback image
             docker image rm rollback_image:latest || true
+            EOS
