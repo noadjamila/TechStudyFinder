@@ -48,12 +48,11 @@ RUN npm ci --omit=dev --workspace=server
 COPY --from=builder /app/server/dist ./server/dist
 COPY --from=builder /app/client/dist ./client/dist
 
-# Fix ownership
-RUN chown -R appuser:appgroup /app
-
 # Ensure curl is available for HEALTHCHECK
 RUN apk add --no-cache curl
 
+# Fix ownership
+RUN chown -R appuser:appgroup /app
 # Drop privileges
 USER appuser
 
