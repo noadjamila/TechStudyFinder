@@ -44,12 +44,12 @@ COPY server/package.json server/
 # Install only server runtime dependencies
 RUN npm ci --omit=dev --workspace=server
 
+# Ensure curl is available for HEALTHCHECK (early for better cache reuse)
+RUN apk add --no-cache curl
+
 # Copy build artifacts
 COPY --from=builder /app/server/dist ./server/dist
 COPY --from=builder /app/client/dist ./client/dist
-
-# Ensure curl is available for HEALTHCHECK
-RUN apk add --no-cache curl
 
 # Fix ownership
 RUN chown -R appuser:appgroup /app
