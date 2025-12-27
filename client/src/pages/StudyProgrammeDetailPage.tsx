@@ -164,14 +164,14 @@ const StudyProgrammeDetailPage: React.FC = () => {
         />
       </Box>
 
-      <Box sx={{ pt: { xs: "80px", sm: 0 } }}>
+      <Box sx={{ pt: { xs: "80px", sm: 0 }, pl: "30px", pr: "30px" }}>
         {" "}
         {/* Offset for fixed back button on mobile */}
         <DataSource />
       </Box>
 
       {/* Study programme card */}
-      <Box sx={{ px: 3, pt: 5 }}>
+      <Box sx={{ px: 3, pt: 1 }}>
         <Card
           sx={{
             padding: { xs: 2, sm: 4 },

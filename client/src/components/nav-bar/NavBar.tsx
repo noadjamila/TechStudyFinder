@@ -54,8 +54,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
       return navItems.findIndex((item) => item.path === "/results");
     }
 
-    // Default to Home (index 0)
-    return 0;
+    return null;
   };
 
   const [value, setValue] = useState(getCurrentIndex());

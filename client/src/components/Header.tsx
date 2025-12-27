@@ -1,15 +1,7 @@
-import React, { useState } from "react";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Menu,
-  MenuItem,
-  Box,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import theme from "../../theme/theme";
+import React from "react";
+import { AppBar, Toolbar, Typography, Box } from "@mui/material";
+import theme from "../theme/theme";
+import DropMenu from "./DropMenu";
 
 interface LogoMenuProps {
   fixed?: boolean;
@@ -24,25 +16,6 @@ interface LogoMenuProps {
  * @returns {React.FC} The rendered App Bar component.
  */
 const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  /**
-   * Handles the click on the Menu icon and sets the anchor element.
-   *
-   * @param {React.MouseEvent<HTMLElement>} event - The click event.
-   */
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  /**
-   * Closes the Menu by resetting the anchor element state.
-   */
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   return (
     <AppBar
       position={fixed ? "fixed" : "static"}
@@ -63,17 +36,13 @@ const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
         }}
       >
         {/* Menu Icon, left-aligned*/}
-        <IconButton
-          edge="start"
-          onClick={handleMenuClick}
-          aria-label="Open menu"
-          sx={{
-            ml: 2,
-            mr: 1.5,
+        <div
+          style={{
+            marginLeft: "15px",
           }}
         >
-          <MenuIcon fontSize="large" />
-        </IconButton>
+          <DropMenu />
+        </div>
 
         {/*Tech Study Finder Headline, centered*/}
         <Typography
@@ -110,18 +79,6 @@ const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
             }}
           />
         </Box>
-
-        {/* Dropdown Menu (Hidden by default) */}
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleMenuClose}
-          disableScrollLock={true}
-        >
-          {/* Menu Items */}
-          <MenuItem onClick={handleMenuClose}>Einloggen</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Impressum</MenuItem>
-        </Menu>
       </Toolbar>
     </AppBar>
   );
