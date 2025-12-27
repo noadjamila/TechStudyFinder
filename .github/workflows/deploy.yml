@@ -47,10 +47,10 @@ jobs:
 
             # Save currently running image tag for rollback
             CURRENT_IMAGE=$(docker compose ps app --format '{{.Image}}')
-            if [ -z "$CURRENT_IMAGE" ]; then
-              echo "No running image found for app; skipping rollback tag."
-            else
+            if [ -n "$CURRENT_IMAGE" ]; then
               docker tag "$CURRENT_IMAGE" rollback_image:latest || true
+            else
+              echo "No running image found for app; skipping rollback tag."
             fi
             rollback() {
               echo "Deployment failed. Attempting rollback..."
