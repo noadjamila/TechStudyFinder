@@ -78,7 +78,7 @@ jobs:
             # Wait for the container to become healthy
             SERVICE_NAME=$(docker compose ps app --format '{{.Name}}')
             if [ -z "$SERVICE_NAME" ]; then
-              echo "No running docker compose services found; cannot perform health check."
+              echo "No running 'app' service found; cannot perform health check."
               exit 1
             fi
             echo "Waiting for service $SERVICE_NAME to become healthy..."
