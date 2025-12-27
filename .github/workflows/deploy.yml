@@ -38,7 +38,7 @@ jobs:
           script: |
             set -e
 
-            cd "${{ secrets.SERVER_DEPLOY_PATH }}"
+            cd /home/deployuser/projects/TechStudyFinder
 
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
               -u "${{ github.actor }}" \
