@@ -16,7 +16,6 @@ const ResultsPage: React.FC = () => {
   const location = useLocation();
   const previousIds = location.state?.idsFromLevel2 || [];
 
-  console.log("IDs received in NextLevel:", previousIds);
 
   const studyProgrammes: StudyProgramme[] = [
     {
