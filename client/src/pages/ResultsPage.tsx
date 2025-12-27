@@ -14,8 +14,7 @@ const ResultsPage: React.FC = () => {
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
 
   const location = useLocation();
-  const previousIds = location.state?.idsFromLevel2 || [];
-
+  const __previousIds = location.state?.idsFromLevel2 || [];
 
   const studyProgrammes: StudyProgramme[] = [
     {
