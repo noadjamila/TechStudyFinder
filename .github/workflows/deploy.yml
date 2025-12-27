@@ -76,7 +76,7 @@ jobs:
             docker compose pull
             docker compose up -d
             # Wait for the container to become healthy
-            SERVICE_NAME=$(docker compose ps --format '{{.Name}}' | head -n 1)
+            SERVICE_NAME=$(docker compose ps app --format '{{.Name}}')
             if [ -z "$SERVICE_NAME" ]; then
               echo "No running docker compose services found; cannot perform health check."
               exit 1
