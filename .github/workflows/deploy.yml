@@ -36,18 +36,21 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            set -e
+            set -Eeuo pipefail
 
-            cd "${{ secrets.SERVER_DEPLOY_PATH }}"
+            # Fixed deployment directory on production server
+            cd /home/deployuser/projects/TechStudyFinder
 
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
               -u "${{ github.actor }}" \
               --password-stdin
 
             # Save currently running image tag for rollback
-            CURRENT_IMAGE=$(docker compose ps --format json | jq -r '.[0].Image' || echo "")
+            CURRENT_IMAGE=$(docker compose ps app --format '{{.Image}}')
             if [ -n "$CURRENT_IMAGE" ]; then
               docker tag "$CURRENT_IMAGE" rollback_image:latest || true
+            else
+              echo "No running image found for app; skipping rollback tag."
             fi
             rollback() {
               echo "Deployment failed. Attempting rollback..."
@@ -73,7 +76,11 @@ jobs:
             docker compose pull
             docker compose up -d
             # Wait for the container to become healthy
-            SERVICE_NAME=$(docker compose ps --format json | jq -r '.[0].Name')
+            SERVICE_NAME=$(docker compose ps app --format '{{.Name}}')
+            if [ -z "$SERVICE_NAME" ]; then
+              echo "No running 'app' service found; cannot perform health check."
+              exit 1
+            fi
             echo "Waiting for service $SERVICE_NAME to become healthy..."
             for i in {1..30}; do
               STATUS=$(docker inspect --format='{{.State.Health.Status}}' "$SERVICE_NAME" 2>/dev/null || echo "unknown")
