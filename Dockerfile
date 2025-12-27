@@ -41,12 +41,11 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 COPY package.json package-lock.json ./
 COPY server/package.json server/
 
-# Install only server runtime dependencies
-RUN npm ci --omit=dev --workspace=server
-
 # Ensure curl is available for HEALTHCHECK (early for better cache reuse)
 RUN apk add --no-cache curl
 
+# Install only server runtime dependencies
+RUN npm ci --omit=dev --workspace=server
 # Copy build artifacts
 COPY --from=builder /app/server/dist ./server/dist
 COPY --from=builder /app/client/dist ./client/dist
