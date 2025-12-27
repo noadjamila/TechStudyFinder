@@ -36,8 +36,10 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            set -e
+            #!/usr/bin/env bash
+            set -Eeuo pipefail
 
+            # Fixed deployment directory on production server
             cd /home/deployuser/projects/TechStudyFinder
 
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
