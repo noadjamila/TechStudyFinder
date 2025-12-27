@@ -40,7 +40,6 @@ export default function Quiz_L1({ onNextLevel }: QuizL1Props) {
           level: 1,
           answers: answersPayload,
         });
-        console.log("Filtered IDs from Level 1:", res.ids);
         onNextLevel(res.ids);
       } catch (err) {
         console.error("Mistake while filtering", err);
