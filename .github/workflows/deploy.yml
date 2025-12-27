@@ -36,7 +36,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            #!/usr/bin/env bash
             set -Eeuo pipefail
 
             # Fixed deployment directory on production server
@@ -47,8 +46,10 @@ jobs:
               --password-stdin
 
             # Save currently running image tag for rollback
-            CURRENT_IMAGE=$(docker compose ps --format '{{.Image}}' | head -n 1)
-            if [ -n "$CURRENT_IMAGE" ]; then
+            CURRENT_IMAGE=$(docker compose ps app --format '{{.Image}}')
+            if [ -z "$CURRENT_IMAGE" ]; then
+              echo "No running image found for app; skipping rollback tag."
+            else
               docker tag "$CURRENT_IMAGE" rollback_image:latest || true
             fi
             rollback() {

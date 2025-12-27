@@ -1,5 +1,6 @@
 services:
   app:
+    
     # NOTE: GITHUB_REPO_OWNER environment variable must be set and must match
     # the GitHub repository owner exactly for the image pull to work
     image: ghcr.io/${GITHUB_REPO_OWNER}/techstudyfinder:latest
