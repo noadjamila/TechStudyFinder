@@ -1,5 +1,5 @@
 /// <reference types="jest" />
-import { filterLevel1 } from "../quiz.service";
+import { filterLevel1, filterLevel2 } from "../quiz.service";
 import * as quizRepository from "../../repositories/quiz.repository";
 
 // Mock the repository module
@@ -18,31 +18,31 @@ describe("Quiz Service - filterLevel1", () => {
       .spyOn(quizRepository, "getFilteredResultsLevel1")
       .mockResolvedValue(mockIds);
 
-    const answers = [{ studientyp: "grundständig" as const }];
+    const answers = [{ studientyp: "undergraduate" as const }];
 
     // Act
     const result = await filterLevel1(answers);
 
     // Assert
-    expect(mockGetFilteredResults).toHaveBeenCalledWith("grundständig");
+    expect(mockGetFilteredResults).toHaveBeenCalledWith("undergraduate");
     expect(mockGetFilteredResults).toHaveBeenCalledTimes(1);
     expect(result).toEqual(mockIds);
   });
 
-  it("should handle weiterführend studientyp", async () => {
+  it("should handle graduate studientyp", async () => {
     // Arrange
     const mockIds = [10, 20, 30];
     const mockGetFilteredResults = jest
       .spyOn(quizRepository, "getFilteredResultsLevel1")
       .mockResolvedValue(mockIds);
 
-    const answers = [{ studientyp: "weiterführend" as const }];
+    const answers = [{ studientyp: "graduate" as const }];
 
     // Act
     const result = await filterLevel1(answers);
 
     // Assert
-    expect(mockGetFilteredResults).toHaveBeenCalledWith("weiterführend");
+    expect(mockGetFilteredResults).toHaveBeenCalledWith("graduate");
     expect(result).toEqual(mockIds);
   });
 
@@ -59,7 +59,7 @@ describe("Quiz Service - filterLevel1", () => {
     const result = await filterLevel1(answers);
 
     // Assert
-    expect(mockGetFilteredResults).toHaveBeenCalledWith(undefined);
+    expect(mockGetFilteredResults).toHaveBeenCalledWith("all");
     expect(result).toEqual(mockIds);
   });
 
@@ -76,7 +76,7 @@ describe("Quiz Service - filterLevel1", () => {
     const result = await filterLevel1(answers);
 
     // Assert
-    expect(mockGetFilteredResults).toHaveBeenCalledWith(undefined);
+    expect(mockGetFilteredResults).toHaveBeenCalledWith("all");
     expect(result).toEqual(mockIds);
   });
 
@@ -92,6 +92,114 @@ describe("Quiz Service - filterLevel1", () => {
     // Act & Assert
     await expect(filterLevel1(answers)).rejects.toThrow(
       "Database connection failed",
+    );
+  });
+});
+
+describe("Quiz Service - filterLevel2", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should aggregate RIASEC scores and call repository", async () => {
+    // Arrange
+    const mockIds = [1, 2, 3, 4, 5];
+    const mockGetFilteredResults = jest
+      .spyOn(quizRepository, "getFilteredResultsLevel2")
+      .mockResolvedValue(mockIds);
+
+    const answers = [
+      { type: "R", score: 3 },
+      { type: "I", score: 5 },
+      { type: "A", score: 2 },
+      { type: "S", score: 4 },
+      { type: "E", score: 1 },
+      { type: "C", score: 0 },
+    ];
+
+    const studyProgrammeIds = [10, 20, 30];
+
+    // Act
+    const result = await filterLevel2(studyProgrammeIds, answers);
+
+    // Assert
+    expect(mockGetFilteredResults).toHaveBeenCalledWith(studyProgrammeIds, {
+      R: 3,
+      I: 5,
+      A: 2,
+      S: 4,
+      E: 1,
+      C: 0,
+    });
+    expect(result).toEqual(mockIds);
+  });
+
+  it("should handle undefined studyProgrammeIds", async () => {
+    // Arrange
+    const mockGetFilteredResults = jest
+      .spyOn(quizRepository, "getFilteredResultsLevel2")
+      .mockResolvedValue([]);
+
+    const answers = [
+      { type: "R", score: 1 },
+      { type: "I", score: 1 },
+      { type: "A", score: 1 },
+      { type: "S", score: 1 },
+      { type: "E", score: 1 },
+      { type: "C", score: 1 },
+    ];
+
+    // Act
+    const result = await filterLevel2(undefined, answers);
+
+    // Assert
+    expect(mockGetFilteredResults).toHaveBeenCalledWith(undefined, {
+      R: 1,
+      I: 1,
+      A: 1,
+      S: 1,
+      E: 1,
+      C: 1,
+    });
+    expect(result).toEqual([]);
+  });
+
+  it("should return empty array when answers are undefined", async () => {
+    // Arrange
+    const mockGetFilteredResults = jest.spyOn(
+      quizRepository,
+      "getFilteredResultsLevel2",
+    );
+
+    // Act
+    const result = await filterLevel2([1, 2, 3], []);
+
+    // Assert
+    expect(mockGetFilteredResults).not.toHaveBeenCalled();
+    expect(result).toEqual([]);
+  });
+
+  it("should propagate repository errors", async () => {
+    // Arrange
+    const mockError = new Error("Database query failed");
+    jest
+      .spyOn(quizRepository, "getFilteredResultsLevel2")
+      .mockRejectedValue(mockError);
+
+    const answers = [
+      { type: "R", score: 2 },
+      { type: "I", score: 2 },
+      { type: "A", score: 2 },
+      { type: "S", score: 2 },
+      { type: "E", score: 2 },
+      { type: "C", score: 2 },
+    ];
+
+    const studyProgrammeIds = [100, 200];
+
+    // Act & Assert
+    await expect(filterLevel2(studyProgrammeIds, answers)).rejects.toThrow(
+      "Database query failed",
     );
   });
 });

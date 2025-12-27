@@ -12,14 +12,14 @@ type QuizAnswer = Level1Answer | Level2Answer;
 export interface QuizFilterPayload {
   level: 1 | 2 | 3;
   answers: QuizAnswer[];
-  studyProgrammeIds?: number[];
+  studyProgrammeIds?: string[];
 }
 
 /**
  * Interface defining the expected response structure from the filtering endpoint.
  */
 interface FilterResponse {
-  ids: number[];
+  ids: string[];
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
