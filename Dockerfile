@@ -51,13 +51,13 @@ COPY --from=builder /app/client/dist ./client/dist
 # Fix ownership
 RUN chown -R appuser:appgroup /app
 
+# Ensure curl is available for HEALTHCHECK
+RUN apk add --no-cache curl
+
 # Drop privileges
 USER appuser
 
 EXPOSE 5001
-
-# Ensure curl is available for HEALTHCHECK
-RUN apk add --no-cache curl
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD curl -fs http://localhost:5001/ || exit 1
