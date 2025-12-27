@@ -3,6 +3,7 @@ name: Docker Deploy
 on:
   push:
     branches: ["main"]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -36,7 +37,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            # Force bash so pipefail is available; dash on some hosts errors on set -o pipefail.
+            # Force bash so pipefail is available; dash on some hosts errors on set -o pipefail
             bash -euo pipefail <<'EOS'
 
             # Fixed deployment directory on production server
@@ -79,7 +80,7 @@ jobs:
             # Wait for the container to become healthy
             SERVICE_NAME=$(docker compose ps app --format '{{.Name}}' | head -n 1)
             if [ -z "$SERVICE_NAME" ]; then
-              echo "No running 'app' service found; cannot perform health check."
+              echo "No running 'app' service found; cannot perform health check"
               exit 1
             fi
             echo "Waiting for service $SERVICE_NAME to become healthy..."
