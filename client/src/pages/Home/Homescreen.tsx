@@ -27,7 +27,7 @@ const Homescreen: React.FC = () => {
    * Handles the start of the quiz by navigating to the level success screen first.
    */
   const handleQuizStart = () => {
-    navigate("/level-success/1");
+    navigate("/quiz");
   };
 
   // --- Static Content Definitions ---
