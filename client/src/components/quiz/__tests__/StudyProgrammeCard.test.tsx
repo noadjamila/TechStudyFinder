@@ -23,8 +23,22 @@ vi.mock("react-router-dom", async () => {
 const mockProgramme: StudyProgramme = {
   id: 1,
   name: "Computer Science",
-  university: "Technical University Munich",
-  degree: "Bachelor of Science",
+  hochschule: "Technical University Munich",
+  abschluss: "Bachelor of Science",
+  homepage: "https://example.com",
+  studienbeitrag: "500 EUR",
+  beitrag_kommentar: "Per Semester",
+  anmerkungen: "Test notes",
+  regelstudienzeit: "6 Semester",
+  zulassungssemester: "WS/SS",
+  zulassungsmodus: "NC",
+  zulassungsvoraussetzungen: "Abitur",
+  zulassungslink: "https://example.com/apply",
+  schwerpunkte: ["AI", "Software Engineering"],
+  sprachen: ["Deutsch", "Englisch"],
+  standorte: ["München"],
+  studienfelder: ["Informatik"],
+  studienform: "Vollzeit",
 };
 
 const renderWithTheme = (component: React.ReactElement) => {
@@ -303,8 +317,22 @@ describe("StudyProgrammeCard Component", () => {
       const differentProgramme: StudyProgramme = {
         id: 42,
         name: "Data Science",
-        university: "LMU München",
-        degree: "Master of Science",
+        hochschule: "LMU München",
+        abschluss: "Master of Science",
+        homepage: "https://example.com",
+        studienbeitrag: "0 EUR",
+        beitrag_kommentar: "Keine Gebühren",
+        anmerkungen: "",
+        regelstudienzeit: "4 Semester",
+        zulassungssemester: "WS",
+        zulassungsmodus: "Frei",
+        zulassungsvoraussetzungen: "Bachelor",
+        zulassungslink: "https://example.com/apply",
+        schwerpunkte: ["Machine Learning"],
+        sprachen: ["Englisch"],
+        standorte: ["München"],
+        studienfelder: ["Datenwissenschaft"],
+        studienform: "Vollzeit",
       };
 
       renderWithTheme(<StudyProgrammeCard programme={differentProgramme} />);
@@ -318,8 +346,22 @@ describe("StudyProgrammeCard Component", () => {
       const differentProgramme: StudyProgramme = {
         id: 99,
         name: "Software Engineering",
-        university: "TU Berlin",
-        degree: "Bachelor",
+        hochschule: "TU Berlin",
+        abschluss: "Bachelor",
+        homepage: "https://example.com",
+        studienbeitrag: "300 EUR",
+        beitrag_kommentar: "Per Semester",
+        anmerkungen: "",
+        regelstudienzeit: "6 Semester",
+        zulassungssemester: "WS",
+        zulassungsmodus: "NC",
+        zulassungsvoraussetzungen: "Abitur",
+        zulassungslink: "https://example.com/apply",
+        schwerpunkte: ["Web Development"],
+        sprachen: ["Deutsch"],
+        standorte: ["Berlin"],
+        studienfelder: ["Informatik"],
+        studienform: "Vollzeit",
       };
 
       renderWithTheme(<StudyProgrammeCard programme={differentProgramme} />);

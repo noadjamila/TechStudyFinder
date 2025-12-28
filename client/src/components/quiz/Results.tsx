@@ -42,13 +42,13 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   // Get unique universities and degrees for filter options
   const universities = useMemo(() => {
     const uniqueUniversities = [
-      ...new Set(studyProgrammes.map((p) => p.university)),
+      ...new Set(studyProgrammes.map((p) => p.hochschule)),
     ];
     return uniqueUniversities.sort();
   }, [studyProgrammes]);
 
   const degrees = useMemo(() => {
-    const uniqueDegrees = [...new Set(studyProgrammes.map((p) => p.degree))];
+    const uniqueDegrees = [...new Set(studyProgrammes.map((p) => p.abschluss))];
     return uniqueDegrees.sort();
   }, [studyProgrammes]);
 
@@ -56,9 +56,9 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   const filteredProgrammes = useMemo(() => {
     return studyProgrammes.filter((programme) => {
       const matchesUniversity =
-        !selectedUniversity || programme.university === selectedUniversity;
+        !selectedUniversity || programme.hochschule === selectedUniversity;
       const matchesDegree =
-        !selectedDegree || programme.degree === selectedDegree;
+        !selectedDegree || programme.abschluss === selectedDegree;
       return matchesUniversity && matchesDegree;
     });
   }, [studyProgrammes, selectedUniversity, selectedDegree]);

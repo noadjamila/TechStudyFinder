@@ -121,7 +121,7 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
                   fontSize: { xs: "0.875rem", sm: "1rem" },
                 }}
               >
-                {programme.university}
+                {programme.hochschule}
               </Typography>
             </Box>
             <Box
@@ -153,7 +153,7 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
                   fontSize: { xs: "0.875rem", sm: "1rem" },
                 }}
               >
-                {programme.degree}
+                {programme.abschluss}
               </Typography>
             </Box>
           </Box>
