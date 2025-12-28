@@ -29,12 +29,12 @@ export interface QuizLevelResponse {
 export interface QuizFilterPayload {
   level: 1 | 2 | 3;
   answers: QuizAnswer[];
-  studyProgrammeIds?: number[];
+  studyProgrammeIds?: string[];
 }
 
 /**
  * Interface defining the expected response structure from the filtering endpoint.
  */
 export interface FilterResponse {
-  ids: number[];
+  ids: string[];
 }

@@ -14,50 +14,47 @@ describe("Quiz Repository - getFilteredResultsLevel1", () => {
     jest.clearAllMocks();
   });
 
-  it("should return all IDs when no studientyp is provided", async () => {
+  it("should return all IDs when no studientyp is 'all'", async () => {
     // Arrange
     const mockRows = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }];
     (pool.query as jest.Mock).mockResolvedValue({ rows: mockRows });
 
     // Act
-    const result = await getFilteredResultsLevel1();
+    const result = await getFilteredResultsLevel1("all");
 
     // Assert
-    expect(pool.query).toHaveBeenCalledWith(
-      "SELECT id FROM studiengang_raw_data_simulation",
-      [],
-    );
+    expect(pool.query).toHaveBeenCalledWith("SELECT id FROM studiengaenge", []);
     expect(result).toEqual([1, 2, 3, 4, 5]);
   });
 
-  it("should filter by grundständig when provided", async () => {
+  it("should filter by undergraduate when provided", async () => {
     // Arrange
     const mockRows = [{ id: 1 }, { id: 3 }, { id: 5 }];
     (pool.query as jest.Mock).mockResolvedValue({ rows: mockRows });
 
     // Act
-    const result = await getFilteredResultsLevel1("grundständig");
+    const result = await getFilteredResultsLevel1("undergraduate");
 
     // Assert
     expect(pool.query).toHaveBeenCalledWith(
-      "SELECT id FROM studiengang_raw_data_simulation WHERE studientyp = $1",
-      ["grundständig"],
+      "SELECT id FROM studiengaenge WHERE typ = $1",
+      ["undergraduate"],
     );
     expect(result).toEqual([1, 3, 5]);
   });
 
-  it("should filter by weiterführend when provided", async () => {
+  it("should filter by graduate when provided", async () => {
     // Arrange
     const mockRows = [{ id: 2 }, { id: 4 }];
     (pool.query as jest.Mock).mockResolvedValue({ rows: mockRows });
 
     // Act
-    const result = await getFilteredResultsLevel1("weiterführend");
+    const result = await getFilteredResultsLevel1("graduate");
 
     // Assert
     expect(pool.query).toHaveBeenCalledWith(
-      "SELECT id FROM studiengang_raw_data_simulation WHERE studientyp = $1",
-      ["weiterführend"],
+      "SELECT id FROM studiengaenge WHERE typ = $1",
+      ["graduate"],
     );
     expect(result).toEqual([2, 4]);
   });
@@ -67,7 +64,7 @@ describe("Quiz Repository - getFilteredResultsLevel1", () => {
     (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
 
     // Act
-    const result = await getFilteredResultsLevel1("grundständig");
+    const result = await getFilteredResultsLevel1("undergraduate");
 
     // Assert
     expect(result).toEqual([]);
@@ -79,7 +76,7 @@ describe("Quiz Repository - getFilteredResultsLevel1", () => {
     (pool.query as jest.Mock).mockRejectedValue(mockError);
 
     // Act & Assert
-    await expect(getFilteredResultsLevel1()).rejects.toThrow(
+    await expect(getFilteredResultsLevel1("all")).rejects.toThrow(
       "Database connection error",
     );
   });

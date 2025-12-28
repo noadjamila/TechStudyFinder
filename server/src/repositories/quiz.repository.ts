@@ -1,27 +1,26 @@
 import { pool } from "../../db";
+import { RiasecScores } from "../types/riasecScores";
 
 /**
  * Retrieves filtered study programme IDs for level 1 based on the provided study type.
  *
- * @param studientyp the type of study programme (grundständig or weiterführend)
+ * @param studientyp the type of study programme (undergraduate, graduate or all)
  * @returns filtered study programme IDs
  */
 export async function getFilteredResultsLevel1(
-  studientyp?: "grundständig" | "weiterführend", // optional
+  studientyp: "undergraduate" | "graduate" | "all",
 ): Promise<number[]> {
-  let query = `SELECT id FROM studiengang_raw_data_simulation`;
+  let query = `SELECT id FROM studiengaenge`;
   let params: string[] = [];
 
-  //debugging for neither grundständig nor weiterführend
-  if (!studientyp) {
+  if (studientyp == "all") {
     console.debug(
-      "[DB DEBUG] Filtering skipped (studientyp is undefined/all). Returning ALL IDs.",
+      "[DB DEBUG] Filtering skipped (studientyp is all). Returning ALL IDs.",
     );
   }
 
-  // if there is a studientyp filter, add it to the query
-  if (studientyp) {
-    query += ` WHERE studientyp = $1`;
+  if (studientyp != "all") {
+    query += ` WHERE typ = $1`;
     params.push(studientyp);
   }
 
@@ -40,36 +39,100 @@ export async function getFilteredResultsLevel1(
  * Retrieves filtered study programme IDs for level 2 based on the provided riasec types.
  *
  * @param studyProgrammeIds list of study programme IDs to filter from
- * @param highestRiasecTypes the three highest riasec types of the user
- * @param minMatches minimum number of matching riasec types to consider a study programme
- * @returns filtered study programme IDs
+ * @param userScores the riasec scores of the user
+ * @param minSimilarity minimum similarity threshold to consider a study programme
+ * @returns 20 best matching study programme IDs
  */
 export async function getFilteredResultsLevel2(
   studyProgrammeIds: number[] | undefined,
-  highestRiasecTypes: string[],
-  minMatches: number = 2,
+  userScores: RiasecScores,
+  minSimilarity: number = 0.6,
 ): Promise<number[]> {
   if (!studyProgrammeIds || studyProgrammeIds.length === 0) {
+    console.debug("No studyProgrammeIds provided, returning empty array.");
     return [];
   }
 
+  const LIMIT = 20;
+
+  console.debug("User RIASEC Scores:", userScores);
+  console.debug("Study programme IDs:", studyProgrammeIds);
+  console.debug("Min similarity threshold:", minSimilarity);
+  console.debug("Query limit:", LIMIT);
+
   const query = `
-    SELECT s.id
-    FROM studiengang_raw_data_simulation AS s
-    JOIN LATERAL unnest(s.riasec_type) AS t(type) ON TRUE
-    WHERE s.id = ANY($1::int[])
-      AND t.type = ANY($2::text[])
-    GROUP BY s.id
-    HAVING COUNT(*) >= $3
+    WITH user_vector AS (
+      SELECT
+        $2::float AS r,
+        $3::float AS i,
+        $4::float AS a,
+        $5::float AS s,
+        $6::float AS e,
+        $7::float AS c
+    ),
+    scored_studiengaenge AS (
+      SELECT
+        s.studiengang_id,
+
+        -- Cosine Similarity
+        (
+          (s.r_score * u.r +
+          s.i_score * u.i +
+          s.a_score * u.a +
+          s.s_score * u.s +
+          s.e_score * u.e +
+          s.c_score * u.c)
+          /
+          (
+            NULLIF(
+              SQRT(
+                s.r_score^2 +
+                s.i_score^2 +
+                s.a_score^2 +
+                s.s_score^2 +
+                s.e_score^2 +
+                s.c_score^2
+              ), 0
+            )
+            *
+            NULLIF(
+              SQRT(
+                u.r^2 + u.i^2 + u.a^2 +
+                u.s^2 + u.e^2 + u.c^2
+              ), 0
+            )
+          )
+        ) AS similarity
+
+      FROM studiengang_riasec_mv s
+      CROSS JOIN user_vector u
+      WHERE s.studiengang_id = ANY($1::text[])
+    )
+
+    SELECT
+      studiengang_id
+    FROM scored_studiengaenge
+    WHERE similarity >= $8
+    ORDER BY similarity DESC
+    LIMIT $9;
   `;
 
   const result = await pool.query(query, [
-    studyProgrammeIds,
-    highestRiasecTypes,
-    minMatches,
+    studyProgrammeIds, // $1
+    userScores.R, // $2
+    userScores.I, // $3
+    userScores.A, // $4
+    userScores.S, // $5
+    userScores.E, // $6
+    userScores.C, // $7
+    minSimilarity, // $8
+    LIMIT, // $9
   ]);
 
-  return result.rows.map((row: any) => row.id);
+  console.debug("Query returned", result.rows.length, "rows");
+  console.debug("Results:", result.rows);
+
+  return result.rows;
 }
 
 /**
