@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 
 type Level = 1 | 2 | 3 | 4;
 type Phase = "won" | "next";
 
 export type LevelSuccessScreenProps = {
   currentLevel: Level;
-  onContinue?: () => void;
+  onContinue: () => void;
 };
 type LevelConfig = {
   wonTitle?: string;
@@ -51,9 +50,9 @@ const subtitleSx = {
 
 export default function LevelSuccessScreen({
   currentLevel,
+  onContinue,
 }: LevelSuccessScreenProps) {
   const [phase, setPhase] = useState<Phase>("won");
-  const navigate = useNavigate();
   const config = LEVEL_CONFIG[currentLevel];
 
   useEffect(() => {
@@ -62,30 +61,21 @@ export default function LevelSuccessScreen({
       setPhase("next");
       return;
     }
-    const id = setTimeout(() => setPhase("next"), 1800);
+    const id = setTimeout(() => setPhase("next"), 2000);
     return () => clearTimeout(id);
   }, [currentLevel]);
 
   useEffect(() => {
     if (phase !== "next") return;
 
-    //navigates the routes after showing the next phase
     const id = setTimeout(() => {
-      if (currentLevel === 1) {
-        navigate("/quiz/level/1");
+      if (currentLevel) {
+        onContinue();
       }
-
-      if (currentLevel === 2) {
-        navigate("/quiz/level/2");
-      }
-
-      if (currentLevel === 3) {
-        navigate("/results");
-      }
-    }, 1200);
+    }, 2000);
 
     return () => clearTimeout(id);
-  }, [phase, currentLevel, navigate]);
+  }, [phase, currentLevel]);
 
   return (
     <Box

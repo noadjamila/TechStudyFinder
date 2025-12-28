@@ -3,8 +3,12 @@ import Results from "../components/quiz/Results";
 import DataSource from "../components/DataSource";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 import MainLayout from "../layouts/MainLayout";
+import { useLocation } from "react-router-dom";
 
 const ResultsPage: React.FC = () => {
+  const location = useLocation();
+  const __previousIds = location.state?.idsFromLevel2 || [];
+
   const studyProgrammes: StudyProgramme[] = [
     {
       id: 1,
