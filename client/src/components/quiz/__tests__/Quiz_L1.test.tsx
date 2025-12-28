@@ -6,6 +6,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import theme from "../../../theme/theme";
 import Quiz_L1 from "../Quiz_L1";
 import { postFilterLevel } from "../../../api/quizApi";
+import { Answer } from "../../../types/QuizAnswer.types";
 
 const renderWithTheme = (ui: React.ReactElement) =>
   render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
@@ -20,10 +21,11 @@ describe("Quiz_L1", () => {
   afterEach(() => {
     vi.clearAllMocks();
     vi.clearAllTimers();
+    vi.restoreAllMocks();
   });
 
   test("renders question and options", () => {
-    renderWithTheme(<Quiz_L1 onNextLevel={vi.fn()} />);
+    renderWithTheme(<Quiz_L1 onAnswer={vi.fn()} onComplete={vi.fn()} />);
 
     expect(screen.getByText("Möchtest du ...")).toBeInTheDocument();
     expect(
@@ -37,25 +39,36 @@ describe("Quiz_L1", () => {
     ).toBeInTheDocument();
   });
 
-  test("calls API and onNextLevel after selecting an option", async () => {
-    const mockNext = vi.fn();
+  test("calls API, onAnswer, and onComplete after selecting an option", async () => {
+    const mockOnAnswer = vi.fn();
+    const mockOnComplete = vi.fn();
+    vi.spyOn(Date, "now").mockReturnValue(1700000000000);
     (postFilterLevel as Mock).mockResolvedValue({ ids: [1, 2, 3] });
 
-    renderWithTheme(<Quiz_L1 onNextLevel={mockNext} />);
+    renderWithTheme(
+      <Quiz_L1 onAnswer={mockOnAnswer} onComplete={mockOnComplete} />,
+    );
 
     fireEvent.click(screen.getByText(/ein Studium beginnen\?/i));
 
     await waitFor(() => {
-      expect(postFilterLevel).toHaveBeenCalled(); // statt CalledTimes(1)
+      expect(postFilterLevel).toHaveBeenCalled();
     });
 
-    expect(mockNext).toHaveBeenCalledWith([1, 2, 3]);
+    const expectedAnswer: Answer = {
+      questionId: "level1.studyType",
+      value: "undergraduate",
+      answeredAt: 1700000000000,
+    };
+
+    expect(mockOnAnswer).toHaveBeenCalledWith(expectedAnswer);
+    expect(mockOnComplete).toHaveBeenCalled();
   });
 
   test("shows alert on API error", async () => {
     (postFilterLevel as Mock).mockRejectedValue(new Error("fail"));
 
-    renderWithTheme(<Quiz_L1 onNextLevel={vi.fn()} />);
+    renderWithTheme(<Quiz_L1 onAnswer={vi.fn()} onComplete={vi.fn()} />);
 
     fireEvent.click(screen.getByText(/ein Studium beginnen\?/i));
 
