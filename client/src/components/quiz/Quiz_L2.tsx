@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
-import { RiasecType, initialScores } from "../../types/RiasecTypes";
+import { RiasecType } from "../../types/RiasecTypes";
 import ErrorScreen from "../error-screen/ErrorScreen";
 import CardStack from "./CardStack";
 import { Stack, Typography } from "@mui/material";
-import { postFilterLevel } from "../../api/quizApi";
 import BaseCard from "../BaseCard";
 import PrimaryButton from "../buttons/PrimaryButton";
 import SecondaryButton from "../buttons/SecondaryButton";
 import theme from "../../theme/theme";
+import { Answer } from "../../types/QuizAnswer.types";
+
+/**
+ * NOTE:
+ * This component is intentionally simplified as of now (PR 1).
+ * Score calculation and backend submission are reintroduced in PR 2.
+ */
 
 export interface QuizL2Props {
-  previousIds: string[];
-  onNextLevel: (ids: string[]) => void;
+  onAnswer: (answer: Answer) => void;
+  onComplete: () => void;
   oneLevelBack: () => void;
 }
 
@@ -32,8 +38,8 @@ export interface QuizL2Props {
  * @returns {JSX.Element} A rendered quiz interface with progress tracking and scoring.
  */
 const Quiz_L2: React.FC<QuizL2Props> = ({
-  previousIds,
-  onNextLevel,
+  onAnswer,
+  onComplete,
   oneLevelBack,
 }) => {
   const [questions, setQuestions] = useState<
@@ -43,27 +49,30 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
   const [error, setError] = useState<{ title: string; message: string } | null>(
     null,
   );
+  // NOTE: Transition handling will be refined in PR 3 (back navigation)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
-  const [_scores, setScores] =
-    useState<Record<RiasecType, number>>(initialScores);
-
-  const [answers, setAnswers] = useState<Record<string, "yes" | "no" | "skip">>(
-    {},
-  );
-
-  const pointsMap: Record<string, number> = {
-    yes: 1,
-    no: -1,
-    skip: 0,
-  };
+  /*
+   * TODO (PR 2):
+   * Local score state will be removed;
+   * scores will be derived from AnswerMap
+   */
+  // const [_scores, setScores] =
+  //   useState<Record<RiasecType, number>>(initialScores);
+  //
+  // const pointsMap: Record<string, number> = {
+  //   yes: 1,
+  //   no: -1,
+  //   skip: 0,
+  // };
 
   const TOTAL_QUESTIONS = questions.length;
   const currentQuestion = questions[currentIndex];
 
-  // Advances to the next question without exceeding the total count.
-  const next = () =>
-    setCurrentIndex((i) => Math.min(i + 1, TOTAL_QUESTIONS - 1));
+  // NOTE: Transition handling will be refined in PR 3 (back navigation)
+  // const next = () =>
+  //   setCurrentIndex((i) => Math.min(i + 1, TOTAL_QUESTIONS - 1));
 
   /**
    * Converts the scores object into an array of type-score pairs.
@@ -71,14 +80,14 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
    * @param {Record<RiasecType, number>} scores - The RIASEC scores.
    * @returns {{ type: RiasecType; score: number }[]} Array of type-score objects.
    */
-  const scoresToArray = (
-    scores: Record<RiasecType, number>,
-  ): { type: RiasecType; score: number }[] => {
-    return Object.entries(scores).map(([type, score]) => ({
-      type: type as RiasecType,
-      score,
-    }));
-  };
+  // const scoresToArray = (
+  //   scores: Record<RiasecType, number>,
+  // ): { type: RiasecType; score: number }[] => {
+  //   return Object.entries(scores).map(([type, score]) => ({
+  //     type: type as RiasecType,
+  //     score,
+  //   }));
+  // };
 
   /**
    * Handles  the option to go back one Question.
@@ -86,30 +95,10 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
    * Switches Levels if user is on the first Question.
    */
   const goBack = () => {
-    if (currentIndex == 0) {
+    if (currentIndex === 0) {
       oneLevelBack();
-    } else if (!isTransitioning) {
-      setIsTransitioning(true);
-      const previousAnswer = answers[currentIndex - 1];
-      if (!previousAnswer) {
-        setIsTransitioning(false);
-        return;
-      }
-      const lastQuestion = questions[currentIndex - 1];
-      const lastType = lastQuestion.riasec_type;
-
-      const points = pointsMap[previousAnswer];
-
-      setScores((prev) => {
-        const newScores = { ...prev, [lastType]: prev[lastType] - points };
-        return newScores;
-      });
-      setTimeout(() => {
-        if (currentIndex > 0) {
-          setCurrentIndex(currentIndex - 1);
-        }
-        setIsTransitioning(false);
-      }, 300);
+    } else {
+      setCurrentIndex((i) => Math.max(i - 1, 0));
     }
   };
 
@@ -120,60 +109,47 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
    *
    * @param {"yes" | "no" | "skip"} option - The selected answer option.
    */
-  const handleSelect = (option: string) => {
+  const handleSelect = (option: "yes" | "no" | "skip") => {
     if (!currentQuestion || isTransitioning) return;
-    setIsTransitioning(true);
 
-    const currentType = currentQuestion.riasec_type;
-
-    const points = pointsMap[option] ?? 0;
-    setAnswers((prev) => ({ ...prev, [currentIndex]: option }));
-
-    setScores((prev) => {
-      const newScores = { ...prev, [currentType]: prev[currentType] + points };
-
-      // Last question -> send scores to backend
-      if (currentIndex === TOTAL_QUESTIONS - 1) {
-        const scoresArray = scoresToArray(newScores);
-        void sendData(scoresArray);
-      }
-      return newScores;
+    onAnswer({
+      questionId: `level2.question${currentIndex}`,
+      value: option,
+      answeredAt: Date.now(),
     });
 
-    // Move to next question
-    setTimeout(() => {
-      if (currentIndex < TOTAL_QUESTIONS) {
-        next();
-      }
-      setIsTransitioning(false);
-    }, 300);
-  };
-
-  /**
-   * Sends the scores to the backend server.
-   * @param scores The RIASEC scores to send.
-   */
-  const sendData = async (scores: { type: RiasecType; score: number }[]) => {
-    console.log(previousIds, scores);
-    try {
-      const response = await postFilterLevel({
-        level: 2,
-        answers: scores,
-        studyProgrammeIds: previousIds,
-      });
-
-      const idsArray = response.ids.map((item: any) => item.studiengang_id);
-      console.log("IDs as strings:", idsArray);
-      onNextLevel(idsArray);
-    } catch (err) {
-      console.error("Error sending the data: ", err);
-      setError({
-        title: "Fehler beim Senden",
-        message:
-          "Der Server konnte die Daten nicht verarbeiten. Bitte versuche es später erneut.",
-      });
+    // Last question -> send scores to backend
+    if (currentIndex === TOTAL_QUESTIONS - 1) {
+      onComplete();
+    } else {
+      setCurrentIndex((i) => i + 1);
     }
   };
+
+  /*
+   * TODO (PR 2):
+   * Send RIASEC scores to backend once score calculation
+   * is implemented based on AnswerMap
+   */
+  // const sendData = async (scores: { type: RiasecType; score: number }[]) => {
+  //   try {
+  //     const response = await postFilterLevel({
+  //       level: 2,
+  //       answers: scores,
+  //       studyProgrammeIds: previousIds,
+  //     });
+  //
+  //     const idsArray = response.ids.map((item: any) => item.studiengang_id);
+  //     console.log("IDs as strings:", idsArray);
+  //   } catch (err) {
+  //     console.error("Error sending the data: ", err);
+  //     setError({
+  //       title: "Fehler beim Senden",
+  //       message:
+  //         "Der Server konnte die Daten nicht verarbeiten. Bitte versuche es später erneut.",
+  //     });
+  //   }
+  // };
 
   /**
    * Fetches level 2 questions from the backend API on component mount.
