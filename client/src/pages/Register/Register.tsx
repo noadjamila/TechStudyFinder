@@ -8,7 +8,30 @@ import FormHeader from "../../components/login-register/FormHeader";
 import theme from "../../theme/theme";
 import BottomHills from "../../components/login-register/BottomHills";
 
-// Password validation rules (must match server-side)
+/**
+ * Validates the username based on registration requirements (at least 5 characters)
+ * @param {string} username - The username to validate
+ * @returns {{valid: boolean, message?: string}} Validation result with optional error message
+ */
+function validateUsername(username: string): {
+  valid: boolean;
+  message?: string;
+} {
+  if (!username || username.length < 5) {
+    return {
+      valid: false,
+      message: "Username muss mindestens 5 Zeichen lang sein.",
+    };
+  }
+  return { valid: true };
+}
+
+/**
+ * Validates the password based on security requirements
+ * Password must be 8-72 characters with at least one letter, number, and special character
+ * @param {string} password - The password to validate
+ * @returns {{valid: boolean, message?: string}} Validation result with optional error message
+ */
 function validatePassword(password: string): {
   valid: boolean;
   message?: string;
@@ -46,7 +69,12 @@ function validatePassword(password: string): {
   return { valid: true };
 }
 
-// Registration page component
+/**
+ * Registration page component for user account creation
+ * Handles username and password validation with form submission
+ * @component
+ * @returns {JSX.Element} Register form with validation
+ */
 export default function Register() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -58,17 +86,26 @@ export default function Register() {
   const handleRegister = async () => {
     setError(null);
 
-    // Validation of Username and Password
+    /**
+     * Validates username and password fields before submission
+     * Ensures all fields are filled and meet strength requirements
+     */
     if (!username.trim()) {
       setError("Bitte gib einen Username ein");
       return;
     }
+
+    const usernameValidation = validateUsername(username);
+    if (!usernameValidation.valid) {
+      setError(usernameValidation.message || "Username is invalid");
+      return;
+    }
+
     if (!password.trim()) {
       setError("Bitte gib ein Passwort ein");
       return;
     }
 
-    // Validate password strength
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.valid) {
       setError(passwordValidation.message || "Password is invalid");
@@ -93,17 +130,18 @@ export default function Register() {
       const data = await response.json();
 
       if (!response.ok) {
-        // Handle specific error responses from the server
+        /**
+         * Handles various error responses from the server
+         * Returns specific error messages based on HTTP status code
+         */
         if (response.status === 409) {
           setError("Username existiert bereits");
         } else {
-          // Server errors are already in German
           setError(data.error || "Registrierung fehlgeschlagen");
         }
         return;
       }
 
-      // Navigate to login page after successful registration
       navigate("/login");
     } catch (err) {
       setError(
@@ -159,6 +197,11 @@ export default function Register() {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           disabled={loading}
+          helperText={
+            !validateUsername(username).valid
+              ? "Dein Username muss mindestens aus 5 Zeichen bestehen"
+              : ""
+          }
         />
 
         <FormField
@@ -167,6 +210,11 @@ export default function Register() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           disabled={loading}
+          helperText={
+            !validatePassword(password).valid
+              ? "Dein Passwort muss mindestens aus 8 Zeichen bestehen, davon mindestens eine Zahl, ein Buchstabe und ein Sonderzeichen."
+              : ""
+          }
         />
 
         <FormField
@@ -190,6 +238,7 @@ export default function Register() {
             disabled={
               loading ||
               !username.trim() ||
+              !validateUsername(username).valid ||
               !password.trim() ||
               !confirmPassword.trim() ||
               password !== confirmPassword ||
