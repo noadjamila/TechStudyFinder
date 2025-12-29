@@ -54,6 +54,11 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
       return navItems.findIndex((item) => item.path === "/results");
     }
 
+    // Check if we're on favorites-empty page - should highlight "Favoriten"
+    if (location.pathname === "/favorites-empty") {
+      return navItems.findIndex((item) => item.path === "/favorites");
+    }
+
     // Default to Home (index 0)
     return 0;
   };

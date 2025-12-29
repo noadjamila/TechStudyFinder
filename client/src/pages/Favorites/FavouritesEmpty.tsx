@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import theme from "../../theme/theme";
 import LogoMenu from "../../components/logo-menu/LogoMenu";
@@ -20,6 +20,38 @@ const FavouritesEmpty: React.FC = () => {
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
   const navigate = useNavigate();
   const [menuToggled, setMenuToggled] = useState(false);
+
+  /**
+   * Check if user is logged in on component mount
+   * If not logged in, redirect to FavouritesNotLoggedIn page
+   */
+  useEffect(() => {
+    const checkUserStatus = async () => {
+      try {
+        const response = await fetch("/api/users/favorites");
+
+        // If 401, user is not authenticated
+        if (response.status === 401) {
+          navigate("/favorites");
+          return;
+        }
+
+        // If 200, user is authenticated
+        if (response.ok) {
+          const data = await response.json();
+          // If user has favorites, redirect to the full favorites page
+          if (data.favorites && data.favorites.length > 0) {
+            // TODO: Create and navigate to a favorites list page
+            console.debug("User has favorites:", data.favorites);
+          }
+        }
+      } catch (err) {
+        console.error("Error checking user status:", err);
+      }
+    };
+
+    checkUserStatus();
+  }, [navigate]);
 
   const handleMenuToggle = () => {
     setMenuToggled(!menuToggled);

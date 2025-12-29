@@ -84,3 +84,33 @@ export async function getQuestionsLevel2(): Promise<any[]> {
 
   return result.rows;
 }
+/**
+ * Retrieves study programme details by their IDs.
+ *
+ * @param studyProgrammeIds array of study programme IDs to fetch
+ * @returns array of study programme objects with name, university, and degree
+ */
+export async function getStudyProgrammesById(
+  studyProgrammeIds: string[],
+): Promise<any[]> {
+  if (!studyProgrammeIds || studyProgrammeIds.length === 0) {
+    return [];
+  }
+
+  const query = `
+    SELECT 
+      s.id,
+      s.name,
+      h.name as university,
+      a.name as degree
+    FROM studiengaenge s
+    JOIN hochschule h ON s.hochschule_id = h.id
+    JOIN abschlussart a ON s.abschlussart_id = a.id
+    WHERE s.id = ANY($1::text[])
+    ORDER BY s.name
+  `;
+
+  const result = await pool.query(query, [studyProgrammeIds]);
+
+  return result.rows;
+}

@@ -5,6 +5,7 @@ import ResultsPage from "./pages/ResultsPage";
 import StudyProgrammeDetailPage from "./pages/StudyProgrammeDetailPage";
 import LevelSuccessScreen from "./components/quiz/level-success/LevelSuccessScreen";
 import Register from "./pages/Register/Register";
+import Favorites from "./pages/Favorites/Favorites";
 import FavouritesNotLoggedIn from "./pages/Favorites/FavouritesNotLoggedIn";
 import FavouritesEmpty from "./pages/Favorites/FavouritesEmpty";
 
@@ -35,7 +36,11 @@ export default function App() {
         path="/level-success/4"
         element={<LevelSuccessScreen currentLevel={4} />}
       />
-      <Route path="/favorites" element={<FavouritesNotLoggedIn />} />
+      <Route path="/favorites" element={<Favorites />} />
+      <Route
+        path="/favorites-not-logged-in"
+        element={<FavouritesNotLoggedIn />}
+      />
       <Route path="/favorites-empty" element={<FavouritesEmpty />} />
     </Routes>
   );

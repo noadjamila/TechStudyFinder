@@ -2,6 +2,7 @@ import {
   getFilteredResultsLevel1,
   getQuestionsLevel2,
   getFilteredResultsLevel2,
+  getStudyProgrammesById,
 } from "../repositories/quiz.repository";
 
 /**
@@ -52,4 +53,16 @@ export async function filterLevel3(
  */
 export async function getQuestionsLevel2Service(): Promise<any[]> {
   return await getQuestionsLevel2();
+}
+
+/**
+ * Fetches study programme details by their IDs.
+ *
+ * @param studyProgrammeIds array of study programme IDs
+ * @returns array of study programmes with name, university, and degree
+ */
+export async function getStudyProgrammeDetails(
+  studyProgrammeIds: string[],
+): Promise<any[]> {
+  return await getStudyProgrammesById(studyProgrammeIds);
 }
