@@ -15,13 +15,15 @@ vi.mock("../../../api/quizApi", () => ({
   postFilterLevel: vi.fn(),
 }));
 
-vi.spyOn(window, "alert").mockImplementation(() => {});
-
 describe("Quiz_L1", () => {
   afterEach(() => {
     vi.clearAllMocks();
     vi.clearAllTimers();
     vi.restoreAllMocks();
+  });
+
+  beforeEach(() => {
+    vi.spyOn(window, "alert").mockImplementation(() => {});
   });
 
   test("renders question and options", () => {
