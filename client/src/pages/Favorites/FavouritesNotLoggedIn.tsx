@@ -36,12 +36,12 @@ const FavouritesNotLoggedIn: React.FC = () => {
     <Box
       className="page-content-wrapper"
       sx={{
-        overflow: { xs: "visible", md: "hidden" },
+        overflow: "visible",
         maxWidth: "100%",
         mx: "auto",
         px: { xs: 1, sm: 0 },
         textAlign: "center",
-        mt: { xs: 0, sm: 15, md: 9 },
+        mt: { xs: 16, sm: 41, md: -3 },
         position: "relative",
         color: theme.palette.text.primary,
         display: "flex",

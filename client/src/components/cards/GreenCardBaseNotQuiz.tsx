@@ -16,7 +16,7 @@ interface GreenCardProps extends BoxProps {
  */
 const GreenCard: React.FC<GreenCardProps> = ({ children, ...props }) => {
   const cardStyles = {
-    width: { xs: "90%", md: "120%" },
+    width: { xs: "90%", md: "100%" },
     maxWidth: { xs: 360, sm: 520, md: 900 },
     px: { xs: 1, md: 8 },
     py: { xs: 2, md: 3 },

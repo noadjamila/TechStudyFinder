@@ -49,7 +49,7 @@ const Homescreen: React.FC = () => {
         mx: "auto",
         px: { xs: 1, sm: 0 },
         textAlign: "center",
-        mt: { xs: 4, sm: 15, md: 9 },
+        mt: { xs: 4, sm: 8, md: 9 },
         position: "relative",
         color: theme.palette.text.primary,
       }}
