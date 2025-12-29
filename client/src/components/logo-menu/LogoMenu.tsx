@@ -7,8 +7,13 @@ import {
   Menu,
   MenuItem,
   Box,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from "@mui/icons-material/Logout";
+import SettingsIcon from "@mui/icons-material/Settings";
+import FolderIcon from "@mui/icons-material/Folder";
 import theme from "../../theme/theme";
 
 interface LogoMenuProps {
@@ -119,8 +124,30 @@ const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
           disableScrollLock={true}
         >
           {/* Menu Items */}
-          <MenuItem onClick={handleMenuClose}>Einloggen</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Impressum</MenuItem>
+          <MenuItem onClick={handleMenuClose}>
+            <ListItemIcon>
+              <LogoutIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Ein-/Ausloggen</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleMenuClose}>
+            <ListItemIcon>
+              <SettingsIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Einstellungen</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleMenuClose}>
+            <ListItemIcon>
+              <FolderIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Impressum</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleMenuClose}>
+            <ListItemIcon>
+              <FolderIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Datenschutz</ListItemText>
+          </MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>

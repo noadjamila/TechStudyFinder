@@ -6,9 +6,14 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import NavBar from "../../src/components/nav-bar/NavBar";
-import MenuIcon from "@mui/icons-material/Menu"; //
+import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from "@mui/icons-material/Logout";
+import SettingsIcon from "@mui/icons-material/Settings";
+import FolderIcon from "@mui/icons-material/Folder";
 
 /**
  * Props for the DesktopLayout component.
@@ -141,10 +146,85 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
           open={open}
           onClose={handleMenuClose}
           disableScrollLock={true}
+          PaperProps={{
+            sx: {
+              borderRadius: 2,
+            },
+          }}
         >
           {/* Menu Items */}
-          <MenuItem onClick={handleMenuClose}>Einloggen</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Impressum</MenuItem>
+          <MenuItem
+            onClick={handleMenuClose}
+            sx={{
+              "&:hover": {
+                backgroundColor: theme.palette.secondary.main,
+                color: "#FFFFFF",
+                borderRadius: "20px",
+                "& .MuiListItemIcon-root": {
+                  color: "#FFFFFF",
+                },
+              },
+            }}
+          >
+            <ListItemIcon>
+              <LogoutIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Ein-/Ausloggen</ListItemText>
+          </MenuItem>
+          <MenuItem
+            onClick={handleMenuClose}
+            sx={{
+              "&:hover": {
+                backgroundColor: theme.palette.secondary.main,
+                color: "#FFFFFF",
+                borderRadius: "20px",
+                "& .MuiListItemIcon-root": {
+                  color: "#FFFFFF",
+                },
+              },
+            }}
+          >
+            <ListItemIcon>
+              <SettingsIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Einstellungen</ListItemText>
+          </MenuItem>
+          <MenuItem
+            onClick={handleMenuClose}
+            sx={{
+              "&:hover": {
+                backgroundColor: theme.palette.secondary.main,
+                color: "#FFFFFF",
+                borderRadius: "20px",
+                "& .MuiListItemIcon-root": {
+                  color: "#FFFFFF",
+                },
+              },
+            }}
+          >
+            <ListItemIcon>
+              <FolderIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Impressum</ListItemText>
+          </MenuItem>
+          <MenuItem
+            onClick={handleMenuClose}
+            sx={{
+              "&:hover": {
+                backgroundColor: theme.palette.secondary.main,
+                color: "#FFFFFF",
+                borderRadius: "20px",
+                "& .MuiListItemIcon-root": {
+                  color: "#FFFFFF",
+                },
+              },
+            }}
+          >
+            <ListItemIcon>
+              <FolderIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Datenschutz</ListItemText>
+          </MenuItem>
         </Menu>
 
         <NavBar isSidebarMode />

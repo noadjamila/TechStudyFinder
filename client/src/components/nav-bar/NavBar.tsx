@@ -5,10 +5,19 @@ import {
   Typography,
   Paper,
   useTheme,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import ResultIcon from "@mui/icons-material/Bookmark";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from "@mui/icons-material/Logout";
+import SettingsIcon from "@mui/icons-material/Settings";
+import FolderIcon from "@mui/icons-material/Folder";
 import { useNavigate, useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 
@@ -64,6 +73,8 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
   };
 
   const [value, setValue] = useState(getCurrentIndex());
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const menuOpen = Boolean(anchorEl);
 
   // Update the selected value when the route changes
   useEffect(() => {
@@ -79,6 +90,20 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
   const handleNavigation = (newValue: number, path: string) => {
     setValue(newValue);
     navigate(path);
+  };
+
+  /**
+   * Handles the menu button click.
+   */
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  /**
+   * Closes the menu.
+   */
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
   // desktop view (Vertical Sidebar)
@@ -157,6 +182,78 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
             </Typography>
           </Box>
         ))}
+
+        {/* Menu Button */}
+        <Box
+          sx={{
+            mt: 3,
+            pt: 3,
+            borderTop: `1px solid ${theme.palette.divider}`,
+            width: "100%",
+          }}
+        >
+          <IconButton
+            onClick={handleMenuClick}
+            sx={{
+              width: 60,
+              height: 60,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              mb: 1,
+              mx: "auto",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <MenuIcon
+                sx={{
+                  fontSize: 24,
+                  color: theme.palette.text.secondary,
+                }}
+              />
+            </Box>
+          </IconButton>
+        </Box>
+
+        {/* Dropdown Menu */}
+        <Menu
+          anchorEl={anchorEl}
+          open={menuOpen}
+          onClose={handleMenuClose}
+          disableScrollLock={true}
+        >
+          <MenuItem onClick={handleMenuClose}>
+            <ListItemIcon>
+              <LogoutIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Ein-/Ausloggen</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleMenuClose}>
+            <ListItemIcon>
+              <SettingsIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Einstellungen</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleMenuClose}>
+            <ListItemIcon>
+              <FolderIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Impressum</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleMenuClose}>
+            <ListItemIcon>
+              <FolderIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Datenschutz</ListItemText>
+          </MenuItem>
+        </Menu>
       </Box>
     );
   }
