@@ -39,7 +39,8 @@ jobs:
             set -Eeuo pipefail
 
             # Fixed deployment directory on production server
-            cd /home/deployuser/projects/TechStudyFinder
+            DEPLOY_DIR="/home/deployuser/projects/techstudyfinder"
+            cd "$DEPLOY_DIR"
 
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
               -u "${{ github.actor }}" \
