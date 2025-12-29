@@ -12,6 +12,7 @@ import quizRoutes from "./src/routes/quiz.route";
 import { pool } from "./db";
 import "express-async-errors";
 import authRouter from "./src/routes/auth.route";
+import favoritesRouter from "./src/routes/favorites.route";
 import "./src/types/express-session";
 import session from "express-session";
 
@@ -76,6 +77,7 @@ app.use(
 app.use("/api", testRouter);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/auth", authRouter);
+app.use("/api/users/favorites", favoritesRouter);
 
 // Test DB route
 app.get("/api/test-db", async (_req, res) => {
