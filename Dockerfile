@@ -41,22 +41,23 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 COPY package.json package-lock.json ./
 COPY server/package.json server/
 
+# Ensure curl is available for HEALTHCHECK (early for better cache reuse)
+RUN apk add --no-cache curl
+
 # Install only server runtime dependencies
 RUN npm ci --omit=dev --workspace=server
-
 # Copy build artifacts
 COPY --from=builder /app/server/dist ./server/dist
 COPY --from=builder /app/client/dist ./client/dist
 
 # Fix ownership
 RUN chown -R appuser:appgroup /app
-
 # Drop privileges
 USER appuser
 
 EXPOSE 5001
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:5001/ || exit 1
+  CMD curl -fsSL --head http://localhost:5001/ || exit 1
 
 CMD ["node", "server/dist/index.js"]
