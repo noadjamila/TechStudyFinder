@@ -25,7 +25,9 @@ const Favorites: React.FC = () => {
   useEffect(() => {
     const checkAuthAndFavorites = async () => {
       try {
-        const response = await fetch("/api/users/favorites");
+        const response = await fetch("/api/users/favorites", {
+          credentials: "include", // Include cookies for session
+        });
 
         // User is not authenticated (401)
         if (response.status === 401) {

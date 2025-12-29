@@ -31,6 +31,9 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ favorites }) => {
         // favorites are already in string format (e.g., ["g1234", "g5678"])
         const response = await fetch(
           `/api/quiz/programmes?ids=${favorites.join(",")}`,
+          {
+            credentials: "include", // Include cookies for session
+          },
         );
 
         if (!response.ok) {
