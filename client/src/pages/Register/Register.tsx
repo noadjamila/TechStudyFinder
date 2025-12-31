@@ -238,11 +238,8 @@ export default function Register() {
             disabled={
               loading ||
               !username.trim() ||
-              !validateUsername(username).valid ||
               !password.trim() ||
-              !confirmPassword.trim() ||
-              password !== confirmPassword ||
-              !validatePassword(password).valid
+              !confirmPassword.trim()
             }
             sx={{
               width: "auto",
