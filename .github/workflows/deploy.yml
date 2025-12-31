@@ -36,7 +36,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            set -Eeuo pipefail
+            # Force bash so pipefail is available; dash on some hosts errors on set -o pipefail
+            bash -euo pipefail <<'EOS'
 
             # Fixed deployment directory on production server
             cd /home/deployuser/projects/TechStudyFinder
@@ -46,7 +47,7 @@ jobs:
               --password-stdin
 
             # Save currently running image tag for rollback
-            CURRENT_IMAGE=$(docker compose ps app --format '{{.Image}}')
+            CURRENT_IMAGE=$(docker compose ps app --format '{{.Image}}' | head -n 1 || true)
             if [ -n "$CURRENT_IMAGE" ]; then
               docker tag "$CURRENT_IMAGE" rollback_image:latest || true
             else
@@ -76,7 +77,7 @@ jobs:
             docker compose pull
             docker compose up -d
             # Wait for the container to become healthy
-            SERVICE_NAME=$(docker compose ps app --format '{{.Name}}')
+            SERVICE_NAME=$(docker compose ps app --format '{{.Name}}' | head -n 1)
             if [ -z "$SERVICE_NAME" ]; then
               echo "No running 'app' service found; cannot perform health check."
               exit 1
@@ -101,3 +102,4 @@ jobs:
             done
             # If successful, remove rollback image
             docker image rm rollback_image:latest || true
+            EOS
