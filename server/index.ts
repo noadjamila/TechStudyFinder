@@ -9,6 +9,7 @@ import "dotenv/config";
 import path from "path";
 import testRouter from "./src/routes/health.route";
 import quizRoutes from "./src/routes/quiz.route";
+import usersRoutes from "./src/routes/users.route";
 import { pool } from "./db";
 import "express-async-errors";
 import authRouter from "./src/routes/auth.route";
@@ -78,6 +79,7 @@ app.use("/api", testRouter);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/auth", authRouter);
 app.use("/api/users/favorites", favoritesRouter);
+app.use("/api/users", usersRoutes);
 
 // Test DB route
 app.get("/api/test-db", async (_req, res) => {
@@ -135,4 +137,5 @@ process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection:", promise, "reason:", reason);
 });
 
+export { app, server, pool };
 export { app, server, pool };
