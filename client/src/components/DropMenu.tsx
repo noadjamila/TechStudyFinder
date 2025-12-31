@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Menu, MenuItem, IconButton, Box } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import theme from "../theme/theme";
+import { useAuth } from "../contexts/AuthContext";
 
 /**
  * DropMenu component that provides a dropdown menu with navigation options.
@@ -16,6 +17,8 @@ export default function DropMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const open = Boolean(anchorEl);
+
+  const { user, isLoading, logout } = useAuth();
 
   /**
    * Handles the click on the Menu icon and sets the anchor element.
@@ -61,15 +64,37 @@ export default function DropMenu() {
         disableScrollLock={true}
       >
         {/* Menu Items */}
-        <MenuItem
-          onClick={() => {
-            handleMenuClose();
-            navigate("/settings");
-          }}
-        >
-          Einstellungen
-        </MenuItem>
-        <MenuItem onClick={handleMenuClose}>Einloggen</MenuItem>
+        {isLoading ? null : user ? (
+          <div>
+            <MenuItem
+              onClick={() => {
+                handleMenuClose();
+                navigate("/settings");
+              }}
+            >
+              Einstellungen
+            </MenuItem>
+
+            <MenuItem
+              onClick={async () => {
+                handleMenuClose();
+                logout();
+                navigate("/");
+              }}
+            >
+              Ausloggen
+            </MenuItem>
+          </div>
+        ) : (
+          <MenuItem
+            onClick={() => {
+              handleMenuClose();
+              navigate("/login");
+            }}
+          >
+            Einloggen
+          </MenuItem>
+        )}
         <MenuItem onClick={handleMenuClose}>Impressum</MenuItem>
       </Menu>
     </div>

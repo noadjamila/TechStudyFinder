@@ -1,5 +1,6 @@
 import { Response, Request, Router } from "express";
 import { findUserForLogin } from "../repositories/auth.repository";
+import { changePassword, deleteUser } from "../controllers/auth.controller";
 
 export const authRouter = Router();
 
@@ -60,5 +61,9 @@ authRouter.post("/logout", (req: Request, res: Response) => {
     return res.status(200).json({ message: "Logout successful" });
   });
 });
+
+authRouter.post("/change-password", changePassword);
+
+authRouter.delete("/me", deleteUser);
 
 export default authRouter;

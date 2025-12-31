@@ -49,3 +49,23 @@ export async function findUserByUsername(
 
   return rows[0] ?? null;
 }
+
+/**
+ *
+ * @param id
+ * @param passwordHash
+ */
+export async function updatePasswordById(id: number, passwordHash: string) {
+  await pool.query("UPDATE users SET password_hash = $1 WHERE id = $2", [
+    passwordHash,
+    id,
+  ]);
+}
+
+/**
+ *
+ * @param id
+ */
+export async function deleteUserById(id: number) {
+  await pool.query("DELETE FROM users WHERE id = $1", [id]);
+}
