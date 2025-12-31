@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import QuizCard from "../../components/quiz/QuizCard_L2";
+import QuizCard from "../../components/cards/QuizCard_L2";
 import QuizLayout from "../../layouts/QuizLayout";
 import { RiasecType, initialScores } from "../../types/RiasecTypes";
 import ErrorScreen from "../../components/error-screen/ErrorScreen";
