@@ -4,6 +4,7 @@ import {
   getFilteredResultsLevel2,
 } from "../repositories/quiz.repository";
 import { RiasecScores } from "../types/riasecScores";
+import { getStudyProgrammeById } from "../repositories/quiz.repository";
 
 /**
  * Handles filtering for level 1 based on the provided answers.
@@ -64,4 +65,8 @@ export async function filterLevel3(
  */
 export async function getQuestionsLevel2Service(): Promise<any[]> {
   return await getQuestionsLevel2();
+}
+
+export async function getStudyProgrammeByIdService(id: string): Promise<any> {
+  return await getStudyProgrammeById(id);
 }

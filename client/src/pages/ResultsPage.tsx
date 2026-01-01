@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useMediaQuery, useTheme, Box } from "@mui/material";
 import Results from "../components/quiz/Results";
 import DataSource from "../components/DataSource";
@@ -7,6 +7,7 @@ import LogoMenu from "../components/logo-menu/LogoMenu";
 import Navigationbar from "../components/nav-bar/NavBar";
 import DesktopLayout from "../layouts/DesktopLayout";
 import { useLocation } from "react-router-dom";
+import { getStudyProgrammeById } from "../api/quizApi";
 
 const ResultsPage: React.FC = () => {
   const muiTheme = useTheme();
@@ -14,86 +15,36 @@ const ResultsPage: React.FC = () => {
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
 
   const location = useLocation();
-  const __previousIds = location.state?.idsFromLevel2 || [];
+  const previousIds = location.state?.idsFromLevel2 || [];
 
-  const studyProgrammes: StudyProgramme[] = [
-    {
-      id: 1,
-      name: "Communication Systems and Networks",
-      hochschule: "Technische Universität Berlin",
-      abschluss: "Master of Science",
-      homepage:
-        "https://www.tu.berlin/en/studying/study-programs/all-study-programs/communication-systems-and-networks-msc/",
-      studienbeitrag: "300 EUR per semester",
-      beitrag_kommentar: "Includes semester ticket for public transport",
-      anmerkungen: "Focus on modern communication technologies",
-      regelstudienzeit: "4 semesters",
-      zulassungssemester: "Winter semester",
-      zulassungsmodus: "Direct admission",
-      zulassungsvoraussetzungen:
-        "Bachelor's degree in related field, proof of English proficiency",
-      zulassungslink:
-        "https://www.tu.berlin/en/studying/application-admission/online-application/",
-      schwerpunkte: ["Wireless Communications", "Network Security", "IoT"],
-      sprachen: ["English", "German"],
-      standorte: ["Berlin"],
-      studienfelder: ["Engineering", "Computer Science"],
-      studienform: "Full-time",
-    },
-    {
-      id: 2,
-      name: "Betriebliche Umweltinformatik",
-      hochschule: "Hochschule für Technik und Wirtschaft Berlin",
-      abschluss: "Bachelor of Engineering",
-      homepage:
-        "https://www.htw-berlin.de/studium/studienangebot/betriebliche-umweltinformatik-b-eng/",
-      studienbeitrag: "300 EUR per semester",
-      beitrag_kommentar: "Includes semester ticket for public transport",
-      anmerkungen: "Combination of environmental science and IT",
-      regelstudienzeit: "7 semesters",
-      zulassungssemester: "Winter semester",
-      zulassungsmodus: "Direct admission",
-      zulassungsvoraussetzungen:
-        "General university entrance qualification, proof of German proficiency",
-      zulassungslink:
-        "https://www.htw-berlin.de/studium/bewerbung-und-zulassung/bewerbung/",
-      schwerpunkte: [
-        "Environmental Data Management",
-        "Sustainability Reporting",
-      ],
-      sprachen: ["German"],
-      standorte: ["Berlin"],
-      studienfelder: ["Environmental Science", "Information Technology"],
-      studienform: "Full-time",
-    },
-    {
-      id: 3,
-      name: "Informatik",
-      hochschule: "Rheinische Friedrich-Wilhelms-Universität Bonn",
-      abschluss: "Bachelor of Science",
-      homepage:
-        "https://www.uni-bonn.de/en/study/study-programs/all-study-programs/informatics-bsc",
-      studienbeitrag: "300 EUR per semester",
-      beitrag_kommentar: "Includes semester ticket for public transport",
-      anmerkungen: "Strong theoretical foundation",
-      regelstudienzeit: "6 semesters",
-      zulassungssemester: "Winter semester",
-      zulassungsmodus: "Direct admission",
-      zulassungsvoraussetzungen:
-        "General university entrance qualification, proof of German proficiency",
-      zulassungslink:
-        "https://www.uni-bonn.de/en/study/application-admission/online-application/",
-      schwerpunkte: [
-        "Algorithms",
-        "Software Engineering",
-        "Artificial Intelligence",
-      ],
-      sprachen: ["German", "English"],
-      standorte: ["Bonn"],
-      studienfelder: ["Computer Science"],
-      studienform: "Full-time",
-    },
-  ]; // Replace with actual data retrieval logic
+  const [studyProgrammes, setStudyProgrammes] = useState<StudyProgramme[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStudyProgrammes = async () => {
+      if (previousIds.length === 0) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const promises = previousIds.map((id: string) =>
+          getStudyProgrammeById(id),
+        );
+        const results = await Promise.all(promises);
+        setStudyProgrammes(results);
+      } catch (err) {
+        console.error("Error fetching study programmes:", err);
+        setError("Fehler beim Laden der Studiengänge");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudyProgrammes();
+  }, [previousIds]);
 
   const MainContent = isDesktop ? (
     <Box
@@ -104,14 +55,30 @@ const ResultsPage: React.FC = () => {
       }}
     >
       <DataSource />
-      <Results studyProgrammes={studyProgrammes} />
+      {loading ? (
+        <Box sx={{ textAlign: "center", mt: 4 }}>Lädt...</Box>
+      ) : error ? (
+        <Box sx={{ textAlign: "center", mt: 4, color: "error.main" }}>
+          {error}
+        </Box>
+      ) : (
+        <Results studyProgrammes={studyProgrammes} />
+      )}
     </Box>
   ) : (
     <Box sx={{ pt: "50px" }}>
       {" "}
       {/* Offset for mobile navbar */}
       <DataSource />
-      <Results studyProgrammes={studyProgrammes} />
+      {loading ? (
+        <Box sx={{ textAlign: "center", mt: 4 }}>Lädt...</Box>
+      ) : error ? (
+        <Box sx={{ textAlign: "center", mt: 4, color: "error.main" }}>
+          {error}
+        </Box>
+      ) : (
+        <Results studyProgrammes={studyProgrammes} />
+      )}
     </Box>
   );
 

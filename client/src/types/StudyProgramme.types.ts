@@ -16,5 +16,5 @@ export interface StudyProgramme {
   sprachen: string[];
   standorte: string[];
   studienfelder: string[];
-  studienform: string;
+  studienform: string[];
 }

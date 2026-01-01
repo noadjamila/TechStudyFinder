@@ -147,3 +147,12 @@ export async function getQuestionsLevel2(): Promise<any[]> {
 
   return result.rows;
 }
+
+export async function getStudyProgrammeById(id: string): Promise<any> {
+  const result = await pool.query(
+    "SELECT * FROM studiengang_full_view WHERE studiengang_id = $1",
+    [id],
+  );
+
+  return result.rows[0];
+}
