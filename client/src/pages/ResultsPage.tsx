@@ -15,36 +15,65 @@ const ResultsPage: React.FC = () => {
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
 
   const location = useLocation();
-  const previousIds = location.state?.idsFromLevel2 || [];
+  const idsFromQuiz = location.state?.idsFromLevel2 || [];
 
-  const [studyProgrammes, setStudyProgrammes] = useState<StudyProgramme[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  // Initialize state with cached data if available (synchronous, instant)
+  const [studyProgrammes, setStudyProgrammes] = useState<StudyProgramme[]>(
+    () => {
+      if (idsFromQuiz.length === 0) {
+        // Try to load cached results immediately
+        const cachedResults = localStorage.getItem("quizResults");
+        if (cachedResults) {
+          try {
+            return JSON.parse(cachedResults);
+          } catch (err) {
+            console.error("Error parsing cached results:", err);
+          }
+        }
+      }
+      // New quiz results coming in, start empty
+      return [];
+    },
+  );
+
+  const [loading, setLoading] = useState<boolean>(idsFromQuiz.length > 0);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchStudyProgrammes = async () => {
-      if (previousIds.length === 0) {
-        setLoading(false);
-        return;
-      }
+      // Check if we have new quiz results (even if empty array was explicitly passed)
+      if (location.state?.idsFromLevel2 !== undefined) {
+        if (idsFromQuiz.length === 0) {
+          // Quiz returned no results - clear cache and show empty state
+          localStorage.removeItem("quizResults");
+          setStudyProgrammes([]);
+          setLoading(false);
+          return;
+        }
 
-      try {
-        setLoading(true);
-        const promises = previousIds.map((id: string) =>
-          getStudyProgrammeById(id),
-        );
-        const results = await Promise.all(promises);
-        setStudyProgrammes(results);
-      } catch (err) {
-        console.error("Error fetching study programmes:", err);
-        setError("Fehler beim Laden der Studiengänge");
-      } finally {
-        setLoading(false);
+        // Fetch new results
+        try {
+          setLoading(true);
+          const promises = idsFromQuiz.map((id: string) =>
+            getStudyProgrammeById(id),
+          );
+          const results = await Promise.all(promises);
+
+          // Save full study programme objects to localStorage
+          localStorage.setItem("quizResults", JSON.stringify(results));
+          setStudyProgrammes(results);
+        } catch (err) {
+          console.error("Error fetching study programmes:", err);
+          setError("Fehler beim Laden der Studiengänge");
+        } finally {
+          setLoading(false);
+        }
       }
+      // If no new IDs, we already loaded from cache in useState initializer
     };
 
     fetchStudyProgrammes();
-  }, [previousIds]);
+  }, []);
 
   const MainContent = isDesktop ? (
     <Box
