@@ -8,6 +8,7 @@ import Navigationbar from "../components/nav-bar/NavBar";
 import DesktopLayout from "../layouts/DesktopLayout";
 import { useLocation } from "react-router-dom";
 import { getStudyProgrammeById } from "../api/quizApi";
+import NoResultsYet from "../components/quiz/NoResultsYet";
 
 const ResultsPage: React.FC = () => {
   const muiTheme = useTheme();
@@ -38,15 +39,25 @@ const ResultsPage: React.FC = () => {
 
   const [loading, setLoading] = useState<boolean>(idsFromQuiz.length > 0);
   const [error, setError] = useState<string | null>(null);
+  const [hasQuizResults, setHasQuizResults] = useState<boolean>(() => {
+    // Check if there are cached results or quiz was completed (even with 0 results)
+    return (
+      idsFromQuiz.length > 0 ||
+      localStorage.getItem("quizResults") !== null ||
+      localStorage.getItem("quizCompleted") === "true"
+    );
+  });
 
   useEffect(() => {
     const fetchStudyProgrammes = async () => {
       // Check if we have new quiz results (even if empty array was explicitly passed)
       if (location.state?.idsFromLevel2 !== undefined) {
         if (idsFromQuiz.length === 0) {
-          // Quiz returned no results - clear cache and show empty state
+          // Quiz returned no results - clear cache but mark quiz as completed
           localStorage.removeItem("quizResults");
+          localStorage.setItem("quizCompleted", "true");
           setStudyProgrammes([]);
+          setHasQuizResults(true); // User completed quiz, just got no results
           setLoading(false);
           return;
         }
@@ -61,7 +72,9 @@ const ResultsPage: React.FC = () => {
 
           // Save full study programme objects to localStorage
           localStorage.setItem("quizResults", JSON.stringify(results));
+          localStorage.setItem("quizCompleted", "true");
           setStudyProgrammes(results);
+          setHasQuizResults(true);
         } catch (err) {
           console.error("Error fetching study programmes:", err);
           setError("Fehler beim Laden der Studiengänge");
@@ -83,30 +96,42 @@ const ResultsPage: React.FC = () => {
         margin: "0 auto",
       }}
     >
-      <DataSource />
-      {loading ? (
-        <Box sx={{ textAlign: "center", mt: 4 }}>Lädt...</Box>
-      ) : error ? (
-        <Box sx={{ textAlign: "center", mt: 4, color: "error.main" }}>
-          {error}
-        </Box>
+      {!hasQuizResults ? (
+        <NoResultsYet />
       ) : (
-        <Results studyProgrammes={studyProgrammes} />
+        <>
+          <DataSource />
+          {loading ? (
+            <Box sx={{ textAlign: "center", mt: 4 }}>Lädt...</Box>
+          ) : error ? (
+            <Box sx={{ textAlign: "center", mt: 4, color: "error.main" }}>
+              {error}
+            </Box>
+          ) : (
+            <Results studyProgrammes={studyProgrammes} />
+          )}
+        </>
       )}
     </Box>
   ) : (
     <Box sx={{ pt: "50px" }}>
       {" "}
       {/* Offset for mobile navbar */}
-      <DataSource />
-      {loading ? (
-        <Box sx={{ textAlign: "center", mt: 4 }}>Lädt...</Box>
-      ) : error ? (
-        <Box sx={{ textAlign: "center", mt: 4, color: "error.main" }}>
-          {error}
-        </Box>
+      {!hasQuizResults ? (
+        <NoResultsYet />
       ) : (
-        <Results studyProgrammes={studyProgrammes} />
+        <>
+          <DataSource />
+          {loading ? (
+            <Box sx={{ textAlign: "center", mt: 4 }}>Lädt...</Box>
+          ) : error ? (
+            <Box sx={{ textAlign: "center", mt: 4, color: "error.main" }}>
+              {error}
+            </Box>
+          ) : (
+            <Results studyProgrammes={studyProgrammes} />
+          )}
+        </>
       )}
     </Box>
   );
