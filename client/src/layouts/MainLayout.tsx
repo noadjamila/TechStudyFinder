@@ -4,6 +4,14 @@ import Navigationbar from "../components/nav-bar/NavBar";
 import { useMediaQuery, useTheme, Box } from "@mui/material";
 import React from "react";
 
+/**
+ * Main layout of the application.
+ * Provides a responsive design with automatic switching
+ * between mobile and desktop views.
+ *
+ * @param {{ children: React.ReactNode }} props - The layout props.
+ * @returns {JSX.Element} The main layout component.
+ */
 export default function MainLayout({
   children,
 }: {

@@ -2,10 +2,26 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import LogoMenu from "../Header";
 import "@testing-library/jest-dom";
+import { AuthProvider } from "../../contexts/AuthContext";
+import { vi } from "vitest";
+
+vi.mock("../../api/authApi", () => ({
+  getCurrentUser: vi.fn().mockResolvedValue(null),
+  login: vi.fn(),
+  logout: vi.fn(),
+}));
+
+const renderWithAuth = (ui: React.ReactElement) => {
+  return render(<AuthProvider>{ui}</AuthProvider>);
+};
 
 describe("LogoMenu Component", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("renders the Logo and Menu Icon", () => {
-    render(<LogoMenu />);
+    renderWithAuth(<LogoMenu />);
 
     const logo = screen.getByAltText(/Logo/i);
     expect(logo).toBeInTheDocument();
@@ -15,7 +31,7 @@ describe("LogoMenu Component", () => {
   });
 
   it("opens and closes the menu", () => {
-    render(<LogoMenu />);
+    renderWithAuth(<LogoMenu />);
 
     const menuIcon = screen.getByRole("button");
     fireEvent.click(menuIcon);

@@ -11,6 +11,13 @@ import { useAuth } from "../contexts/AuthContext";
 import { changePassword, deleteUser } from "../api/authApi";
 import { validatePassword } from "../services/passwordValidation";
 
+/**
+ * Manages the settings of a user.
+ * The user can change their password and delete their profile.
+ * Accessible at '/settings'.
+ *
+ * @returns {JSX.Element} The user's settings page.
+ */
 export default function Settings() {
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");

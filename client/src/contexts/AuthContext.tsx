@@ -5,18 +5,52 @@ import {
   logout as apiLogout,
 } from "../api/authApi";
 
+/**
+ * Represents the authenticated user.
+ * `null` means no user is logged in.
+ */
 type User = { id: number; username: string } | null;
 
+/**
+ * Shape of the authentication context.
+ */
 type AuthContextValue = {
+  /** Currently authenticated user */
   user: User;
+  /** Indicates whether authentication state is being loaded */
   isLoading: boolean;
+  /**
+   * Logs in a user using username and password.
+   * @param username - The user's username
+   * @param password - The user's password
+   */
   login: (username: string, password: string) => Promise<void>;
+  /**
+   * Logs out the current user.
+   */
   logout: () => Promise<void>;
+  /**
+   * Manually sets the current user.
+   * @param user - The user to set or null
+   */
   setUser: (user: User) => void;
 };
 
+/**
+ * Authentication context.
+ * Must be accessed via {@link useAuth}.
+ */
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
+/**
+ * Provides authentication state and actions to its children.
+ *
+ * - Loads the current user on mount
+ * - Exposes login and logout functionality
+ *
+ * @param props.children - React child components
+ * @returns Auth context provider
+ */
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -54,6 +88,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
+/**
+ * Hook to access the authentication context.
+ *
+ * @throws Error if used outside of {@link AuthProvider}
+ * @returns Authentication context value
+ */
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");

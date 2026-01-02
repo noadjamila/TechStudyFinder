@@ -51,9 +51,9 @@ export async function findUserByUsername(
 }
 
 /**
- *
- * @param id
- * @param passwordHash
+ * Updates the password of a user
+ * @param id Id of the user
+ * @param passwordHash New hashed password
  */
 export async function updatePasswordById(id: number, passwordHash: string) {
   await pool.query("UPDATE users SET password_hash = $1 WHERE id = $2", [
@@ -63,8 +63,8 @@ export async function updatePasswordById(id: number, passwordHash: string) {
 }
 
 /**
- *
- * @param id
+ * Deletes a user
+ * @param id Id of the user
  */
 export async function deleteUserById(id: number) {
   await pool.query("DELETE FROM users WHERE id = $1", [id]);
