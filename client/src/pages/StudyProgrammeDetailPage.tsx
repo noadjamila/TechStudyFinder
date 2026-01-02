@@ -77,10 +77,43 @@ const StudyProgrammeDetailPage: React.FC = () => {
   };
 
   if (loading) {
-    return (
+    const loadingContent = (
       <Box sx={{ textAlign: "center", mt: 4 }}>
         <Typography>Lädt...</Typography>
       </Box>
+    );
+
+    const LoadingContent = isDesktop ? (
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: 800,
+          margin: "0 auto",
+          pt: 3,
+        }}
+      >
+        {loadingContent}
+      </Box>
+    ) : (
+      loadingContent
+    );
+
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          width: "100%",
+          overflow: "auto",
+        }}
+      >
+        {isDesktop ? (
+          <DesktopLayout onMenuToggle={toggleSidebar}>
+            {LoadingContent}
+          </DesktopLayout>
+        ) : (
+          LoadingContent
+        )}
+      </div>
     );
   }
 
