@@ -28,7 +28,7 @@ interface ResultsProps {
 const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   const navigate = useNavigate();
   const [favorites, setFavorites] = useState<Set<number>>(new Set());
-  const [selectedUniversity, setSelectedUniversity] = useState<string>("");
+  const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [selectedDegree, setSelectedDegree] = useState<string>("");
 
   const handleQuizStart = () => {
@@ -47,12 +47,11 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
     });
   };
 
-  // Get unique universities and degrees for filter options
-  const universities = useMemo(() => {
-    const uniqueUniversities = [
-      ...new Set(studyProgrammes.map((p) => p.hochschule)),
-    ];
-    return uniqueUniversities.sort();
+  // Get unique locations and degrees for filter options
+  const locations = useMemo(() => {
+    const allLocations = studyProgrammes.flatMap((p) => p.standorte || []);
+    const uniqueLocations = [...new Set(allLocations)];
+    return uniqueLocations.sort();
   }, [studyProgrammes]);
 
   const degrees = useMemo(() => {
@@ -63,13 +62,14 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   // Filter programmes based on selected filters
   const filteredProgrammes = useMemo(() => {
     return studyProgrammes.filter((programme) => {
-      const matchesUniversity =
-        !selectedUniversity || programme.hochschule === selectedUniversity;
+      const matchesLocation =
+        !selectedLocation ||
+        (programme.standorte && programme.standorte.includes(selectedLocation));
       const matchesDegree =
         !selectedDegree || programme.abschluss === selectedDegree;
-      return matchesUniversity && matchesDegree;
+      return matchesLocation && matchesDegree;
     });
-  }, [studyProgrammes, selectedUniversity, selectedDegree]);
+  }, [studyProgrammes, selectedLocation, selectedDegree]);
 
   return (
     <Box
@@ -181,12 +181,12 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
               }}
             >
               <Select
-                id="university-filter"
-                value={selectedUniversity}
-                onChange={(e) => setSelectedUniversity(e.target.value)}
+                id="location-filter"
+                value={selectedLocation}
+                onChange={(e) => setSelectedLocation(e.target.value)}
                 displayEmpty
                 IconComponent={ArrowDropDownIcon}
-                aria-label="Filter nach Universität oder Hochschule"
+                aria-label="Filter nach Standort"
                 MenuProps={{
                   PaperProps: {
                     sx: {
@@ -234,7 +234,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {selected || "Universität/Hochschule"}
+                      {selected || "Stadt"}
                     </Typography>
                   </Box>
                 )}
@@ -261,11 +261,11 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                       width: "100%",
                     }}
                   >
-                    Alle Universitäten/Hochschulen
+                    Alle Städte
                   </Box>
                 </MenuItem>
-                {universities.map((university) => (
-                  <MenuItem key={university} value={university}>
+                {locations.map((location) => (
+                  <MenuItem key={location} value={location}>
                     <Box
                       sx={{
                         overflow: "hidden",
@@ -274,7 +274,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         width: "100%",
                       }}
                     >
-                      {university}
+                      {location}
                     </Box>
                   </MenuItem>
                 ))}
