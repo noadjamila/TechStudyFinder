@@ -10,6 +10,8 @@ import {
   ListItemIcon,
   ListItemText,
   IconButton,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import ResultIcon from "@mui/icons-material/Bookmark";
@@ -75,11 +77,29 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
   const [value, setValue] = useState(getCurrentIndex());
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const menuOpen = Boolean(anchorEl);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showLogoutMessage, setShowLogoutMessage] = useState(false);
 
   // Update the selected value when the route changes
   useEffect(() => {
     setValue(getCurrentIndex());
   }, [location.pathname]);
+
+  // Check if user is logged in
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const response = await fetch("/api/auth/me", {
+          credentials: "include",
+        });
+        setIsLoggedIn(response.ok);
+      } catch {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
 
   /**
    * Handles the navigation click event. Updates the selected index and navigates to the new path.
@@ -104,6 +124,34 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
    */
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  /**
+   * Handles login/logout action based on auth status.
+   */
+  const handleLoginLogout = async () => {
+    handleMenuClose();
+
+    if (isLoggedIn) {
+      // User is logged in - perform logout
+      try {
+        const response = await fetch("/api/auth/logout", {
+          method: "POST",
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          setIsLoggedIn(false);
+          setShowLogoutMessage(true);
+          // Stay on current page
+        }
+      } catch (error) {
+        console.error("Logout failed:", error);
+      }
+    } else {
+      // User is not logged in - navigate to login
+      navigate("/login");
+    }
   };
 
   // desktop view (Vertical Sidebar)
@@ -169,7 +217,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
           }}
         >
           <MenuItem
-            onClick={handleMenuClose}
+            onClick={handleLoginLogout}
             sx={{
               borderRadius: 999,
               mx: 1,
@@ -322,6 +370,22 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
             </Typography>
           </Box>
         ))}
+
+        {/* Logout Success Message */}
+        <Snackbar
+          open={showLogoutMessage}
+          autoHideDuration={4000}
+          onClose={() => setShowLogoutMessage(false)}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={() => setShowLogoutMessage(false)}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            Du wurdest ausgeloggt.
+          </Alert>
+        </Snackbar>
       </Box>
     );
   }
