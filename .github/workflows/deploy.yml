@@ -47,20 +47,39 @@ jobs:
               -u "${{ github.actor }}" \
               --password-stdin
 
+            COMPOSE_FILE="docker-compose.yml"
+            TARGET_SERVICE="app"
+
+            if [ ! -f "$COMPOSE_FILE" ]; then
+              echo "Compose file '$COMPOSE_FILE' not found in $DEPLOY_DIR"
+              exit 1
+            fi
+
+            if [ ! -f ".env" ]; then
+              echo "Required env file '.env' not found in $DEPLOY_DIR"
+              exit 1
+            fi
+
+            if ! docker compose -f "$COMPOSE_FILE" config --services | grep -qx "$TARGET_SERVICE"; then
+              echo "Service '$TARGET_SERVICE' not found in $COMPOSE_FILE. Available services:"
+              docker compose -f "$COMPOSE_FILE" config --services
+              exit 1
+            fi
+
             # Save currently running image tag for rollback
-            CURRENT_IMAGE=$(docker compose ps app --format '{{.Image}}' | head -n 1 || true)
+            CURRENT_IMAGE=$(docker compose -f "$COMPOSE_FILE" ps "$TARGET_SERVICE" --format '{{.Image}}' | head -n 1 || true)
             if [ -n "$CURRENT_IMAGE" ]; then
               docker tag "$CURRENT_IMAGE" rollback_image:latest || true
             else
-              echo "No running image found for app; skipping rollback tag."
+              echo "No running image found for $TARGET_SERVICE; skipping rollback tag."
             fi
             rollback() {
               echo "Deployment failed. Attempting rollback..."
               if docker image inspect rollback_image:latest > /dev/null 2>&1; then
                 # Update docker-compose.yml to use rollback_image:latest temporarily
-                sed -i.bak 's|ghcr.io/.*/techstudyfinder:latest|rollback_image:latest|g' docker-compose.yml
-                docker compose up -d
-                mv docker-compose.yml.bak docker-compose.yml
+                sed -i.bak 's|ghcr.io/.*/techstudyfinder:latest|rollback_image:latest|g' "$COMPOSE_FILE"
+                docker compose -f "$COMPOSE_FILE" up -d
+                mv "$COMPOSE_FILE".bak "$COMPOSE_FILE"
                 echo "Rollback complete."
                 # Health check after rollback
                 echo "Checking application health after rollback..."
@@ -75,12 +94,12 @@ jobs:
               fi
             }
             trap rollback ERR
-            docker compose pull
-            docker compose up -d
+            docker compose -f "$COMPOSE_FILE" pull
+            docker compose -f "$COMPOSE_FILE" up -d
             # Wait for the container to become healthy
-            SERVICE_NAME=$(docker compose ps app --format '{{.Name}}' | head -n 1)
+            SERVICE_NAME=$(docker compose -f "$COMPOSE_FILE" ps "$TARGET_SERVICE" --format '{{.Name}}' | head -n 1)
             if [ -z "$SERVICE_NAME" ]; then
-              echo "No running 'app' service found; cannot perform health check."
+              echo "No running '$TARGET_SERVICE' service found; cannot perform health check."
               exit 1
             fi
             echo "Waiting for service $SERVICE_NAME to become healthy..."
