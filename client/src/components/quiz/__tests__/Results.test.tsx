@@ -22,7 +22,7 @@ vi.mock("react-router-dom", async () => {
 
 const mockStudyProgrammes: StudyProgramme[] = [
   {
-    id: 1,
+    studiengang_id: "1",
     name: "Computer Science",
     hochschule: "Technical University Munich",
     abschluss: "Bachelor of Science",
@@ -39,10 +39,10 @@ const mockStudyProgrammes: StudyProgramme[] = [
     sprachen: ["Deutsch", "Englisch"],
     standorte: ["München"],
     studienfelder: ["Informatik"],
-    studienform: "Vollzeit",
+    studienform: ["Vollzeit"],
   },
   {
-    id: 2,
+    studiengang_id: "2",
     name: "Data Science",
     hochschule: "Ludwig-Maximilians-Universität München",
     abschluss: "Master of Science",
@@ -59,10 +59,10 @@ const mockStudyProgrammes: StudyProgramme[] = [
     sprachen: ["Englisch"],
     standorte: ["München"],
     studienfelder: ["Datenwissenschaft"],
-    studienform: "Vollzeit",
+    studienform: ["Vollzeit"],
   },
   {
-    id: 3,
+    studiengang_id: "3",
     name: "Software Engineering",
     hochschule: "Technical University Munich",
     abschluss: "Master of Science",
@@ -79,10 +79,10 @@ const mockStudyProgrammes: StudyProgramme[] = [
     sprachen: ["Deutsch", "Englisch"],
     standorte: ["München"],
     studienfelder: ["Informatik"],
-    studienform: "Vollzeit",
+    studienform: ["Vollzeit"],
   },
   {
-    id: 4,
+    studiengang_id: "4",
     name: "Information Systems",
     hochschule: "University of Cologne",
     abschluss: "Bachelor of Science",
@@ -99,7 +99,7 @@ const mockStudyProgrammes: StudyProgramme[] = [
     sprachen: ["Deutsch"],
     standorte: ["Köln"],
     studienfelder: ["Wirtschaftsinformatik"],
-    studienform: "Vollzeit",
+    studienform: ["Vollzeit"],
   },
 ];
 
@@ -131,9 +131,11 @@ describe("Results Component", () => {
 
   it("shows empty state when no study programmes are provided", () => {
     renderWithTheme(<Results studyProgrammes={[]} />);
-    expect(screen.getByText("Keine Studiengänge gefunden")).toBeInTheDocument();
     expect(
-      screen.getByText("Versuchen Sie, Ihre Quizantworten anzupassen"),
+      screen.getByText(/Keine Studiengänge gefunden/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Versuche, deine Quizantworten anzupassen/i),
     ).toBeInTheDocument();
   });
 
@@ -150,9 +152,7 @@ describe("Results Component", () => {
   it("renders filter dropdowns with accessibility labels", () => {
     renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
 
-    expect(
-      screen.getByLabelText("Filter nach Universität oder Hochschule"),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Filter nach Standort")).toBeInTheDocument();
     expect(screen.getByLabelText("Filter nach Abschluss")).toBeInTheDocument();
   });
 

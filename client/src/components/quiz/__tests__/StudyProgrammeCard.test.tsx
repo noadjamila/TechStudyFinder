@@ -21,7 +21,7 @@ vi.mock("react-router-dom", async () => {
 });
 
 const mockProgramme: StudyProgramme = {
-  id: 1,
+  studiengang_id: "1",
   name: "Computer Science",
   hochschule: "Technical University Munich",
   abschluss: "Bachelor of Science",
@@ -38,7 +38,7 @@ const mockProgramme: StudyProgramme = {
   sprachen: ["Deutsch", "Englisch"],
   standorte: ["München"],
   studienfelder: ["Informatik"],
-  studienform: "Vollzeit",
+  studienform: ["Vollzeit"],
 };
 
 const renderWithTheme = (component: React.ReactElement) => {
@@ -315,7 +315,7 @@ describe("StudyProgrammeCard Component", () => {
   describe("Different Programme Data", () => {
     it("renders different programme correctly", () => {
       const differentProgramme: StudyProgramme = {
-        id: 42,
+        studiengang_id: "42",
         name: "Data Science",
         hochschule: "LMU München",
         abschluss: "Master of Science",
@@ -332,7 +332,7 @@ describe("StudyProgrammeCard Component", () => {
         sprachen: ["Englisch"],
         standorte: ["München"],
         studienfelder: ["Datenwissenschaft"],
-        studienform: "Vollzeit",
+        studienform: ["Vollzeit"],
       };
 
       renderWithTheme(<StudyProgrammeCard programme={differentProgramme} />);
@@ -344,7 +344,7 @@ describe("StudyProgrammeCard Component", () => {
 
     it("navigates to correct id for different programme", () => {
       const differentProgramme: StudyProgramme = {
-        id: 99,
+        studiengang_id: "99",
         name: "Software Engineering",
         hochschule: "TU Berlin",
         abschluss: "Bachelor",
@@ -361,7 +361,7 @@ describe("StudyProgrammeCard Component", () => {
         sprachen: ["Deutsch"],
         standorte: ["Berlin"],
         studienfelder: ["Informatik"],
-        studienform: "Vollzeit",
+        studienform: ["Vollzeit"],
       };
 
       renderWithTheme(<StudyProgrammeCard programme={differentProgramme} />);

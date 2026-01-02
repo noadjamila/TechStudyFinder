@@ -244,6 +244,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                     color: theme.palette.text.header,
                     wordBreak: "break-word",
                     overflowWrap: "break-word",
+                    fontSize: { xs: "1.75rem", sm: "2.5rem" },
                   }}
                 >
                   {programme.name}
@@ -276,7 +277,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                     variant="body1"
                     sx={{
                       color: theme.palette.text.subHeader,
-                      fontSize: "1.1rem",
+                      fontSize: { xs: "0.95rem", sm: "1.1rem" },
                     }}
                   >
                     {programme.hochschule}
@@ -309,7 +310,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                     variant="body1"
                     sx={{
                       color: theme.palette.text.subHeader,
-                      fontSize: "1.1rem",
+                      fontSize: { xs: "0.95rem", sm: "1.1rem" },
                     }}
                   >
                     {programme.abschluss}
@@ -367,7 +368,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                       fontWeight: 600,
                       marginBottom: 2,
                       color: theme.palette.text.header,
-                      fontSize: "1.5rem",
+                      fontSize: { xs: "1.1rem", sm: "1.5rem" },
                     }}
                   >
                     Allgemeine Informationen
