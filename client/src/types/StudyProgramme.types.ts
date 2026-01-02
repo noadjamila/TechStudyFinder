@@ -1,5 +1,5 @@
 export interface StudyProgramme {
-  id: number;
+  studiengang_id: string;
   name: string;
   hochschule: string;
   abschluss: string;

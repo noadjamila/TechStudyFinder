@@ -395,14 +395,16 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
           </Stack>
 
           <Stack spacing={2}>
-            {filteredProgrammes.map((programme) => (
-              <StudyProgrammeCard
-                key={programme.id}
-                programme={programme}
-                isFavorite={favorites.has(programme.id)}
-                onToggleFavorite={toggleFavorite}
-              />
-            ))}
+            {filteredProgrammes.map((programme) => {
+              return (
+                <StudyProgrammeCard
+                  key={programme.studiengang_id}
+                  programme={programme}
+                  isFavorite={favorites.has(Number(programme.studiengang_id))}
+                  onToggleFavorite={toggleFavorite}
+                />
+              );
+            })}
           </Stack>
         </>
       )}

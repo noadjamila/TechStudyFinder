@@ -29,21 +29,21 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
 
   const handleCardClick = () => {
     if (clickable) {
-      navigate(`/study-programme/${programme.id}`);
+      navigate(`/study-programme/${programme.studiengang_id}`);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (clickable && (e.key === "Enter" || e.key === " ")) {
       e.preventDefault();
-      navigate(`/study-programme/${programme.id}`);
+      navigate(`/study-programme/${programme.studiengang_id}`);
     }
   };
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (onToggleFavorite) {
-      onToggleFavorite(programme.id);
+    if (onToggleFavorite && programme.studiengang_id) {
+      onToggleFavorite(Number(programme.studiengang_id));
     }
   };
 

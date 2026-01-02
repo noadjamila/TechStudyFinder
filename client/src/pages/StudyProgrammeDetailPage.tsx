@@ -8,16 +8,24 @@ import {
   CardContent,
   useMediaQuery,
   useTheme,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Chip,
+  Stack,
+  Link,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 import theme from "../theme/theme";
 import DataSource from "../components/DataSource";
 import BackButton from "../components/buttons/BackButton";
 import DesktopLayout from "../layouts/DesktopLayout";
+import { getStudyProgrammeById } from "../api/quizApi";
 
 /**
  * StudyProgrammeDetailPage displays detailed information about a single study programme.
@@ -27,6 +35,9 @@ const StudyProgrammeDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [isFavorite, setIsFavorite] = useState(false);
+  const [programme, setProgramme] = useState<StudyProgramme | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const muiTheme = useTheme();
   const toggleSidebar = () => {};
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
@@ -36,15 +47,44 @@ const StudyProgrammeDetailPage: React.FC = () => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  // Mock data - replace with data from results page
-  const studyProgrammes: StudyProgramme[] = [];
-  const programme = studyProgrammes.find((p) => p.id === Number(id));
+  // Fetch study programme data
+  useEffect(() => {
+    const fetchProgramme = async () => {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        console.log("Fetching study programme with ID:", id);
+        const data = await getStudyProgrammeById(id);
+        console.log("Received study programme data:", data);
+        setProgramme(data);
+      } catch (err) {
+        console.error("Error fetching study programme:", err);
+        setError("Fehler beim Laden des Studiengangs");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProgramme();
+  }, [id]);
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
   };
 
-  if (!programme) {
+  if (loading) {
+    return (
+      <Box sx={{ textAlign: "center", mt: 4 }}>
+        <Typography>Lädt...</Typography>
+      </Box>
+    );
+  }
+
+  if (error || !programme) {
     const notFoundContent = (
       <>
         <Box sx={{ padding: 3 }}>
@@ -58,7 +98,9 @@ const StudyProgrammeDetailPage: React.FC = () => {
         </Box>
         <DataSource />
         <Box sx={{ padding: 3, paddingTop: 0 }}>
-          <Typography variant="h6">Studiengang nicht gefunden</Typography>
+          <Typography variant="h6">
+            {error || "Studiengang nicht gefunden"}
+          </Typography>
         </Box>
       </>
     );
@@ -277,31 +319,345 @@ const StudyProgrammeDetailPage: React.FC = () => {
             {/* Additional details section */}
             <Box
               sx={{
-                marginTop: { xs: 0, sm: 4 },
+                marginTop: { xs: 2, sm: 4 },
               }}
             >
-              <Typography
-                variant="h5"
+              {/* Basic Information */}
+              {(programme.studienform?.length > 0 ||
+                programme.regelstudienzeit ||
+                programme.standorte?.length > 0 ||
+                programme.sprachen?.length > 0) && (
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                      marginBottom: 2,
+                      color: theme.palette.text.header,
+                    }}
+                  >
+                    Allgemeine Informationen
+                  </Typography>
+                  {programme.studienform &&
+                    programme.studienform.length > 0 && (
+                      <Box sx={{ mb: 1.5 }}>
+                        <Typography
+                          component="span"
+                          sx={{ fontWeight: 600, mr: 1 }}
+                        >
+                          Studienform:
+                        </Typography>
+                        <Stack direction="row" spacing={1} sx={{ mt: 0.5 }}>
+                          {programme.studienform.map((form, index) => (
+                            <Chip
+                              key={index}
+                              label={form}
+                              size="small"
+                              sx={{
+                                backgroundColor: `${theme.palette.primary.main}66`,
+                              }}
+                            />
+                          ))}
+                        </Stack>
+                      </Box>
+                    )}
+                  {programme.regelstudienzeit && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography
+                        component="span"
+                        sx={{ fontWeight: 600, mr: 1 }}
+                      >
+                        Regelstudienzeit:
+                      </Typography>
+                      <Typography component="span">
+                        {programme.regelstudienzeit}
+                      </Typography>
+                    </Box>
+                  )}
+                  {programme.standorte && programme.standorte.length > 0 && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography
+                        component="span"
+                        sx={{ fontWeight: 600, mr: 1 }}
+                      >
+                        Standorte:
+                      </Typography>
+                      <Stack direction="row" spacing={1} sx={{ mt: 0.5 }}>
+                        {programme.standorte.map((standort, index) => (
+                          <Chip
+                            key={index}
+                            label={standort}
+                            size="small"
+                            sx={{
+                              backgroundColor: theme.palette.decorative.blue,
+                            }}
+                          />
+                        ))}
+                      </Stack>
+                    </Box>
+                  )}
+                  {programme.sprachen && programme.sprachen.length > 0 && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography
+                        component="span"
+                        sx={{ fontWeight: 600, mr: 1 }}
+                      >
+                        Sprachen:
+                      </Typography>
+                      <Stack direction="row" spacing={1} sx={{ mt: 0.5 }}>
+                        {programme.sprachen.map((sprache, index) => (
+                          <Chip
+                            key={index}
+                            label={sprache}
+                            size="small"
+                            sx={{
+                              backgroundColor: theme.palette.decorative.green,
+                            }}
+                          />
+                        ))}
+                      </Stack>
+                    </Box>
+                  )}
+                </Box>
+              )}
+
+              {/* Schwerpunkte */}
+              {programme.schwerpunkte && programme.schwerpunkte.length > 0 && (
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                      marginBottom: 2,
+                      color: theme.palette.text.header,
+                    }}
+                  >
+                    Schwerpunkte
+                  </Typography>
+                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                    {programme.schwerpunkte.map((schwerpunkt, index) => (
+                      <Chip
+                        key={index}
+                        label={schwerpunkt}
+                        sx={{
+                          backgroundColor: theme.palette.primary.main,
+                        }}
+                      />
+                    ))}
+                  </Stack>
+                </Box>
+              )}
+
+              {/* Studienfelder */}
+              {programme.studienfelder &&
+                programme.studienfelder.length > 0 && (
+                  <Box sx={{ mb: 3 }}>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 600,
+                        marginBottom: 2,
+                        color: theme.palette.text.header,
+                      }}
+                    >
+                      Studienfelder
+                    </Typography>
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      flexWrap="wrap"
+                      useFlexGap
+                    >
+                      {programme.studienfelder.map((feld, index) => (
+                        <Chip
+                          key={index}
+                          label={feld}
+                          sx={{
+                            backgroundColor: `${theme.palette.secondary.main}80`,
+                          }}
+                        />
+                      ))}
+                    </Stack>
+                  </Box>
+                )}
+
+              {/* Zulassung - Collapsible */}
+              <Accordion
                 sx={{
-                  fontWeight: 600,
-                  marginBottom: 2,
-                  color: theme.palette.text.header,
+                  backgroundColor: `${theme.palette.primary.main}1A`,
+                  mb: 2,
                 }}
               >
-                Studiengangs-Details
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  color: theme.palette.text.primary,
-                  lineHeight: 1.8,
-                }}
-              >
-                Weitere Informationen zu diesem Studiengang werden hier
-                angezeigt. Dies kann eine Beschreibung des Studiengangs,
-                Zulassungsvoraussetzungen, Studiendauer und andere relevante
-                Details enthalten.
-              </Typography>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="zulassung-content"
+                  id="zulassung-header"
+                >
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                      color: theme.palette.text.header,
+                    }}
+                  >
+                    Zulassung
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {programme.zulassungssemester && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography
+                        component="span"
+                        sx={{ fontWeight: 600, mr: 1 }}
+                      >
+                        Zulassungssemester:
+                      </Typography>
+                      <Typography component="span">
+                        {programme.zulassungssemester}
+                      </Typography>
+                    </Box>
+                  )}
+                  {programme.zulassungsmodus && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography
+                        component="span"
+                        sx={{ fontWeight: 600, mr: 1 }}
+                      >
+                        Zulassungsmodus:
+                      </Typography>
+                      <Typography component="span">
+                        {programme.zulassungsmodus}
+                      </Typography>
+                    </Box>
+                  )}
+                  {programme.zulassungsvoraussetzungen && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography
+                        component="span"
+                        sx={{ fontWeight: 600, mr: 1 }}
+                      >
+                        Voraussetzungen:
+                      </Typography>
+                      <Typography component="span">
+                        {programme.zulassungsvoraussetzungen}
+                      </Typography>
+                    </Box>
+                  )}
+                  {programme.zulassungslink && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography
+                        component="span"
+                        sx={{ fontWeight: 600, mr: 1 }}
+                      >
+                        Weitere Informationen:
+                      </Typography>
+                      <Link
+                        href={programme.zulassungslink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Zulassungsseite
+                      </Link>
+                    </Box>
+                  )}
+                </AccordionDetails>
+              </Accordion>
+
+              {/* Kosten - Collapsible */}
+              {(programme.studienbeitrag || programme.beitrag_kommentar) && (
+                <Accordion
+                  sx={{
+                    backgroundColor: `${theme.palette.primary.main}1A`,
+                    mb: 2,
+                  }}
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="kosten-content"
+                    id="kosten-header"
+                  >
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 600,
+                        color: theme.palette.text.header,
+                      }}
+                    >
+                      Kosten
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    {programme.studienbeitrag && (
+                      <Box sx={{ mb: 1.5 }}>
+                        <Typography
+                          component="span"
+                          sx={{ fontWeight: 600, mr: 1 }}
+                        >
+                          Studienbeitrag:
+                        </Typography>
+                        <Typography component="span">
+                          {programme.studienbeitrag}
+                        </Typography>
+                      </Box>
+                    )}
+                    {programme.beitrag_kommentar && (
+                      <Box sx={{ mb: 1.5 }}>
+                        <Typography
+                          component="span"
+                          sx={{ fontWeight: 600, mr: 1 }}
+                        >
+                          Hinweis:
+                        </Typography>
+                        <Typography component="span">
+                          {programme.beitrag_kommentar}
+                        </Typography>
+                      </Box>
+                    )}
+                  </AccordionDetails>
+                </Accordion>
+              )}
+
+              {/* Anmerkungen */}
+              {programme.anmerkungen && (
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                      marginBottom: 2,
+                      color: theme.palette.text.header,
+                    }}
+                  >
+                    Anmerkungen
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: theme.palette.text.primary,
+                      lineHeight: 1.8,
+                    }}
+                  >
+                    {programme.anmerkungen}
+                  </Typography>
+                </Box>
+              )}
+
+              {/* Homepage Link */}
+              {programme.homepage && (
+                <Box sx={{ mt: 3 }}>
+                  <Link
+                    href={programme.homepage}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                      fontSize: "1.1rem",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Zur Studiengangs-Homepage →
+                  </Link>
+                </Box>
+              )}
             </Box>
           </CardContent>
         </Card>
