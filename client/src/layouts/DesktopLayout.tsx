@@ -1,19 +1,6 @@
-import React, { ReactNode, useState } from "react";
-import {
-  Box,
-  useTheme,
-  Typography,
-  IconButton,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
+import React, { ReactNode } from "react";
+import { Box, useTheme, Typography } from "@mui/material";
 import NavBar from "../../src/components/nav-bar/NavBar";
-import MenuIcon from "@mui/icons-material/Menu";
-import LogoutIcon from "@mui/icons-material/Logout";
-import SettingsIcon from "@mui/icons-material/Settings";
-import FolderIcon from "@mui/icons-material/Folder";
 
 /**
  * Props for the DesktopLayout component.
@@ -39,27 +26,6 @@ interface DesktopLayoutProps {
  */
 const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
   const theme = useTheme();
-
-  // State for the anchor element of the Menu (where the menu opens from)
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  // Checks if the Menu is currently open
-  const open = Boolean(anchorEl);
-
-  /**
-   * Handles the click on the Menu icon and sets the anchor element.
-   *
-   * @param {React.MouseEvent<HTMLElement>} event - The click event.
-   */
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  /**
-   * Closes the Menu by resetting the anchor element state.
-   */
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
 
   return (
     // Background Container: Fills the entire viewport with the grey background color
@@ -117,116 +83,6 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
           justifyContent: "center",
         }}
       >
-        {/* Menu Toggle Area */}
-        <Box
-          sx={{
-            width: "100%",
-            position: "relative",
-            left: "50%",
-            transform: "translateX(-28%)",
-          }}
-        >
-          {/* Clickable Menu Icon */}
-          <IconButton
-            edge="start"
-            onClick={handleMenuClick}
-            aria-label="Open menu"
-            sx={{
-              left: 24,
-              color: theme.palette.text.secondary,
-            }}
-          >
-            <MenuIcon fontSize="large" />
-          </IconButton>
-        </Box>
-
-        {/* Drop-down Menu with options */}
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleMenuClose}
-          disableScrollLock={true}
-          PaperProps={{
-            sx: {
-              borderRadius: 2,
-            },
-          }}
-        >
-          {/* Menu Items */}
-          <MenuItem
-            onClick={handleMenuClose}
-            sx={{
-              "&:hover": {
-                backgroundColor: theme.palette.secondary.main,
-                color: "#FFFFFF",
-                borderRadius: "20px",
-                "& .MuiListItemIcon-root": {
-                  color: "#FFFFFF",
-                },
-              },
-            }}
-          >
-            <ListItemIcon>
-              <LogoutIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Ein-/Ausloggen</ListItemText>
-          </MenuItem>
-          <MenuItem
-            onClick={handleMenuClose}
-            sx={{
-              "&:hover": {
-                backgroundColor: theme.palette.secondary.main,
-                color: "#FFFFFF",
-                borderRadius: "20px",
-                "& .MuiListItemIcon-root": {
-                  color: "#FFFFFF",
-                },
-              },
-            }}
-          >
-            <ListItemIcon>
-              <SettingsIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Einstellungen</ListItemText>
-          </MenuItem>
-          <MenuItem
-            onClick={handleMenuClose}
-            sx={{
-              "&:hover": {
-                backgroundColor: theme.palette.secondary.main,
-                color: "#FFFFFF",
-                borderRadius: "20px",
-                "& .MuiListItemIcon-root": {
-                  color: "#FFFFFF",
-                },
-              },
-            }}
-          >
-            <ListItemIcon>
-              <FolderIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Impressum</ListItemText>
-          </MenuItem>
-          <MenuItem
-            onClick={handleMenuClose}
-            sx={{
-              "&:hover": {
-                backgroundColor: theme.palette.secondary.main,
-                color: "#FFFFFF",
-                borderRadius: "20px",
-                "& .MuiListItemIcon-root": {
-                  color: "#FFFFFF",
-                },
-              },
-            }}
-          >
-            <ListItemIcon>
-              <FolderIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Datenschutz</ListItemText>
-          </MenuItem>
-        </Menu>
-
         <NavBar isSidebarMode />
       </Box>
 
@@ -258,7 +114,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
             borderBottomRightRadius: 0,
             display: "flex",
             flexDirection: "column",
-            overflow: "hidden",
+            overflow: "auto",
             alignItems: "center",
             marginLeft: "0%",
             marginRight: "8%",
