@@ -105,7 +105,6 @@ export default function Settings() {
           label="Nutzername"
           type="text"
           disabled={true}
-          placeholder="example"
           value={user?.username ?? ""}
         />
         <InputField
