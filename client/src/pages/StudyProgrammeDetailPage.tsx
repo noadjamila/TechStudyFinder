@@ -334,6 +334,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                       fontWeight: 600,
                       marginBottom: 2,
                       color: theme.palette.text.header,
+                      fontSize: "1.5rem",
                     }}
                   >
                     Allgemeine Informationen
@@ -347,18 +348,9 @@ const StudyProgrammeDetailPage: React.FC = () => {
                         >
                           Studienform:
                         </Typography>
-                        <Stack direction="row" spacing={1} sx={{ mt: 0.5 }}>
-                          {programme.studienform.map((form, index) => (
-                            <Chip
-                              key={index}
-                              label={form}
-                              size="small"
-                              sx={{
-                                backgroundColor: `${theme.palette.primary.main}66`,
-                              }}
-                            />
-                          ))}
-                        </Stack>
+                        <Typography component="span">
+                          {programme.studienform.join(", ")}
+                        </Typography>
                       </Box>
                     )}
                   {programme.regelstudienzeit && (
@@ -382,18 +374,9 @@ const StudyProgrammeDetailPage: React.FC = () => {
                       >
                         Standorte:
                       </Typography>
-                      <Stack direction="row" spacing={1} sx={{ mt: 0.5 }}>
-                        {programme.standorte.map((standort, index) => (
-                          <Chip
-                            key={index}
-                            label={standort}
-                            size="small"
-                            sx={{
-                              backgroundColor: theme.palette.decorative.blue,
-                            }}
-                          />
-                        ))}
-                      </Stack>
+                      <Typography component="span">
+                        {programme.standorte.join(", ")}
+                      </Typography>
                     </Box>
                   )}
                   {programme.sprachen && programme.sprachen.length > 0 && (
@@ -404,18 +387,9 @@ const StudyProgrammeDetailPage: React.FC = () => {
                       >
                         Sprachen:
                       </Typography>
-                      <Stack direction="row" spacing={1} sx={{ mt: 0.5 }}>
-                        {programme.sprachen.map((sprache, index) => (
-                          <Chip
-                            key={index}
-                            label={sprache}
-                            size="small"
-                            sx={{
-                              backgroundColor: theme.palette.decorative.green,
-                            }}
-                          />
-                        ))}
-                      </Stack>
+                      <Typography component="span">
+                        {programme.sprachen.join(", ")}
+                      </Typography>
                     </Box>
                   )}
                 </Box>
@@ -430,6 +404,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                       fontWeight: 600,
                       marginBottom: 2,
                       color: theme.palette.text.header,
+                      fontSize: "1.5rem",
                     }}
                   >
                     Schwerpunkte
@@ -441,6 +416,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                         label={schwerpunkt}
                         sx={{
                           backgroundColor: theme.palette.primary.main,
+                          fontSize: "16px",
                         }}
                       />
                     ))}
@@ -458,6 +434,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                         fontWeight: 600,
                         marginBottom: 2,
                         color: theme.palette.text.header,
+                        fontSize: "1.5rem",
                       }}
                     >
                       Studienfelder
@@ -474,6 +451,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                           label={feld}
                           sx={{
                             backgroundColor: `${theme.palette.secondary.main}80`,
+                            fontSize: "16px",
                           }}
                         />
                       ))}
@@ -486,6 +464,19 @@ const StudyProgrammeDetailPage: React.FC = () => {
                 sx={{
                   backgroundColor: `${theme.palette.primary.main}1A`,
                   mb: 2,
+                  boxShadow: "none",
+                  "&:hover": {
+                    backgroundColor: theme.palette.primary.main,
+                  },
+                  "&.Mui-expanded": {
+                    backgroundColor: `${theme.palette.primary.main}1A`,
+                  },
+                  "&.Mui-expanded:hover": {
+                    backgroundColor: `${theme.palette.primary.main}1A`,
+                  },
+                  "&:before": {
+                    display: "none",
+                  },
                 }}
               >
                 <AccordionSummary
@@ -498,6 +489,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                     sx={{
                       fontWeight: 600,
                       color: theme.palette.text.header,
+                      fontSize: "1.5rem",
                     }}
                   >
                     Zulassung
@@ -555,6 +547,10 @@ const StudyProgrammeDetailPage: React.FC = () => {
                         href={programme.zulassungslink}
                         target="_blank"
                         rel="noopener noreferrer"
+                        sx={{
+                          color: theme.palette.detailspage.link,
+                          textDecorationColor: theme.palette.detailspage.link,
+                        }}
                       >
                         Zulassungsseite
                       </Link>
@@ -569,6 +565,19 @@ const StudyProgrammeDetailPage: React.FC = () => {
                   sx={{
                     backgroundColor: `${theme.palette.primary.main}1A`,
                     mb: 2,
+                    boxShadow: "none",
+                    "&:hover": {
+                      backgroundColor: theme.palette.primary.main,
+                    },
+                    "&.Mui-expanded": {
+                      backgroundColor: `${theme.palette.primary.main}1A`,
+                    },
+                    "&.Mui-expanded:hover": {
+                      backgroundColor: `${theme.palette.primary.main}1A`,
+                    },
+                    "&:before": {
+                      display: "none",
+                    },
                   }}
                 >
                   <AccordionSummary
@@ -581,6 +590,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                       sx={{
                         fontWeight: 600,
                         color: theme.palette.text.header,
+                        fontSize: "1.5rem",
                       }}
                     >
                       Kosten
@@ -626,6 +636,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                       fontWeight: 600,
                       marginBottom: 2,
                       color: theme.palette.text.header,
+                      fontSize: "1.5rem",
                     }}
                   >
                     Anmerkungen
@@ -652,6 +663,8 @@ const StudyProgrammeDetailPage: React.FC = () => {
                     sx={{
                       fontSize: "1.1rem",
                       fontWeight: 500,
+                      color: theme.palette.detailspage.link,
+                      textDecorationColor: theme.palette.detailspage.link,
                     }}
                   >
                     Zur Studiengangs-Homepage →
