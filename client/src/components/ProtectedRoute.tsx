@@ -12,12 +12,10 @@ import { ReactNode } from "react";
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
 
-  // Wait for auth state to load
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Lädt...</div>;
   }
 
-  // Redirect to home if not authenticated
   if (!user) {
     return <Navigate to="/" replace />;
   }

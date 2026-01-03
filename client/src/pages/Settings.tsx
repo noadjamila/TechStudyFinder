@@ -22,6 +22,7 @@ export default function Settings() {
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [dialogError, setDialogError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -31,6 +32,9 @@ export default function Settings() {
   const { user, logout } = useAuth();
 
   const change_password = async () => {
+    setError(null);
+    setSuccess(null);
+
     if (!password.trim()) {
       setError("Bitte gib dein Passwort ein");
       return;
@@ -63,12 +67,11 @@ export default function Settings() {
       setLoading(false);
       setPassword("");
       setNewPassword("");
-      setTimeout(() => setError(null), 5000);
-      setTimeout(() => setSuccess(null), 5000);
     }
   };
 
   const deleteProfile = async () => {
+    setDialogError(null);
     try {
       const success = await deleteUser();
       if (!success) {
@@ -76,14 +79,13 @@ export default function Settings() {
       }
       logout();
       navigate("/");
+      setDialogOpen(false);
     } catch (err) {
-      setError(
+      setDialogError(
         err instanceof Error
           ? err.message
           : "Ein unbekannter Fehler ist aufgetreten",
       );
-    } finally {
-      setDialogOpen(false);
     }
   };
 
@@ -153,6 +155,7 @@ export default function Settings() {
         cancelLabel="NEIN"
         confirmLabel="JA"
         onConfirm={() => deleteProfile()}
+        error={dialogError}
       />
     </MainLayout>
   );

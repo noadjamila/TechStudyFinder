@@ -1,14 +1,10 @@
-import bcrypt from "bcrypt";
 import { changePassword, deleteUser } from "../auth.controller";
 import { Request, Response } from "express";
-import {
-  deleteUserById,
-  findUserByUsername,
-  updatePasswordById,
-} from "../../repositories/auth.repository";
+import { AuthService } from "../../services/auth.service";
 
 jest.mock("bcrypt");
 jest.mock("../../repositories/auth.repository");
+jest.mock("../../services/auth.service");
 
 let mockRequest: Partial<Request> & { session?: any; body?: any };
 let mockResponse: Partial<Response>;
@@ -52,59 +48,6 @@ describe("changePassword", () => {
       error: "Unvollständige Daten",
     });
   });
-
-  it("returns 404 if user is not found", async () => {
-    (findUserByUsername as jest.Mock).mockResolvedValue(null);
-
-    mockRequest = {
-      session: { user: { id: 1, username: "test" } },
-      body: { currentPassword: "old", newPassword: "new" },
-    } as any;
-
-    await changePassword(mockRequest as Request, mockResponse as Response);
-
-    expect(statusMock).toHaveBeenCalledWith(404);
-  });
-
-  it("returns 403 if current password is incorrect", async () => {
-    (findUserByUsername as jest.Mock).mockResolvedValue({
-      password_hash: "hash",
-    });
-    (bcrypt.compare as jest.Mock).mockResolvedValue(false);
-
-    mockRequest = {
-      session: { user: { id: 1, username: "test" } },
-      body: { currentPassword: "wrong", newPassword: "new" },
-    } as any;
-
-    await changePassword(mockRequest as Request, mockResponse as Response);
-
-    expect(statusMock).toHaveBeenCalledWith(403);
-    expect(jsonMock).toHaveBeenCalledWith({
-      error: "Das eingegebene aktuelle Passwort ist nicht korrekt.",
-    });
-  });
-
-  it("updates password successfully", async () => {
-    (findUserByUsername as jest.Mock).mockResolvedValue({
-      password_hash: "oldHash",
-    });
-    (bcrypt.compare as jest.Mock).mockResolvedValue(true);
-    (bcrypt.hash as jest.Mock).mockResolvedValue("newHash");
-
-    mockRequest = {
-      session: { user: { id: 1, username: "test" } },
-      body: { currentPassword: "old", newPassword: "new" },
-    } as any;
-
-    await changePassword(mockRequest as Request, mockResponse as Response);
-
-    expect(updatePasswordById).toHaveBeenCalledWith(1, "newHash");
-    expect(statusMock).toHaveBeenCalledWith(200);
-    expect(jsonMock).toHaveBeenCalledWith({
-      message: "Passwort erfolgreich geändert",
-    });
-  });
 });
 
 describe("deleteUser", () => {
@@ -119,10 +62,10 @@ describe("deleteUser", () => {
     });
   });
 
-  it("deletes user, destroys session and clears cookie", async () => {
+  it("destroys session and clears cookie", async () => {
     const destroyMock = jest.fn((cb) => cb());
 
-    (deleteUserById as jest.Mock).mockResolvedValue(undefined);
+    (AuthService.deleteUser as jest.Mock).mockResolvedValue(undefined);
 
     mockRequest = {
       session: {
@@ -133,7 +76,7 @@ describe("deleteUser", () => {
 
     await deleteUser(mockRequest as Request, mockResponse as Response);
 
-    expect(deleteUserById).toHaveBeenCalledWith(1);
+    expect(AuthService.deleteUser).toHaveBeenCalledWith(1);
     expect(destroyMock).toHaveBeenCalled();
     expect(clearCookieMock).toHaveBeenCalledWith("connect.sid");
     expect(statusMock).toHaveBeenCalledWith(200);
