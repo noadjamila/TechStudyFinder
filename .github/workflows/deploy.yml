@@ -44,7 +44,7 @@ jobs:
             cd "$DEPLOY_DIR"
 
             COMPOSE_FILE="docker-compose.yml"
-            TARGET_SERVICE="app"
+            TARGET_SERVICE="techstudyfinder"
 
             if [ ! -f "$COMPOSE_FILE" ]; then
               echo "Compose file '$COMPOSE_FILE' not found in $DEPLOY_DIR"
