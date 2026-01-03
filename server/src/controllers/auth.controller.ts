@@ -10,7 +10,7 @@ import { AuthService } from "../services/auth.service";
  */
 export async function getUser(req: Request, res: Response) {
   if (!req.session.user) {
-    return res.status(401).json({ error: "Not authenticated" });
+    return res.status(401).json({ error: "Nicht authentifiziert!" });
   }
 
   return res.json(req.session.user);
