@@ -158,7 +158,7 @@ export async function getStudyProgrammeById(
   );
 
   if (result.rows.length === 0) {
-    throw new Error(`Study programme with id ${id} not found`);
+    return undefined;
   }
 
   return result.rows[0];
