@@ -1,6 +1,10 @@
 /// <reference types="jest" />
 import { Request, Response } from "express";
-import { filterLevel, getQuestions } from "../quiz.controller";
+import {
+  filterLevel,
+  getQuestions,
+  getStudyProgrammeById,
+} from "../quiz.controller";
 import * as quizService from "../../services/quiz.service";
 
 // Mock the service module
@@ -291,5 +295,155 @@ describe("Quiz Controller - getQuestions Level 2", () => {
       "Error retrieving questions",
       mockError,
     );
+  });
+});
+
+describe("Quiz Controller - getStudyProgrammeById", () => {
+  let mockRequest: Partial<Request>;
+  let mockResponse: Partial<Response>;
+  let jsonMock: jest.Mock;
+  let statusMock: jest.Mock;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    // Setup response mock
+    jsonMock = jest.fn();
+    statusMock = jest.fn().mockReturnValue({ json: jsonMock });
+
+    mockResponse = {
+      status: statusMock,
+      json: jsonMock,
+    };
+  });
+
+  it("should return 200 with study programme data for valid ID", async () => {
+    // Arrange
+    const mockProgramme = {
+      studiengang_id: "12345",
+      name: "Informatik",
+      hochschule: "TU Berlin",
+      abschluss: "Bachelor of Science",
+      homepage: "https://example.com",
+      studienbeitrag: "0 EUR",
+      beitrag_kommentar: null,
+      anmerkungen: "Test programme",
+      regelstudienzeit: "6 Semester",
+      zulassungssemester: "WS",
+      zulassungsmodus: "NC",
+      zulassungsvoraussetzungen: "Abitur",
+      zulassungslink: "https://example.com/apply",
+      schwerpunkte: ["AI", "Software Engineering"],
+      sprachen: ["Deutsch", "Englisch"],
+      standorte: ["Berlin"],
+      studienfelder: ["Informatik"],
+      studienform: ["Vollzeit"],
+    };
+    jest
+      .spyOn(quizService, "getStudyProgrammeByIdService")
+      .mockResolvedValue(mockProgramme);
+
+    mockRequest = {
+      params: {
+        id: "12345",
+      },
+    };
+
+    // Act
+    await getStudyProgrammeById(
+      mockRequest as Request,
+      mockResponse as Response,
+    );
+
+    // Assert
+    expect(quizService.getStudyProgrammeByIdService).toHaveBeenCalledWith(
+      "12345",
+    );
+    expect(statusMock).toHaveBeenCalledWith(200);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: true,
+      studyProgramme: mockProgramme,
+    });
+  });
+
+  it("should handle null result from service", async () => {
+    // Arrange
+    jest
+      .spyOn(quizService, "getStudyProgrammeByIdService")
+      .mockResolvedValue(null);
+
+    mockRequest = {
+      params: {
+        id: "nonexistent",
+      },
+    };
+
+    // Act
+    await getStudyProgrammeById(
+      mockRequest as Request,
+      mockResponse as Response,
+    );
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(200);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: true,
+      studyProgramme: null,
+    });
+  });
+
+  it("should return 500 on service error", async () => {
+    // Arrange
+    const mockError = new Error("Database connection failed");
+    jest
+      .spyOn(quizService, "getStudyProgrammeByIdService")
+      .mockRejectedValue(mockError);
+    jest.spyOn(console, "error").mockImplementation(() => {});
+
+    mockRequest = {
+      params: {
+        id: "12345",
+      },
+    };
+
+    // Act
+    await getStudyProgrammeById(
+      mockRequest as Request,
+      mockResponse as Response,
+    );
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(500);
+    expect(jsonMock).toHaveBeenCalledWith({
+      error: "Internal Server Error",
+      message: "Error retrieving study programme",
+    });
+    expect(console.error).toHaveBeenCalledWith(
+      "Error retrieving study programme",
+      mockError,
+    );
+  });
+
+  it("should handle empty string ID", async () => {
+    // Arrange
+    jest
+      .spyOn(quizService, "getStudyProgrammeByIdService")
+      .mockResolvedValue(null);
+
+    mockRequest = {
+      params: {
+        id: "",
+      },
+    };
+
+    // Act
+    await getStudyProgrammeById(
+      mockRequest as Request,
+      mockResponse as Response,
+    );
+
+    // Assert
+    expect(quizService.getStudyProgrammeByIdService).toHaveBeenCalledWith("");
+    expect(statusMock).toHaveBeenCalledWith(200);
   });
 });

@@ -146,7 +146,7 @@ describe("StudyProgrammeCard Component", () => {
       const favoriteButton = screen.getByLabelText("Zu Favoriten hinzufügen");
       fireEvent.click(favoriteButton);
 
-      expect(onToggleFavorite).toHaveBeenCalledWith(1);
+      expect(onToggleFavorite).toHaveBeenCalledWith("1");
       expect(onToggleFavorite).toHaveBeenCalledTimes(1);
     });
 

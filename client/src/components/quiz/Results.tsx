@@ -14,8 +14,7 @@ import StarsIcon from "@mui/icons-material/Stars";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import StudyProgrammeCard from "./StudyProgrammeCard";
 import { useNavigate } from "react-router-dom";
-import StartButton from "../buttons/Button";
-import CardStack from "./CardStack";
+import EmptyStateCard from "./EmptyStateCard";
 
 interface ResultsProps {
   studyProgrammes: StudyProgramme[];
@@ -27,7 +26,7 @@ interface ResultsProps {
  */
 const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   const navigate = useNavigate();
-  const [favorites, setFavorites] = useState<Set<number>>(new Set());
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [selectedDegree, setSelectedDegree] = useState<string>("");
 
@@ -35,7 +34,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
     navigate("/quiz");
   };
 
-  const toggleFavorite = (programmeId: number) => {
+  const toggleFavorite = (programmeId: string) => {
     setFavorites((prev) => {
       const newFavorites = new Set(prev);
       if (newFavorites.has(programmeId)) {
@@ -100,66 +99,17 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
 
       {studyProgrammes.length === 0 ? (
         <Box sx={{ textAlign: "center", mt: { xs: 4, sm: 5 } }}>
-          <CardStack currentIndex={1} totalCards={1}>
-            <Box
-              sx={{
-                width: { xs: "100%", md: "120%" },
-                maxWidth: { xs: 360, sm: 520 },
-                px: { xs: 3, md: 6 },
-                py: { xs: 3, md: 4 },
-                mx: "auto",
-                backgroundColor: theme.palette.decorative.green,
-                borderRadius: 4,
-                boxShadow: 3,
-                justifyContent: "center",
-                position: "relative",
-              }}
-            >
-              {/* Mascot Image */}
-              <Box
-                component="img"
-                src="/mascot_standing_blue.svg"
-                alt="Maskottchen"
-                sx={{
-                  position: "absolute",
-                  width: { xs: 40, sm: 40 },
-                  height: "auto",
-                  top: { xs: -60, sm: -58 },
-                  right: { xs: 60, sm: 50 },
-                }}
-              />
-
-              {/* Card Text */}
-              <Typography
-                variant="subtitle1"
-                sx={{
-                  mb: 3,
-                  lineHeight: 1.3,
-                }}
-              >
+          <EmptyStateCard
+            message={
+              <>
                 Keine Studiengänge gefunden!
                 <br />
                 Versuche, deine Quizantworten anzupassen.
-              </Typography>
-
-              {/* Start Quiz Button */}
-              <StartButton
-                label="Quiz beginnen"
-                onClick={handleQuizStart}
-                sx={{
-                  borderRadius: 3,
-                  padding: "8px 16px",
-                  fontSize: "1.0rem",
-                  width: "fit-content",
-                  mx: "auto",
-                  display: "block",
-                  backgroundColor: theme.palette.primary.main,
-                  color: theme.palette.text.primary,
-                  fontWeight: "normal",
-                }}
-              />
-            </Box>
-          </CardStack>
+              </>
+            }
+            buttonLabel="Quiz beginnen"
+            onButtonClick={handleQuizStart}
+          />
         </Box>
       ) : (
         <>
@@ -400,7 +350,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                 <StudyProgrammeCard
                   key={programme.studiengang_id}
                   programme={programme}
-                  isFavorite={favorites.has(Number(programme.studiengang_id))}
+                  isFavorite={favorites.has(programme.studiengang_id)}
                   onToggleFavorite={toggleFavorite}
                 />
               );

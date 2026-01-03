@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 interface StudyProgrammeCardProps {
   programme: StudyProgramme;
   isFavorite?: boolean;
-  onToggleFavorite?: (programmeId: number) => void;
+  onToggleFavorite?: (programmeId: string) => void;
   clickable?: boolean;
 }
 
@@ -43,7 +43,7 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onToggleFavorite && programme.studiengang_id) {
-      onToggleFavorite(Number(programme.studiengang_id));
+      onToggleFavorite(programme.studiengang_id);
     }
   };
 
