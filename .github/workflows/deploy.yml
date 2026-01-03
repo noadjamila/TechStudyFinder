@@ -52,7 +52,7 @@ jobs:
             TARGET_SERVICE="app"
             HEALTH_URL="http://localhost:5001/api/hello"
             IMAGE="${IMAGE:-ghcr.io/${GITHUB_REPO_OWNER}/techstudyfinder:latest}"
-            IMAGE_PATTERN="ghcr.io/.*/techstudyfinder:latest"
+            IMAGE_PATTERN="ghcr\.io/.*/techstudyfinder:latest"
 
             if [ ! -f "$COMPOSE_FILE" ]; then
               echo "Compose file '$COMPOSE_FILE' not found in $DEPLOY_DIR"
