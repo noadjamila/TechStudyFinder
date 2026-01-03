@@ -126,7 +126,7 @@ export default function Settings() {
         <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
           <PrimaryButton
             label={"Passwort ändern"}
-            onClick={() => change_password()}
+            onClick={() => handleChangePassword()}
             ariaText="Passwort ändern"
             disabled={loading || !password.trim() || !newPassword.trim()}
           />
