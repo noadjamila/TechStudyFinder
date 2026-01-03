@@ -166,4 +166,58 @@ describe("ResultsPage Component", () => {
       ).toBeInTheDocument();
     });
   });
+
+  it("handles individual fetch failures gracefully", async () => {
+    const { getStudyProgrammeById } = await import("../../api/quizApi");
+    vi.mocked(getStudyProgrammeById).mockImplementation((id: string) => {
+      if (id === "1") {
+        return Promise.resolve({
+          studiengang_id: "1",
+          name: "Successful Programme",
+          hochschule: "Test University",
+          abschluss: "Bachelor",
+          homepage: "https://example.com",
+          studienbeitrag: "500 EUR",
+          beitrag_kommentar: null,
+          anmerkungen: null,
+          regelstudienzeit: "6 Semester",
+          zulassungssemester: null,
+          zulassungsmodus: null,
+          zulassungsvoraussetzungen: null,
+          zulassungslink: null,
+          schwerpunkte: null,
+          sprachen: null,
+          standorte: null,
+          studienfelder: null,
+          studienform: null,
+        });
+      } else if (id === "2") {
+        return Promise.resolve(null); // 404 - not found
+      } else {
+        return Promise.reject(new Error("Network error")); // 500 error
+      }
+    });
+
+    renderWithTheme(<ResultsPage />);
+
+    await waitFor(() => {
+      // Should display the one successful programme
+      expect(screen.getByText("Successful Programme")).toBeInTheDocument();
+    });
+  });
+
+  it("shows error only when all programmes fail to load", async () => {
+    const { getStudyProgrammeById } = await import("../../api/quizApi");
+    vi.mocked(getStudyProgrammeById).mockRejectedValue(
+      new Error("Network error"),
+    );
+
+    renderWithTheme(<ResultsPage />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Fehler beim Laden der Studiengänge"),
+      ).toBeInTheDocument();
+    });
+  });
 });

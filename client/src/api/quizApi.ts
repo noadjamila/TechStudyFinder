@@ -73,30 +73,26 @@ export async function getQuizLevel(level: number): Promise<QuizLevelResponse> {
  * Fetches a single study programme by ID from the backend.
  *
  * @param {string} id The study programme ID.
- * @returns {Promise<any>} A promise resolving to the study programme data.
- * @throws {Error} Throws if the network request fails or study programme not found.
+ * @returns {Promise<StudyProgramme | null>} The study programme data, or null if not found.
+ * @throws {Error} Throws if the network request fails (not for 404).
  */
 export async function getStudyProgrammeById(
   id: string,
-): Promise<StudyProgramme> {
+): Promise<StudyProgramme | null> {
   const endpoint = `${API_BASE_URL}/quiz/study-programme/${id}`;
 
-  try {
-    const res = await fetch(endpoint);
+  const res = await fetch(endpoint);
 
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-
-    const data = await res.json();
-
-    if (!data.success || !data.studyProgramme) {
-      throw new Error("Study programme not found in the response.");
-    }
-
-    return data.studyProgramme;
-  } catch (err) {
-    console.error("[getStudyProgrammeById] Error during API call:", err);
-    throw new Error("Could not fetch study programme from the backend.");
+  // Not found - return null (caller will log if needed)
+  if (res.status === 404) {
+    return null;
   }
+
+  // Any other error should throw
+  if (!res.ok) {
+    throw new Error(`HTTP error! status: ${res.status}`);
+  }
+
+  const data = await res.json();
+  return data.studyProgramme ?? null;
 }

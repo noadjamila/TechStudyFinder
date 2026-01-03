@@ -85,15 +85,23 @@ export async function getQuestions(req: Request, res: Response) {
 
 export async function getStudyProgrammeById(req: Request, res: Response) {
   try {
-    let result = await getStudyProgrammeByIdService(req.params.id);
+    const result = await getStudyProgrammeByIdService(req.params.id);
 
-    res.status(200).json({
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        error: "Study programme not found",
+      });
+    }
+
+    return res.status(200).json({
       success: true,
       studyProgramme: result,
     });
   } catch (error) {
     console.error("Error retrieving study programme", error);
-    res.status(500).json({
+    return res.status(500).json({
+      success: false,
       error: "Internal Server Error",
       message: "Error retrieving study programme",
     });

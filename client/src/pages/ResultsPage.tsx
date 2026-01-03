@@ -63,24 +63,41 @@ const ResultsPage: React.FC = () => {
         }
 
         // Fetch new results
-        try {
-          setLoading(true);
-          const promises = idsFromQuiz.map((id: string) =>
-            getStudyProgrammeById(id),
-          );
-          const results = await Promise.all(promises);
+        setLoading(true);
+        const promises = idsFromQuiz.map((id: string) =>
+          getStudyProgrammeById(id),
+        );
+        const results = await Promise.allSettled(promises);
 
-          // Save full study programme objects to localStorage
-          localStorage.setItem("quizResults", JSON.stringify(results));
-          localStorage.setItem("quizCompleted", "true");
-          setStudyProgrammes(results);
-          setHasQuizResults(true);
-        } catch (err) {
-          console.error("Error fetching study programmes:", err);
+        // Process results - filter successful ones and log failures
+        const validResults: StudyProgramme[] = [];
+        results.forEach((result, index) => {
+          if (result.status === "fulfilled" && result.value !== null) {
+            validResults.push(result.value);
+          } else if (result.status === "rejected") {
+            console.error(
+              `Failed to load study programme ${idsFromQuiz[index]}:`,
+              result.reason,
+            );
+          } else if (result.status === "fulfilled" && result.value === null) {
+            console.warn(
+              `Study programme ${idsFromQuiz[index]} not found (404)`,
+            );
+          }
+        });
+
+        // Only show error if ALL programmes failed to load
+        if (validResults.length === 0 && idsFromQuiz.length > 0) {
+          console.error("All study programmes failed to load");
           setError("Fehler beim Laden der Studiengänge");
-        } finally {
-          setLoading(false);
         }
+
+        // Save full study programme objects to localStorage
+        localStorage.setItem("quizResults", JSON.stringify(validResults));
+        localStorage.setItem("quizCompleted", "true");
+        setStudyProgrammes(validResults);
+        setHasQuizResults(true);
+        setLoading(false);
       }
       // If no new IDs, we already loaded from cache in useState initializer
     };

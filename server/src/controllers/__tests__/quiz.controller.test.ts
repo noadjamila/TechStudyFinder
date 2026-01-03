@@ -366,7 +366,7 @@ describe("Quiz Controller - getStudyProgrammeById", () => {
     });
   });
 
-  it("should handle null result from service", async () => {
+  it("should return 404 when study programme is not found", async () => {
     // Arrange
     jest
       .spyOn(quizService, "getStudyProgrammeByIdService")
@@ -385,10 +385,10 @@ describe("Quiz Controller - getStudyProgrammeById", () => {
     );
 
     // Assert
-    expect(statusMock).toHaveBeenCalledWith(200);
+    expect(statusMock).toHaveBeenCalledWith(404);
     expect(jsonMock).toHaveBeenCalledWith({
-      success: true,
-      studyProgramme: undefined,
+      success: false,
+      error: "Study programme not found",
     });
   });
 
@@ -415,6 +415,7 @@ describe("Quiz Controller - getStudyProgrammeById", () => {
     // Assert
     expect(statusMock).toHaveBeenCalledWith(500);
     expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
       error: "Internal Server Error",
       message: "Error retrieving study programme",
     });
@@ -424,7 +425,7 @@ describe("Quiz Controller - getStudyProgrammeById", () => {
     );
   });
 
-  it("should handle empty string ID", async () => {
+  it("should return 404 for empty string ID", async () => {
     // Arrange
     jest
       .spyOn(quizService, "getStudyProgrammeByIdService")
@@ -444,6 +445,10 @@ describe("Quiz Controller - getStudyProgrammeById", () => {
 
     // Assert
     expect(quizService.getStudyProgrammeByIdService).toHaveBeenCalledWith("");
-    expect(statusMock).toHaveBeenCalledWith(200);
+    expect(statusMock).toHaveBeenCalledWith(404);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      error: "Study programme not found",
+    });
   });
 });
