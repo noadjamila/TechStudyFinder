@@ -31,10 +31,15 @@ jobs:
       - name: Deploy on Server
         # Pinned to v1.0.3 for reproducibility; see https://github.com/appleboy/ssh-action/releases for updates
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/techstudyfinder:latest
+          GITHUB_REPO_OWNER: ${{ github.repository_owner }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          envs: IMAGE,GITHUB_REPO_OWNER,GHCR_TOKEN
           script: |
             # Force bash so pipefail is available; dash on some hosts errors on set -o pipefail
             bash -euo pipefail <<'EOS'
@@ -45,6 +50,9 @@ jobs:
 
             COMPOSE_FILE="docker-compose.yml"
             TARGET_SERVICE="app"
+            HEALTH_URL="http://localhost:5001/api/hello"
+            IMAGE="${IMAGE:-ghcr.io/${GITHUB_REPO_OWNER}/techstudyfinder:latest}"
+            IMAGE_PATTERN="ghcr.io/.*/techstudyfinder:latest"
 
             if [ ! -f "$COMPOSE_FILE" ]; then
               echo "Compose file '$COMPOSE_FILE' not found in $DEPLOY_DIR"
@@ -62,6 +70,13 @@ jobs:
               exit 1
             fi
 
+            # Authenticate to GHCR so docker compose pull succeeds
+            if [ -n "${GHCR_TOKEN:-}" ]; then
+              echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_REPO_OWNER" --password-stdin
+            else
+              echo "WARNING: GHCR_TOKEN not provided; attempting unauthenticated pull."
+            fi
+
             # Save currently running image tag for rollback
             CURRENT_IMAGE=$(docker compose -f "$COMPOSE_FILE" ps "$TARGET_SERVICE" --format '{{.Image}}' | head -n 1 || true)
             if [ -n "$CURRENT_IMAGE" ]; then
@@ -73,13 +88,13 @@ jobs:
               echo "Deployment failed. Attempting rollback..."
               if docker image inspect rollback_image:latest > /dev/null 2>&1; then
                 # Update docker-compose.yml to use rollback_image:latest temporarily
-                sed -i.bak 's|ghcr.io/.*/techstudyfinder:latest|rollback_image:latest|g' "$COMPOSE_FILE"
+                sed -i.bak "s|${IMAGE_PATTERN}|rollback_image:latest|g" "$COMPOSE_FILE"
                 docker compose -f "$COMPOSE_FILE" up -d
                 mv "$COMPOSE_FILE".bak "$COMPOSE_FILE"
                 echo "Rollback complete."
                 # Health check after rollback
                 echo "Checking application health after rollback..."
-                if ! curl -fsSL http://localhost:80/health; then
+                if ! curl -fsSL "$HEALTH_URL"; then
                   echo "Health check failed after rollback. Manual intervention required."
                   exit 1
                 else
@@ -118,4 +133,7 @@ jobs:
             done
             # If successful, remove rollback image
             docker image rm rollback_image:latest || true
+            # Final health check on the exposed endpoint
+            echo "Performing HTTP health check on $HEALTH_URL..."
+            curl -fsSL "$HEALTH_URL" >/dev/null
             EOS
