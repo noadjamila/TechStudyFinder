@@ -122,7 +122,11 @@ export async function deleteUser(req: Request, res: Response) {
 
   await AuthService.deleteUser(userId);
 
-  req.session.destroy(() => {});
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Failed to destroy session for deleted user:", userId, err);
+    }
+  });
   res.clearCookie("connect.sid");
   return res.status(200).json({ message: "User deleted" });
 }
