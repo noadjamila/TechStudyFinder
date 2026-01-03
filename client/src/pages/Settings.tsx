@@ -31,7 +31,7 @@ export default function Settings() {
 
   const { user, logout } = useAuth();
 
-  const change_password = async () => {
+  const handleChangePassword = async () => {
     setError(null);
     setSuccess(null);
 
