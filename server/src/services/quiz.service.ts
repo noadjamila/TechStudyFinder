@@ -5,6 +5,7 @@ import {
 } from "../repositories/quiz.repository";
 import { RiasecScores } from "../types/riasecScores";
 import { getStudyProgrammeById } from "../repositories/quiz.repository";
+import { StudyProgramme } from "../types/studyProgramme";
 
 /**
  * Handles filtering for level 1 based on the provided answers.
@@ -67,6 +68,8 @@ export async function getQuestionsLevel2Service(): Promise<any[]> {
   return await getQuestionsLevel2();
 }
 
-export async function getStudyProgrammeByIdService(id: string): Promise<any> {
+export async function getStudyProgrammeByIdService(
+  id: string,
+): Promise<StudyProgramme | undefined> {
   return await getStudyProgrammeById(id);
 }

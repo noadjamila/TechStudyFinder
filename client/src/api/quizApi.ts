@@ -3,6 +3,7 @@ import {
   FilterResponse,
   QuizLevelResponse,
 } from "../types/QuizApi.types";
+import { StudyProgramme } from "../types/StudyProgramme.types";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
@@ -75,7 +76,9 @@ export async function getQuizLevel(level: number): Promise<QuizLevelResponse> {
  * @returns {Promise<any>} A promise resolving to the study programme data.
  * @throws {Error} Throws if the network request fails or study programme not found.
  */
-export async function getStudyProgrammeById(id: string): Promise<any> {
+export async function getStudyProgrammeById(
+  id: string,
+): Promise<StudyProgramme> {
   const endpoint = `${API_BASE_URL}/quiz/study-programme/${id}`;
 
   try {

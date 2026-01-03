@@ -1,5 +1,6 @@
 import { pool } from "../../db";
 import { RiasecScores } from "../types/riasecScores";
+import { StudyProgramme } from "../types/studyProgramme";
 
 /**
  * Retrieves filtered study programme IDs for level 1 based on the provided study type.
@@ -148,11 +149,17 @@ export async function getQuestionsLevel2(): Promise<any[]> {
   return result.rows;
 }
 
-export async function getStudyProgrammeById(id: string): Promise<any> {
+export async function getStudyProgrammeById(
+  id: string,
+): Promise<StudyProgramme | undefined> {
   const result = await pool.query(
     "SELECT * FROM studiengang_full_view WHERE studiengang_id = $1",
     [id],
   );
+
+  if (result.rows.length === 0) {
+    throw new Error(`Study programme with id ${id} not found`);
+  }
 
   return result.rows[0];
 }

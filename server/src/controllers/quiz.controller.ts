@@ -93,9 +93,16 @@ export async function getStudyProgrammeById(req: Request, res: Response) {
     });
   } catch (error) {
     console.error("Error retrieving study programme", error);
-    res.status(500).json({
-      error: "Internal Server Error",
-      message: "Error retrieving study programme",
+    const err: any = error;
+    const status =
+      err && (err.statusCode === 404 || err.status === 404) ? 404 : 500;
+    const message =
+      status === 404
+        ? "Study programme not found"
+        : "Error retrieving study programme";
+    res.status(status).json({
+      error: message,
+      message,
     });
   }
 }

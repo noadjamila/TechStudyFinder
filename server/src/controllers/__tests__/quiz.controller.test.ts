@@ -370,7 +370,7 @@ describe("Quiz Controller - getStudyProgrammeById", () => {
     // Arrange
     jest
       .spyOn(quizService, "getStudyProgrammeByIdService")
-      .mockResolvedValue(null);
+      .mockResolvedValue(undefined);
 
     mockRequest = {
       params: {
@@ -428,7 +428,7 @@ describe("Quiz Controller - getStudyProgrammeById", () => {
     // Arrange
     jest
       .spyOn(quizService, "getStudyProgrammeByIdService")
-      .mockResolvedValue(null);
+      .mockResolvedValue(undefined);
 
     mockRequest = {
       params: {

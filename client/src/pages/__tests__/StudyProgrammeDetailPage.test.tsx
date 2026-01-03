@@ -51,10 +51,6 @@ const mockProgramme = {
   studienform: ["Vollzeit", "Teilzeit"],
 };
 
-// Note: The component currently uses hardcoded mock data internally
-// These tests verify the rendering of that mock data
-// When the API fetch is re-enabled, we'll need to mock the API call instead
-
 const renderWithTheme = (initialRoute = "/study-programme/12345") => {
   return render(
     <MemoryRouter initialEntries={[initialRoute]}>
