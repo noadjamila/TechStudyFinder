@@ -72,7 +72,10 @@ jobs:
 
             # Authenticate to GHCR so docker compose pull succeeds
             if [ -n "${GHCR_TOKEN:-}" ]; then
-              echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_REPO_OWNER" --password-stdin
+              if ! echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_REPO_OWNER" --password-stdin; then
+                echo "ERROR: Docker login to ghcr.io failed. Please verify GHCR_TOKEN and repository permissions."
+                exit 1
+              fi
             else
               echo "WARNING: GHCR_TOKEN not provided; attempting unauthenticated pull."
             fi
