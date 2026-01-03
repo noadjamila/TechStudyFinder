@@ -14,7 +14,7 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
 
   // Wait for auth state to load
   if (isLoading) {
-    return null; // or a loading spinner if you have one
+    return <div>Loading...</div>;
   }
 
   // Redirect to home if not authenticated
