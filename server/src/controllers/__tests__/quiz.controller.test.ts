@@ -388,7 +388,7 @@ describe("Quiz Controller - getStudyProgrammeById", () => {
     expect(statusMock).toHaveBeenCalledWith(200);
     expect(jsonMock).toHaveBeenCalledWith({
       success: true,
-      studyProgramme: null,
+      studyProgramme: undefined,
     });
   });
 
