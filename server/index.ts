@@ -68,6 +68,8 @@ app.use(
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     },
   }),
@@ -120,10 +122,24 @@ app.use(((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 }) as ErrorRequestHandler);
 
 if (require.main === module) {
-  server = app.listen(PORT, HOST, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Backend running on http://${HOST}:${PORT}`);
-  });
+  const startServer = (port: number) => {
+    server = app.listen(port, HOST, () => {
+      // eslint-disable-next-line no-console
+      console.log(`Backend running on http://${HOST}:${port}`);
+    });
+
+    // Handle port already in use error
+    server.on("error", (err: any) => {
+      if (err.code === "EADDRINUSE") {
+        console.warn(`Port ${port} is in use, trying port ${port + 1}...`);
+        startServer(port + 1);
+      } else {
+        throw err;
+      }
+    });
+  };
+
+  startServer(PORT);
 }
 
 process.on("uncaughtException", (error) => {

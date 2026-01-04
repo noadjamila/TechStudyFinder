@@ -7,6 +7,7 @@ import FormField from "../../components/login-register/FormField";
 import FormHeader from "../../components/login-register/FormHeader";
 import theme from "../../theme/theme";
 import BottomHills from "../../components/login-register/BottomHills";
+import LoginResultDialog from "../../components/dialogs/LoginResultDialog";
 
 /**
  * Login page component.
@@ -21,6 +22,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showResultDialog, setShowResultDialog] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   const handleLogin = async () => {
     setError(null);
@@ -46,28 +49,36 @@ export default function Login() {
         body: JSON.stringify({ username, password }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        // Handle specific error responses from the server
-        if (response.status === 401) {
-          setError("Username oder Passwort ist ungültig");
-        } else {
-          setError(data.error || "Login fehlgeschlagen");
-        }
+        // Show error dialog
+        setLoginSuccess(false);
+        setShowResultDialog(true);
         return;
       }
 
-      // Navigate to home page after successful login
-      navigate("/home");
+      // Show success dialog and navigate after closing
+      setLoginSuccess(true);
+      setShowResultDialog(true);
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
           : "Ein unbekannter Fehler ist aufgetreten",
       );
+      setLoginSuccess(false);
+      setShowResultDialog(true);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResultDialogClose = () => {
+    setShowResultDialog(false);
+    if (loginSuccess) {
+      navigate("/home");
+    } else {
+      // Clear the password field on unsuccessful login
+      setPassword("");
     }
   };
 
@@ -166,6 +177,11 @@ export default function Login() {
         </Box>
       </Box>
       <BottomHills />
+      <LoginResultDialog
+        open={showResultDialog}
+        success={loginSuccess}
+        onClose={handleResultDialogClose}
+      />
     </Box>
   );
 }
