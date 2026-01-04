@@ -30,7 +30,7 @@ jobs:
 
       - name: Deploy on Server
         # Pinned to v1.0.3 for reproducibility; see https://github.com/appleboy/ssh-action/releases for updates
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.4
         env:
           IMAGE: ghcr.io/${{ github.repository_owner }}/techstudyfinder:latest
           GITHUB_REPO_OWNER: ${{ github.repository_owner }}
