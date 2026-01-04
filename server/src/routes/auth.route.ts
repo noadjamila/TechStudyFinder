@@ -1,9 +1,21 @@
 import { Response, Request, Router } from "express";
 import { findUserForLogin } from "../repositories/auth.repository";
+import { register } from "../controllers/user.controller";
 import bcrypt from "bcrypt";
 import { findByUsername, createUser } from "../repositories/users.repository";
 
 export const authRouter = Router();
+
+/**
+ * POST /api/auth/register
+ * Body: { username: string, password: string }
+ * Response: { user: { id: number, username: string } }
+ * Registers a new user with the provided credentials.
+ * Errors:
+ * - 400: Invalid username or password format
+ * - 409: User already exists
+ */
+authRouter.post("/register", register);
 
 /**
  * GET /api/auth/me

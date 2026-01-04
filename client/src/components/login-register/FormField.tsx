@@ -46,7 +46,6 @@ export default function FormField({
             height: "36px",
           },
           "& .MuiOutlinedInput-input": {
-            //fix for less padding in smaller height
             padding: "8px 12px",
             fontSize: "14px",
           },
