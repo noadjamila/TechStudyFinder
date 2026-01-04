@@ -6,7 +6,7 @@ services:
     container_name: techstudyfinder
     restart: unless-stopped
     ports:
-      - "5001:5001"
+      - "127.0.0.1"
     environment:
       # Bind to all interfaces so the host can reach the container on the published port
       HOST: 0.0.0.0
