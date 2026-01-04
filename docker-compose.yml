@@ -7,5 +7,9 @@ services:
     restart: unless-stopped
     ports:
       - "5001:5001"
+    environment:
+      # Bind to all interfaces so the host can reach the container on the published port
+      HOST: 0.0.0.0
+      PORT: 5001
     env_file:
       - .env
