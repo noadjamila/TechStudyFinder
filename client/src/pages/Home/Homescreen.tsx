@@ -1,11 +1,20 @@
-import React from "react";
-import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Typography,
+  useMediaQuery,
+  useTheme,
+  Snackbar,
+  Alert,
+  Dialog,
+  DialogContent,
+  Button,
+} from "@mui/material";
 import StartButton from "../../components/buttons/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import CardStack from "../../components/cards/CardStackLevel2";
 import theme from "../../theme/theme";
 import LogoMenu from "../../components/logo-menu/LogoMenu";
-import Navigationbar from "../../components/nav-bar/NavBar";
 import DesktopLayout from "../../layouts/DesktopLayout";
 import GreenCard from "../../components/cards/GreenCardBaseNotQuiz";
 
@@ -19,9 +28,55 @@ import GreenCard from "../../components/cards/GreenCardBaseNotQuiz";
  */
 const Homescreen: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const muiTheme = useTheme();
   const toggleSidebar = () => {};
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
+  const [showLogoutMessage, setShowLogoutMessage] = useState(false);
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // Check for logout confirmation flag whenever the component mounts or location changes
+  useEffect(() => {
+    const confirmationFlag = sessionStorage.getItem("showLogoutConfirmation");
+    if (confirmationFlag) {
+      setShowLogoutConfirmation(true);
+      sessionStorage.removeItem("showLogoutConfirmation");
+    }
+  }, [location]);
+
+  /**
+   * Handles confirming the logout action
+   */
+  const handleConfirmLogout = async () => {
+    setIsLoggingOut(true);
+    setShowLogoutConfirmation(false);
+
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        setShowLogoutMessage(true);
+        // Refresh auth status in NavBar by triggering a re-check
+        // This will update the isLoggedIn state in NavBar
+        window.dispatchEvent(new Event("auth-status-changed"));
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+  /**
+   * Handles canceling the logout action
+   */
+  const handleCancelLogout = () => {
+    setShowLogoutConfirmation(false);
+  };
 
   /**
    * Handles the start of the quiz by navigating to the level success screen first.
@@ -190,10 +245,93 @@ const Homescreen: React.FC = () => {
         // MOBILE VIEW: Logo menu and navigation bar are rendered outside the main content flow
         <>
           <LogoMenu />
-          <Navigationbar />
           {MainContent}
         </>
       )}
+
+      {/* Logout Snackbar - shown when user logs out */}
+      <Snackbar
+        open={showLogoutMessage}
+        autoHideDuration={800}
+        onClose={() => setShowLogoutMessage(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert severity="success" sx={{ width: "100%" }}>
+          Du wurdest ausgeloggt.
+        </Alert>
+      </Snackbar>
+
+      {/* Logout Confirmation Dialog */}
+      <Dialog
+        open={showLogoutConfirmation}
+        onClose={handleCancelLogout}
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            minWidth: "300px",
+            backgroundColor: theme.palette.decorative.green,
+          },
+        }}
+      >
+        <DialogContent
+          sx={{
+            py: 3,
+            px: 3,
+            textAlign: "center",
+          }}
+        >
+          <Typography
+            variant={isDesktop ? "h4" : "h5"}
+            sx={{
+              mb: 3,
+              fontWeight: "bold",
+            }}
+          >
+            Möchtest du dich wirklich ausloggen?
+          </Typography>
+
+          <Box
+            sx={{
+              display: "flex",
+              gap: 2,
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              variant="outlined"
+              onClick={handleCancelLogout}
+              disabled={isLoggingOut}
+              sx={{
+                borderRadius: 2,
+                textTransform: "none",
+                fontSize: "1rem",
+                color: theme.palette.text.primary,
+                borderColor: theme.palette.text.primary,
+                backgroundColor: theme.palette.background.default,
+                "&:hover": {
+                  borderColor: theme.palette.text.primary,
+                  backgroundColor: theme.palette.background.paper,
+                },
+              }}
+            >
+              Nein
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleConfirmLogout}
+              disabled={isLoggingOut}
+              sx={{
+                borderRadius: 2,
+                textTransform: "none",
+                fontSize: "1rem",
+                backgroundColor: theme.palette.primary.main,
+              }}
+            >
+              Ja, ausloggen
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

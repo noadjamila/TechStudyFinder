@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -14,6 +14,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import FolderIcon from "@mui/icons-material/Folder";
+import { useNavigate } from "react-router-dom";
 import theme from "../../theme/theme";
 
 interface LogoMenuProps {
@@ -29,8 +30,36 @@ interface LogoMenuProps {
  * @returns {React.FC} The rendered App Bar component.
  */
 const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isHoveringMenu, setIsHoveringMenu] = useState(false);
   const open = Boolean(anchorEl);
+
+  // Check if user is logged in
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const response = await fetch("/api/auth/me", {
+          credentials: "include",
+        });
+        setIsLoggedIn(response.ok);
+      } catch {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkAuthStatus();
+
+    // Listen for auth status changes (e.g., after logout)
+    const handleAuthChange = () => {
+      checkAuthStatus();
+    };
+
+    window.addEventListener("auth-status-changed", handleAuthChange);
+    return () =>
+      window.removeEventListener("auth-status-changed", handleAuthChange);
+  }, []);
 
   /**
    * Handles the click on the Menu icon and sets the anchor element.
@@ -46,6 +75,22 @@ const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
    */
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  /**
+   * Handles login/logout action
+   */
+  const handleLoginLogout = () => {
+    handleMenuClose();
+
+    if (isLoggedIn) {
+      // User is logged in - navigate to home with confirmation dialog
+      sessionStorage.setItem("showLogoutConfirmation", "true");
+      navigate("/home");
+    } else {
+      // User is not logged in - navigate to login
+      navigate("/login");
+    }
   };
 
   return (
@@ -71,10 +116,21 @@ const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
         <IconButton
           edge="start"
           onClick={handleMenuClick}
+          onMouseEnter={() => setIsHoveringMenu(true)}
+          onMouseLeave={() => setIsHoveringMenu(false)}
           aria-label="Open menu"
+          disableRipple
+          disableFocusRipple
           sx={{
             ml: 2,
             mr: 1.5,
+            backgroundColor: isHoveringMenu
+              ? theme.palette.secondary.main
+              : theme.palette.secondary.light,
+            color: "#FFFFFF",
+            borderRadius: "50%",
+            width: 44,
+            height: 44,
           }}
         >
           <MenuIcon fontSize="large" />
@@ -124,11 +180,13 @@ const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
           disableScrollLock={true}
         >
           {/* Menu Items */}
-          <MenuItem onClick={handleMenuClose}>
+          <MenuItem onClick={handleLoginLogout}>
             <ListItemIcon>
               <LogoutIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText>Ein-/Ausloggen</ListItemText>
+            <ListItemText>
+              {isLoggedIn ? "Ausloggen" : "Einloggen"}
+            </ListItemText>
           </MenuItem>
           <MenuItem onClick={handleMenuClose}>
             <ListItemIcon>

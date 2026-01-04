@@ -10,8 +10,6 @@ import {
   ListItemIcon,
   ListItemText,
   IconButton,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import ResultIcon from "@mui/icons-material/Bookmark";
@@ -78,7 +76,6 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const menuOpen = Boolean(anchorEl);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showLogoutMessage, setShowLogoutMessage] = useState(false);
 
   // Update the selected value when the route changes
   useEffect(() => {
@@ -99,6 +96,15 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
     };
 
     checkAuthStatus();
+
+    // Listen for auth status changes (e.g., after logout)
+    const handleAuthChange = () => {
+      checkAuthStatus();
+    };
+
+    window.addEventListener("auth-status-changed", handleAuthChange);
+    return () =>
+      window.removeEventListener("auth-status-changed", handleAuthChange);
   }, []);
 
   /**
@@ -133,21 +139,9 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
     handleMenuClose();
 
     if (isLoggedIn) {
-      // User is logged in - perform logout
-      try {
-        const response = await fetch("/api/auth/logout", {
-          method: "POST",
-          credentials: "include",
-        });
-
-        if (response.ok) {
-          setIsLoggedIn(false);
-          setShowLogoutMessage(true);
-          // Stay on current page
-        }
-      } catch (error) {
-        console.error("Logout failed:", error);
-      }
+      // User is logged in - navigate to home with confirmation dialog
+      sessionStorage.setItem("showLogoutConfirmation", "true");
+      navigate("/home");
     } else {
       // User is not logged in - navigate to login
       navigate("/login");
@@ -372,28 +366,6 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
             </Box>
           ))}
         </Box>
-
-        {/* Logout Snackbar - positioned outside sidebar for proper centering */}
-        <Snackbar
-          open={showLogoutMessage}
-          autoHideDuration={4000}
-          onClose={() => setShowLogoutMessage(false)}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          PaperProps={{
-            sx: {
-              position: "fixed",
-              top: "20px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              right: "auto",
-              bottom: "auto",
-            },
-          }}
-        >
-          <Alert severity="success" sx={{ width: "100%" }}>
-            Du wurdest ausgeloggt.
-          </Alert>
-        </Snackbar>
       </>
     );
   }
@@ -481,28 +453,6 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
           ))}
         </BottomNavigation>
       </Paper>
-
-      {/* Logout Snackbar - positioned at viewport level for both mobile and desktop */}
-      <Snackbar
-        open={showLogoutMessage}
-        autoHideDuration={4000}
-        onClose={() => setShowLogoutMessage(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        PaperProps={{
-          sx: {
-            position: "fixed",
-            top: "20px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            right: "auto",
-            bottom: "auto",
-          },
-        }}
-      >
-        <Alert severity="success" sx={{ width: "100%" }}>
-          Du wurdest ausgeloggt.
-        </Alert>
-      </Snackbar>
     </>
   );
 };
