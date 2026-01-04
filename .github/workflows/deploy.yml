@@ -21,7 +21,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Build & Push Image
         run: |
@@ -31,39 +31,73 @@ jobs:
       - name: Deploy on Server
         # Pinned to v1.0.3 for reproducibility; see https://github.com/appleboy/ssh-action/releases for updates
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/techstudyfinder:latest
+          GITHUB_REPO_OWNER: ${{ github.repository_owner }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          envs: IMAGE,GITHUB_REPO_OWNER,GHCR_TOKEN
           script: |
             # Force bash so pipefail is available; dash on some hosts errors on set -o pipefail
             bash -euo pipefail <<'EOS'
 
             # Fixed deployment directory on production server
-            cd /home/deployuser/projects/TechStudyFinder
+            DEPLOY_DIR="/home/deployuser/projects/techstudyfinder"
+            cd "$DEPLOY_DIR"
 
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
-              -u "${{ github.actor }}" \
-              --password-stdin
+            COMPOSE_FILE="docker-compose.yml"
+            TARGET_SERVICE="app"
+            HEALTH_URL="http://localhost:5001/"
+            IMAGE="${IMAGE:-ghcr.io/${GITHUB_REPO_OWNER}/techstudyfinder:latest}"
+            IMAGE_PATTERN="ghcr\.io/.*/techstudyfinder:latest"
+
+            if [ ! -f "$COMPOSE_FILE" ]; then
+              echo "Compose file '$COMPOSE_FILE' not found in $DEPLOY_DIR"
+              exit 1
+            fi
+
+            if [ ! -f ".env" ]; then
+              echo "Required env file '.env' not found in $DEPLOY_DIR"
+              exit 1
+            fi
+
+            if ! docker compose -f "$COMPOSE_FILE" config --services | grep -qx "$TARGET_SERVICE"; then
+              echo "Service '$TARGET_SERVICE' not found in $COMPOSE_FILE. Available services:"
+              docker compose -f "$COMPOSE_FILE" config --services
+              exit 1
+            fi
+
+            # Authenticate to GHCR so docker compose pull succeeds
+            if [ -n "${GHCR_TOKEN:-}" ]; then
+              if ! echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_REPO_OWNER" --password-stdin; then
+                echo "ERROR: Docker login to ghcr.io failed. Please verify GHCR_TOKEN and repository permissions."
+                exit 1
+              fi
+            else
+              echo "WARNING: GHCR_TOKEN not provided; attempting unauthenticated pull."
+            fi
 
             # Save currently running image tag for rollback
-            CURRENT_IMAGE=$(docker compose ps app --format '{{.Image}}' | head -n 1 || true)
+            CURRENT_IMAGE=$(docker compose -f "$COMPOSE_FILE" ps "$TARGET_SERVICE" --format '{{.Image}}' | head -n 1 || true)
             if [ -n "$CURRENT_IMAGE" ]; then
               docker tag "$CURRENT_IMAGE" rollback_image:latest || true
             else
-              echo "No running image found for app; skipping rollback tag."
+              echo "No running image found for $TARGET_SERVICE; skipping rollback tag."
             fi
             rollback() {
               echo "Deployment failed. Attempting rollback..."
               if docker image inspect rollback_image:latest > /dev/null 2>&1; then
                 # Update docker-compose.yml to use rollback_image:latest temporarily
-                sed -i.bak 's|ghcr.io/.*/techstudyfinder:latest|rollback_image:latest|g' docker-compose.yml
-                docker compose up -d
-                mv docker-compose.yml.bak docker-compose.yml
+                sed -i.bak "s|${IMAGE_PATTERN}|rollback_image:latest|g" "$COMPOSE_FILE"
+                docker compose -f "$COMPOSE_FILE" up -d
+                mv "$COMPOSE_FILE".bak "$COMPOSE_FILE"
                 echo "Rollback complete."
                 # Health check after rollback
                 echo "Checking application health after rollback..."
-                if ! curl -fsSL http://localhost:80/health; then
+                if ! curl -fsSL "$HEALTH_URL"; then
                   echo "Health check failed after rollback. Manual intervention required."
                   exit 1
                 else
@@ -74,12 +108,12 @@ jobs:
               fi
             }
             trap rollback ERR
-            docker compose pull
-            docker compose up -d
+            docker compose -f "$COMPOSE_FILE" pull
+            docker compose -f "$COMPOSE_FILE" up -d
             # Wait for the container to become healthy
-            SERVICE_NAME=$(docker compose ps app --format '{{.Name}}' | head -n 1)
+            SERVICE_NAME=$(docker compose -f "$COMPOSE_FILE" ps "$TARGET_SERVICE" --format '{{.Name}}' | head -n 1)
             if [ -z "$SERVICE_NAME" ]; then
-              echo "No running 'app' service found; cannot perform health check."
+              echo "No running '$TARGET_SERVICE' service found; cannot perform health check."
               exit 1
             fi
             echo "Waiting for service $SERVICE_NAME to become healthy..."
@@ -102,4 +136,7 @@ jobs:
             done
             # If successful, remove rollback image
             docker image rm rollback_image:latest || true
+            # Final health check on the exposed endpoint
+            echo "Performing HTTP health check on $HEALTH_URL..."
+            curl -fsSL "$HEALTH_URL" >/dev/null
             EOS
