@@ -4,7 +4,7 @@ import QuizFlow from "./pages/QuizFlow";
 import ResultsPage from "./pages/ResultsPage";
 import StudyProgrammeDetailPage from "./pages/StudyProgrammeDetailPage";
 import Settings from "./pages/Settings";
-import Register from "./pages/Register";
+import Register from "./pages/Register/Register";
 import Login from "./pages/Login/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 
