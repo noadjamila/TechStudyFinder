@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useMediaQuery, useTheme, Box } from "@mui/material";
+import { Box } from "@mui/material";
 import Results from "../components/quiz/Results";
 import DataSource from "../components/DataSource";
 import { StudyProgramme } from "../types/StudyProgramme.types";
-import LogoMenu from "../components/logo-menu/LogoMenu";
-import Navigationbar from "../components/nav-bar/NavBar";
-import DesktopLayout from "../layouts/DesktopLayout";
+import MainLayout from "../layouts/MainLayout";
 import { useLocation } from "react-router-dom";
 import { getStudyProgrammeById } from "../api/quizApi";
 import NoResultsYet from "../components/quiz/NoResultsYet";
 
 const ResultsPage: React.FC = () => {
-  const muiTheme = useTheme();
-  const toggleSidebar = () => {};
-  const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
-
   const location = useLocation();
   const idsFromQuiz = location.state?.idsFromLevel2 || [];
 
@@ -105,77 +99,25 @@ const ResultsPage: React.FC = () => {
     fetchStudyProgrammes();
   }, []);
 
-  const MainContent = isDesktop ? (
-    <Box
-      sx={{
-        width: "100%",
-        maxWidth: 800,
-        margin: "0 auto",
-      }}
-    >
-      {!hasQuizResults ? (
-        <NoResultsYet />
-      ) : (
-        <>
-          <DataSource />
-          {loading ? (
-            <Box sx={{ textAlign: "center", mt: 4 }}>Lädt...</Box>
-          ) : error ? (
-            <Box sx={{ textAlign: "center", mt: 4, color: "error.main" }}>
-              {error}
-            </Box>
-          ) : (
-            <Results studyProgrammes={studyProgrammes} />
-          )}
-        </>
-      )}
-    </Box>
-  ) : (
-    <Box sx={{ pt: "50px" }}>
-      {" "}
-      {/* Offset for mobile navbar */}
-      {!hasQuizResults ? (
-        <NoResultsYet />
-      ) : (
-        <>
-          <DataSource />
-          {loading ? (
-            <Box sx={{ textAlign: "center", mt: 4 }}>Lädt...</Box>
-          ) : error ? (
-            <Box sx={{ textAlign: "center", mt: 4, color: "error.main" }}>
-              {error}
-            </Box>
-          ) : (
-            <Results studyProgrammes={studyProgrammes} />
-          )}
-        </>
-      )}
-    </Box>
-  );
-
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        width: "100%",
-        overflow: "auto",
-      }}
-    >
-      {/* Conditional Rendering based on viewport size */}
-      {isDesktop ? (
-        // DESKTOP VIEW: Content is placed inside the structured layout
-        <DesktopLayout onMenuToggle={toggleSidebar}>
-          {MainContent}
-        </DesktopLayout>
+    <MainLayout>
+      {!hasQuizResults ? (
+        <NoResultsYet />
       ) : (
-        // MOBILE VIEW: Logo menu and navigation bar are rendered outside the main content flow
         <>
-          <LogoMenu fixed={true} />
-          <Navigationbar />
-          {MainContent}
+          <DataSource />
+          {loading ? (
+            <Box sx={{ textAlign: "center", mt: 4 }}>Lädt...</Box>
+          ) : error ? (
+            <Box sx={{ textAlign: "center", mt: 4, color: "error.main" }}>
+              {error}
+            </Box>
+          ) : (
+            <Results studyProgrammes={studyProgrammes} />
+          )}
         </>
       )}
-    </div>
+    </MainLayout>
   );
 };
 
