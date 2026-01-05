@@ -13,7 +13,6 @@ import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import StudyProgrammeCard from "./StudyProgrammeCard";
-import Headline from "../Headline";
 
 interface ResultsProps {
   studyProgrammes: StudyProgramme[];
@@ -73,7 +72,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
         minHeight: "100vh",
       }}
     >
-      <Headline label="Meine Ergebnisse" />
+      <Typography variant="h2">Meine Ergebnisse</Typography>
 
       {studyProgrammes.length === 0 ? (
         <Box sx={{ padding: 2 }}>

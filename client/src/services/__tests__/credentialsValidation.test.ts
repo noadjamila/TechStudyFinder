@@ -1,4 +1,4 @@
-import { validatePassword } from "../passwordValidation";
+import { validatePassword, validateUsername } from "../credentialsValidation";
 import "@testing-library/jest-dom";
 
 describe("validatePassword", () => {
@@ -51,6 +51,30 @@ describe("validatePassword", () => {
 
   it("returns valid for a password that meets all criteria", () => {
     const result = validatePassword("Abcd1234$");
+    expect(result.valid).toBe(true);
+    expect(result.message).toBeUndefined();
+  });
+});
+
+describe("validateUsername", () => {
+  it("returns invalid if username is empty", () => {
+    const result = validateUsername("");
+    expect(result.valid).toBe(false);
+    expect(result.message).toBe(
+      "Username muss mindestens 5 Zeichen lang sein.",
+    );
+  });
+
+  it("returns invalid if username is shorter than 5 characters", () => {
+    const result = validatePassword("AA");
+    expect(result.valid).toBe(false);
+    expect(result.message).toBe(
+      "Username muss mindestens 5 Zeichen lang sein.",
+    );
+  });
+
+  it("returns valid for a username that meets all criteria", () => {
+    const result = validatePassword("Abcde");
     expect(result.valid).toBe(true);
     expect(result.message).toBeUndefined();
   });

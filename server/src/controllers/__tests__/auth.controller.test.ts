@@ -1,9 +1,14 @@
-import { changePassword, deleteUser, getUser } from "../auth.controller";
+import {
+  changePassword,
+  deleteUser,
+  getUser,
+  login,
+  logout,
+} from "../auth.controller";
 import { Request, Response } from "express";
 import { AuthService } from "../../services/auth.service";
 
 jest.mock("bcrypt");
-jest.mock("../../repositories/auth.repository");
 jest.mock("../../services/auth.service");
 
 let mockRequest: Partial<Request> & { session?: any; body?: any };
@@ -105,5 +110,103 @@ describe("deleteUser", () => {
     expect(destroyMock).toHaveBeenCalled();
     expect(clearCookieMock).toHaveBeenCalledWith("connect.sid");
     expect(statusMock).toHaveBeenCalledWith(200);
+  });
+});
+
+describe("login", () => {
+  it("returns 400 for missing credentials", async () => {
+    mockRequest = {
+      body: {},
+      session: {},
+    } as any;
+
+    await login(mockRequest as Request, mockResponse as Response);
+
+    expect(statusMock).toHaveBeenCalledWith(400);
+    expect(jsonMock).toHaveBeenCalledWith({
+      message: "Missing credentials",
+    });
+  });
+
+  it("logs in successfully and sets session user", async () => {
+    const mockUser = { id: 1, username: "testuser" };
+
+    (AuthService.login as jest.Mock).mockResolvedValue(mockUser);
+
+    mockRequest = {
+      body: { username: "testuser", password: "password123!" },
+      session: {},
+    } as any;
+
+    await login(mockRequest as Request, mockResponse as Response);
+
+    expect(AuthService.login).toHaveBeenCalledWith("testuser", "password123!");
+
+    expect(statusMock).toHaveBeenCalledWith(200);
+    expect(jsonMock).toHaveBeenCalledWith({
+      message: "Login successful",
+      user: {
+        id: 1,
+        username: "testuser",
+      },
+    });
+  });
+
+  it("returns 401 if user is not found", async () => {
+    (AuthService.login as jest.Mock).mockRejectedValue(
+      new Error("USER_NOT_FOUND"),
+    );
+
+    mockRequest = {
+      body: { username: "bad", password: "bad" },
+      session: {},
+    } as any;
+
+    await login(mockRequest as Request, mockResponse as Response);
+
+    expect(statusMock).toHaveBeenCalledWith(401);
+    expect(jsonMock).toHaveBeenCalledWith({
+      message: "Invalid credentials: ",
+    });
+  });
+});
+
+describe("logout", () => {
+  it("returns 500 if session destroy fails", async () => {
+    const destroyMock = jest.fn((cb) => cb(new Error("destroy failed")));
+
+    mockRequest = {
+      session: {
+        destroy: destroyMock,
+      },
+    } as any;
+
+    await logout(mockRequest as Request, mockResponse as Response);
+
+    expect(destroyMock).toHaveBeenCalled();
+    expect(statusMock).toHaveBeenCalledWith(500);
+    expect(jsonMock).toHaveBeenCalledWith({
+      message: "Logout failed",
+    });
+    expect(clearCookieMock).not.toHaveBeenCalled();
+  });
+
+  it("destroys session and clears cookie", async () => {
+    const destroyMock = jest.fn((cb) => cb(null));
+
+    mockRequest = {
+      session: {
+        destroy: destroyMock,
+      },
+    } as any;
+
+    await logout(mockRequest as Request, mockResponse as Response);
+
+    expect(destroyMock).toHaveBeenCalled();
+    expect(clearCookieMock).toHaveBeenCalledWith("connect.sid");
+    expect(statusMock).toHaveBeenCalledWith(200);
+    expect(jsonMock).toHaveBeenCalledWith({
+      message: "Logout successful",
+    });
   });
 });

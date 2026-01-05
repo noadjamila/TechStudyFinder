@@ -7,7 +7,7 @@ import { changePassword, deleteUser } from "../../api/authApi";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "../../theme/theme";
-import * as passwordService from "../../services/passwordValidation";
+import * as passwordService from "../../services/credentialsValidation";
 
 vi.mock("@mui/material", async () => {
   const actual =

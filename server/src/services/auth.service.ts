@@ -45,6 +45,9 @@ export class AuthService {
     await deleteUserById(userId);
   }
 
+  /**
+   * User Login
+   */
   static async login(username: string, password: string) {
     const user = await findUserForLogin(username, password);
     if (!user) {
