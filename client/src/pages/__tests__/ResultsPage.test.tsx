@@ -19,6 +19,16 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
+// Mock the Auth context
+vi.mock("../../contexts/AuthContext", () => ({
+  useAuth: vi.fn(() => ({
+    user: { id: 1, username: "testuser" },
+    isAuthenticated: true,
+    login: vi.fn(),
+    logout: vi.fn(),
+  })),
+}));
+
 // Mock the API
 vi.mock("../../api/quizApi", () => ({
   getStudyProgrammeById: vi.fn((id: string) => {
