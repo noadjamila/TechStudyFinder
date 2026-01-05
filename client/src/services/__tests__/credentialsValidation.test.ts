@@ -66,7 +66,7 @@ describe("validateUsername", () => {
   });
 
   it("returns invalid if username is shorter than 5 characters", () => {
-    const result = validatePassword("AA");
+    const result = validateUsername("AA");
     expect(result.valid).toBe(false);
     expect(result.message).toBe(
       "Username muss mindestens 5 Zeichen lang sein.",
@@ -74,7 +74,7 @@ describe("validateUsername", () => {
   });
 
   it("returns valid for a username that meets all criteria", () => {
-    const result = validatePassword("Abcde");
+    const result = validateUsername("Abcde");
     expect(result.valid).toBe(true);
     expect(result.message).toBeUndefined();
   });
