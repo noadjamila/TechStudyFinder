@@ -26,6 +26,7 @@ import DataSource from "../components/DataSource";
 import BackButton from "../components/buttons/BackButton";
 import DesktopLayout from "../layouts/DesktopLayout";
 import { getStudyProgrammeById } from "../api/quizApi";
+import DeadlineDisplay from "../components/DeadlineDisplay";
 
 /**
  * StudyProgrammeDetailPage displays detailed information about a single study programme.
@@ -655,6 +656,49 @@ const StudyProgrammeDetailPage: React.FC = () => {
                         </Typography>
                       </Box>
                     )}
+                  </AccordionDetails>
+                </Accordion>
+              )}
+
+              {/* Fristen (Deadlines) - Collapsible */}
+              {programme.fristen && programme.fristen.length > 0 && (
+                <Accordion
+                  sx={{
+                    backgroundColor: `${theme.palette.primary.main}1A`,
+                    mb: 2,
+                    boxShadow: "none",
+                    "&:hover": {
+                      backgroundColor: theme.palette.primary.main,
+                    },
+                    "&.Mui-expanded": {
+                      backgroundColor: `${theme.palette.primary.main}1A`,
+                    },
+                    "&.Mui-expanded:hover": {
+                      backgroundColor: `${theme.palette.primary.main}1A`,
+                    },
+                    "&:before": {
+                      display: "none",
+                    },
+                  }}
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="fristen-content"
+                    id="fristen-header"
+                  >
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 600,
+                        color: theme.palette.text.header,
+                        fontSize: "1.5rem",
+                      }}
+                    >
+                      Fristen
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <DeadlineDisplay fristen={programme.fristen} />
                   </AccordionDetails>
                 </Accordion>
               )}

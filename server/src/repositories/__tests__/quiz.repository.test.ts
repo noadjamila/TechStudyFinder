@@ -111,6 +111,7 @@ describe("Quiz Repository - getStudyProgrammeById", () => {
       standorte: ["Berlin"],
       studienfelder: ["Informatik"],
       studienform: ["Vollzeit"],
+      fristen: null,
     };
     (pool.query as jest.Mock).mockResolvedValue({ rows: [mockProgramme] });
 
@@ -176,6 +177,7 @@ describe("Quiz Repository - getStudyProgrammeById", () => {
       standorte: null,
       studienfelder: null,
       studienform: null,
+      fristen: null,
     };
     (pool.query as jest.Mock).mockResolvedValue({ rows: [mockProgramme] });
 

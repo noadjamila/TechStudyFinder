@@ -338,6 +338,7 @@ describe("Quiz Controller - getStudyProgrammeById", () => {
       standorte: ["Berlin"],
       studienfelder: ["Informatik"],
       studienform: ["Vollzeit"],
+      fristen: null,
     };
     jest
       .spyOn(quizService, "getStudyProgrammeByIdService")

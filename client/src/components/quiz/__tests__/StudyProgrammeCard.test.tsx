@@ -39,6 +39,7 @@ const mockProgramme: StudyProgramme = {
   standorte: ["München"],
   studienfelder: ["Informatik"],
   studienform: ["Vollzeit"],
+  fristen: null,
 };
 
 const renderWithTheme = (component: React.ReactElement) => {

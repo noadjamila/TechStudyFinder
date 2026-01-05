@@ -234,6 +234,7 @@ describe("Quiz Service - getStudyProgrammeByIdService", () => {
       standorte: ["Berlin"],
       studienfelder: ["Informatik"],
       studienform: ["Vollzeit"],
+      fristen: null,
     };
     const mockGetStudyProgramme = jest
       .spyOn(quizRepository, "getStudyProgrammeById")
@@ -311,6 +312,7 @@ describe("Quiz Service - getStudyProgrammeByIdService", () => {
       standorte: null,
       studienfelder: null,
       studienform: null,
+      fristen: null,
     };
     const mockGetStudyProgramme = jest
       .spyOn(quizRepository, "getStudyProgrammeById")

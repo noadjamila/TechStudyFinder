@@ -1,3 +1,11 @@
+export interface Deadline {
+  typ: string;
+  start?: string | null;
+  ende?: string | null;
+  kommentar?: string | null;
+  semester?: string | null;
+}
+
 export interface StudyProgramme {
   studiengang_id: string;
   name: string;
@@ -17,4 +25,5 @@ export interface StudyProgramme {
   standorte?: string[] | null;
   studienfelder?: string[] | null;
   studienform?: string[] | null;
+  fristen?: Deadline[] | null;
 }

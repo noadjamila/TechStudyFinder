@@ -41,6 +41,7 @@ vi.mock("../../api/quizApi", () => ({
       standorte: ["München"],
       studienfelder: ["Informatik"],
       studienform: ["Vollzeit"],
+      fristen: null,
     });
   }),
 }));
@@ -128,6 +129,7 @@ describe("ResultsPage Component", () => {
         standorte: ["Berlin"],
         studienfelder: ["Informatik"],
         studienform: ["Vollzeit"],
+        fristen: null,
       },
     ];
     localStorage.setItem("quizResults", JSON.stringify(mockResults));

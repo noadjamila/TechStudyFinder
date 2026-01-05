@@ -49,6 +49,7 @@ const mockProgramme = {
   standorte: ["Berlin"],
   studienfelder: ["Informatik", "Mathematik"],
   studienform: ["Vollzeit", "Teilzeit"],
+  fristen: null,
 };
 
 const renderWithTheme = (initialRoute = "/study-programme/12345") => {

@@ -40,6 +40,7 @@ const mockStudyProgrammes: StudyProgramme[] = [
     standorte: ["München"],
     studienfelder: ["Informatik"],
     studienform: ["Vollzeit"],
+    fristen: null,
   },
   {
     studiengang_id: "2",
@@ -60,6 +61,7 @@ const mockStudyProgrammes: StudyProgramme[] = [
     standorte: ["München"],
     studienfelder: ["Datenwissenschaft"],
     studienform: ["Vollzeit"],
+    fristen: null,
   },
   {
     studiengang_id: "3",
@@ -80,6 +82,7 @@ const mockStudyProgrammes: StudyProgramme[] = [
     standorte: ["München"],
     studienfelder: ["Informatik"],
     studienform: ["Vollzeit"],
+    fristen: null,
   },
   {
     studiengang_id: "4",
@@ -100,6 +103,7 @@ const mockStudyProgrammes: StudyProgramme[] = [
     standorte: ["Köln"],
     studienfelder: ["Wirtschaftsinformatik"],
     studienform: ["Vollzeit"],
+    fristen: null,
   },
 ];
 
