@@ -1,12 +1,11 @@
 import React from "react";
-import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
-import StartButton from "../../components/buttons/Button";
+import { Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import CardStack from "../../../src/components/quiz/CardStack";
 import theme from "../../theme/theme";
-import LogoMenu from "../../components/logo-menu/LogoMenu";
-import Navigationbar from "../../components/nav-bar/NavBar";
-import DesktopLayout from "../../layouts/DesktopLayout";
+import MainLayout from "../../layouts/MainLayout";
+import PrimaryButton from "../../components/buttons/PrimaryButton";
+import Headline from "../../components/Headline";
 
 /**
  * Homescreen component.
@@ -18,9 +17,6 @@ import DesktopLayout from "../../layouts/DesktopLayout";
  */
 const Homescreen: React.FC = () => {
   const navigate = useNavigate();
-  const muiTheme = useTheme();
-  const toggleSidebar = () => {};
-  const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
 
   /**
    * Handles the start of the quiz by navigating to the level success screen first.
@@ -46,178 +42,97 @@ const Homescreen: React.FC = () => {
         overflow: "visible",
         maxWidth: "100%",
         mx: "auto",
-        px: { xs: 1, sm: 0 },
-        textAlign: "center",
         mt: { xs: 4, sm: 15, md: 9 },
         position: "relative",
         color: theme.palette.text.primary,
+        textAlign: "center",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
       }}
     >
       {/* Main Title */}
-      <Typography
-        variant="h2"
-        className="title"
-        sx={{
-          mt: { md: 3 },
-        }}
-      >
-        {mainTitle}
-      </Typography>
+      <Headline label={mainTitle} />
 
       {/* Subtitle */}
       <Typography
         variant="body1"
-        className="subtitle"
         sx={{ fontWeight: "normal", lineHeight: 1.3, mb: 3 }}
       >
         {subTitle}
       </Typography>
 
-      {/* box for the info texts (Container for explanatory paragraphs) */}
-      <Box
-        className="info-text"
-        sx={{
-          mx: "auto",
-        }}
-      >
-        {/*text: Kein problem*/}
+      {/* Info Texts */}
+      <Box sx={{ maxWidth: 500, mx: "auto" }}>
         <Typography
           variant="body1"
           sx={{
-            px: { xs: 2, sm: 0 },
-            pt: { xs: 1 },
-            mb: { xs: 1, md: 3 },
             mt: 3,
+            mb: { xs: 1, md: 3 },
             fontWeight: "bold",
-            transform: { md: "translateX(0%)" },
           }}
         >
           {infoText1}
         </Typography>
 
-        {/*text: techstudyfinder hilt die dabei*/}
         <Typography
           variant="body1"
           sx={{
-            px: { xs: 2, sm: 0 },
             lineHeight: 1.3,
-            maxWidth: { xs: "100%", sm: 400 },
-            transform: { md: "translateX(7.5%)" },
-            mb: { xs: 0, md: 10 },
+            mb: { xs: 2, md: 10 },
           }}
         >
           {infoText2}
         </Typography>
       </Box>
 
-      {/* card box (The green interactive card) */}
+      {/* Card */}
       <CardStack currentIndex={1} totalCards={1}>
         <Box
           sx={{
-            width: { xs: "120%", md: "120%" },
+            width: "100%",
             maxWidth: { xs: 360, sm: 520, md: 900 },
-            px: { xs: 1, md: 8 },
-            py: { xs: 2, md: 3 },
-            mt: { xs: "17svh", md: 0 },
+            px: { xs: 2, md: 8 },
+            py: { xs: 4, md: 5 },
+            mt: { xs: 8, md: 0 },
             mx: "auto",
+
             backgroundColor: theme.palette.decorative.green,
             borderRadius: 4,
             boxShadow: 3,
-            justifyContent: "center",
+
             position: "relative",
-            left: { md: "50%" },
-            transform: {
-              xs: "translateX(-5.6%)",
-              sm: "translateX(-8%)",
-              md: "translateX(-50%)",
-            },
-            "@media (max-width: 375px)": {
-              transform: "translateX(0%)",
-              width: "90%",
-              mt: 7.5,
-            },
+            textAlign: "center",
           }}
         >
-          {/* Mascot Image (positioned absolutely relative to the card box) */}
+          {/* Mascot (NOT centered intentionally) */}
           <Box
             component="img"
             src="/mascot_standing_blue.svg"
             alt="Maskottchen"
             sx={{
               position: "absolute",
-              width: { xs: 40, sm: 40 },
-              height: "auto",
-              top: {
-                xs: -60,
-                sm: -58,
-              },
-              right: {
-                xs: 60,
-                sm: 50,
-                md: 20,
-              },
+              width: 40,
+              top: -60,
+              right: { xs: 40, md: 20 },
             }}
           />
 
-          {/* Card Question Text */}
-          <Typography
-            variant="subtitle1"
-            sx={{
-              mb: 3,
-              lineHeight: 1.3,
-            }}
-          >
+          <Typography variant="subtitle1" sx={{ mb: 3, lineHeight: 1.3 }}>
             {cardQuestion}
           </Typography>
 
-          {/* Start Quiz Button */}
-          <StartButton
-            label="Quiz beginnen"
+          <PrimaryButton
+            label={"Quiz beginnen"}
             onClick={handleQuizStart}
-            sx={{
-              borderRadius: 3,
-              padding: "8px 16x",
-              fontSize: "1.0rem",
-              width: "fit-content",
-              mx: "auto",
-              display: "block",
-              backgroundColor: theme.palette.primary.main,
-              color: theme.palette.text.primary,
-              fontWeight: "normal",
-            }}
+            ariaText="Quiz beginnen"
           />
         </Box>
       </CardStack>
     </Box>
   );
 
-  return (
-    <div
-      className="homescreen-container"
-      style={{
-        overflow: "hidden",
-        height: "100svh",
-        margin: 0,
-        padding: 0,
-      }}
-    >
-      {/* Conditional Rendering based on viewport size */}
-      {isDesktop ? (
-        // DESKTOP VIEW: Content is placed inside the structured layout
-
-        <DesktopLayout onMenuToggle={toggleSidebar}>
-          {MainContent}
-        </DesktopLayout>
-      ) : (
-        // MOBILE VIEW: Logo menu and navigation bar are rendered outside the main content flow
-        <>
-          <LogoMenu />
-          <Navigationbar />
-          {MainContent}
-        </>
-      )}
-    </div>
-  );
+  return <MainLayout>{MainContent}</MainLayout>;
 };
 
 export default Homescreen;

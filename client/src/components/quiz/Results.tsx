@@ -13,6 +13,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import StudyProgrammeCard from "./StudyProgrammeCard";
+import Headline from "../Headline";
 
 interface ResultsProps {
   studyProgrammes: StudyProgramme[];
@@ -68,27 +69,11 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
       sx={{
         maxWidth: 800,
         margin: { xs: "0 auto", sm: "0" },
-        padding: 3,
         paddingBottom: { xs: "120px", sm: 3 },
         minHeight: "100vh",
       }}
     >
-      <Typography
-        variant="h2"
-        component="h1"
-        gutterBottom
-        color="text.header"
-        sx={{
-          marginBottom: 3,
-          fontWeight: 700,
-          fontSize: "2.5rem", // Desktop: 40px
-          "@media (max-width:600px)": {
-            fontSize: "2rem", // Mobile: 32px
-          },
-        }}
-      >
-        Meine Ergebnisse
-      </Typography>
+      <Headline label="Meine Ergebnisse" />
 
       {studyProgrammes.length === 0 ? (
         <Box sx={{ padding: 2 }}>
