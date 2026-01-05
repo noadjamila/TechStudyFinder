@@ -91,7 +91,6 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
 
   /**
    * Handles  the option to go back one Question.
-   * Updates the scores based on the previous selcted answer.
    * Switches Levels if user is on the first Question.
    */
   const goBack = () => {

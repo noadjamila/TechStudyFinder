@@ -29,6 +29,10 @@ export default function QuizFlow() {
     }));
   }
 
+  function handleLevelBack() {
+    setCurrentLevel((lvl) => Math.max(lvl - 1, 1) as Level);
+  }
+
   useEffect(() => {
     if (showResults && showLevelSuccess === false) {
       navigate("/results", { state: { answers } });
@@ -65,9 +69,7 @@ export default function QuizFlow() {
           setShowLevelSuccess(true);
           setShowResults(true);
         }}
-        oneLevelBack={() => {
-          setCurrentLevel(1);
-        }}
+        oneLevelBack={handleLevelBack}
       />
     );
   }
