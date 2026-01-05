@@ -50,7 +50,7 @@ export default function BottomHills() {
       {/* Mascot Image on top of the hills */}
       <Box
         component="img"
-        src="/mascot_walking_yellow.svg"
+        src="/mascot_climbing_yellow.svg"
         alt="Mascot"
         sx={{
           position: "absolute",
