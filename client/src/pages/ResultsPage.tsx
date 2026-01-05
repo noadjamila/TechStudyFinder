@@ -8,6 +8,11 @@ import { useLocation } from "react-router-dom";
 import { getStudyProgrammeById } from "../api/quizApi";
 import NoResultsYet from "../components/quiz/NoResultsYet";
 
+/**
+ * ResultsPage component displays the results of the quiz.
+ * It fetches study programmes based on quiz results or cached data.
+ * @returns JSX.Element
+ */
 const ResultsPage: React.FC = () => {
   const location = useLocation();
   const idsFromQuiz = location.state?.idsFromLevel2 || [];

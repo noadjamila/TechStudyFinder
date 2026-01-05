@@ -57,9 +57,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
 
       try {
         setLoading(true);
-        console.log("Fetching study programme with ID:", id);
         const data = await getStudyProgrammeById(id);
-        console.log("Received study programme data:", data);
         setProgramme(data);
       } catch (err) {
         console.error("Error fetching study programme:", err);
@@ -357,10 +355,10 @@ const StudyProgrammeDetailPage: React.FC = () => {
               }}
             >
               {/* Basic Information */}
-              {(programme.studienform?.length > 0 ||
+              {((programme.studienform?.length ?? 0) > 0 ||
                 programme.regelstudienzeit ||
-                programme.standorte?.length > 0 ||
-                programme.sprachen?.length > 0) && (
+                (programme.standorte?.length ?? 0) > 0 ||
+                (programme.sprachen?.length ?? 0) > 0) && (
                 <Box sx={{ mb: 3 }}>
                   <Typography
                     variant="h6"
