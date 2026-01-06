@@ -50,7 +50,7 @@ jobs:
 
             COMPOSE_FILE="docker-compose.yml"
             TARGET_SERVICE="app"
-            HEALTH_URL="http://localhost:5001/"
+            HEALTH_URL="http://localhost:5001/api/hello"
             IMAGE="${IMAGE:-ghcr.io/${GITHUB_REPO_OWNER}/techstudyfinder:latest}"
             IMAGE_PATTERN="ghcr\.io/.*/techstudyfinder:latest"
 
@@ -134,9 +134,9 @@ jobs:
                 exit 1
               fi
             done
-            # If successful, remove rollback image
-            docker image rm rollback_image:latest || true
             # Final health check on the exposed endpoint
             echo "Performing HTTP health check on $HEALTH_URL..."
             curl -fsSL "$HEALTH_URL" >/dev/null
+            # If all checks passed, remove rollback image
+            docker image rm rollback_image:latest || true
             EOS

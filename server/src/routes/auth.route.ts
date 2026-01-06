@@ -1,5 +1,11 @@
-import { Response, Request, Router } from "express";
-import { findUserForLogin } from "../repositories/auth.repository";
+import { Router } from "express";
+import {
+  changePassword,
+  deleteUser,
+  getUser,
+  login,
+  logout,
+} from "../controllers/auth.controller";
 import { register } from "../controllers/user.controller";
 import bcrypt from "bcrypt";
 import { findByUsername, createUser } from "../repositories/users.repository";
@@ -24,13 +30,7 @@ authRouter.post("/register", register);
  * Errors:
  * - 401: Not authenticated
  */
-authRouter.get("/me", async (req: Request, res: Response) => {
-  if (!req.session.user) {
-    return res.status(401).json({ error: "Not authenticated" });
-  }
-
-  res.json(req.session.user);
-});
+authRouter.get("/me", getUser);
 
 /**
  * POST /api/auth/login
@@ -42,22 +42,7 @@ authRouter.get("/me", async (req: Request, res: Response) => {
  * - 400: Missing credentials
  * - 401: Invalid credentials
  */
-authRouter.post("/login", async (req: Request, res: Response) => {
-  const { username, password } = req.body;
-
-  if (!username || !password) {
-    return res.status(400).json({ message: "Missing credentials" });
-  }
-
-  const user = await findUserForLogin(username, password);
-  if (!user) return res.status(401).json({ message: "Invalid credentials" });
-
-  req.session.user = { id: user.id, username: user.username };
-
-  return res
-    .status(200)
-    .json({ message: "Login successful", user: req.session.user });
-});
+authRouter.post("/login", login);
 
 /**
  * POST /api/auth/register
@@ -104,12 +89,29 @@ authRouter.post("/register", async (req: Request, res: Response) => {
  * Errors:
  * - 500: Logout failed
  */
-authRouter.post("/logout", (req: Request, res: Response) => {
-  req.session.destroy((err: Error | null) => {
-    if (err) return res.status(500).json({ message: "Logout failed" });
-    res.clearCookie("connect.sid");
-    return res.status(200).json({ message: "Logout successful" });
-  });
-});
+authRouter.post("/logout", logout);
+
+/**
+ * POST /api/auth/change-password
+ * Changes the passwort of the currently authenticated user.
+ *
+ * @returns HTTP response with:
+ * - 200 OK: Password successfully changed
+ * - 400 Bad Request: Missing required data
+ * - 401 Unauthorized: User is not authenticated
+ * - 403 Forbidden: Current password is incorrect
+ * - 404 Not Found: User not found
+ */
+authRouter.post("/change-password", changePassword);
+
+/**
+ * DELETES /api/auth/me
+ * Deletes the currently authenticated user.
+ *
+ * @returns HTTP response with:
+ * - 200 OK: User successfully deleted
+ * - 401 Unauthorized: User is not authenticated
+ */
+authRouter.delete("/me", deleteUser);
 
 export default authRouter;

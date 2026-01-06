@@ -1,22 +1,11 @@
-import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  useMediaQuery,
-  useTheme,
-  Snackbar,
-  Alert,
-  Dialog,
-  DialogContent,
-  Button,
-} from "@mui/material";
-import StartButton from "../../components/buttons/Button";
-import { useNavigate, useLocation } from "react-router-dom";
-import CardStack from "../../components/cards/CardStackLevel2";
+import React from "react";
+import { Box, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import CardStack from "../../../src/components/quiz/CardStack";
 import theme from "../../theme/theme";
-import LogoMenu from "../../components/logo-menu/LogoMenu";
-import DesktopLayout from "../../layouts/DesktopLayout";
-import GreenCard from "../../components/cards/GreenCardBaseNotQuiz";
+import MainLayout from "../../layouts/MainLayout";
+import PrimaryButton from "../../components/buttons/PrimaryButton";
+import Headline from "../../components/Headline";
 
 /**
  * Homescreen component.
@@ -28,55 +17,6 @@ import GreenCard from "../../components/cards/GreenCardBaseNotQuiz";
  */
 const Homescreen: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const muiTheme = useTheme();
-  const toggleSidebar = () => {};
-  const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
-  const [showLogoutMessage, setShowLogoutMessage] = useState(false);
-  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  // Check for logout confirmation flag whenever the component mounts or location changes
-  useEffect(() => {
-    const confirmationFlag = sessionStorage.getItem("showLogoutConfirmation");
-    if (confirmationFlag) {
-      setShowLogoutConfirmation(true);
-      sessionStorage.removeItem("showLogoutConfirmation");
-    }
-  }, [location]);
-
-  /**
-   * Handles confirming the logout action
-   */
-  const handleConfirmLogout = async () => {
-    setIsLoggingOut(true);
-    setShowLogoutConfirmation(false);
-
-    try {
-      const response = await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        setShowLogoutMessage(true);
-        // Refresh auth status in NavBar by triggering a re-check
-        // This will update the isLoggedIn state in NavBar
-        window.dispatchEvent(new Event("auth-status-changed"));
-      }
-    } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
-      setIsLoggingOut(false);
-    }
-  };
-
-  /**
-   * Handles canceling the logout action
-   */
-  const handleCancelLogout = () => {
-    setShowLogoutConfirmation(false);
-  };
 
   /**
    * Handles the start of the quiz by navigating to the level success screen first.
@@ -102,238 +42,97 @@ const Homescreen: React.FC = () => {
         overflow: "visible",
         maxWidth: "100%",
         mx: "auto",
-        px: { xs: 1, sm: 0 },
-        textAlign: "center",
-        mt: { xs: 4, sm: 8, md: 9 },
+        mt: { xs: 4, sm: 15, md: 9 },
         position: "relative",
         color: theme.palette.text.primary,
+        textAlign: "center",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
       }}
     >
       {/* Main Title */}
-      <Typography
-        variant="h2"
-        className="title"
-        sx={{
-          mt: { md: 3 },
-        }}
-      >
-        {mainTitle}
-      </Typography>
+      <Headline label={mainTitle} />
 
       {/* Subtitle */}
       <Typography
         variant="body1"
-        className="subtitle"
         sx={{ fontWeight: "normal", lineHeight: 1.3, mb: 3 }}
       >
         {subTitle}
       </Typography>
 
-      {/* box for the info texts (Container for explanatory paragraphs) */}
-      <Box
-        className="info-text"
-        sx={{
-          mx: "auto",
-        }}
-      >
-        {/*text: Kein problem*/}
+      {/* Info Texts */}
+      <Box sx={{ maxWidth: 500, mx: "auto" }}>
         <Typography
           variant="body1"
           sx={{
-            px: { xs: 2, sm: 0 },
-            pt: { xs: 1 },
-            mb: { xs: 1, md: 3 },
             mt: 3,
+            mb: { xs: 1, md: 3 },
             fontWeight: "bold",
-            transform: { md: "translateX(0%)" },
           }}
         >
           {infoText1}
         </Typography>
 
-        {/*text: techstudyfinder hilft dir dabei*/}
         <Typography
           variant="body1"
           sx={{
-            px: { xs: 2, sm: 0 },
             lineHeight: 1.3,
-            maxWidth: { xs: "100%", sm: 400 },
-            transform: { md: "translateX(7.5%)" },
-            mb: { xs: 0, md: 10 },
+            mb: { xs: 2, md: 10 },
           }}
         >
           {infoText2}
         </Typography>
       </Box>
 
-      {/* card box (The green card) */}
-      <Box sx={{ mt: { xs: "65px", md: "40px" } }}>
-        <CardStack currentIndex={1} totalCards={1}>
-          <GreenCard>
-            {/* Mascot Image (positioned absolutely relative to the card box) */}
-            <Box
-              component="img"
-              src="/mascot_standing_blue.svg"
-              alt="Maskottchen"
-              sx={{
-                position: "absolute",
-                width: { xs: 40, sm: 40 },
-                height: "auto",
-                top: {
-                  xs: -60,
-                  sm: -58,
-                },
-                right: {
-                  xs: 60,
-                  sm: 50,
-                  md: 20,
-                },
-              }}
-            />
-
-            {/* Card Question Text */}
-            <Typography
-              variant="subtitle1"
-              sx={{
-                mb: 3,
-                lineHeight: 1.3,
-              }}
-            >
-              {cardQuestion}
-            </Typography>
-
-            {/* Start Quiz Button */}
-            <StartButton
-              label="Quiz beginnen"
-              onClick={handleQuizStart}
-              sx={{
-                borderRadius: 3,
-                padding: "8px 16x",
-                fontSize: "1.0rem",
-                width: "fit-content",
-                mx: "auto",
-                display: "block",
-                backgroundColor: theme.palette.primary.main,
-                color: theme.palette.text.primary,
-                fontWeight: "normal",
-              }}
-            />
-          </GreenCard>
-        </CardStack>
-      </Box>
-    </Box>
-  );
-
-  return (
-    <div
-      className="homescreen-container"
-      style={{
-        overflow: "hidden",
-        height: "100svh",
-        margin: 0,
-        padding: 0,
-      }}
-    >
-      {/* Conditional Rendering based on viewport size */}
-      {isDesktop ? (
-        // DESKTOP VIEW: Content is placed inside the structured layout
-
-        <DesktopLayout onMenuToggle={toggleSidebar}>
-          {MainContent}
-        </DesktopLayout>
-      ) : (
-        // MOBILE VIEW: Logo menu and navigation bar are rendered outside the main content flow
-        <>
-          <LogoMenu />
-          {MainContent}
-        </>
-      )}
-
-      {/* Logout Snackbar - shown when user logs out */}
-      <Snackbar
-        open={showLogoutMessage}
-        autoHideDuration={800}
-        onClose={() => setShowLogoutMessage(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert severity="success" sx={{ width: "100%" }}>
-          Du wurdest ausgeloggt.
-        </Alert>
-      </Snackbar>
-
-      {/* Logout Confirmation Dialog */}
-      <Dialog
-        open={showLogoutConfirmation}
-        onClose={handleCancelLogout}
-        PaperProps={{
-          sx: {
-            borderRadius: 3,
-            minWidth: "300px",
-            backgroundColor: theme.palette.decorative.green,
-          },
-        }}
-      >
-        <DialogContent
+      {/* Card */}
+      <CardStack currentIndex={1} totalCards={1}>
+        <Box
           sx={{
-            py: 3,
-            px: 3,
+            width: "100%",
+            maxWidth: { xs: 360, sm: 520, md: 900 },
+            px: { xs: 2, md: 8 },
+            py: { xs: 4, md: 5 },
+            mt: { xs: 8, md: 0 },
+            mx: "auto",
+
+            backgroundColor: theme.palette.decorative.green,
+            borderRadius: 4,
+            boxShadow: 3,
+
+            position: "relative",
             textAlign: "center",
           }}
         >
-          <Typography
-            variant={isDesktop ? "h4" : "h5"}
+          {/* Mascot (NOT centered intentionally) */}
+          <Box
+            component="img"
+            src="/mascot_standing_blue.svg"
+            alt="Maskottchen"
             sx={{
-              mb: 3,
-              fontWeight: "bold",
+              position: "absolute",
+              width: 40,
+              top: -60,
+              right: { xs: 40, md: 20 },
             }}
-          >
-            Möchtest du dich wirklich ausloggen?
+          />
+
+          <Typography variant="subtitle1" sx={{ mb: 3, lineHeight: 1.3 }}>
+            {cardQuestion}
           </Typography>
 
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              justifyContent: "center",
-            }}
-          >
-            <Button
-              variant="outlined"
-              onClick={handleCancelLogout}
-              disabled={isLoggingOut}
-              sx={{
-                borderRadius: 2,
-                textTransform: "none",
-                fontSize: "1rem",
-                color: theme.palette.text.primary,
-                borderColor: theme.palette.text.primary,
-                backgroundColor: theme.palette.background.default,
-                "&:hover": {
-                  borderColor: theme.palette.text.primary,
-                  backgroundColor: theme.palette.background.paper,
-                },
-              }}
-            >
-              Nein
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleConfirmLogout}
-              disabled={isLoggingOut}
-              sx={{
-                borderRadius: 2,
-                textTransform: "none",
-                fontSize: "1rem",
-                backgroundColor: theme.palette.primary.main,
-              }}
-            >
-              Ja, ausloggen
-            </Button>
-          </Box>
-        </DialogContent>
-      </Dialog>
-    </div>
+          <PrimaryButton
+            label={"Quiz beginnen"}
+            onClick={handleQuizStart}
+            ariaText="Quiz beginnen"
+          />
+        </Box>
+      </CardStack>
+    </Box>
   );
+
+  return <MainLayout>{MainContent}</MainLayout>;
 };
 
 export default Homescreen;
