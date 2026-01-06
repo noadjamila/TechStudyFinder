@@ -40,11 +40,8 @@ export async function login(req: Request, res: Response) {
     return res
       .status(200)
       .json({ message: "Login successful", user: req.session.user });
-  } catch (err: any) {
-    switch (err.message) {
-      case "USER_NOT_FOUND":
-        return res.status(401).json({ message: "Invalid credentials: " });
-    }
+  } catch {
+    return res.status(401).json({ message: "Invalid credentials" });
   }
 }
 
