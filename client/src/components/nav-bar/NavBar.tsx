@@ -218,10 +218,10 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
                 mx: 1,
                 my: 0.5,
                 "&:hover": {
-                  backgroundColor: theme.palette.secondary.light,
-                  color: "#FFFFFF",
+                  backgroundColor: `${theme.palette.decorative.pink} !important`,
+                  color: "#FFFFFF !important",
                   "& .MuiListItemIcon-root": {
-                    color: "#FFFFFF",
+                    color: "#FFFFFF !important",
                   },
                 },
               }}
@@ -238,10 +238,10 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
                 mx: 1,
                 my: 0.5,
                 "&:hover": {
-                  backgroundColor: theme.palette.secondary.light,
-                  color: "#FFFFFF",
+                  backgroundColor: `${theme.palette.decorative.pink} !important`,
+                  color: "#FFFFFF !important",
                   "& .MuiListItemIcon-root": {
-                    color: "#FFFFFF",
+                    color: "#FFFFFF !important",
                   },
                 },
               }}
@@ -258,10 +258,10 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
                 mx: 1,
                 my: 0.5,
                 "&:hover": {
-                  backgroundColor: theme.palette.secondary.light,
-                  color: "#FFFFFF",
+                  backgroundColor: `${theme.palette.decorative.pink} !important`,
+                  color: "#FFFFFF !important",
                   "& .MuiListItemIcon-root": {
-                    color: "#FFFFFF",
+                    color: "#FFFFFF !important",
                   },
                 },
               }}
@@ -278,10 +278,10 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
                 mx: 1,
                 my: 0.5,
                 "&:hover": {
-                  backgroundColor: theme.palette.secondary.light,
-                  color: "#FFFFFF",
+                  backgroundColor: `${theme.palette.decorative.pink} !important`,
+                  color: `${theme.palette.decorative.pink} !important`,
                   "& .MuiListItemIcon-root": {
-                    color: "#FFFFFF",
+                    color: `${theme.palette.decorative.pink} !important`,
                   },
                 },
               }}
@@ -329,13 +329,19 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-
+                  transition: "all 0.2s ease",
                   ...(value === index && {
                     width: 50,
                     height: 40,
                     borderRadius: 999,
                     backgroundColor: theme.palette.secondary.light,
                   }),
+                  "&:hover": {
+                    width: 50,
+                    height: 40,
+                    borderRadius: 999,
+                    backgroundColor: theme.palette.decorative.pink,
+                  },
                   mb: 0.5,
                 }}
               >
