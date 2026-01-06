@@ -88,6 +88,8 @@ jobs:
               echo "No running image found for $TARGET_SERVICE; skipping rollback tag."
             fi
             rollback() {
+              trap - ERR
+              set +e
               echo "Deployment failed. Attempting rollback..."
               if docker image inspect rollback_image:latest > /dev/null 2>&1; then
                 # Update docker-compose.yml to use rollback_image:latest temporarily
