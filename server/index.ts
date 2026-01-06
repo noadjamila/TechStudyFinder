@@ -39,7 +39,7 @@ if (!process.env.GITHUB_WEBHOOK_SECRET) {
 const app = express();
 app.set("trust proxy", 1);
 const PORT = Number(process.env.PORT) || 5001;
-const HOST = process.env.HOST || "127.0.0.1";
+
 const clientDistPath =
   process.env.CLIENT_DIST_PATH ||
   path.join(__dirname, "..", "..", "client", "dist");
@@ -118,9 +118,9 @@ app.use(((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 }) as ErrorRequestHandler);
 
 if (require.main === module) {
-  server = app.listen(PORT, HOST, () => {
+  server = app.listen(PORT, () => {
     // eslint-disable-next-line no-console
-    console.log(`Backend running on http://${HOST}:${PORT}`);
+    console.log(`Backend running on ${PORT}`);
   });
 }
 
