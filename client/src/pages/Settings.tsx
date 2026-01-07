@@ -3,7 +3,7 @@ import MainLayout from "../layouts/MainLayout";
 import PrimaryButton from "../components/buttons/PrimaryButton";
 import SecondaryButton from "../components/buttons/SecondaryButton";
 import Dialog from "../components/dialogs/Dialog";
-import InputField from "../components/InputField";
+import InputField from "../components/login-register/InputField";
 import Headline from "../components/Headline";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";

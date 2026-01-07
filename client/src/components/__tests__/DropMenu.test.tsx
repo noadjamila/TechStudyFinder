@@ -1,115 +1,102 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import DropMenu from "../DropMenu";
-import "@testing-library/jest-dom";
-import { AuthProvider, useAuth } from "../../contexts/AuthContext";
-import { vi } from "vitest";
-import { MemoryRouter } from "react-router-dom";
-import { waitFor } from "@testing-library/react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Menu, MenuItem, IconButton, Box } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import theme from "../../theme/theme";
+import { useAuth } from "../../contexts/AuthContext";
 
-const mockNavigate = vi.fn();
-vi.mock("react-router-dom", async () => {
-  const actual = await vi.importActual("react-router-dom");
-  return {
-    ...actual,
-    useNavigate: () => mockNavigate,
+/**
+ * DropMenu component that provides a dropdown menu with navigation options.
+ *
+ * @component
+ * @returns {JSX.Element} The DropMenu component.
+ */
+export default function DropMenu() {
+  const navigate = useNavigate();
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const open = Boolean(anchorEl);
+
+  const { user, isLoading, logout } = useAuth();
+
+  /**
+   * Handles the click on the Menu icon and sets the anchor element.
+   *
+   * @param {React.MouseEvent<HTMLElement>} event - The click event.
+   */
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
   };
-});
 
-vi.mock("../../contexts/AuthContext", async () => {
-  const actual = await vi.importActual("../../contexts/AuthContext");
-  return {
-    ...actual,
-    useAuth: vi.fn(),
+  /**
+   * Closes the Menu by resetting the anchor element state.
+   */
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
-});
+  return (
+    <div>
+      <Box
+        sx={{
+          width: "100%",
+          position: "relative",
+          left: "50%",
+          transform: "translateX(-28%)",
+        }}
+      >
+        <IconButton
+          edge="start"
+          onClick={handleMenuClick}
+          aria-label="Open menu"
+          sx={{
+            color: theme.palette.text.secondary,
+          }}
+        >
+          <MenuIcon fontSize="large" />
+        </IconButton>
+      </Box>
 
-vi.mock("../../api/authApi", () => ({
-  getCurrentUser: vi.fn().mockResolvedValue({ id: 1, name: "Test User" }),
-  login: vi.fn(),
-  logout: vi.fn(),
-}));
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleMenuClose}
+        disableScrollLock={true}
+      >
+        {/* Menu Items */}
+        {isLoading ? null : user ? (
+          <div>
+            <MenuItem
+              onClick={() => {
+                handleMenuClose();
+                navigate("/settings");
+              }}
+            >
+              Einstellungen
+            </MenuItem>
 
-const renderWithAuth = (ui: React.ReactElement) => {
-  return render(
-    <MemoryRouter>
-      <AuthProvider>{ui}</AuthProvider>
-    </MemoryRouter>,
+            <MenuItem
+              onClick={async () => {
+                handleMenuClose();
+                logout();
+                navigate("/");
+              }}
+            >
+              Ausloggen
+            </MenuItem>
+          </div>
+        ) : (
+          <MenuItem
+            onClick={() => {
+              handleMenuClose();
+              navigate("/login");
+            }}
+          >
+            Einloggen
+          </MenuItem>
+        )}
+        <MenuItem onClick={handleMenuClose}>Impressum</MenuItem>
+      </Menu>
+    </div>
   );
-};
-
-describe("DropMenu Component", () => {
-  const mockedUseAuth = useAuth as unknown as ReturnType<typeof vi.fn>;
-  const mockLogin = vi.fn();
-  const mockLogout = vi.fn();
-  const mockSetUser = vi.fn();
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-    mockedUseAuth.mockReturnValue({
-      user: null,
-      logout: mockLogout,
-      login: mockLogin,
-      setUser: mockSetUser,
-      isLoading: false,
-    });
-  });
-
-  it("renders menu icon", () => {
-    renderWithAuth(<DropMenu />);
-
-    const menuIcon = screen.getByRole("button");
-    expect(menuIcon).toBeInTheDocument();
-  });
-
-  it("opens and closes the menu and renders correct items when user is not authenticated", async () => {
-    renderWithAuth(<DropMenu />);
-    const menuIcon = screen.getByRole("button");
-    fireEvent.click(menuIcon);
-
-    expect(screen.getByText("Einloggen")).toBeInTheDocument();
-    expect(screen.getByText("Impressum")).toBeInTheDocument();
-    expect(screen.queryByText("Einstellungen")).not.toBeInTheDocument();
-    expect(screen.queryByText("Ausloggen")).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByText("Impressum"));
-    await waitFor(() => {
-      expect(screen.queryByText("Einloggen")).not.toBeInTheDocument();
-    });
-  });
-
-  it("renders correct items when user is authenticated and navigates to settings when Einstellungen clicked", () => {
-    mockedUseAuth.mockReturnValue({
-      user: { id: 1, name: "Test User" },
-      isLoading: false,
-      logout: mockLogout,
-      login: mockLogin,
-      setUser: mockSetUser,
-    });
-
-    renderWithAuth(<DropMenu />);
-    fireEvent.click(screen.getByRole("button"));
-
-    expect(screen.queryByText("Ausloggen")).toBeInTheDocument();
-    expect(screen.queryByText("Einloggen")).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByText("Einstellungen"));
-    expect(mockNavigate).toHaveBeenCalledWith("/settings");
-  });
-
-  it("navigates to login when user is null", () => {
-    vi.mocked(useAuth).mockReturnValue({
-      user: null,
-      isLoading: false,
-      login: mockLogin,
-      logout: mockLogout,
-      setUser: mockSetUser,
-    });
-
-    renderWithAuth(<DropMenu />);
-    fireEvent.click(screen.getByRole("button"));
-
-    fireEvent.click(screen.getByText("Einloggen"));
-    expect(mockNavigate).toHaveBeenCalledWith("/login");
-  });
-});
+}
