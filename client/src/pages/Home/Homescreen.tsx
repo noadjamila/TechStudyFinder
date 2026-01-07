@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import CardStack from "../../../src/components/quiz/CardStack";
+import CardStackLevel2 from "../../components/cards/CardStackLevel2";
 import theme from "../../theme/theme";
 import MainLayout from "../../layouts/MainLayout";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
@@ -87,7 +87,7 @@ const Homescreen: React.FC = () => {
       </Box>
 
       {/* Card */}
-      <CardStack currentIndex={1} totalCards={1}>
+      <CardStackLevel2 currentIndex={1} totalCards={1}>
         <Box
           sx={{
             width: "100%",
@@ -128,7 +128,7 @@ const Homescreen: React.FC = () => {
             ariaText="Quiz beginnen"
           />
         </Box>
-      </CardStack>
+      </CardStackLevel2>
     </Box>
   );
 
