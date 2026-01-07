@@ -1,11 +1,10 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import CardStack from "../../../src/components/quiz/CardStack";
-import theme from "../../theme/theme";
-import MainLayout from "../../layouts/MainLayout";
-import PrimaryButton from "../../components/buttons/PrimaryButton";
-import Headline from "../../components/Headline";
+import CardStack from "../components/quiz/CardStack";
+import theme from "../theme/theme";
+import MainLayout from "../layouts/MainLayout";
+import PrimaryButton from "../components/buttons/PrimaryButton";
 
 /**
  * Homescreen component.
@@ -52,7 +51,7 @@ const Homescreen: React.FC = () => {
       }}
     >
       {/* Main Title */}
-      <Headline label={mainTitle} />
+      <Typography variant="h2">{mainTitle}</Typography>
 
       {/* Subtitle */}
       <Typography

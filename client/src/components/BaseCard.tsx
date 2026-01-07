@@ -34,13 +34,13 @@ const BaseCard = ({ cardText, sx, children, cardColor }: QuizCardBaseProps) => {
     <Card
       sx={{
         position: "relative",
-        maxWidth: {
-          xs: 320,
-          md: 540,
-          lg: 700,
-        },
         width: "100%",
-        minHeight: "80px",
+        minHeight: 170,
+        maxWidth: {
+          xs: 300,
+          md: 350,
+          lg: 400,
+        },
         mx: "auto",
         boxShadow: 3,
         borderRadius: 2,

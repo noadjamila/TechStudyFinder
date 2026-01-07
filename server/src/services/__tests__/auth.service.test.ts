@@ -3,6 +3,7 @@ import { AuthService } from "../auth.service";
 import {
   findUserByUsername,
   updatePasswordById,
+  findUserForLogin,
 } from "../../repositories/auth.repository";
 
 jest.mock("bcrypt");
@@ -38,5 +39,26 @@ describe("AuthService.changePassword", () => {
     await AuthService.changePassword(1, "test", "old", "new");
 
     expect(updatePasswordById).toHaveBeenCalledWith(1, "newHash");
+  });
+});
+
+describe("AuthService.login", () => {
+  it("returns user if credentials are valid", async () => {
+    const mockUser = { id: 1, username: "test" };
+
+    (findUserForLogin as jest.Mock).mockResolvedValue(mockUser);
+
+    const result = await AuthService.login("test", "password");
+
+    expect(findUserForLogin).toHaveBeenCalledWith("test", "password");
+    expect(result).toEqual(mockUser);
+  });
+
+  it("throws error if user is not found", async () => {
+    (findUserForLogin as jest.Mock).mockResolvedValue(null);
+
+    await expect(AuthService.login("test", "wrongpassword")).rejects.toThrow(
+      "INVALID",
+    );
   });
 });

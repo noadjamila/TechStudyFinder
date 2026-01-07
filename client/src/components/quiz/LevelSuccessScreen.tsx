@@ -38,7 +38,6 @@ const LEVEL_CONFIG: Record<Level, LevelConfig> = {
 
 const titleSx = {
   mt: 10,
-  mb: 0.5,
   textAlign: "center",
   fontWeight: "bold",
 };
@@ -46,6 +45,13 @@ const titleSx = {
 const subtitleSx = {
   mt: 2,
   textAlign: "center",
+};
+
+const imageMap = {
+  1: "/success_screen_1.svg",
+  2: "/success_screen_2.svg",
+  3: "/success_screen_3.svg",
+  4: "/success_screen_4.svg",
 };
 
 export default function LevelSuccessScreen({
@@ -82,9 +88,10 @@ export default function LevelSuccessScreen({
       sx={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
-        minHeight: "100dvh",
-        p: 2,
+        height: "100dvh",
+        px: 3,
+        pt: 3,
+        overflow: "hidden",
       }}
     >
       {phase === "won" && config.wonTitle && (
@@ -109,6 +116,31 @@ export default function LevelSuccessScreen({
           )}
         </>
       )}
+
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "center",
+          width: "100%",
+          minHeight: 0,
+          marginTop: 6,
+        }}
+      >
+        <Box
+          component="img"
+          src={imageMap[currentLevel as keyof typeof imageMap]}
+          alt="Maskottchen Map"
+          sx={{
+            width: 300,
+            maxHeight: "100%",
+            height: "auto",
+            objectFit: "contain",
+            display: "block",
+          }}
+        />
+      </Box>
     </Box>
   );
 }

@@ -82,7 +82,7 @@ const theme = createTheme({
       lineHeight: 1.2,
     },
     subtitle1: {
-      fontSize: "15px",
+      fontSize: "20px",
       fontFamily: "Fira Sans, sans-serif",
       fontWeight: "normal",
     },

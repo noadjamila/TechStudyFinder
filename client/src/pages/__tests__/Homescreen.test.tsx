@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import Homescreen from "../Home/Homescreen";
+import Homescreen from "../Homescreen";
 import "@testing-library/jest-dom";
 import { vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";

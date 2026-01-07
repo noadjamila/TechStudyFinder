@@ -1,73 +1,16 @@
 import { useState } from "react";
 import { Box, Alert, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import PrimaryButton from "../../components/buttons/PrimaryButton";
-import BackButton from "../../components/buttons/BackButton";
-import FormField from "../../components/login-register/FormField";
-import FormHeader from "../../components/login-register/FormHeader";
-import theme from "../../theme/theme";
-import BottomHills from "../../components/login-register/BottomHills";
-
-/**
- * Validates the username based on registration requirements (at least 5 characters)
- * @param {string} username - The username to validate
- * @returns {{valid: boolean, message?: string}} Validation result with optional error message
- */
-function validateUsername(username: string): {
-  valid: boolean;
-  message?: string;
-} {
-  if (!username || username.length < 5) {
-    return {
-      valid: false,
-      message: "Username muss mindestens 5 Zeichen lang sein.",
-    };
-  }
-  return { valid: true };
-}
-
-/**
- * Validates the password based on security requirements
- * Password must be 8-72 characters with at least one letter, number, and special character
- * @param {string} password - The password to validate
- * @returns {{valid: boolean, message?: string}} Validation result with optional error message
- */
-function validatePassword(password: string): {
-  valid: boolean;
-  message?: string;
-} {
-  if (!password || password.length < 8) {
-    return {
-      valid: false,
-      message: "Passwort muss mindestens 8 Zeichen lang sein.",
-    };
-  }
-  if (password.length > 72) {
-    return {
-      valid: false,
-      message: "Passwort darf maximal 72 Zeichen lang sein.",
-    };
-  }
-  if (!/[A-Za-z]/.test(password)) {
-    return {
-      valid: false,
-      message: "Passwort muss mindestens einen Buchstaben enthalten.",
-    };
-  }
-  if (!/\d/.test(password)) {
-    return {
-      valid: false,
-      message: "Passwort muss mindestens eine Zahl enthalten.",
-    };
-  }
-  if (!/[^A-Za-z0-9]/.test(password)) {
-    return {
-      valid: false,
-      message: "Passwort muss mindestens ein Sonderzeichen enthalten.",
-    };
-  }
-  return { valid: true };
-}
+import PrimaryButton from "../components/buttons/PrimaryButton";
+import BackButton from "../components/buttons/BackButton";
+import FormHeader from "../components/login-register/FormHeader";
+import theme from "../theme/theme";
+import BottomHills from "../components/login-register/BottomHills";
+import InputField from "../components/InputField";
+import {
+  validatePassword,
+  validateUsername,
+} from "../services/credentialsValidation";
 
 /**
  * Registration page component for user account creation
@@ -164,8 +107,7 @@ export default function Register() {
         minHeight: "100vh",
         padding: theme.spacing(2),
         pt: { xs: 8, sm: 12, md: 16, lg: 18 },
-        pl: 2,
-        pr: 2,
+        p: "30px",
         pb: 4,
         "@media (max-width: 375px)": {
           pt: 6,
@@ -192,7 +134,7 @@ export default function Register() {
           </Alert>
         )}
 
-        <FormField
+        <InputField
           label="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -204,7 +146,7 @@ export default function Register() {
           }
         />
 
-        <FormField
+        <InputField
           label="Passwort"
           type="password"
           value={password}
@@ -217,7 +159,7 @@ export default function Register() {
           }
         />
 
-        <FormField
+        <InputField
           label="Passwort bestätigen"
           type="password"
           value={confirmPassword}

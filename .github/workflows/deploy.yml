@@ -134,9 +134,9 @@ jobs:
                 exit 1
               fi
             done
-            # If successful, remove rollback image
-            docker image rm rollback_image:latest || true
             # Final health check on the exposed endpoint
             echo "Performing HTTP health check on $HEALTH_URL..."
             curl -fsSL "$HEALTH_URL" >/dev/null
+            # If all checks passed, remove rollback image
+            docker image rm rollback_image:latest || true
             EOS

@@ -15,7 +15,6 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import StudyProgrammeCard from "./StudyProgrammeCard";
 import { useNavigate } from "react-router-dom";
 import EmptyStateCard from "./EmptyStateCard";
-import Headline from "../Headline";
 
 interface ResultsProps {
   studyProgrammes: StudyProgramme[];
@@ -80,7 +79,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
         minHeight: "100vh",
       }}
     >
-      <Headline label="Meine Ergebnisse" />
+      <Typography variant="h2">Meine Ergebnisse</Typography>
 
       {studyProgrammes.length === 0 ? (
         <Box sx={{ textAlign: "center", mt: { xs: 4, sm: 5 } }}>
