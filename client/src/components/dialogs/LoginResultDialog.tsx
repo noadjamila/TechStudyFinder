@@ -5,7 +5,7 @@ interface LoginResultDialogProps {
   open: boolean;
   success: boolean;
   onClose: () => void;
-  autoCloseDuration?: number; // Duration in milliseconds before auto-closing (default: 2500ms)
+  autoCloseDuration?: number;
 }
 
 /**

@@ -43,18 +43,14 @@ export default function Login() {
     setLoading(true);
     try {
       await login(username, password);
-
-      // Show success dialog and navigate after closing
+      // Show success popup
       setLoginSuccess(true);
       setShowResultDialog(true);
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Ein unbekannter Fehler ist aufgetreten",
-      );
-      setLoginSuccess(false);
-      setShowResultDialog(true);
+    } catch {
+      // On error, show inline error message and clear both fields
+      setError("Login fehlgeschlagen - bitte versuche es erneut!");
+      setUsername("");
+      setPassword("");
     } finally {
       setLoading(false);
     }
@@ -64,9 +60,6 @@ export default function Login() {
     setShowResultDialog(false);
     if (loginSuccess) {
       navigate("/home");
-    } else {
-      // Clear the password field on unsuccessful login
-      setPassword("");
     }
   };
 
@@ -78,7 +71,7 @@ export default function Login() {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        padding: theme.spacing(2),
+        padding: "30px",
         pt: { xs: 8, sm: 12, md: 16, lg: 18 },
         pl: 2,
         pr: 2,
@@ -136,7 +129,7 @@ export default function Login() {
           <PrimaryButton
             label={loading ? "Login..." : "Login"}
             onClick={handleLogin}
-            disabled={loading || username.length < 5 || password.length < 8}
+            disabled={loading}
             sx={{
               width: "auto",
             }}

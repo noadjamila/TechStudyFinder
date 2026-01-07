@@ -14,7 +14,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import FolderIcon from "@mui/icons-material/Folder";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import theme from "../../theme/theme";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -160,8 +160,8 @@ const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
                 <ListItemText>Ausloggen</ListItemText>
               </MenuItem>
               <MenuItem
-                component="a"
-                href="/settings"
+                component={Link}
+                to="/settings"
                 onClick={handleMenuClose}
               >
                 <ListItemIcon>

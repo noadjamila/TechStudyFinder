@@ -238,11 +238,8 @@ export default function Register() {
             disabled={
               loading ||
               !username.trim() ||
-              !validateUsername(username).valid ||
               !password.trim() ||
-              !confirmPassword.trim() ||
-              password !== confirmPassword ||
-              !validatePassword(password).valid
+              !confirmPassword.trim()
             }
             sx={{
               width: "auto",
@@ -257,7 +254,7 @@ export default function Register() {
               component="span"
               variant="body2"
               sx={{
-                color: theme.palette.primary.main,
+                color: theme.palette.text.primary,
                 cursor: "pointer",
                 fontWeight: "bold",
                 "&:hover": {
