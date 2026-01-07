@@ -72,16 +72,6 @@ export default function Login() {
         alignItems: "center",
         minHeight: "100vh",
         padding: "30px",
-        pt: { xs: 8, sm: 12, md: 16, lg: 18 },
-        pl: 2,
-        pr: 2,
-        pb: 4,
-        "@media (max-width: 375px)": {
-          pt: 6,
-          pb: 2,
-          pl: 2,
-          pr: 2,
-        },
       }}
     >
       <Box

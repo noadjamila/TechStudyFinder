@@ -14,7 +14,8 @@ import StarsIcon from "@mui/icons-material/Stars";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import StudyProgrammeCard from "../cards/StudyProgrammeCard";
 import { useNavigate } from "react-router-dom";
-import EmptyStateCard from "./EmptyStateCard";
+import GreenCard from "../cards/GreenCardBaseNotQuiz";
+import PrimaryButton from "../buttons/PrimaryButton";
 
 interface ResultsProps {
   studyProgrammes: StudyProgramme[];
@@ -82,18 +83,20 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
       <Typography variant="h2">Meine Ergebnisse</Typography>
 
       {studyProgrammes.length === 0 ? (
-        <Box sx={{ textAlign: "center", mt: { xs: 4, sm: 5 } }}>
-          <EmptyStateCard
-            message={
-              <>
-                Keine Studiengänge gefunden!
-                <br />
-                Versuche, deine Quizantworten anzupassen.
-              </>
-            }
-            buttonLabel="Quiz beginnen"
-            onButtonClick={handleQuizStart}
-          />
+        <Box sx={{ textAlign: "center", mt: 12 }}>
+          <GreenCard>
+            <Typography variant="subtitle1" sx={{ mb: 3, lineHeight: 1.3 }}>
+              Keine Studiengänge gefunden!
+              <br />
+              Versuche, deine Quizantworten anzupassen.
+            </Typography>
+
+            <PrimaryButton
+              label={"Quiz beginnen"}
+              onClick={handleQuizStart}
+              ariaText="Quiz beginnen"
+            />
+          </GreenCard>
         </Box>
       ) : (
         <>
