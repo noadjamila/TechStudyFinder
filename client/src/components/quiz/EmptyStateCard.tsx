@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { Box, Typography } from "@mui/material";
 import CardStack from "./CardStack";
 import theme from "../../theme/theme";
-import StartButton from "../buttons/Button";
+import StartButton from "../buttons/PrimaryButton";
 
 interface EmptyStateCardProps {
   message: ReactNode;
