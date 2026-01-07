@@ -88,10 +88,9 @@ export default function LevelSuccessScreen({
       sx={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
         height: "100dvh",
-        padding: "30px",
-        pb: 0,
+        px: 3,
+        pt: 3,
         overflow: "hidden",
       }}
     >
@@ -135,7 +134,7 @@ export default function LevelSuccessScreen({
           alt="Maskottchen Map"
           sx={{
             width: 300,
-            maxHeight: 550,
+            maxHeight: "100%",
             height: "auto",
             objectFit: "contain",
             display: "block",
