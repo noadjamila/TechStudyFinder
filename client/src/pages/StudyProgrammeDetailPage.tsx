@@ -8,16 +8,25 @@ import {
   CardContent,
   useMediaQuery,
   useTheme,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Chip,
+  Stack,
+  Link,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 import theme from "../theme/theme";
 import DataSource from "../components/DataSource";
 import BackButton from "../components/buttons/BackButton";
 import DesktopLayout from "../layouts/DesktopLayout";
+import { getStudyProgrammeById } from "../api/quizApi";
+import DeadlineDisplay from "../components/DeadlineDisplay";
 
 /**
  * StudyProgrammeDetailPage displays detailed information about a single study programme.
@@ -27,6 +36,9 @@ const StudyProgrammeDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [isFavorite, setIsFavorite] = useState(false);
+  const [programme, setProgramme] = useState<StudyProgramme | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const muiTheme = useTheme();
   const toggleSidebar = () => {};
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
@@ -36,47 +48,75 @@ const StudyProgrammeDetailPage: React.FC = () => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  // Mock data - replace with actual data fetching based on ID
-  const studyProgrammes: StudyProgramme[] = [
-    {
-      id: 1,
-      name: "Communication Systems and Networks",
-      university: "Technische Hochschule Köln",
-      degree: "Master",
-    },
-    {
-      id: 2,
-      name: "Betriebliche Umweltinformatik",
-      university: "Hochschule für Technik und Wirtschaft Berlin",
-      degree: "Master",
-    },
-    {
-      id: 3,
-      name: "Informatik",
-      university: "Rheinische Friedrich-Wilhelms-Universität Bonn",
-      degree: "Bachelor of Science",
-    },
-    {
-      id: 4,
-      name: "Medieninformatik",
-      university: "Universität zu Lübeck",
-      degree: "Bachelor of Science",
-    },
-    {
-      id: 5,
-      name: "Data Science",
-      university: "Ludwig-Maximilians-Universität München",
-      degree: "Master of Science",
-    },
-  ];
+  // Fetch study programme data
+  useEffect(() => {
+    const fetchProgramme = async () => {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
 
-  const programme = studyProgrammes.find((p) => p.id === Number(id));
+      try {
+        setLoading(true);
+        const data = await getStudyProgrammeById(id);
+        setProgramme(data);
+      } catch (err) {
+        console.error("Error fetching study programme:", err);
+        setError("Fehler beim Laden des Studiengangs");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProgramme();
+  }, [id]);
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
   };
 
-  if (!programme) {
+  if (loading) {
+    const loadingContent = (
+      <Box sx={{ textAlign: "center", mt: 4 }}>
+        <Typography>Lädt...</Typography>
+      </Box>
+    );
+
+    const LoadingContent = isDesktop ? (
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: 800,
+          margin: "0 auto",
+          pt: 3,
+        }}
+      >
+        {loadingContent}
+      </Box>
+    ) : (
+      loadingContent
+    );
+
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          width: "100%",
+          overflow: "auto",
+        }}
+      >
+        {isDesktop ? (
+          <DesktopLayout onMenuToggle={toggleSidebar}>
+            {LoadingContent}
+          </DesktopLayout>
+        ) : (
+          LoadingContent
+        )}
+      </div>
+    );
+  }
+
+  if (error || !programme) {
     const notFoundContent = (
       <>
         <Box sx={{ padding: 3 }}>
@@ -90,7 +130,9 @@ const StudyProgrammeDetailPage: React.FC = () => {
         </Box>
         <DataSource />
         <Box sx={{ padding: 3, paddingTop: 0 }}>
-          <Typography variant="h6">Studiengang nicht gefunden</Typography>
+          <Typography variant="h6">
+            {error || "Studiengang nicht gefunden"}
+          </Typography>
         </Box>
       </>
     );
@@ -164,14 +206,14 @@ const StudyProgrammeDetailPage: React.FC = () => {
         />
       </Box>
 
-      <Box sx={{ pt: { xs: "80px", sm: 0 } }}>
+      <Box sx={{ pt: { xs: "80px", sm: 0 }, pl: "30px", pr: "30px" }}>
         {" "}
         {/* Offset for fixed back button on mobile */}
         <DataSource />
       </Box>
 
       {/* Study programme card */}
-      <Box sx={{ px: 3, pt: 5 }}>
+      <Box sx={{ px: 3, pt: 1 }}>
         <Card
           sx={{
             padding: { xs: 2, sm: 4 },
@@ -201,6 +243,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                     color: theme.palette.text.header,
                     wordBreak: "break-word",
                     overflowWrap: "break-word",
+                    fontSize: { xs: "1.75rem", sm: "2.5rem" },
                   }}
                 >
                   {programme.name}
@@ -233,10 +276,10 @@ const StudyProgrammeDetailPage: React.FC = () => {
                     variant="body1"
                     sx={{
                       color: theme.palette.text.subHeader,
-                      fontSize: "1.1rem",
+                      fontSize: { xs: "0.95rem", sm: "1.1rem" },
                     }}
                   >
-                    {programme.university}
+                    {programme.hochschule}
                   </Typography>
                 </Box>
                 <Box
@@ -266,10 +309,10 @@ const StudyProgrammeDetailPage: React.FC = () => {
                     variant="body1"
                     sx={{
                       color: theme.palette.text.subHeader,
-                      fontSize: "1.1rem",
+                      fontSize: { xs: "0.95rem", sm: "1.1rem" },
                     }}
                   >
-                    {programme.degree}
+                    {programme.abschluss}
                   </Typography>
                 </Box>
               </Box>
@@ -309,31 +352,407 @@ const StudyProgrammeDetailPage: React.FC = () => {
             {/* Additional details section */}
             <Box
               sx={{
-                marginTop: { xs: 0, sm: 4 },
+                marginTop: { xs: 2, sm: 4 },
               }}
             >
-              <Typography
-                variant="h5"
+              {/* Basic Information */}
+              {((programme.studienform?.length ?? 0) > 0 ||
+                programme.regelstudienzeit ||
+                (programme.standorte?.length ?? 0) > 0 ||
+                (programme.sprachen?.length ?? 0) > 0) && (
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                      marginBottom: 2,
+                      color: theme.palette.text.header,
+                      fontSize: { xs: "1.1rem", sm: "1.5rem" },
+                    }}
+                  >
+                    Allgemeine Informationen
+                  </Typography>
+                  {programme.studienform &&
+                    programme.studienform.length > 0 && (
+                      <Box sx={{ mb: 1.5 }}>
+                        <Typography
+                          component="span"
+                          sx={{ fontWeight: 600, mr: 1 }}
+                        >
+                          Studienform:
+                        </Typography>
+                        <Typography component="span">
+                          {programme.studienform.join(", ")}
+                        </Typography>
+                      </Box>
+                    )}
+                  {programme.regelstudienzeit && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography
+                        component="span"
+                        sx={{ fontWeight: 600, mr: 1 }}
+                      >
+                        Regelstudienzeit:
+                      </Typography>
+                      <Typography component="span">
+                        {programme.regelstudienzeit}
+                      </Typography>
+                    </Box>
+                  )}
+                  {programme.standorte && programme.standorte.length > 0 && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography
+                        component="span"
+                        sx={{ fontWeight: 600, mr: 1 }}
+                      >
+                        Standorte:
+                      </Typography>
+                      <Typography component="span">
+                        {programme.standorte.join(", ")}
+                      </Typography>
+                    </Box>
+                  )}
+                  {programme.sprachen && programme.sprachen.length > 0 && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography
+                        component="span"
+                        sx={{ fontWeight: 600, mr: 1 }}
+                      >
+                        Sprachen:
+                      </Typography>
+                      <Typography component="span">
+                        {programme.sprachen.join(", ")}
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+              )}
+
+              {/* Schwerpunkte */}
+              {programme.schwerpunkte && programme.schwerpunkte.length > 0 && (
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                      marginBottom: 2,
+                      color: theme.palette.text.header,
+                      fontSize: "1.5rem",
+                    }}
+                  >
+                    Schwerpunkte
+                  </Typography>
+                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                    {programme.schwerpunkte.map((schwerpunkt, index) => (
+                      <Chip
+                        key={index}
+                        label={schwerpunkt}
+                        sx={{
+                          backgroundColor: theme.palette.primary.main,
+                          fontSize: "16px",
+                          height: "auto",
+                          "& .MuiChip-label": {
+                            whiteSpace: "normal",
+                            wordBreak: "break-word",
+                            padding: "8px 12px",
+                          },
+                        }}
+                      />
+                    ))}
+                  </Stack>
+                </Box>
+              )}
+
+              {/* Studienfelder */}
+              {programme.studienfelder &&
+                programme.studienfelder.length > 0 && (
+                  <Box sx={{ mb: 3 }}>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 600,
+                        marginBottom: 2,
+                        color: theme.palette.text.header,
+                        fontSize: "1.5rem",
+                      }}
+                    >
+                      Studienfelder
+                    </Typography>
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      flexWrap="wrap"
+                      useFlexGap
+                    >
+                      {programme.studienfelder.map((feld, index) => (
+                        <Chip
+                          key={index}
+                          label={feld}
+                          sx={{
+                            backgroundColor: `${theme.palette.secondary.main}80`,
+                            fontSize: "16px",
+                          }}
+                        />
+                      ))}
+                    </Stack>
+                  </Box>
+                )}
+
+              {/* Zulassung - Collapsible */}
+              <Accordion
                 sx={{
-                  fontWeight: 600,
-                  marginBottom: 2,
-                  color: theme.palette.text.header,
+                  backgroundColor: `${theme.palette.primary.main}1A`,
+                  mb: 2,
+                  boxShadow: "none",
+                  "&:hover": {
+                    backgroundColor: theme.palette.primary.main,
+                  },
+                  "&.Mui-expanded": {
+                    backgroundColor: `${theme.palette.primary.main}1A`,
+                  },
+                  "&.Mui-expanded:hover": {
+                    backgroundColor: `${theme.palette.primary.main}1A`,
+                  },
+                  "&:before": {
+                    display: "none",
+                  },
                 }}
               >
-                Studiengangs-Details
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  color: theme.palette.text.primary,
-                  lineHeight: 1.8,
-                }}
-              >
-                Weitere Informationen zu diesem Studiengang werden hier
-                angezeigt. Dies kann eine Beschreibung des Studiengangs,
-                Zulassungsvoraussetzungen, Studiendauer und andere relevante
-                Details enthalten.
-              </Typography>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="zulassung-content"
+                  id="zulassung-header"
+                >
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                      color: theme.palette.text.header,
+                      fontSize: "1.5rem",
+                    }}
+                  >
+                    Zulassung
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {programme.zulassungssemester && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography
+                        component="span"
+                        sx={{ fontWeight: 600, mr: 1 }}
+                      >
+                        Zulassungssemester:
+                      </Typography>
+                      <Typography component="span">
+                        {programme.zulassungssemester}
+                      </Typography>
+                    </Box>
+                  )}
+                  {programme.zulassungsmodus && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography
+                        component="span"
+                        sx={{ fontWeight: 600, mr: 1 }}
+                      >
+                        Zulassungsmodus:
+                      </Typography>
+                      <Typography component="span">
+                        {programme.zulassungsmodus}
+                      </Typography>
+                    </Box>
+                  )}
+                  {programme.zulassungsvoraussetzungen && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography
+                        component="span"
+                        sx={{ fontWeight: 600, mr: 1 }}
+                      >
+                        Voraussetzungen:
+                      </Typography>
+                      <Typography component="span">
+                        {programme.zulassungsvoraussetzungen}
+                      </Typography>
+                    </Box>
+                  )}
+                  {programme.zulassungslink && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography
+                        component="span"
+                        sx={{ fontWeight: 600, mr: 1 }}
+                      >
+                        Weitere Informationen:
+                      </Typography>
+                      <Link
+                        href={programme.zulassungslink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{
+                          color: theme.palette.detailspage.link,
+                          textDecorationColor: theme.palette.detailspage.link,
+                        }}
+                      >
+                        Zulassungsseite
+                      </Link>
+                    </Box>
+                  )}
+                </AccordionDetails>
+              </Accordion>
+
+              {/* Kosten - Collapsible */}
+              {(programme.studienbeitrag || programme.beitrag_kommentar) && (
+                <Accordion
+                  sx={{
+                    backgroundColor: `${theme.palette.primary.main}1A`,
+                    mb: 2,
+                    boxShadow: "none",
+                    "&:hover": {
+                      backgroundColor: theme.palette.primary.main,
+                    },
+                    "&.Mui-expanded": {
+                      backgroundColor: `${theme.palette.primary.main}1A`,
+                    },
+                    "&.Mui-expanded:hover": {
+                      backgroundColor: `${theme.palette.primary.main}1A`,
+                    },
+                    "&:before": {
+                      display: "none",
+                    },
+                  }}
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="kosten-content"
+                    id="kosten-header"
+                  >
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 600,
+                        color: theme.palette.text.header,
+                        fontSize: "1.5rem",
+                      }}
+                    >
+                      Kosten
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    {programme.studienbeitrag && (
+                      <Box sx={{ mb: 1.5 }}>
+                        <Typography
+                          component="span"
+                          sx={{ fontWeight: 600, mr: 1 }}
+                        >
+                          Studienbeitrag:
+                        </Typography>
+                        <Typography component="span">
+                          {programme.studienbeitrag}
+                        </Typography>
+                      </Box>
+                    )}
+                    {programme.beitrag_kommentar && (
+                      <Box sx={{ mb: 1.5 }}>
+                        <Typography
+                          component="span"
+                          sx={{ fontWeight: 600, mr: 1 }}
+                        >
+                          Hinweis:
+                        </Typography>
+                        <Typography component="span">
+                          {programme.beitrag_kommentar}
+                        </Typography>
+                      </Box>
+                    )}
+                  </AccordionDetails>
+                </Accordion>
+              )}
+
+              {/* Fristen (Deadlines) - Collapsible */}
+              {programme.fristen && programme.fristen.length > 0 && (
+                <Accordion
+                  sx={{
+                    backgroundColor: `${theme.palette.primary.main}1A`,
+                    mb: 2,
+                    boxShadow: "none",
+                    "&:hover": {
+                      backgroundColor: theme.palette.primary.main,
+                    },
+                    "&.Mui-expanded": {
+                      backgroundColor: `${theme.palette.primary.main}1A`,
+                    },
+                    "&.Mui-expanded:hover": {
+                      backgroundColor: `${theme.palette.primary.main}1A`,
+                    },
+                    "&:before": {
+                      display: "none",
+                    },
+                  }}
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="fristen-content"
+                    id="fristen-header"
+                  >
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 600,
+                        color: theme.palette.text.header,
+                        fontSize: "1.5rem",
+                      }}
+                    >
+                      Fristen
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <DeadlineDisplay fristen={programme.fristen} />
+                  </AccordionDetails>
+                </Accordion>
+              )}
+
+              {/* Anmerkungen */}
+              {programme.anmerkungen && (
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                      marginBottom: 2,
+                      color: theme.palette.text.header,
+                      fontSize: "1.5rem",
+                    }}
+                  >
+                    Anmerkungen
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: theme.palette.text.primary,
+                      lineHeight: 1.8,
+                    }}
+                  >
+                    {programme.anmerkungen}
+                  </Typography>
+                </Box>
+              )}
+
+              {/* Homepage Link */}
+              {programme.homepage && (
+                <Box sx={{ mt: 3 }}>
+                  <Link
+                    href={programme.homepage}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                      fontSize: "1.1rem",
+                      fontWeight: 500,
+                      color: theme.palette.detailspage.link,
+                      textDecorationColor: theme.palette.detailspage.link,
+                    }}
+                  >
+                    Zur Studiengangs-Homepage →
+                  </Link>
+                </Box>
+              )}
             </Box>
           </CardContent>
         </Card>

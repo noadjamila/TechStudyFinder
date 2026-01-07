@@ -1,14 +1,7 @@
-import React, { ReactNode, useState } from "react";
-import {
-  Box,
-  useTheme,
-  Typography,
-  IconButton,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import React, { ReactNode } from "react";
+import { Box, useTheme, Typography } from "@mui/material";
 import NavBar from "../../src/components/nav-bar/NavBar";
-import MenuIcon from "@mui/icons-material/Menu"; //
+import DropMenu from "../components/DropdownMenu";
 
 /**
  * Props for the DesktopLayout component.
@@ -34,27 +27,6 @@ interface DesktopLayoutProps {
  */
 const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
   const theme = useTheme();
-
-  // State for the anchor element of the Menu (where the menu opens from)
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  // Checks if the Menu is currently open
-  const open = Boolean(anchorEl);
-
-  /**
-   * Handles the click on the Menu icon and sets the anchor element.
-   *
-   * @param {React.MouseEvent<HTMLElement>} event - The click event.
-   */
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  /**
-   * Closes the Menu by resetting the anchor element state.
-   */
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
 
   return (
     // Background Container: Fills the entire viewport with the grey background color
@@ -112,41 +84,13 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
           justifyContent: "center",
         }}
       >
-        {/* Menu Toggle Area */}
-        <Box
-          sx={{
-            width: "100%",
-            position: "relative",
-            left: "50%",
-            transform: "translateX(-28%)",
+        <div
+          style={{
+            marginLeft: "30px",
           }}
         >
-          {/* Clickable Menu Icon */}
-          <IconButton
-            edge="start"
-            onClick={handleMenuClick}
-            aria-label="Open menu"
-            sx={{
-              left: 24,
-              color: theme.palette.text.secondary,
-            }}
-          >
-            <MenuIcon fontSize="large" />
-          </IconButton>
-        </Box>
-
-        {/* Drop-down Menu with options */}
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleMenuClose}
-          disableScrollLock={true}
-        >
-          {/* Menu Items */}
-          <MenuItem onClick={handleMenuClose}>Einloggen</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Impressum</MenuItem>
-        </Menu>
-
+          <DropMenu />
+        </div>
         <NavBar isSidebarMode />
       </Box>
 

@@ -4,7 +4,7 @@ import {
   filterLevel2,
   filterLevel3,
   getQuestionsLevel2Service,
-  getStudyProgrammeDetails,
+  getStudyProgrammeByIdService,
 } from "../services/quiz.service";
 import { FilterRequest } from "../types/filterRequest";
 
@@ -83,36 +83,27 @@ export async function getQuestions(req: Request, res: Response) {
   }
 }
 
-/**
- * Fetches study programme details by their IDs.
- *
- * @param req request object with ids as query parameter (comma-separated)
- * @param res response object
- * @returns status and if successful array of study programmes
- */
-export async function getProgrammesByIds(req: Request, res: Response) {
+export async function getStudyProgrammeById(req: Request, res: Response) {
   try {
-    const { ids } = req.query;
+    const result = await getStudyProgrammeByIdService(req.params.id);
 
-    if (!ids || typeof ids !== "string") {
-      return res.status(400).json({
-        error: "Missing or invalid ids parameter",
-        message: "ids must be a comma-separated string",
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        error: "Study programme not found",
       });
     }
 
-    const idArray = ids.split(",").map((id) => id.trim());
-    const programmes = await getStudyProgrammeDetails(idArray);
-
-    res.status(200).json({
-      message: "Programmes retrieved successfully",
-      programmes,
+    return res.status(200).json({
+      success: true,
+      studyProgramme: result,
     });
   } catch (error) {
-    console.error("Error retrieving programmes", error);
-    res.status(500).json({
+    console.error("Error retrieving study programme", error);
+    return res.status(500).json({
+      success: false,
       error: "Internal Server Error",
-      message: "Error retrieving programmes",
+      message: "Error retrieving study programme",
     });
   }
 }

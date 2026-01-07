@@ -1,9 +1,14 @@
 import { Box } from "@mui/material";
 import theme from "../../theme/theme";
 
+/**
+ * BottomHills component that displays decorative colored hills at the bottom of the page
+ * Includes a walking mascot character on top of the hills
+ * @component
+ * @returns {JSX.Element} Decorative bottom section with colored hills and mascot
+ */
 export default function BottomHills() {
   return (
-    // Container for the bottom hills, colors used from theme
     <Box
       sx={{
         position: "absolute",
@@ -42,10 +47,10 @@ export default function BottomHills() {
         />
       ))}
 
-      {/* Mascot on the hills */}
+      {/* Mascot Image on top of the hills */}
       <Box
         component="img"
-        src="/mascot_walking_yellow.svg"
+        src="/mascot_climbing_yellow.svg"
         alt="Mascot"
         sx={{
           position: "absolute",

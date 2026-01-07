@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import theme from "../../theme/theme";
-import LogoMenu from "../../components/logo-menu/LogoMenu";
-import Navigationbar from "../../components/nav-bar/NavBar";
+import LogoMenu from "../../components/Header";
 import DesktopLayout from "../../layouts/DesktopLayout";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/buttons/PrimaryButton";
@@ -108,7 +107,6 @@ const FavouritesNotLoggedIn: React.FC = () => {
       >
         {MainContent}
       </Box>
-      <Navigationbar />
     </Box>
   );
 };

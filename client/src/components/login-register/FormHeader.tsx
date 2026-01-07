@@ -7,7 +7,6 @@ import { Box, Typography } from "@mui/material";
  */
 export default function FormHeader() {
   return (
-    //mb defines the height between header and form fields
     <Box sx={{ display: "flex", alignItems: "center", gap: 0, mb: 4 }}>
       <Box
         component="img"
