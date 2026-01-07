@@ -1,7 +1,6 @@
 import React, { ReactNode } from "react";
 import { Box, useTheme, Typography } from "@mui/material";
 import NavBar from "../../src/components/nav-bar/NavBar";
-import DropMenu from "../components/DropMenu";
 
 /**
  * Props for the DesktopLayout component.
@@ -84,13 +83,6 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
           justifyContent: "center",
         }}
       >
-        <div
-          style={{
-            marginLeft: "30px",
-          }}
-        >
-          <DropMenu />
-        </div>
         <NavBar isSidebarMode />
       </Box>
 

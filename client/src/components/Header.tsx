@@ -1,8 +1,6 @@
 import React from "react";
 import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 import theme from "../theme/theme";
-import DropMenu from "./DropMenu";
-
 interface LogoMenuProps {
   fixed?: boolean;
 }
@@ -35,15 +33,6 @@ const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
           px: 0,
         }}
       >
-        {/* Menu Icon, left-aligned*/}
-        <div
-          style={{
-            marginLeft: "15px",
-          }}
-        >
-          <DropMenu />
-        </div>
-
         {/*Tech Study Finder Headline, centered*/}
         <Typography
           variant="h5"

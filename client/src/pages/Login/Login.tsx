@@ -8,6 +8,7 @@ import FormHeader from "../../components/login-register/FormHeader";
 import theme from "../../theme/theme";
 import BottomHills from "../../components/login-register/BottomHills";
 import LoginResultDialog from "../../components/dialogs/LoginResultDialog";
+import { useAuth } from "../../contexts/AuthContext";
 
 /**
  * Login page component.
@@ -18,6 +19,7 @@ import LoginResultDialog from "../../components/dialogs/LoginResultDialog";
  */
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -40,21 +42,7 @@ export default function Login() {
 
     setLoading(true);
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", // Include cookies for session
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!response.ok) {
-        // Show error dialog
-        setLoginSuccess(false);
-        setShowResultDialog(true);
-        return;
-      }
+      await login(username, password);
 
       // Show success dialog and navigate after closing
       setLoginSuccess(true);

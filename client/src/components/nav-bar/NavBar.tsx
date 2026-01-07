@@ -20,7 +20,6 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import FolderIcon from "@mui/icons-material/Folder";
 import { useNavigate, useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-
 /**
  * Props for the NavBar component.
  * Controls the display mode of the navigation (sidebar for desktop or bottom bar for mobile).
@@ -31,7 +30,6 @@ import React, { useState, useEffect } from "react";
 interface NavBarProps {
   isSidebarMode?: boolean;
 }
-
 /**
  * NavBar component.
  * Renders the primary application navigation, adapting between a vertical sidebar (desktop)
@@ -44,34 +42,28 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
-
   // Navigation Elements configuration
   const navItems = [
     { label: "Home", icon: HomeIcon, path: "/" },
     { label: "Ergebnisse", icon: ResultIcon, path: "/results" },
     { label: "Favoriten", icon: FavoriteIcon, path: "/favorites" },
   ];
-
   // Determine the current active index based on the current path
   const getCurrentIndex = () => {
     // Check for exact match first
     const index = navItems.findIndex((item) => item.path === location.pathname);
     if (index !== -1) return index;
-
     // Check if we're on a study programme detail page - should highlight "Ergebnisse"
     if (location.pathname.startsWith("/study-programme/")) {
       return navItems.findIndex((item) => item.path === "/results");
     }
-
     // Check if we're on favorites-empty page - should highlight "Favoriten"
     if (location.pathname === "/favorites-empty") {
       return navItems.findIndex((item) => item.path === "/favorites");
     }
-
     // Default to Home (index 0)
     return 0;
   };
-
   const [value, setValue] = useState(getCurrentIndex());
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const menuOpen = Boolean(anchorEl);
@@ -81,7 +73,6 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
   useEffect(() => {
     setValue(getCurrentIndex());
   }, [location.pathname]);
-
   // Check if user is logged in
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -96,7 +87,6 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
     };
 
     checkAuthStatus();
-
     // Listen for auth status changes (e.g., after logout)
     const handleAuthChange = () => {
       checkAuthStatus();
@@ -117,21 +107,18 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
     setValue(newValue);
     navigate(path);
   };
-
   /**
    * Handles the menu button click.
    */
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
   /**
    * Closes the menu.
    */
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
   /**
    * Handles login/logout action based on auth status.
    */
@@ -147,7 +134,6 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
       navigate("/login");
     }
   };
-
   // desktop view (Vertical Sidebar)
   if (isSidebarMode) {
     return (
@@ -198,7 +184,6 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
               </Box>
             </IconButton>
           </Box>
-
           {/* Dropdown Menu */}
           <Menu
             anchorEl={anchorEl}
@@ -218,10 +203,10 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
                 mx: 1,
                 my: 0.5,
                 "&:hover": {
-                  backgroundColor: `${theme.palette.decorative.pink} !important`,
-                  color: "#FFFFFF !important",
+                  backgroundColor: theme.palette.secondary.light,
+                  color: "#FFFFFF",
                   "& .MuiListItemIcon-root": {
-                    color: "#FFFFFF !important",
+                    color: "#FFFFFF",
                   },
                 },
               }}
@@ -238,10 +223,10 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
                 mx: 1,
                 my: 0.5,
                 "&:hover": {
-                  backgroundColor: `${theme.palette.decorative.pink} !important`,
-                  color: "#FFFFFF !important",
+                  backgroundColor: theme.palette.secondary.light,
+                  color: "#FFFFFF",
                   "& .MuiListItemIcon-root": {
-                    color: "#FFFFFF !important",
+                    color: "#FFFFFF",
                   },
                 },
               }}
@@ -258,10 +243,10 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
                 mx: 1,
                 my: 0.5,
                 "&:hover": {
-                  backgroundColor: `${theme.palette.decorative.pink} !important`,
-                  color: "#FFFFFF !important",
+                  backgroundColor: theme.palette.secondary.light,
+                  color: "#FFFFFF",
                   "& .MuiListItemIcon-root": {
-                    color: "#FFFFFF !important",
+                    color: "#FFFFFF",
                   },
                 },
               }}
@@ -278,10 +263,10 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
                 mx: 1,
                 my: 0.5,
                 "&:hover": {
-                  backgroundColor: `${theme.palette.decorative.pink} !important`,
-                  color: `${theme.palette.decorative.pink} !important`,
+                  backgroundColor: theme.palette.secondary.light,
+                  color: "#FFFFFF",
                   "& .MuiListItemIcon-root": {
-                    color: `${theme.palette.decorative.pink} !important`,
+                    color: "#FFFFFF",
                   },
                 },
               }}
@@ -292,7 +277,6 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
               <ListItemText>Datenschutz</ListItemText>
             </MenuItem>
           </Menu>
-
           {/* Separator */}
           <Box
             sx={{
@@ -302,7 +286,6 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
               width: "100%",
             }}
           />
-
           {/* Iterate over navigation items */}
           {navItems.map((item, index) => (
             <Box
@@ -329,19 +312,12 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  transition: "all 0.2s ease",
                   ...(value === index && {
                     width: 50,
                     height: 40,
                     borderRadius: 999,
                     backgroundColor: theme.palette.secondary.light,
                   }),
-                  "&:hover": {
-                    width: 50,
-                    height: 40,
-                    borderRadius: 999,
-                    backgroundColor: theme.palette.decorative.pink,
-                  },
                   mb: 0.5,
                 }}
               >
@@ -375,7 +351,6 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
       </>
     );
   }
-
   // mobile view (Horizontal Bottom Bar) - also with logout snackbar
   return (
     <>
@@ -462,5 +437,4 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
     </>
   );
 };
-
 export default NavBar;

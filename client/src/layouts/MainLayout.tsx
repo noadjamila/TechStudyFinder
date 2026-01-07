@@ -1,5 +1,5 @@
 import DesktopLayout from "./DesktopLayout";
-import Header from "../components/Header";
+import LogoMenu from "../components/logo-menu/LogoMenu";
 import Navigationbar from "../components/nav-bar/NavBar";
 import { useMediaQuery, useTheme, Box } from "@mui/material";
 import React from "react";
@@ -65,7 +65,7 @@ export default function MainLayout({
       ) : (
         // MOBILE VIEW: Logo menu and navigation bar are rendered outside the main content flow
         <>
-          <Header fixed={true} />
+          <LogoMenu fixed={true} />
           <Navigationbar />
 
           <div
