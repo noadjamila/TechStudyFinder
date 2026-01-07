@@ -61,6 +61,14 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
     if (location.pathname === "/favorites-empty") {
       return navItems.findIndex((item) => item.path === "/favorites");
     }
+    // If we're on settings or other non-nav routes, don't highlight anything
+    if (
+      location.pathname === "/settings" ||
+      location.pathname === "/login" ||
+      location.pathname === "/register"
+    ) {
+      return -1;
+    }
     // Default to Home (index 0)
     return 0;
   };
@@ -217,6 +225,8 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
               <ListItemText>Ein-/Ausloggen</ListItemText>
             </MenuItem>
             <MenuItem
+              component="a"
+              href="/settings"
               onClick={handleMenuClose}
               sx={{
                 borderRadius: 999,

@@ -31,7 +31,7 @@ interface LogoMenuProps {
  */
 const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isHoveringMenu, setIsHoveringMenu] = useState(false);
   const open = Boolean(anchorEl);
@@ -151,23 +151,33 @@ const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
           disableScrollLock={true}
         >
           {/* Menu Items */}
-          <MenuItem onClick={handleLoginLogout}>
-            <ListItemIcon>
-              <LogoutIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>{user ? "Ausloggen" : "Einloggen"}</ListItemText>
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleMenuClose();
-              navigate("/settings");
-            }}
-          >
-            <ListItemIcon>
-              <SettingsIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Einstellungen</ListItemText>
-          </MenuItem>
+          {isLoading ? null : user ? (
+            <div>
+              <MenuItem onClick={handleLoginLogout}>
+                <ListItemIcon>
+                  <LogoutIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Ausloggen</ListItemText>
+              </MenuItem>
+              <MenuItem
+                component="a"
+                href="/settings"
+                onClick={handleMenuClose}
+              >
+                <ListItemIcon>
+                  <SettingsIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Einstellungen</ListItemText>
+              </MenuItem>
+            </div>
+          ) : (
+            <MenuItem onClick={handleLoginLogout}>
+              <ListItemIcon>
+                <LogoutIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Einloggen</ListItemText>
+            </MenuItem>
+          )}
           <MenuItem onClick={handleMenuClose}>
             <ListItemIcon>
               <FolderIcon fontSize="small" />

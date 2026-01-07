@@ -17,6 +17,7 @@ import theme from "../../theme/theme";
 import LogoMenu from "../../components/logo-menu/LogoMenu";
 import DesktopLayout from "../../layouts/DesktopLayout";
 import GreenCard from "../../components/cards/GreenCardBaseNotQuiz";
+import { useAuth } from "../../contexts/AuthContext";
 
 /**
  * Homescreen component.
@@ -30,6 +31,7 @@ const Homescreen: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const muiTheme = useTheme();
+  const { logout } = useAuth();
   const toggleSidebar = () => {};
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
   const [showLogoutMessage, setShowLogoutMessage] = useState(false);
@@ -53,17 +55,10 @@ const Homescreen: React.FC = () => {
     setShowLogoutConfirmation(false);
 
     try {
-      const response = await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        setShowLogoutMessage(true);
-        // Refresh auth status in NavBar by triggering a re-check
-        // This will update the isLoggedIn state in NavBar
-        window.dispatchEvent(new Event("auth-status-changed"));
-      }
+      await logout();
+      setShowLogoutMessage(true);
+      // Refresh auth status in NavBar by triggering a re-check
+      window.dispatchEvent(new Event("auth-status-changed"));
     } catch (error) {
       console.error("Logout failed:", error);
     } finally {
