@@ -123,7 +123,7 @@ export default function DropMenu() {
             },
           }}
         >
-          <MenuIcon fontSize="large" />
+          <MenuIcon fontSize="medium" />
         </IconButton>
       </Box>
 

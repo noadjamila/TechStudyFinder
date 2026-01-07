@@ -22,7 +22,7 @@ const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
       sx={{
         backgroundColor: theme.palette.background.default,
         boxShadow: "none",
-        pt: 1.5,
+        pt: 2,
         top: 0,
         zIndex: fixed ? 1100 : "auto",
       }}
@@ -38,7 +38,7 @@ const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
         {/* Menu Icon, left-aligned*/}
         <div
           style={{
-            marginLeft: "15px",
+            marginLeft: "25px",
           }}
         >
           <DropMenu />

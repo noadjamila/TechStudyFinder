@@ -2,7 +2,8 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import theme from "../../theme/theme";
-import EmptyStateCard from "./EmptyStateCard";
+import GreenCard from "../cards/GreenCardBaseNotQuiz";
+import PrimaryButton from "../buttons/PrimaryButton";
 
 /**
  * NoResultsYet component displays when user hasn't completed the quiz yet.
@@ -52,11 +53,20 @@ const NoResultsYet: React.FC = () => {
         Keine Ergebnisse vorhanden.
       </Typography>
 
-      <EmptyStateCard
-        message="Starte jetzt das Quiz, um deine personalisierten Empfehlungen zu erhalten!"
-        buttonLabel="Quiz beginnen"
-        onButtonClick={handleQuizStart}
-      />
+      <Box sx={{ textAlign: "center", mt: 12 }}>
+        <GreenCard>
+          <Typography variant="subtitle1" sx={{ mb: 3, lineHeight: 1.3 }}>
+            Starte jetzt das Quiz, um deine personalisierten Empfehlungen zu
+            erhalten!
+          </Typography>
+
+          <PrimaryButton
+            label={"Quiz beginnen"}
+            onClick={handleQuizStart}
+            ariaText="Quiz beginnen"
+          />
+        </GreenCard>
+      </Box>
     </Box>
   );
 };
