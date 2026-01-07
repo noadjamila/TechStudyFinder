@@ -160,7 +160,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
       </>
     );
   }
-  // mobile view (Horizontal Bottom Bar) - also with logout snackbar
+  // mobile view (Horizontal Bottom Bar)
   return (
     <>
       <Paper

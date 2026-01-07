@@ -15,6 +15,7 @@ import authRouter from "./src/routes/auth.route";
 import favoritesRouter from "./src/routes/favorites.route";
 import "./src/types/express-session";
 import session from "express-session";
+import pgSession from "connect-pg-simple";
 
 const isTesting =
   process.env.NODE_ENV === "test" || !!process.env.JEST_WORKER_ID;
@@ -62,8 +63,15 @@ if (process.env.NODE_ENV !== "production") {
 app.use(express.json());
 
 // Session configuration
+const PostgresSessionStore = pgSession(session);
+
 app.use(
   session({
+    store: new PostgresSessionStore({
+      pool,
+      tableName: "session",
+      createTableIfMissing: true,
+    }),
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
