@@ -49,6 +49,14 @@ const clientDistPath =
 
 let server: import("http").Server | null = null;
 
+// Test database connection
+pool.query("SELECT 1").catch((err) => {
+  console.error("Failed to connect to database:", err.message);
+  console.error(
+    "Session persistence will not work. Please check DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME environment variables.",
+  );
+});
+
 // CORS configuration for development
 if (process.env.NODE_ENV !== "production") {
   app.use(
@@ -65,13 +73,24 @@ app.use(express.json());
 // Session configuration
 const PostgresSessionStore = pgSession(session);
 
+const sessionStore = new PostgresSessionStore({
+  pool,
+  tableName: "session",
+  createTableIfMissing: true,
+});
+
+// Log when store is ready
+sessionStore.on("connect", () => {
+  console.log("✓ Session store connected to PostgreSQL");
+});
+
+sessionStore.on("error", (err: any) => {
+  console.error("✗ Session store error:", err.message);
+});
+
 app.use(
   session({
-    store: new PostgresSessionStore({
-      pool,
-      tableName: "session",
-      createTableIfMissing: true,
-    }),
+    store: sessionStore,
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,

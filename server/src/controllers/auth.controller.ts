@@ -37,9 +37,17 @@ export async function login(req: Request, res: Response) {
 
     req.session.user = { id: user.id, username: user.username };
 
-    return res
-      .status(200)
-      .json({ message: "Login successful", user: req.session.user });
+    // Explicitly save session to ensure it's persisted to database
+    req.session.save((err: Error | null) => {
+      if (err) {
+        console.error("Session save error:", err);
+        return res.status(500).json({ message: "Session save failed" });
+      }
+      console.log(`✓ Session saved for user ${user.username} (ID: ${user.id})`);
+      return res
+        .status(200)
+        .json({ message: "Login successful", user: req.session.user });
+    });
   } catch {
     return res.status(401).json({ message: "Invalid credentials" });
   }
