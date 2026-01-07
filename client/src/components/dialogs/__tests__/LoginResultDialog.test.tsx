@@ -69,10 +69,8 @@ describe("LoginResultDialog", () => {
       />,
     );
 
-    const snackbar = container.querySelector(
-      ".MuiSnackbar-root.MuiSnackbar-anchorOriginTopCenter",
-    );
-    expect(snackbar).toHaveStyle("visibility: hidden");
+    const alert = container.querySelector(".MuiAlert-root");
+    expect(alert).not.toBeInTheDocument();
   });
 
   it("calls onClose when snackbar closes", async () => {

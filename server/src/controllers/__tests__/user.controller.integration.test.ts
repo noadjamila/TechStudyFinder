@@ -17,7 +17,6 @@ describe("Users Registration Endpoint - Integration Tests", () => {
   beforeEach(async () => {
     if (!dbAvailable) return;
     try {
-      // Drop dependent tables first (CASCADE would work too)
       await pool.query(`DROP TABLE IF EXISTS favourites CASCADE`);
       await pool.query(`DROP TABLE IF EXISTS users CASCADE`);
     } catch (err) {
@@ -28,7 +27,6 @@ describe("Users Registration Endpoint - Integration Tests", () => {
   afterAll(async () => {
     if (!dbAvailable) return;
     try {
-      // Drop dependent tables first (CASCADE would work too)
       await pool.query(`DROP TABLE IF EXISTS favourites CASCADE`);
       await pool.query(`DROP TABLE IF EXISTS users CASCADE`);
     } catch (err) {
