@@ -14,7 +14,7 @@ import StartButton from "../../components/buttons/Button";
 import { useNavigate, useLocation } from "react-router-dom";
 import CardStack from "../../components/cards/CardStackLevel2";
 import theme from "../../theme/theme";
-import LogoMenu from "../../components/logo-menu/LogoMenu";
+import Header from "../../components/Header";
 import DesktopLayout from "../../layouts/DesktopLayout";
 import GreenCard from "../../components/cards/GreenCardBaseNotQuiz";
 import { useAuth } from "../../contexts/AuthContext";
@@ -227,9 +227,9 @@ const Homescreen: React.FC = () => {
           {MainContent}
         </DesktopLayout>
       ) : (
-        // MOBILE VIEW: Logo menu and navigation bar are rendered outside the main content flow
+        // MOBILE VIEW: Header with DropMenu and navigation bar are rendered outside the main content flow
         <>
-          <LogoMenu />
+          <Header fixed={true} />
           {MainContent}
         </>
       )}

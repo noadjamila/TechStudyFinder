@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Menu, MenuItem, IconButton, Box } from "@mui/material";
+import {
+  Menu,
+  MenuItem,
+  IconButton,
+  Box,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from "@mui/icons-material/Logout";
+import SettingsIcon from "@mui/icons-material/Settings";
+import FolderIcon from "@mui/icons-material/Folder";
 import theme from "../theme/theme";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -18,7 +28,7 @@ export default function DropMenu() {
 
   const open = Boolean(anchorEl);
 
-  const { user, isLoading, logout } = useAuth();
+  const { user, isLoading } = useAuth();
 
   /**
    * Handles the click on the Menu icon and sets the anchor element.
@@ -34,6 +44,21 @@ export default function DropMenu() {
    */
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  /**
+   * Handles login/logout action
+   */
+  const handleLoginLogout = async () => {
+    handleMenuClose();
+    if (user) {
+      // User is logged in - navigate to home with confirmation dialog
+      sessionStorage.setItem("showLogoutConfirmation", "true");
+      navigate("/home");
+    } else {
+      // User is not logged in - navigate to login
+      navigate("/login");
+    }
   };
   return (
     <div>
@@ -62,40 +87,124 @@ export default function DropMenu() {
         open={open}
         onClose={handleMenuClose}
         disableScrollLock={true}
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+          },
+        }}
       >
         {/* Menu Items */}
         {isLoading ? null : user ? (
-          <div>
-            <MenuItem
-              onClick={() => {
-                handleMenuClose();
-                navigate("/settings");
-              }}
-            >
-              Einstellungen
-            </MenuItem>
-
-            <MenuItem
-              onClick={async () => {
-                handleMenuClose();
-                logout();
-                navigate("/");
-              }}
-            >
-              Ausloggen
-            </MenuItem>
-          </div>
-        ) : (
           <MenuItem
-            onClick={() => {
-              handleMenuClose();
-              navigate("/login");
+            onClick={handleLoginLogout}
+            sx={{
+              borderRadius: 999,
+              mx: 1,
+              my: 0.5,
+              "&:hover": {
+                backgroundColor: theme.palette.secondary.light,
+                color: "#FFFFFF",
+                "& .MuiListItemIcon-root": {
+                  color: "#FFFFFF",
+                },
+              },
             }}
           >
-            Einloggen
+            <ListItemIcon>
+              <LogoutIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Ausloggen</ListItemText>
+          </MenuItem>
+        ) : (
+          <MenuItem
+            onClick={handleLoginLogout}
+            sx={{
+              borderRadius: 999,
+              mx: 1,
+              my: 0.5,
+              "&:hover": {
+                backgroundColor: theme.palette.secondary.light,
+                color: "#FFFFFF",
+                "& .MuiListItemIcon-root": {
+                  color: "#FFFFFF",
+                },
+              },
+            }}
+          >
+            <ListItemIcon>
+              <LogoutIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Einloggen</ListItemText>
           </MenuItem>
         )}
-        <MenuItem onClick={handleMenuClose}>Impressum</MenuItem>
+
+        {/* Settings - only show if user is logged in */}
+        {!isLoading && user && (
+          <MenuItem
+            component="a"
+            href="/settings"
+            onClick={handleMenuClose}
+            sx={{
+              borderRadius: 999,
+              mx: 1,
+              my: 0.5,
+              "&:hover": {
+                backgroundColor: theme.palette.secondary.light,
+                color: "#FFFFFF",
+                "& .MuiListItemIcon-root": {
+                  color: "#FFFFFF",
+                },
+              },
+            }}
+          >
+            <ListItemIcon>
+              <SettingsIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Einstellungen</ListItemText>
+          </MenuItem>
+        )}
+
+        <MenuItem
+          onClick={handleMenuClose}
+          sx={{
+            borderRadius: 999,
+            mx: 1,
+            my: 0.5,
+            "&:hover": {
+              backgroundColor: theme.palette.secondary.light,
+              color: "#FFFFFF",
+              "& .MuiListItemIcon-root": {
+                color: "#FFFFFF",
+              },
+            },
+          }}
+        >
+          <ListItemIcon>
+            <FolderIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Impressum</ListItemText>
+        </MenuItem>
+
+        <MenuItem
+          onClick={handleMenuClose}
+          sx={{
+            borderRadius: 999,
+            mx: 1,
+            my: 0.5,
+            "&:hover": {
+              backgroundColor: theme.palette.secondary.light,
+              color: "#FFFFFF",
+              "& .MuiListItemIcon-root": {
+                color: "#FFFFFF",
+              },
+            },
+          }}
+        >
+          <ListItemIcon>
+            <FolderIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Datenschutz</ListItemText>
+        </MenuItem>
       </Menu>
     </div>
   );

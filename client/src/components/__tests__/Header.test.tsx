@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import LogoMenu from "../logo-menu/LogoMenu";
+import Header from "../Header";
 import "@testing-library/jest-dom";
 import { AuthProvider } from "../../contexts/AuthContext";
 import { vi } from "vitest";
@@ -15,13 +15,13 @@ const renderWithAuth = (ui: React.ReactElement) => {
   return render(<AuthProvider>{ui}</AuthProvider>);
 };
 
-describe("LogoMenu Component", () => {
+describe("Header Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("renders the Logo and Menu Icon", async () => {
-    renderWithAuth(<LogoMenu />);
+    renderWithAuth(<Header />);
 
     const logo = screen.getByAltText(/Logo/i);
     expect(logo).toBeInTheDocument();
@@ -34,7 +34,7 @@ describe("LogoMenu Component", () => {
   });
 
   it("opens and closes the menu", async () => {
-    renderWithAuth(<LogoMenu />);
+    renderWithAuth(<Header />);
 
     // Wait for the menu button to appear
     await waitFor(() => {

@@ -5,19 +5,10 @@ import {
   Typography,
   Paper,
   useTheme,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-  IconButton,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import ResultIcon from "@mui/icons-material/Bookmark";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import MenuIcon from "@mui/icons-material/Menu";
-import LogoutIcon from "@mui/icons-material/Logout";
-import SettingsIcon from "@mui/icons-material/Settings";
-import FolderIcon from "@mui/icons-material/Folder";
 import { useNavigate, useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 /**
@@ -73,37 +64,11 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
     return 0;
   };
   const [value, setValue] = useState(getCurrentIndex());
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const menuOpen = Boolean(anchorEl);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Update the selected value when the route changes
   useEffect(() => {
     setValue(getCurrentIndex());
   }, [location.pathname]);
-  // Check if user is logged in
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        const response = await fetch("/api/auth/me", {
-          credentials: "include",
-        });
-        setIsLoggedIn(response.ok);
-      } catch {
-        setIsLoggedIn(false);
-      }
-    };
-
-    checkAuthStatus();
-    // Listen for auth status changes (e.g., after logout)
-    const handleAuthChange = () => {
-      checkAuthStatus();
-    };
-
-    window.addEventListener("auth-status-changed", handleAuthChange);
-    return () =>
-      window.removeEventListener("auth-status-changed", handleAuthChange);
-  }, []);
 
   /**
    * Handles the navigation click event. Updates the selected index and navigates to the new path.
@@ -114,33 +79,6 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
   const handleNavigation = (newValue: number, path: string) => {
     setValue(newValue);
     navigate(path);
-  };
-  /**
-   * Handles the menu button click.
-   */
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  /**
-   * Closes the menu.
-   */
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-  /**
-   * Handles login/logout action based on auth status.
-   */
-  const handleLoginLogout = async () => {
-    handleMenuClose();
-
-    if (isLoggedIn) {
-      // User is logged in - navigate to home with confirmation dialog
-      sessionStorage.setItem("showLogoutConfirmation", "true");
-      navigate("/home");
-    } else {
-      // User is not logged in - navigate to login
-      navigate("/login");
-    }
   };
   // desktop view (Vertical Sidebar)
   if (isSidebarMode) {
@@ -157,145 +95,6 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
             ml: 2,
           }}
         >
-          {/* Menu Button */}
-          <Box
-            sx={{
-              width: "100%",
-            }}
-          >
-            <IconButton
-              onClick={handleMenuClick}
-              sx={{
-                width: 60,
-                height: 60,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                mb: 1,
-                mx: "auto",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <MenuIcon
-                  sx={{
-                    fontSize: 24,
-                    color: theme.palette.text.secondary,
-                  }}
-                />
-              </Box>
-            </IconButton>
-          </Box>
-          {/* Dropdown Menu */}
-          <Menu
-            anchorEl={anchorEl}
-            open={menuOpen}
-            onClose={handleMenuClose}
-            disableScrollLock={true}
-            PaperProps={{
-              sx: {
-                borderRadius: 4,
-              },
-            }}
-          >
-            <MenuItem
-              onClick={handleLoginLogout}
-              sx={{
-                borderRadius: 999,
-                mx: 1,
-                my: 0.5,
-                "&:hover": {
-                  backgroundColor: theme.palette.secondary.light,
-                  color: "#FFFFFF",
-                  "& .MuiListItemIcon-root": {
-                    color: "#FFFFFF",
-                  },
-                },
-              }}
-            >
-              <ListItemIcon>
-                <LogoutIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Ein-/Ausloggen</ListItemText>
-            </MenuItem>
-            <MenuItem
-              component="a"
-              href="/settings"
-              onClick={handleMenuClose}
-              sx={{
-                borderRadius: 999,
-                mx: 1,
-                my: 0.5,
-                "&:hover": {
-                  backgroundColor: theme.palette.secondary.light,
-                  color: "#FFFFFF",
-                  "& .MuiListItemIcon-root": {
-                    color: "#FFFFFF",
-                  },
-                },
-              }}
-            >
-              <ListItemIcon>
-                <SettingsIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Einstellungen</ListItemText>
-            </MenuItem>
-            <MenuItem
-              onClick={handleMenuClose}
-              sx={{
-                borderRadius: 999,
-                mx: 1,
-                my: 0.5,
-                "&:hover": {
-                  backgroundColor: theme.palette.secondary.light,
-                  color: "#FFFFFF",
-                  "& .MuiListItemIcon-root": {
-                    color: "#FFFFFF",
-                  },
-                },
-              }}
-            >
-              <ListItemIcon>
-                <FolderIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Impressum</ListItemText>
-            </MenuItem>
-            <MenuItem
-              onClick={handleMenuClose}
-              sx={{
-                borderRadius: 999,
-                mx: 1,
-                my: 0.5,
-                "&:hover": {
-                  backgroundColor: theme.palette.secondary.light,
-                  color: "#FFFFFF",
-                  "& .MuiListItemIcon-root": {
-                    color: "#FFFFFF",
-                  },
-                },
-              }}
-            >
-              <ListItemIcon>
-                <FolderIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Datenschutz</ListItemText>
-            </MenuItem>
-          </Menu>
-          {/* Separator */}
-          <Box
-            sx={{
-              mt: 2,
-              mb: 1,
-              borderTop: `1px solid ${theme.palette.divider}`,
-              width: "100%",
-            }}
-          />
           {/* Iterate over navigation items */}
           {navItems.map((item, index) => (
             <Box
