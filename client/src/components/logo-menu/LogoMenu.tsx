@@ -60,7 +60,7 @@ const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
     if (user) {
       // User is logged in - navigate to home with confirmation dialog
       sessionStorage.setItem("showLogoutConfirmation", "true");
-      navigate("/home");
+      navigate("/");
     } else {
       // User is not logged in - navigate to login
       navigate("/login");

@@ -254,7 +254,7 @@ export default function Register() {
               component="span"
               variant="body2"
               sx={{
-                color: theme.palette.text.primary,
+                color: theme.palette.decorative.blue,
                 cursor: "pointer",
                 fontWeight: "bold",
                 "&:hover": {

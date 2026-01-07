@@ -101,14 +101,6 @@ export default function Login() {
           </Alert>
         )}
 
-        <Box sx={{ mb: 3 }}>
-          <BackButton
-            label="Zurück"
-            onClick={() => navigate("/")}
-            disabled={loading}
-          />
-        </Box>
-
         <FormField
           label="Username"
           value={username}
@@ -125,7 +117,12 @@ export default function Login() {
           sx={{ mb: 3 }}
         />
 
-        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+          <BackButton
+            label="Zurück"
+            onClick={() => navigate("/")}
+            disabled={loading}
+          />
           <PrimaryButton
             label={loading ? "Login..." : "Login"}
             onClick={handleLogin}
