@@ -86,7 +86,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
       >
         <div
           style={{
-            marginLeft: "30px",
+            marginLeft: "38px",
           }}
         >
           <DropMenu />
