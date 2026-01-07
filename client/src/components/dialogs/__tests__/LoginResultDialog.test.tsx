@@ -27,7 +27,9 @@ describe("LoginResultDialog", () => {
     );
 
     expect(
-      screen.getByText("Login fehlgeschlagen - Bitte versuche es erneut"),
+      screen.getByText(
+        "Username oder Passwort falsch - Bitte versuche es erneut",
+      ),
     ).toBeInTheDocument();
   });
 
