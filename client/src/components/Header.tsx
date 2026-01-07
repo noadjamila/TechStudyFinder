@@ -1,7 +1,7 @@
 import React from "react";
 import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 import theme from "../theme/theme";
-import DropMenu from "./DropMenu";
+import DropMenu from "./DropdownMenu";
 
 interface LogoMenuProps {
   fixed?: boolean;

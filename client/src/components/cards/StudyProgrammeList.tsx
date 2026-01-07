@@ -12,88 +12,89 @@ import { StudyProgramme } from "../../types/StudyProgramme.types";
 import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import StudyProgrammeCard from "../cards/StudyProgrammeCard";
-import { useNavigate } from "react-router-dom";
-import EmptyStateCard from "./EmptyStateCard";
+import StudyProgrammeCard from "./StudyProgrammeCard";
 
-interface ResultsProps {
+interface StudyProgrammeListProps {
   studyProgrammes: StudyProgramme[];
+  headline: string;
+  onToggleFavorite?: (programmeId: number) => void;
+  favorites?: Set<string | number>;
 }
 
 /**
- * Results component displays filtered study programmes.
- * Receives study programmes as props from parent component.
+ * StudyProgrammeList - Reusable base component for displaying a list of study programmes.
+ * Can be used for both quiz results and favorites with filtering capabilities.
+ *
+ * @component
+ * @param {StudyProgrammeListProps} props - Component props
+ * @returns {React.ReactElement} The study programme list component
  */
-const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
-  const navigate = useNavigate();
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [selectedLocation, setSelectedLocation] = useState<string>("");
+const StudyProgrammeList: React.FC<StudyProgrammeListProps> = ({
+  studyProgrammes,
+  headline,
+  onToggleFavorite,
+  favorites = new Set(),
+}) => {
+  const [selectedUniversity, setSelectedUniversity] = useState<string>("");
   const [selectedDegree, setSelectedDegree] = useState<string>("");
 
-  const handleQuizStart = () => {
-    navigate("/quiz");
-  };
-
-  const toggleFavorite = (programmeId: string) => {
-    setFavorites((prev) => {
-      const newFavorites = new Set(prev);
-      if (newFavorites.has(programmeId)) {
-        newFavorites.delete(programmeId);
-      } else {
-        newFavorites.add(programmeId);
-      }
-      return newFavorites;
-    });
-  };
-
-  // Get unique locations and degrees for filter options
-  const locations = useMemo(() => {
-    const allLocations = studyProgrammes.flatMap((p) => p.standorte || []);
-    const uniqueLocations = [...new Set(allLocations)];
-    return uniqueLocations.sort();
+  // Get unique universities and degrees for filter options
+  const universities = useMemo(() => {
+    const uniqueUniversities = [
+      ...new Set(studyProgrammes.map((p) => p.university)),
+    ];
+    return uniqueUniversities.sort();
   }, [studyProgrammes]);
 
   const degrees = useMemo(() => {
-    const uniqueDegrees = [...new Set(studyProgrammes.map((p) => p.abschluss))];
+    const uniqueDegrees = [...new Set(studyProgrammes.map((p) => p.degree))];
     return uniqueDegrees.sort();
   }, [studyProgrammes]);
 
   // Filter programmes based on selected filters
   const filteredProgrammes = useMemo(() => {
     return studyProgrammes.filter((programme) => {
-      const matchesLocation =
-        !selectedLocation ||
-        (programme.standorte && programme.standorte.includes(selectedLocation));
+      const matchesUniversity =
+        !selectedUniversity || programme.university === selectedUniversity;
       const matchesDegree =
-        !selectedDegree || programme.abschluss === selectedDegree;
-      return matchesLocation && matchesDegree;
+        !selectedDegree || programme.degree === selectedDegree;
+      return matchesUniversity && matchesDegree;
     });
-  }, [studyProgrammes, selectedLocation, selectedDegree]);
+  }, [studyProgrammes, selectedUniversity, selectedDegree]);
 
   return (
     <Box
       sx={{
         maxWidth: 800,
         margin: { xs: "0 auto", sm: "0" },
+        padding: 3,
         paddingBottom: { xs: "120px", sm: 3 },
         minHeight: "100vh",
       }}
     >
-      <Typography variant="h2">Meine Ergebnisse</Typography>
+      <Typography
+        variant="h2"
+        component="h1"
+        gutterBottom
+        color="text.header"
+        sx={{
+          marginBottom: 3,
+          fontWeight: 700,
+          fontSize: "2.5rem", // Desktop: 40px
+          "@media (max-width:600px)": {
+            fontSize: "2rem", // Mobile: 32px
+          },
+        }}
+      >
+        {headline}
+      </Typography>
 
       {studyProgrammes.length === 0 ? (
-        <Box sx={{ textAlign: "center", mt: { xs: 4, sm: 5 } }}>
-          <EmptyStateCard
-            message={
-              <>
-                Keine Studiengänge gefunden!
-                <br />
-                Versuche, deine Quizantworten anzupassen.
-              </>
-            }
-            buttonLabel="Quiz beginnen"
-            onButtonClick={handleQuizStart}
-          />
+        <Box sx={{ padding: 2 }}>
+          <Typography variant="h6">Keine Studiengänge gefunden</Typography>
+          <Typography variant="body2">
+            Versuchen Sie, Ihre Quizantworten anzupassen
+          </Typography>
         </Box>
       ) : (
         <>
@@ -115,12 +116,12 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
               }}
             >
               <Select
-                id="location-filter"
-                value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
+                id="university-filter"
+                value={selectedUniversity}
+                onChange={(e) => setSelectedUniversity(e.target.value)}
                 displayEmpty
                 IconComponent={ArrowDropDownIcon}
-                aria-label="Filter nach Standort"
+                aria-label="Filter nach Universität oder Hochschule"
                 MenuProps={{
                   PaperProps: {
                     sx: {
@@ -168,7 +169,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {selected || "Stadt"}
+                      {selected || "Universität/Hochschule"}
                     </Typography>
                   </Box>
                 )}
@@ -195,11 +196,11 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                       width: "100%",
                     }}
                   >
-                    Alle Städte
+                    Alle Universitäten/Hochschulen
                   </Box>
                 </MenuItem>
-                {locations.map((location) => (
-                  <MenuItem key={location} value={location}>
+                {universities.map((university) => (
+                  <MenuItem key={university} value={university}>
                     <Box
                       sx={{
                         overflow: "hidden",
@@ -208,7 +209,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         width: "100%",
                       }}
                     >
-                      {location}
+                      {university}
                     </Box>
                   </MenuItem>
                 ))}
@@ -329,16 +330,18 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
           </Stack>
 
           <Stack spacing={2}>
-            {filteredProgrammes.map((programme) => {
-              return (
-                <StudyProgrammeCard
-                  key={programme.studiengang_id}
-                  programme={programme}
-                  isFavorite={favorites.has(programme.studiengang_id)}
-                  onToggleFavorite={toggleFavorite}
-                />
-              );
-            })}
+            {filteredProgrammes.map((programme) => (
+              <StudyProgrammeCard
+                key={programme.id}
+                programme={programme}
+                isFavorite={favorites.has(programme.id)}
+                onToggleFavorite={
+                  onToggleFavorite
+                    ? () => onToggleFavorite(programme.id)
+                    : undefined
+                }
+              />
+            ))}
           </Stack>
         </>
       )}
@@ -346,4 +349,4 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   );
 };
 
-export default Results;
+export default StudyProgrammeList;

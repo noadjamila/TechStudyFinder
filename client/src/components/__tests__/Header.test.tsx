@@ -1,12 +1,12 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import LogoMenu from "../Header";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import Header from "../Header";
 import "@testing-library/jest-dom";
 import { AuthProvider } from "../../contexts/AuthContext";
 import { vi } from "vitest";
 
 vi.mock("../../api/authApi", () => ({
-  getCurrentUser: vi.fn().mockResolvedValue(null),
+  getCurrentUser: vi.fn().mockResolvedValue({ id: 1, username: "testuser" }),
   login: vi.fn(),
   logout: vi.fn(),
 }));
@@ -15,34 +15,44 @@ const renderWithAuth = (ui: React.ReactElement) => {
   return render(<AuthProvider>{ui}</AuthProvider>);
 };
 
-describe("LogoMenu Component", () => {
+describe("Header Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("renders the Logo and Menu Icon", () => {
-    renderWithAuth(<LogoMenu />);
+  it("renders the Logo and Menu Icon", async () => {
+    renderWithAuth(<Header />);
 
     const logo = screen.getByAltText(/Logo/i);
     expect(logo).toBeInTheDocument();
 
-    const menuIcon = screen.getByRole("button");
-    expect(menuIcon).toBeInTheDocument();
+    // Wait for the loading to complete and menu button to appear
+    await waitFor(() => {
+      const buttons = screen.getAllByRole("button");
+      expect(buttons.length).toBeGreaterThan(0);
+    });
   });
 
-  it("opens and closes the menu", () => {
-    renderWithAuth(<LogoMenu />);
+  it("opens and closes the menu", async () => {
+    renderWithAuth(<Header />);
 
-    const menuIcon = screen.getByRole("button");
+    // Wait for the menu button to appear
+    await waitFor(() => {
+      expect(screen.getAllByRole("button").length).toBeGreaterThan(0);
+    });
+
+    const menuIcon = screen.getAllByRole("button")[0];
     fireEvent.click(menuIcon);
-    expect(screen.getAllByRole("menuitem").length).toBeGreaterThan(0);
+
+    await waitFor(() => {
+      expect(screen.getAllByRole("menuitem").length).toBeGreaterThan(0);
+    });
 
     // Menü schließen durch Menü-Eintrag
     fireEvent.click(screen.getByText("Impressum"));
 
-    expect(screen.queryAllByRole("menuitem")).toHaveLength(0);
-
-    // Re-query for menu items after closing the menu
-    expect(screen.queryAllByRole("menuitem").length).toBe(0);
+    await waitFor(() => {
+      expect(screen.queryAllByRole("menuitem")).toHaveLength(0);
+    });
   });
 });

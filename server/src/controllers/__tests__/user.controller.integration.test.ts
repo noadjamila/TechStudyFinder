@@ -17,18 +17,20 @@ describe("Users Registration Endpoint - Integration Tests", () => {
   beforeEach(async () => {
     if (!dbAvailable) return;
     try {
-      await pool.query(`DROP TABLE IF EXISTS users`);
+      await pool.query(`DROP TABLE IF EXISTS favourites CASCADE`);
+      await pool.query(`DROP TABLE IF EXISTS users CASCADE`);
     } catch (err) {
-      console.warn("Could not drop users table in beforeEach", err);
+      console.warn("Could not drop tables in beforeEach", err);
     }
   });
 
   afterAll(async () => {
     if (!dbAvailable) return;
     try {
-      await pool.query(`DROP TABLE IF EXISTS users`);
+      await pool.query(`DROP TABLE IF EXISTS favourites CASCADE`);
+      await pool.query(`DROP TABLE IF EXISTS users CASCADE`);
     } catch (err) {
-      console.warn("Could not drop users table in afterAll", err);
+      console.warn("Could not drop tables in afterAll", err);
     }
   });
 

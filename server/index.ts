@@ -9,11 +9,13 @@ import "dotenv/config";
 import path from "path";
 import testRouter from "./src/routes/health.route";
 import quizRoutes from "./src/routes/quiz.route";
-import { authRouter } from "./src/routes/auth.route";
 import { pool } from "./db";
 import "express-async-errors";
+import authRouter from "./src/routes/auth.route";
+import favoritesRouter from "./src/routes/favorites.route";
 import "./src/types/express-session";
 import session from "express-session";
+import pgSession from "connect-pg-simple";
 
 const isTesting =
   process.env.NODE_ENV === "test" || !!process.env.JEST_WORKER_ID;
@@ -39,6 +41,7 @@ if (!process.env.GITHUB_WEBHOOK_SECRET) {
 const app = express();
 app.set("trust proxy", 1);
 const PORT = Number(process.env.PORT) || 5001;
+const HOST = process.env.HOST || "127.0.0.1";
 
 const clientDistPath =
   process.env.CLIENT_DIST_PATH ||
@@ -60,13 +63,22 @@ if (process.env.NODE_ENV !== "production") {
 app.use(express.json());
 
 // Session configuration
+const PostgresSessionStore = pgSession(session);
+
 app.use(
   session({
+    store: new PostgresSessionStore({
+      pool,
+      tableName: "session",
+      createTableIfMissing: true,
+    }),
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     },
   }),
@@ -76,6 +88,7 @@ app.use(
 app.use("/api", testRouter);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/auth", authRouter);
+app.use("/api/users/favorites", favoritesRouter);
 
 // Test DB route
 app.get("/api/test-db", async (_req, res) => {
@@ -89,7 +102,7 @@ app.get("/api/test-db", async (_req, res) => {
 
 // 404 handler
 app.use("/api", (_req, res) => {
-  res.status(404).json({ error: "Route not found" });
+  res.status(404).json({ error: "Website nicht gefunden" });
 });
 
 // Serve static files from the frontend
@@ -118,10 +131,24 @@ app.use(((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 }) as ErrorRequestHandler);
 
 if (require.main === module) {
-  server = app.listen(PORT, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Backend running on ${PORT}`);
-  });
+  const startServer = (port: number) => {
+    server = app.listen(port, HOST, () => {
+      // eslint-disable-next-line no-console
+      console.log(`Backend running on http://${HOST}:${port}`);
+    });
+
+    // Handle port already in use error
+    server.on("error", (err: any) => {
+      if (err.code === "EADDRINUSE") {
+        console.warn(`Port ${port} is in use, trying port ${port + 1}...`);
+        startServer(port + 1);
+      } else {
+        throw err;
+      }
+    });
+  };
+
+  startServer(PORT);
 }
 
 process.on("uncaughtException", (error) => {
@@ -133,4 +160,4 @@ process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection:", promise, "reason:", reason);
 });
 
-export { app, server, pool };
+export { server, pool, app, PORT, HOST };

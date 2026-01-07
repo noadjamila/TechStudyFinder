@@ -13,6 +13,33 @@ const DUMMY_BCRYPT_HASH =
   "$2b$12$C6UzMDM.H6dfI/f/IKcEe.OvJH5tq3c5F5QyXv3D1Gx5aFQvZyKqG";
 
 /**
+ * Ensures the users table exists before querying.
+ * Creates the table if it doesn't exist.
+ */
+async function ensureUsersTable(): Promise<void> {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      username TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `);
+
+  const result = await pool.query(`
+    SELECT column_name 
+    FROM information_schema.columns 
+    WHERE table_name = 'users' AND column_name = 'password_hash'
+  `);
+
+  if (result.rows.length === 0) {
+    await pool.query(`
+      ALTER TABLE users ADD COLUMN password_hash TEXT NOT NULL
+    `);
+  }
+}
+
+/**
  * Finds a user by username and password for login.
  * Uses constant time password comparison to prevent timing attacks.
  * @param username
@@ -23,6 +50,7 @@ export async function findUserForLogin(
   username: string,
   password: string,
 ): Promise<{ id: number; username: string } | null> {
+  await ensureUsersTable();
   const dbUser = await findUserByUsername(username);
 
   const passwordHash = dbUser ? dbUser.password_hash : DUMMY_BCRYPT_HASH;

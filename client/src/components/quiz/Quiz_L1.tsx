@@ -1,7 +1,7 @@
 import { useState } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
 import SecondaryButton from "../buttons/SecondaryButton";
-import BaseCard from "../BaseCard";
+import BaseCard from "../cards/QuizCardBase";
 import theme from "../../theme/theme";
 import { postFilterLevel } from "../../api/quizApi";
 import { Box } from "@mui/material";

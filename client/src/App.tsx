@@ -5,12 +5,14 @@ import ResultsPage from "./pages/ResultsPage";
 import StudyProgrammeDetailPage from "./pages/StudyProgrammeDetailPage";
 import Settings from "./pages/Settings";
 import Register from "./pages/Register";
+import Login from "./pages/Login/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Homescreen />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/quiz" element={<QuizFlow />} />
       <Route path="/results" element={<ResultsPage />} />

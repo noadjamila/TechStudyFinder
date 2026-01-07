@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { Box, useTheme, Typography } from "@mui/material";
 import NavBar from "../../src/components/nav-bar/NavBar";
-import DropMenu from "../components/DropMenu";
+import DropMenu from "../components/DropdownMenu";
 
 /**
  * Props for the DesktopLayout component.

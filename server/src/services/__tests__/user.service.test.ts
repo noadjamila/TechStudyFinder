@@ -50,6 +50,7 @@ describe("registerUser", () => {
 
     try {
       await registerUser("testuser", "Password123!");
+      fail("Should have thrown AppError");
     } catch (error) {
       expect(error).toBeInstanceOf(AppError);
       expect((error as AppError).status).toBe(409);
