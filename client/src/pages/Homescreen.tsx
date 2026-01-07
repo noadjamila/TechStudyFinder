@@ -84,7 +84,7 @@ const Homescreen: React.FC = () => {
         overflow: "visible",
         maxWidth: "100%",
         mx: "auto",
-        mt: { xs: 4, sm: 15, md: 9 },
+        mt: { xs: 1, sm: 15, md: 9 },
         position: "relative",
         color: theme.palette.text.primary,
         textAlign: "center",
@@ -99,17 +99,19 @@ const Homescreen: React.FC = () => {
       {/* Subtitle */}
       <Typography
         variant="body1"
-        sx={{ fontWeight: "normal", lineHeight: 1.3, mb: 3 }}
+        sx={{ fontWeight: "normal", lineHeight: 1.3, mb: 0 }}
       >
         {subTitle}
       </Typography>
 
       {/* Info Texts */}
-      <Box sx={{ maxWidth: 500, mx: "auto", mb: 10 }}>
+      <Box sx={{ maxWidth: 500, mx: "auto", mb: { xs: 10, sm: 8, md: 2 } }}>
         <Typography
           variant="body1"
           sx={{
             mt: 3,
+            px: { xs: 2, sm: 0 },
+            pt: { xs: 0 },
             mb: { xs: 1, md: 3 },
             fontWeight: "bold",
           }}
@@ -121,7 +123,7 @@ const Homescreen: React.FC = () => {
           variant="body1"
           sx={{
             lineHeight: 1.3,
-            mb: { xs: 2, md: 10 },
+            mb: { xs: 1, md: 10 },
           }}
         >
           {infoText2}
