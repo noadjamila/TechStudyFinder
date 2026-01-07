@@ -166,7 +166,7 @@ describe("login", () => {
 
     expect(statusMock).toHaveBeenCalledWith(401);
     expect(jsonMock).toHaveBeenCalledWith({
-      message: "Invalid credentials: ",
+      message: "Invalid credentials",
     });
   });
 });
