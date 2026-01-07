@@ -52,7 +52,7 @@ export default function DropMenu() {
     handleMenuClose();
     if (user) {
       sessionStorage.setItem("showLogoutConfirmation", "true");
-      navigate("/home");
+      navigate("/");
     } else {
       navigate("/login");
     }

@@ -59,7 +59,7 @@ export default function Login() {
   const handleResultDialogClose = () => {
     setShowResultDialog(false);
     if (loginSuccess) {
-      navigate("/home");
+      navigate("/");
     }
   };
 

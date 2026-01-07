@@ -12,7 +12,6 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Homescreen />} />
-      <Route path="/home" element={<Homescreen />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/quiz" element={<QuizFlow />} />
