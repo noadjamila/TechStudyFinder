@@ -37,9 +37,10 @@ if (!process.env.GITHUB_WEBHOOK_SECRET) {
   }
 }
 
-const app = express();
+export const app = express();
 app.set("trust proxy", 1);
-const PORT = Number(process.env.PORT) || 5001;
+export const PORT = Number(process.env.PORT) || 5001;
+export const HOST = process.env.HOST || "127.0.0.1";
 
 const clientDistPath =
   process.env.CLIENT_DIST_PATH ||
@@ -151,4 +152,4 @@ process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection:", promise, "reason:", reason);
 });
 
-export { app, server, pool };
+export { server, pool };
