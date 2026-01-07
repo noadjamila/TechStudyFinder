@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { Box, Typography } from "@mui/material";
-import CardStack from "./CardStack";
+import CardStack from "../cards/CardStackLevel2";
 import theme from "../../theme/theme";
 import StartButton from "../buttons/PrimaryButton";
 

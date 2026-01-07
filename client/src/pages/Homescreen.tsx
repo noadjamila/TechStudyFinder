@@ -10,14 +10,14 @@ import {
   DialogContent,
   Button,
 } from "@mui/material";
-import StartButton from "../../components/buttons/Button";
+import StartButton from "../components/buttons/PrimaryButton";
 import { useNavigate, useLocation } from "react-router-dom";
-import CardStack from "../../components/cards/CardStackLevel2";
-import theme from "../../theme/theme";
-import Header from "../../components/Header";
-import DesktopLayout from "../../layouts/DesktopLayout";
-import GreenCard from "../../components/cards/GreenCardBaseNotQuiz";
-import { useAuth } from "../../contexts/AuthContext";
+import CardStack from "../components/cards/CardStackLevel2";
+import theme from "../theme/theme";
+import Header from "../components/Header";
+import DesktopLayout from "../layouts/DesktopLayout";
+import GreenCard from "../components/cards/GreenCardBaseNotQuiz";
+import { useAuth } from "../contexts/AuthContext";
 
 /**
  * Homescreen component.
