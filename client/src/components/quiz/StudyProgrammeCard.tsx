@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 interface StudyProgrammeCardProps {
   programme: StudyProgramme;
   isFavorite?: boolean;
-  onToggleFavorite?: (programmeId: number) => void;
+  onToggleFavorite?: (programmeId: string) => void;
   clickable?: boolean;
 }
 
@@ -29,21 +29,21 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
 
   const handleCardClick = () => {
     if (clickable) {
-      navigate(`/study-programme/${programme.id}`);
+      navigate(`/study-programme/${programme.studiengang_id}`);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (clickable && (e.key === "Enter" || e.key === " ")) {
       e.preventDefault();
-      navigate(`/study-programme/${programme.id}`);
+      navigate(`/study-programme/${programme.studiengang_id}`);
     }
   };
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (onToggleFavorite) {
-      onToggleFavorite(programme.id);
+    if (onToggleFavorite && programme.studiengang_id) {
+      onToggleFavorite(programme.studiengang_id);
     }
   };
 
@@ -121,7 +121,7 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
                   fontSize: { xs: "0.875rem", sm: "1rem" },
                 }}
               >
-                {programme.university}
+                {programme.hochschule}
               </Typography>
             </Box>
             <Box
@@ -153,7 +153,7 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
                   fontSize: { xs: "0.875rem", sm: "1rem" },
                 }}
               >
-                {programme.degree}
+                {programme.abschluss}
               </Typography>
             </Box>
           </Box>
