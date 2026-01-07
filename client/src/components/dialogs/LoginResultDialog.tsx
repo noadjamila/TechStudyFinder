@@ -12,7 +12,7 @@ interface LoginResultDialogProps {
  * LoginResultDialog component.
  * Displays success or error message after login attempt in a simple Snackbar.
  * Success: "Login erfolgreich" - Auto-closes and navigates to /home
- * Error: "Login fehlgeschlagen" - Auto-closes and stays on login
+ * Error: "Username oder Passwort falsch - Bitte versuche es erneut" - stays on login
  *
  * @param {LoginResultDialogProps} props - Component props
  * @returns {React.ReactElement} Snackbar component
@@ -44,7 +44,7 @@ export default function LoginResultDialog({
       <Alert severity={success ? "success" : "error"} sx={{ width: "100%" }}>
         {success
           ? "Login erfolgreich"
-          : "Login fehlgeschlagen - Bitte versuche es erneut"}
+          : "Username oder Passwort falsch - Bitte versuche es erneut"}
       </Alert>
     </Snackbar>
   );
