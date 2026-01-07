@@ -40,3 +40,21 @@ export function validatePassword(password: string): {
   }
   return { valid: true };
 }
+
+/**
+ * Validates the username based on registration requirements (at least 5 characters)
+ * @param {string} username - The username to validate
+ * @returns {{valid: boolean, message?: string}} Validation result with optional error message
+ */
+export function validateUsername(username: string): {
+  valid: boolean;
+  message?: string;
+} {
+  if (!username || username.length < 5) {
+    return {
+      valid: false,
+      message: "Username muss mindestens 5 Zeichen lang sein.",
+    };
+  }
+  return { valid: true };
+}

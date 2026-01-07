@@ -34,8 +34,6 @@ export default function PrimaryButton({
         bgcolor: theme.palette.primary.main,
         borderColor: theme.palette.primary.main,
         color: theme.palette.text.primary,
-        height: "35px",
-        padding: "8px 16px",
         borderRadius: "9px",
         fontWeight: "normal",
         "&:hover:not(:disabled)": {
