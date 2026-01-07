@@ -450,6 +450,12 @@ const StudyProgrammeDetailPage: React.FC = () => {
                         sx={{
                           backgroundColor: theme.palette.primary.main,
                           fontSize: "16px",
+                          height: "auto",
+                          "& .MuiChip-label": {
+                            whiteSpace: "normal",
+                            wordBreak: "break-word",
+                            padding: "8px 12px",
+                          },
                         }}
                       />
                     ))}
