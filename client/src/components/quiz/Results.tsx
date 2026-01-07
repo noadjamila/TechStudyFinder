@@ -13,7 +13,8 @@ import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import StudyProgrammeCard from "../cards/StudyProgrammeCard";
-import Headline from "../Headline";
+import { useNavigate } from "react-router-dom";
+import EmptyStateCard from "./EmptyStateCard";
 
 interface ResultsProps {
   studyProgrammes: StudyProgramme[];
@@ -24,11 +25,16 @@ interface ResultsProps {
  * Receives study programmes as props from parent component.
  */
 const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
-  const [favorites, setFavorites] = useState<Set<number>>(new Set());
-  const [selectedUniversity, setSelectedUniversity] = useState<string>("");
+  const navigate = useNavigate();
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [selectedDegree, setSelectedDegree] = useState<string>("");
 
-  const toggleFavorite = (programmeId: number) => {
+  const handleQuizStart = () => {
+    navigate("/quiz");
+  };
+
+  const toggleFavorite = (programmeId: string) => {
     setFavorites((prev) => {
       const newFavorites = new Set(prev);
       if (newFavorites.has(programmeId)) {
@@ -40,29 +46,29 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
     });
   };
 
-  // Get unique universities and degrees for filter options
-  const universities = useMemo(() => {
-    const uniqueUniversities = [
-      ...new Set(studyProgrammes.map((p) => p.university)),
-    ];
-    return uniqueUniversities.sort();
+  // Get unique locations and degrees for filter options
+  const locations = useMemo(() => {
+    const allLocations = studyProgrammes.flatMap((p) => p.standorte || []);
+    const uniqueLocations = [...new Set(allLocations)];
+    return uniqueLocations.sort();
   }, [studyProgrammes]);
 
   const degrees = useMemo(() => {
-    const uniqueDegrees = [...new Set(studyProgrammes.map((p) => p.degree))];
+    const uniqueDegrees = [...new Set(studyProgrammes.map((p) => p.abschluss))];
     return uniqueDegrees.sort();
   }, [studyProgrammes]);
 
   // Filter programmes based on selected filters
   const filteredProgrammes = useMemo(() => {
     return studyProgrammes.filter((programme) => {
-      const matchesUniversity =
-        !selectedUniversity || programme.university === selectedUniversity;
+      const matchesLocation =
+        !selectedLocation ||
+        (programme.standorte && programme.standorte.includes(selectedLocation));
       const matchesDegree =
-        !selectedDegree || programme.degree === selectedDegree;
-      return matchesUniversity && matchesDegree;
+        !selectedDegree || programme.abschluss === selectedDegree;
+      return matchesLocation && matchesDegree;
     });
-  }, [studyProgrammes, selectedUniversity, selectedDegree]);
+  }, [studyProgrammes, selectedLocation, selectedDegree]);
 
   return (
     <Box
@@ -73,14 +79,21 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
         minHeight: "100vh",
       }}
     >
-      <Headline label="Meine Ergebnisse" />
+      <Typography variant="h2">Meine Ergebnisse</Typography>
 
       {studyProgrammes.length === 0 ? (
-        <Box sx={{ padding: 2 }}>
-          <Typography variant="h6">Keine Studiengänge gefunden</Typography>
-          <Typography variant="body2">
-            Versuchen Sie, Ihre Quizantworten anzupassen
-          </Typography>
+        <Box sx={{ textAlign: "center", mt: { xs: 4, sm: 5 } }}>
+          <EmptyStateCard
+            message={
+              <>
+                Keine Studiengänge gefunden!
+                <br />
+                Versuche, deine Quizantworten anzupassen.
+              </>
+            }
+            buttonLabel="Quiz beginnen"
+            onButtonClick={handleQuizStart}
+          />
         </Box>
       ) : (
         <>
@@ -102,12 +115,12 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
               }}
             >
               <Select
-                id="university-filter"
-                value={selectedUniversity}
-                onChange={(e) => setSelectedUniversity(e.target.value)}
+                id="location-filter"
+                value={selectedLocation}
+                onChange={(e) => setSelectedLocation(e.target.value)}
                 displayEmpty
                 IconComponent={ArrowDropDownIcon}
-                aria-label="Filter nach Universität oder Hochschule"
+                aria-label="Filter nach Standort"
                 MenuProps={{
                   PaperProps: {
                     sx: {
@@ -155,7 +168,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {selected || "Universität/Hochschule"}
+                      {selected || "Stadt"}
                     </Typography>
                   </Box>
                 )}
@@ -182,11 +195,11 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                       width: "100%",
                     }}
                   >
-                    Alle Universitäten/Hochschulen
+                    Alle Städte
                   </Box>
                 </MenuItem>
-                {universities.map((university) => (
-                  <MenuItem key={university} value={university}>
+                {locations.map((location) => (
+                  <MenuItem key={location} value={location}>
                     <Box
                       sx={{
                         overflow: "hidden",
@@ -195,7 +208,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         width: "100%",
                       }}
                     >
-                      {university}
+                      {location}
                     </Box>
                   </MenuItem>
                 ))}
@@ -316,14 +329,16 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
           </Stack>
 
           <Stack spacing={2}>
-            {filteredProgrammes.map((programme) => (
-              <StudyProgrammeCard
-                key={programme.id}
-                programme={programme}
-                isFavorite={favorites.has(programme.id)}
-                onToggleFavorite={toggleFavorite}
-              />
-            ))}
+            {filteredProgrammes.map((programme) => {
+              return (
+                <StudyProgrammeCard
+                  key={programme.studiengang_id}
+                  programme={programme}
+                  isFavorite={favorites.has(programme.studiengang_id)}
+                  onToggleFavorite={toggleFavorite}
+                />
+              );
+            })}
           </Stack>
         </>
       )}

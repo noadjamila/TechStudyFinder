@@ -103,15 +103,8 @@ const Homescreen: React.FC = () => {
       }}
     >
       {/* Main Title */}
-      <Typography
-        variant="h2"
-        className="title"
-        sx={{
-          mt: { md: 3 },
-        }}
-      >
-        {mainTitle}
-      </Typography>
+      <Typography variant="h2">{mainTitle}</Typography>
+
       {/* Subtitle */}
       <Typography
         variant="body1"

@@ -1,15 +1,14 @@
-import { Box, Alert } from "@mui/material";
+import { Box, Alert, Typography } from "@mui/material";
 import MainLayout from "../layouts/MainLayout";
 import PrimaryButton from "../components/buttons/PrimaryButton";
 import SecondaryButton from "../components/buttons/SecondaryButton";
 import Dialog from "../components/dialogs/Dialog";
 import InputField from "../components/login-register/InputField";
-import Headline from "../components/Headline";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { changePassword, deleteUser } from "../api/authApi";
-import { validatePassword } from "../services/passwordValidation";
+import { validatePassword } from "../services/credentialsValidation";
 
 /**
  * Manages the settings of a user.
@@ -92,7 +91,7 @@ export default function Settings() {
   return (
     <MainLayout>
       <Box sx={{ mb: 4 }}>
-        <Headline label="Passwort ändern" />
+        <Typography variant="h2">Passwort ändern</Typography>
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {error}
@@ -134,7 +133,7 @@ export default function Settings() {
       </Box>
 
       <Box>
-        <Headline label="Profil löschen" />
+        <Typography variant="h2">Profil löschen</Typography>
         <p>
           Möchtest du dein Profil mit all deinen gespeicherten Daten löschen?
         </p>

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Box, Alert, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import PrimaryButton from "../../components/buttons/PrimaryButton";
-import BackButton from "../../components/buttons/BackButton";
-import FormField from "../../components/login-register/InputField";
-import FormHeader from "../../components/login-register/FormHeader";
-import theme from "../../theme/theme";
-import BottomHills from "../../components/login-register/BottomHills";
+import PrimaryButton from "../components/buttons/PrimaryButton";
+import BackButton from "../components/buttons/BackButton";
+import InputField from "../components/login-register/InputField";
+import FormHeader from "../components/login-register/FormHeader";
+import theme from "../theme/theme";
+import BottomHills from "../components/login-register/BottomHills";
 
 /**
  * Validates the username based on registration requirements (at least 5 characters)
@@ -164,8 +164,7 @@ export default function Register() {
         minHeight: "100vh",
         padding: theme.spacing(2),
         pt: { xs: 8, sm: 12, md: 16, lg: 18 },
-        pl: 2,
-        pr: 2,
+        p: "30px",
         pb: 4,
         "@media (max-width: 375px)": {
           pt: 6,
@@ -192,7 +191,7 @@ export default function Register() {
           </Alert>
         )}
 
-        <FormField
+        <InputField
           label="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -204,7 +203,7 @@ export default function Register() {
           }
         />
 
-        <FormField
+        <InputField
           label="Passwort"
           type="password"
           value={password}
@@ -217,7 +216,7 @@ export default function Register() {
           }
         />
 
-        <FormField
+        <InputField
           label="Passwort bestätigen"
           type="password"
           value={confirmPassword}

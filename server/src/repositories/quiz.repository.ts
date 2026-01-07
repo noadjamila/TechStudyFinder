@@ -1,5 +1,6 @@
 import { pool } from "../../db";
 import { RiasecScores } from "../types/riasecScores";
+import { StudyProgramme } from "../types/studyProgramme";
 
 /**
  * Retrieves filtered study programme IDs for level 1 based on the provided study type.
@@ -147,33 +148,18 @@ export async function getQuestionsLevel2(): Promise<any[]> {
 
   return result.rows;
 }
-/**
- * Retrieves study programme details by their IDs.
- *
- * @param studyProgrammeIds array of study programme IDs to fetch
- * @returns array of study programme objects with name, university, and degree
- */
-export async function getStudyProgrammesById(
-  studyProgrammeIds: string[],
-): Promise<any[]> {
-  if (!studyProgrammeIds || studyProgrammeIds.length === 0) {
-    return [];
+
+export async function getStudyProgrammeById(
+  id: string,
+): Promise<StudyProgramme | undefined> {
+  const result = await pool.query(
+    "SELECT * FROM studiengang_full_view WHERE studiengang_id = $1",
+    [id],
+  );
+
+  if (result.rows.length === 0) {
+    return undefined;
   }
 
-  const query = `
-    SELECT 
-      s.id,
-      s.name,
-      h.name as university,
-      a.name as degree
-    FROM studiengaenge s
-    JOIN hochschule h ON s.hochschule_id = h.id
-    JOIN abschlussart a ON s.abschlussart_id = a.id
-    WHERE s.id = ANY($1::text[])
-    ORDER BY s.name
-  `;
-
-  const result = await pool.query(query, [studyProgrammeIds]);
-
-  return result.rows;
+  return result.rows[0];
 }

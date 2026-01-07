@@ -2,9 +2,10 @@ import {
   getFilteredResultsLevel1,
   getQuestionsLevel2,
   getFilteredResultsLevel2,
-  getStudyProgrammesById,
 } from "../repositories/quiz.repository";
 import { RiasecScores } from "../types/riasecScores";
+import { getStudyProgrammeById } from "../repositories/quiz.repository";
+import { StudyProgramme } from "../types/studyProgramme";
 
 /**
  * Handles filtering for level 1 based on the provided answers.
@@ -67,14 +68,8 @@ export async function getQuestionsLevel2Service(): Promise<any[]> {
   return await getQuestionsLevel2();
 }
 
-/**
- * Fetches study programme details by their IDs.
- *
- * @param studyProgrammeIds array of study programme IDs
- * @returns array of study programmes with name, university, and degree
- */
-export async function getStudyProgrammeDetails(
-  studyProgrammeIds: string[],
-): Promise<any[]> {
-  return await getStudyProgrammesById(studyProgrammeIds);
+export async function getStudyProgrammeByIdService(
+  id: string,
+): Promise<StudyProgramme | undefined> {
+  return await getStudyProgrammeById(id);
 }
