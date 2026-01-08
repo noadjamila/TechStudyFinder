@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { ThemeProvider } from "@mui/material";
 import { MemoryRouter } from "react-router-dom";
-import FavouritesList from "../FavouritesPogrammeList";
+import FavouritesList from "../FavouritePogrammeList";
 import theme from "../../../theme/theme";
 
 const mockedNavigate = vi.fn();

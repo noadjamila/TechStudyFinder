@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import FavouritesNotLoggedIn from "./FavouritesNotLoggedIn";
 import FavouritesEmpty from "./FavouritesEmpty";
-import FavouritesList from "./FavouritesPogrammeList";
+import FavouritesList from "./FavouritePogrammeList";
 import { Box, CircularProgress } from "@mui/material";
 import theme from "../../theme/theme";
 import { useAuth } from "../../contexts/AuthContext";
