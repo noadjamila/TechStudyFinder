@@ -16,6 +16,7 @@ import favoritesRouter from "./src/routes/favorites.route";
 import "./src/types/express-session";
 import session from "express-session";
 import pgSession from "connect-pg-simple";
+import { initializeDatabaseTables } from "./src/db/init";
 
 const isTesting =
   process.env.NODE_ENV === "test" || !!process.env.JEST_WORKER_ID;
@@ -131,21 +132,29 @@ app.use(((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 }) as ErrorRequestHandler);
 
 if (require.main === module) {
-  const startServer = (port: number) => {
-    server = app.listen(port, HOST, () => {
-      // eslint-disable-next-line no-console
-      console.log(`Backend running on http://${HOST}:${port}`);
-    });
+  const startServer = async (port: number) => {
+    try {
+      // Initialize database tables before starting the server
+      await initializeDatabaseTables();
 
-    // Handle port already in use error
-    server.on("error", (err: any) => {
-      if (err.code === "EADDRINUSE") {
-        console.warn(`Port ${port} is in use, trying port ${port + 1}...`);
-        startServer(port + 1);
-      } else {
-        throw err;
-      }
-    });
+      server = app.listen(port, HOST, () => {
+        // eslint-disable-next-line no-console
+        console.log(`Backend running on http://${HOST}:${port}`);
+      });
+
+      // Handle port already in use error
+      server.on("error", (err: any) => {
+        if (err.code === "EADDRINUSE") {
+          console.warn(`Port ${port} is in use, trying port ${port + 1}...`);
+          startServer(port + 1);
+        } else {
+          throw err;
+        }
+      });
+    } catch (err) {
+      console.error("Failed to start server:", err);
+      process.exit(1);
+    }
   };
 
   startServer(PORT);
