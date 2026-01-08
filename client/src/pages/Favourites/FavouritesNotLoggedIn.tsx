@@ -25,8 +25,6 @@ const FavouritesNotLoggedIn: React.FC = () => {
   };
 
   const handleLoginClick = () => {
-    // Store the redirect path so user is guided back to Favourites after login
-    sessionStorage.setItem("redirectAfterLogin", "/favorites");
     navigate("/login");
   };
 

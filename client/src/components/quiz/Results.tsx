@@ -417,11 +417,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
       <LoginReminderDialog
         open={showLoginDialog}
         onClose={() => setShowLoginDialog(false)}
-        onLoginClick={() => {
-          // Store the redirect path in sessionStorage so Login page can redirect back
-          sessionStorage.setItem("redirectAfterLogin", location.pathname);
-          navigate("/login");
-        }}
+        onLoginClick={() => navigate("/login")}
       />
     </Box>
   );

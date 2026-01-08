@@ -59,14 +59,7 @@ export default function Login() {
   const handleResultDialogClose = () => {
     setShowResultDialog(false);
     if (loginSuccess) {
-      // Check if there's a redirect path stored from a previous page
-      const redirectPath = sessionStorage.getItem("redirectAfterLogin");
-      if (redirectPath) {
-        sessionStorage.removeItem("redirectAfterLogin");
-        navigate(redirectPath);
-      } else {
-        navigate("/");
-      }
+      navigate("/");
     }
   };
 
