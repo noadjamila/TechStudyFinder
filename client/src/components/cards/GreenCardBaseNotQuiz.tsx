@@ -16,10 +16,14 @@ interface GreenCardProps extends BoxProps {
  */
 const GreenCard: React.FC<GreenCardProps> = ({ children, ...props }) => {
   const cardStyles = {
-    width: { xs: "90%", md: "100%" },
-    maxWidth: { xs: 360, sm: 520, md: 900 },
-    px: { xs: 1, md: 8 },
-    py: { xs: 2, md: 3 },
+    width: "100%",
+    maxWidth: {
+      xs: 320,
+      md: 540,
+      lg: 700,
+    },
+    px: { xs: 2, md: 8 },
+    py: { xs: 4, md: 5 },
     mx: "auto",
     backgroundColor: theme.palette.decorative.green,
     borderRadius: 4,
@@ -33,6 +37,17 @@ const GreenCard: React.FC<GreenCardProps> = ({ children, ...props }) => {
 
   return (
     <Box sx={{ ...cardStyles, ...props.sx }} {...props}>
+      <Box
+        component="img"
+        src="/mascot_standing_blue.svg"
+        alt="Maskottchen"
+        sx={{
+          position: "absolute",
+          width: 40,
+          top: -60,
+          right: { xs: 40, md: 20 },
+        }}
+      />
       {children}
     </Box>
   );

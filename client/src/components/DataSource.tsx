@@ -14,7 +14,6 @@ export default function DataSource() {
       sx={{
         maxWidth: 800,
         margin: { xs: "0 auto", sm: "0" },
-        pt: 3,
         pb: 3,
         display: "flex",
         flexDirection: "column",

@@ -128,7 +128,9 @@ const StudyProgrammeDetailPage: React.FC = () => {
             }}
           />
         </Box>
-        <DataSource />
+        <Box sx={{ paddingTop: 3 }}>
+          <DataSource />
+        </Box>
         <Box sx={{ padding: 3, paddingTop: 0 }}>
           <Typography variant="h6">
             {error || "Studiengang nicht gefunden"}
@@ -209,7 +211,9 @@ const StudyProgrammeDetailPage: React.FC = () => {
       <Box sx={{ pt: { xs: "80px", sm: 0 }, pl: "30px", pr: "30px" }}>
         {" "}
         {/* Offset for fixed back button on mobile */}
-        <DataSource />
+        <Box sx={{ paddingTop: 3 }}>
+          <DataSource />
+        </Box>
       </Box>
 
       {/* Study programme card */}

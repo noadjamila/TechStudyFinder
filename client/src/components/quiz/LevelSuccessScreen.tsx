@@ -89,7 +89,7 @@ export default function LevelSuccessScreen({
         display: "flex",
         flexDirection: "column",
         height: "100dvh",
-        px: 3,
+        px: 6,
         pt: 3,
         overflow: "hidden",
       }}

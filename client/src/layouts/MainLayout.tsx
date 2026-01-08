@@ -71,6 +71,7 @@ export default function MainLayout({
           <div
             style={{
               padding: "30px",
+              paddingTop: "50px",
             }}
           >
             {MainContent}
