@@ -57,7 +57,7 @@ const FavouritesEmpty: React.FC = () => {
   };
 
   const handleQuizStart = () => {
-    navigate("/level-success/1");
+    navigate("/quiz");
   };
 
   const cardTitle = "Noch keine Favoriten vorhanden.";

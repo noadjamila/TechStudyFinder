@@ -122,7 +122,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
         <Box sx={{ padding: 3 }}>
           <BackButton
             label="Zurück"
-            onClick={() => navigate("/results")}
+            onClick={() => navigate(-1)}
             sx={{
               marginBottom: 2,
             }}
@@ -194,7 +194,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
       >
         <BackButton
           label="Zurück"
-          onClick={() => navigate("/results")}
+          onClick={() => navigate(-1)}
           sx={{
             marginBottom: { xs: 0, sm: 1.5 },
             height: { xs: "35px", sm: "45px" },
