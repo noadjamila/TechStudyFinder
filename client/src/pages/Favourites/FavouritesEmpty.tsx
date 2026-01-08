@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import theme from "../../theme/theme";
-import LogoMenu from "../../components/Header";
 import DesktopLayout from "../../layouts/DesktopLayout";
+import MainLayout from "../../layouts/MainLayout";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/buttons/PrimaryButton";
 import GreenCard from "../../components/cards/GreenCardBaseNotQuiz";
@@ -72,12 +72,14 @@ const FavouritesEmpty: React.FC = () => {
         mx: "auto",
         px: { xs: 1, sm: 0 },
         textAlign: "center",
-        mt: { xs: 16, sm: 40, md: 60 },
+        mt: { xs: -10, sm: 40, md: 32 },
+        minHeight: { xs: "100vh", sm: "auto" },
         position: "relative",
         color: theme.palette.text.primary,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        justifyContent: { xs: "center", sm: "flex-start" },
       }}
     >
       {/* Green Card Container */}
@@ -86,7 +88,6 @@ const FavouritesEmpty: React.FC = () => {
         <Typography
           variant="subtitle1"
           sx={{
-            fontWeight: "bold",
             color: theme.palette.text.subHeader,
             mb: 3,
           }}
@@ -117,28 +118,7 @@ const FavouritesEmpty: React.FC = () => {
   }
 
   // For Mobile view
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        bgcolor: theme.palette.background.default,
-      }}
-    >
-      <LogoMenu />
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {MainContent}
-      </Box>
-    </Box>
-  );
+  return <MainLayout>{MainContent}</MainLayout>;
 };
 
 export default FavouritesEmpty;

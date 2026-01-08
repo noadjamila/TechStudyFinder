@@ -6,7 +6,7 @@ import StudyProgrammeDetailPage from "./pages/StudyProgrammeDetailPage";
 import Settings from "./pages/Settings";
 import Register from "./pages/Register";
 import Login from "./pages/Login/Login";
-import Favorites from "./pages/Favorites/Favorites";
+import Favourites from "./pages/Favourites/Favourites";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
@@ -17,7 +17,7 @@ export default function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/quiz" element={<QuizFlow />} />
       <Route path="/results" element={<ResultsPage />} />
-      <Route path="/favorites" element={<Favorites />} />
+      <Route path="/favorites" element={<Favourites />} />
       <Route
         path="/settings"
         element={

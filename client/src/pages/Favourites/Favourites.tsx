@@ -4,6 +4,7 @@ import FavouritesEmpty from "./FavouritesEmpty";
 import FavouritesList from "./FavouritesList";
 import { Box, CircularProgress } from "@mui/material";
 import theme from "../../theme/theme";
+import { useAuth } from "../../contexts/AuthContext";
 
 /**
  * Smart Favorites Router component.
@@ -16,6 +17,7 @@ import theme from "../../theme/theme";
  * @returns {React.FC} The appropriate favorites page or loading indicator
  */
 const Favorites: React.FC = () => {
+  const { user, isLoading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [content, setContent] = useState<React.ReactNode>(null);
 
@@ -24,51 +26,60 @@ const Favorites: React.FC = () => {
    */
   useEffect(() => {
     const checkAuthAndFavorites = async () => {
+      // Wait for auth context to finish loading
+      if (authLoading) {
+        return;
+      }
+
+      // User is not authenticated
+      if (!user) {
+        setContent(<FavouritesNotLoggedIn />);
+        setIsLoading(false);
+        return;
+      }
+
+      // User IS authenticated - fetch their favorites
       try {
         const response = await fetch("/api/users/favorites", {
           credentials: "include", // Include cookies for session
         });
 
-        // User is not authenticated (401)
-        if (response.status === 401) {
-          setContent(<FavouritesNotLoggedIn />);
+        if (!response.ok) {
+          // If we can't fetch favorites, show empty state (no favorites yet)
+          setContent(<FavouritesEmpty />);
           setIsLoading(false);
           return;
         }
 
-        // User is authenticated
-        if (response.ok) {
-          const data = await response.json();
-          const favorites = data.favorites || [];
+        const data = await response.json();
+        const favorites = data.favorites || [];
 
-          // User has NO favorites - show empty state
-          if (favorites.length === 0) {
-            setContent(<FavouritesEmpty />);
-            setIsLoading(false);
-            return;
-          }
-
-          // User HAS favorites - show favorites list
-          setContent(<FavouritesList favorites={favorites} />);
+        // User has NO favorites - show empty state
+        if (favorites.length === 0) {
+          setContent(<FavouritesEmpty />);
           setIsLoading(false);
           return;
         }
 
-        // Handle other errors
-        setContent(<FavouritesNotLoggedIn />);
+        // User HAS favorites - show favorites list
+        setContent(<FavouritesList favorites={favorites} />);
         setIsLoading(false);
+        return;
       } catch (err) {
-        console.error("[FAVORITES] Error checking auth and favorites:", err);
-        setContent(<FavouritesNotLoggedIn />);
+        console.error("[FAVORITES] Error fetching favorites:", err);
+        // On error, show empty state
+        setContent(<FavouritesEmpty />);
         setIsLoading(false);
       }
     };
 
-    checkAuthAndFavorites();
-  }, []);
+    if (!authLoading) {
+      checkAuthAndFavorites();
+    }
+  }, [user, authLoading]);
 
   // Show loading spinner while checking auth status
-  if (isLoading) {
+  if (isLoading || authLoading) {
     return (
       <Box
         sx={{
