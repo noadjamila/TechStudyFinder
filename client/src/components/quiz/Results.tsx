@@ -14,7 +14,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import StudyProgrammeCard from "../cards/StudyProgrammeCard";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import GreenCard from "../cards/GreenCardBaseNotQuiz";
 import PrimaryButton from "../buttons/PrimaryButton";
 import {
@@ -34,13 +34,14 @@ interface ResultsProps {
  */
 const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [selectedDegree, setSelectedDegree] = useState<string>("");
   const [showLoginSnackbar, setShowLoginSnackbar] = useState(false);
 
-  // Load favorites from API on component mount
+  // Load favorites from API on component mount and when location changes
   useEffect(() => {
     const loadFavorites = async () => {
       try {
@@ -52,7 +53,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
     };
 
     loadFavorites();
-  }, []);
+  }, [location]);
 
   const handleQuizStart = () => {
     navigate("/quiz");

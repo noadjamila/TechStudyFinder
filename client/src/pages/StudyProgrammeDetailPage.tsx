@@ -26,6 +26,7 @@ import DataSource from "../components/DataSource";
 import BackButton from "../components/buttons/BackButton";
 import DesktopLayout from "../layouts/DesktopLayout";
 import { getStudyProgrammeById } from "../api/quizApi";
+import { getFavorites, addFavorite, removeFavorite } from "../api/favoritesApi";
 import DeadlineDisplay from "../components/DeadlineDisplay";
 
 /**
@@ -46,6 +47,21 @@ const StudyProgrammeDetailPage: React.FC = () => {
   // Scroll to top when component mounts or id changes
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, [id]);
+
+  // Load favorite state from API
+  useEffect(() => {
+    const loadFavoriteState = async () => {
+      if (!id) return;
+      try {
+        const favoriteIds = await getFavorites();
+        setIsFavorite(favoriteIds.includes(id));
+      } catch (error) {
+        console.error("Failed to load favorites:", error);
+      }
+    };
+
+    loadFavoriteState();
   }, [id]);
 
   // Fetch study programme data
@@ -71,8 +87,26 @@ const StudyProgrammeDetailPage: React.FC = () => {
     fetchProgramme();
   }, [id]);
 
-  const toggleFavorite = () => {
+  const toggleFavorite = async () => {
+    if (!id) return;
+
+    const wasFavorited = isFavorite;
     setIsFavorite(!isFavorite);
+
+    try {
+      if (wasFavorited) {
+        await removeFavorite(id);
+      } else {
+        await addFavorite(id);
+      }
+    } catch (error: any) {
+      if (error.message && error.message.includes("409")) {
+        setIsFavorite(true);
+      } else {
+        console.error("Error toggling favorite:", error);
+        setIsFavorite(wasFavorited);
+      }
+    }
   };
 
   if (loading) {
