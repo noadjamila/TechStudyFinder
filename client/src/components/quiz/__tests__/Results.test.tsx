@@ -20,6 +20,23 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
+// Mock Auth Context
+vi.mock("../../../contexts/AuthContext", () => ({
+  useAuth: vi.fn(() => ({
+    user: { id: 1, username: "testuser" },
+    isAuthenticated: true,
+    login: vi.fn(),
+    logout: vi.fn(),
+  })),
+}));
+
+// Mock Favorites API
+vi.mock("../../../api/favoritesApi", () => ({
+  getFavorites: vi.fn(() => Promise.resolve([])),
+  addFavorite: vi.fn(() => Promise.resolve()),
+  removeFavorite: vi.fn(() => Promise.resolve()),
+}));
+
 const mockStudyProgrammes: StudyProgramme[] = [
   {
     studiengang_id: "1",

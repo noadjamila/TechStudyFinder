@@ -6,7 +6,7 @@ import StudyProgrammeDetailPage from "./pages/StudyProgrammeDetailPage";
 import Settings from "./pages/Settings";
 import Register from "./pages/Register";
 import Login from "./pages/Login/Login";
-import Favourites from "./pages/Favourites/Favourites";
+import Favourites from "./pages/Favourites/FavouritesContainer";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {

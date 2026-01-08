@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import FavouritesNotLoggedIn from "./FavouritesNotLoggedIn";
 import FavouritesEmpty from "./FavouritesEmpty";
-import FavouritesList from "./FavouritesList";
+import FavouritesList from "./FavouritesPogrammeList";
 import { Box, CircularProgress } from "@mui/material";
 import theme from "../../theme/theme";
 import { useAuth } from "../../contexts/AuthContext";
@@ -16,7 +16,7 @@ import { useAuth } from "../../contexts/AuthContext";
  *
  * @returns {React.FC} The appropriate favorites page or loading indicator
  */
-const Favorites: React.FC = () => {
+const FavouritesContainer: React.FC = () => {
   const { user, isLoading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [content, setContent] = useState<React.ReactNode>(null);
@@ -98,4 +98,4 @@ const Favorites: React.FC = () => {
   return <>{content}</>;
 };
 
-export default Favorites;
+export default FavouritesContainer;
