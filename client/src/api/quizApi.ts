@@ -1,31 +1,14 @@
-interface Level1Answer {
-  studientyp: string;
-}
-
-interface Level2Answer {
-  type: string; // RiasecType
-  score: number;
-}
-
-type QuizAnswer = Level1Answer | Level2Answer;
-
-export interface QuizFilterPayload {
-  level: 1 | 2 | 3;
-  answers: QuizAnswer[];
-  studyProgrammeIds?: string[];
-}
-
-/**
- * Interface defining the expected response structure from the filtering endpoint.
- */
-interface FilterResponse {
-  ids: string[];
-}
+import {
+  QuizFilterPayload,
+  FilterResponse,
+  QuizLevelResponse,
+} from "../types/QuizApi.types";
+import { StudyProgramme } from "../types/StudyProgramme.types";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 /**
- * Sends the user's Level 1 answers to the backend filtering endpoint.
+ * Sends the user's answers to the backend filtering endpoint.
  *
  * @param {QuizFilterPayload} payload The data containing the level and answers.
  * @returns {Promise<FilterResponse>} A promise resolving to an object with the filtered IDs array.
@@ -54,4 +37,62 @@ export async function postFilterLevel(
     console.error("[postFilterLevel] Error during API call:", err);
     throw new Error("Could not connect to the backend or process data.");
   }
+}
+
+/**
+ * Fetches quiz questions for a specific level from the backend.
+ *
+ * @param {number} level The quiz level (1, 2, etc.).
+ * @returns {Promise<QuizLevelResponse>} A promise resolving to questions for the level.
+ * @throws {Error} Throws if the network request fails or no questions are found.
+ */
+export async function getQuizLevel(level: number): Promise<QuizLevelResponse> {
+  const endpoint = `${API_BASE_URL}/quiz/level/${level}`;
+
+  try {
+    const res = await fetch(endpoint);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    if (!data.questions || data.questions.length === 0) {
+      throw new Error("No questions found in the response.");
+    }
+
+    return data;
+  } catch (err) {
+    console.error("[getQuizLevel] Error during API call:", err);
+    throw new Error("Could not fetch quiz questions from the backend.");
+  }
+}
+
+/**
+ * Fetches a single study programme by ID from the backend.
+ *
+ * @param {string} id The study programme ID.
+ * @returns {Promise<StudyProgramme | null>} The study programme data, or null if not found.
+ * @throws {Error} Throws if the network request fails (not for 404).
+ */
+export async function getStudyProgrammeById(
+  id: string,
+): Promise<StudyProgramme | null> {
+  const endpoint = `${API_BASE_URL}/quiz/study-programme/${id}`;
+
+  const res = await fetch(endpoint);
+
+  // Not found - return null (caller will log if needed)
+  if (res.status === 404) {
+    return null;
+  }
+
+  // Any other error should throw
+  if (!res.ok) {
+    throw new Error(`HTTP error! status: ${res.status}`);
+  }
+
+  const data = await res.json();
+  return data.studyProgramme ?? null;
 }

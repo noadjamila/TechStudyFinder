@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
 import { RiasecType } from "../../types/RiasecTypes";
 import ErrorScreen from "../error-screen/ErrorScreen";
-import CardStack from "./CardStack";
+import CardStack from "../cards/CardStackLevel2";
 import { Stack, Typography } from "@mui/material";
-import BaseCard from "../BaseCard";
+import { postFilterLevel } from "../../api/quizApi";
+import BaseCard from "../cards/QuizCardBase";
 import PrimaryButton from "../buttons/PrimaryButton";
 import SecondaryButton from "../buttons/SecondaryButton";
 import theme from "../../theme/theme";
@@ -210,49 +211,53 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
             cardText={currentQuestion.text}
             sx={{
               height: {
-                xs: 300,
+                xs: 280,
                 md: 200,
+              },
+              maxWidth: {
+                xs: 250,
+                md: 320,
               },
             }}
             cardColor={theme.palette.decorative.green}
           ></BaseCard>
+        </CardStack>
 
-          <Stack
-            spacing={2}
+        <Stack
+          spacing={2}
+          sx={{
+            mt: 3,
+            justifyContent: "center",
+            padding: "0 2em",
+          }}
+        >
+          <PrimaryButton
+            label={"Ja"}
+            onClick={() => handleSelect("yes")}
+            ariaText="Antwort Ja"
+          />
+          <SecondaryButton
+            label={"Nein"}
+            onClick={() => handleSelect("no")}
+            ariaText="Antwort Nein"
+          />
+          <Typography
+            aria-label="Antwort Überspringen"
+            onClick={() => handleSelect("skip")}
             sx={{
-              mt: 3,
-              justifyContent: "center",
-              padding: "0 2em",
+              fontSize: "0.875rem",
+              cursor: "pointer",
+              color: theme.palette.text.skipButton,
+              textAlign: "center",
+              textDecoration: "underline",
+              "&:hover": {
+                color: theme.palette.text.primary,
+              },
             }}
           >
-            <PrimaryButton
-              label={"Ja"}
-              onClick={() => handleSelect("yes")}
-              ariaText="Antwort Ja"
-            />
-            <SecondaryButton
-              label={"Nein"}
-              onClick={() => handleSelect("no")}
-              ariaText="Antwort Nein"
-            />
-            <Typography
-              aria-label="Antwort Überspringen"
-              onClick={() => handleSelect("skip")}
-              sx={{
-                fontSize: "0.875rem",
-                cursor: "pointer",
-                color: theme.palette.text.skipButton,
-                textAlign: "center",
-                textDecoration: "underline",
-                "&:hover": {
-                  color: theme.palette.text.primary,
-                },
-              }}
-            >
-              Überspringen
-            </Typography>
-          </Stack>
-        </CardStack>
+            Überspringen
+          </Typography>
+        </Stack>
 
         <Stack
           sx={{
@@ -268,7 +273,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
           <img
             src="/mascot_walking_pink.svg"
             width={61}
-            height={90}
+            height={70}
             alt="Mascot"
           />
         </Stack>
