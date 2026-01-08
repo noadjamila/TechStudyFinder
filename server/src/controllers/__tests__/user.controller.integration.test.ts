@@ -1,6 +1,8 @@
 import request from "supertest";
 import { pool } from "../../../db";
 import { app } from "../../../index";
+import fs from "fs";
+import path from "path";
 
 describe("Users Registration Endpoint - Integration Tests", () => {
   let dbAvailable = true;
@@ -19,8 +21,20 @@ describe("Users Registration Endpoint - Integration Tests", () => {
     try {
       await pool.query(`DROP TABLE IF EXISTS favourites CASCADE`);
       await pool.query(`DROP TABLE IF EXISTS users CASCADE`);
+
+      // Create the users table for the test
+      const usersSqlPath = path.join(__dirname, "../../../db/schema/users.sql");
+      const usersSql = fs.readFileSync(usersSqlPath, "utf8");
+      const statements = usersSql
+        .split(/;\s*$/m)
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+
+      for (const stmt of statements) {
+        await pool.query(stmt);
+      }
     } catch (err) {
-      console.warn("Could not drop tables in beforeEach", err);
+      console.warn("Could not set up tables in beforeEach", err);
     }
   });
 
