@@ -17,14 +17,19 @@ interface FavouritesListProps {
  *
  * @component
  * @param {FavouritesListProps} props - Component props
+ * @param {string[]} props.favorites - Array of favourite study programme IDs
  * @returns {React.ReactElement} The favorites list component
  */
 const FavouritesList: React.FC<FavouritesListProps> = ({ favorites }) => {
   const [studyProgrammes, setStudyProgrammes] = useState<StudyProgramme[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isFading, setIsFading] = useState(false);
-  const [showEmpty, setShowEmpty] = useState(false);
+  const [isFading, setIsFading] = useState(false); // Controls fade animation when removing last favourite
+  const [showEmpty, setShowEmpty] = useState(false); // Shows empty state after fade animation completes
 
+  /**
+   * Fetch detailed information for each favorite programme
+   * Uses Promise.allSettled to handle partial failures gracefully
+   */
   useEffect(() => {
     const fetchFavoriteDetails = async () => {
       if (!favorites || favorites.length === 0) {
@@ -35,7 +40,7 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ favorites }) => {
 
       setLoading(true);
 
-      // Fetch each favorite programme
+      // Fetch each favorite programme in parallel
       const promises = favorites.map((id: string) => getStudyProgrammeById(id));
       const results = await Promise.allSettled(promises);
 
@@ -61,8 +66,15 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ favorites }) => {
     fetchFavoriteDetails();
   }, [favorites]);
 
+  /**
+   * Handle unfavoriting a programme
+   * If it's the last favourite, triggers fade animation and transitions to empty state
+   * Otherwise, just removes it from the list
+   *
+   * @param {string} programmeId - The ID of the programme to unfavourite
+   */
   const toggleFavorite = async (programmeId: string) => {
-    // Remove card from display
+    // Remove card from display immediately for better UX
     const newProgrammes = studyProgrammes.filter(
       (p) => p.studiengang_id !== programmeId,
     );
@@ -86,12 +98,12 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ favorites }) => {
         return;
       }
 
-      // After 1800ms, show empty state
+      // After 1800ms (fade animation duration), show empty state
       setTimeout(() => {
         setShowEmpty(true);
       }, 1800);
     } else {
-      // Not the last card, just remove it
+      // Not the last card, just remove it immediately
       setStudyProgrammes(newProgrammes);
 
       // Remove from database
@@ -109,6 +121,7 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ favorites }) => {
     }
   };
 
+  // Show loading spinner while fetching programme details
   if (loading) {
     return (
       <MainLayout>
@@ -126,7 +139,7 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ favorites }) => {
     );
   }
 
-  // Show empty state after transition
+  // Show empty state after fade animation completes
   if (showEmpty) {
     return <FavouritesEmpty />;
   }
@@ -139,13 +152,14 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ favorites }) => {
           margin: { xs: "0 auto", sm: "0" },
           paddingBottom: { xs: "120px", sm: 3 },
           opacity: isFading ? 0 : 1,
-          transition: "opacity 1800ms ease-in-out",
+          transition: "opacity 1800ms ease-in-out", // Smooth fade when removing last favourite
         }}
       >
         <Typography variant="h2" sx={{ marginBottom: 3 }}>
           Meine Favoriten
         </Typography>
 
+        {/* Display favorite programmes as cards */}
         <Stack spacing={2}>
           {studyProgrammes.map((programme) => (
             <StudyProgrammeCard
