@@ -117,39 +117,6 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
         });
       }
     }
-
-    // Save/remove favorite in database
-    try {
-      if (isFavorited) {
-        // Remove from favorites
-        await removeFavorite(programmeId);
-      } else {
-        // Add to favorites
-        await addFavorite(programmeId);
-      }
-    } catch (error: any) {
-      // Handle 409 Conflict (already exists) by keeping it as favorited
-      if (error.message && error.message.includes("409")) {
-        console.error("Favorite already exists, keeping as favorited");
-        setFavorites((prev) => {
-          const newFavorites = new Set(prev);
-          newFavorites.add(programmeId);
-          return newFavorites;
-        });
-      } else {
-        console.error("Error toggling favorite:", error);
-        // For other errors, revert the local state
-        setFavorites((prev) => {
-          const reverted = new Set(prev);
-          if (isFavorited) {
-            reverted.add(programmeId);
-          } else {
-            reverted.delete(programmeId);
-          }
-          return reverted;
-        });
-      }
-    }
   };
 
   // Get unique locations and degrees for filter options
