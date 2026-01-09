@@ -417,7 +417,9 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
       <LoginReminderDialog
         open={showLoginDialog}
         onClose={() => setShowLoginDialog(false)}
-        onLoginClick={() => navigate("/login")}
+        onLoginClick={() =>
+          navigate("/login", { state: { redirectTo: location.pathname } })
+        }
       />
     </Box>
   );

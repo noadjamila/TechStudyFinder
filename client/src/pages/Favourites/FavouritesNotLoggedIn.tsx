@@ -25,7 +25,7 @@ const FavouritesNotLoggedIn: React.FC = () => {
   };
 
   const handleLoginClick = () => {
-    navigate("/login");
+    navigate("/login", { state: { redirectTo: "/favorites" } });
   };
 
   const cardTitle = "Logge dich ein, um deine Favoriten zu sehen.";
