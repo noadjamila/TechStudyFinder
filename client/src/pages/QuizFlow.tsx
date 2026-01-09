@@ -37,7 +37,7 @@ export default function QuizFlow() {
     if (showResults && showLevelSuccess === false) {
       navigate("/results", { state: { answers } });
     }
-  }, [showResults, showLevelSuccess]);
+  }, [showResults, showLevelSuccess, answers]);
 
   if (showLevelSuccess) {
     return (

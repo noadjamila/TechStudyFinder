@@ -4,7 +4,6 @@ import { RiasecType } from "../../types/RiasecTypes";
 import ErrorScreen from "../error-screen/ErrorScreen";
 import CardStack from "../cards/CardStackLevel2";
 import { Stack, Typography } from "@mui/material";
-import { postFilterLevel } from "../../api/quizApi";
 import BaseCard from "../cards/QuizCardBase";
 import PrimaryButton from "../buttons/PrimaryButton";
 import SecondaryButton from "../buttons/SecondaryButton";
@@ -51,7 +50,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
     null,
   );
   // NOTE: Transition handling will be refined in PR 3 (back navigation)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
   /*
@@ -91,7 +90,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
   // };
 
   /**
-   * Handles  the option to go back one Question.
+   * Handles the option to go back one Question.
    * Switches Levels if user is on the first Question.
    */
   const goBack = () => {
@@ -111,7 +110,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
    */
   const handleSelect = (option: "yes" | "no" | "skip") => {
     if (!currentQuestion || isTransitioning) return;
-
+    setIsTransitioning(true);
     onAnswer({
       questionId: `level2.question${currentIndex}`,
       value: option,
@@ -119,11 +118,14 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
     });
 
     // Last question -> send scores to backend
-    if (currentIndex === TOTAL_QUESTIONS - 1) {
-      onComplete();
-    } else {
-      setCurrentIndex((i) => i + 1);
-    }
+    setTimeout(() => {
+      if (currentIndex === TOTAL_QUESTIONS - 1) {
+        onComplete();
+      } else {
+        setCurrentIndex((i) => i + 1);
+      }
+      setIsTransitioning(false);
+    }, 300);
   };
 
   /*
