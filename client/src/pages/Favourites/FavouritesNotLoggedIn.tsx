@@ -40,7 +40,14 @@ const FavouritesNotLoggedIn: React.FC = () => {
         mx: "auto",
         px: { xs: 1, sm: 0 },
         textAlign: "center",
-        mt: { xs: 30, sm: 41, md: -3 },
+        mt: {
+          xs: 15, // media breaking point for very narrow phones
+          sm: 41,
+          md: -3,
+        },
+        "@media (min-width: 380px) and (max-width: 599px)": {
+          mt: 35, // media breaking point for small phones
+        },
         position: "relative",
         color: theme.palette.text.primary,
         display: "flex",
