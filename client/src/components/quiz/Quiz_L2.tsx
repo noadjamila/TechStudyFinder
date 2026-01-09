@@ -50,21 +50,6 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
   const currentQuestion = questions[currentIndex];
 
   /**
-   * Converts the scores object into an array of type-score pairs.
-   *
-   * @param {Record<RiasecType, number>} scores - The RIASEC scores.
-   * @returns {{ type: RiasecType; score: number }[]} Array of type-score objects.
-   */
-  // const scoresToArray = (
-  //   scores: Record<RiasecType, number>,
-  // ): { type: RiasecType; score: number }[] => {
-  //   return Object.entries(scores).map(([type, score]) => ({
-  //     type: type as RiasecType,
-  //     score,
-  //   }));
-  // };
-
-  /**
    * Handles the option to go back one Question.
    * Switches Levels if user is on the first Question.
    */
