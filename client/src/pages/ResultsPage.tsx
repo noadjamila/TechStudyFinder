@@ -119,7 +119,10 @@ const ResultsPage: React.FC = () => {
       previousPathRef.current === "/results"
     ) {
       // User is navigating away from results
-      if (!user && hasQuizResults) {
+      // Don't show reminder when navigating to login or register pages
+      const isNavigatingToAuth =
+        location.pathname === "/login" || location.pathname === "/register";
+      if (!user && hasQuizResults && !isNavigatingToAuth) {
         // Store the intended path and show dialog
         intendedPathRef.current = location.pathname;
         setShowLoginReminder(true);

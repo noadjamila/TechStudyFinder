@@ -12,6 +12,11 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import PrimaryButton from "../buttons/PrimaryButton";
 
+/**
+ * LoginReminderDialog prompts users to login when attempting to save favorites.
+ * Displays a login button to navigate to the login page.
+ */
+
 interface LoginReminderDialogProps {
   open: boolean;
   onClose: () => void;
@@ -23,7 +28,11 @@ const CustomDialog = styled(Dialog)(({ theme }) => ({
     borderRadius: 18,
     padding: theme.spacing(2),
     minWidth: 280,
+    maxWidth: 400,
     backgroundColor: theme.palette.background.default,
+    [theme.breakpoints.down("sm")]: {
+      padding: theme.spacing(1.5),
+    },
   },
   "& .MuiBackdrop-root": {
     backgroundColor: "rgba(0,0,0,0.25)",
@@ -38,6 +47,10 @@ const Title = styled(DialogTitle)(({ theme }) => ({
   paddingRight: theme.spacing(5),
   display: "flex",
   justifyContent: "center",
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1rem",
+    paddingBottom: theme.spacing(0.5),
+  },
 }));
 
 const ContentText = styled(DialogContentText)(({ theme }) => ({
@@ -47,6 +60,10 @@ const ContentText = styled(DialogContentText)(({ theme }) => ({
   fontFamily: "Fira Sans, sans-serif",
   fontWeight: "normal",
   lineHeight: 1.5,
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "16px",
+    lineHeight: 1.4,
+  },
 }));
 
 const Actions = styled(DialogActions)(({ theme }) => ({
@@ -54,6 +71,10 @@ const Actions = styled(DialogActions)(({ theme }) => ({
   justifyContent: "center",
   padding: theme.spacing(2),
   paddingTop: theme.spacing(3),
+  [theme.breakpoints.down("sm")]: {
+    padding: theme.spacing(1),
+    paddingTop: theme.spacing(2),
+  },
 }));
 
 const CloseButtonWrapper = styled(Box)(({ theme }) => ({
@@ -62,14 +83,6 @@ const CloseButtonWrapper = styled(Box)(({ theme }) => ({
   top: theme.spacing(1),
 }));
 
-/**
- * LoginReminderDialog component.
- * Displays a dialog prompting users to login when trying to save favorites.
- * Features a close button in top right and a primary login button.
- *
- * @param {LoginReminderDialogProps} props - Component props
- * @returns {React.ReactElement} Dialog component
- */
 export default function LoginReminderDialog({
   open,
   onClose,

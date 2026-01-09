@@ -23,12 +23,10 @@ export default function NavigationGuard({
   const previousPathRef = useRef<string>(location.pathname);
   const allowNavigationRef = useRef<boolean>(false);
 
-  // Check if user has quiz results
   const hasQuizResults =
     localStorage.getItem("quizResults") !== null ||
     localStorage.getItem("quizCompleted") === "true";
 
-  // Detect when user tries to leave Results page
   useEffect(() => {
     console.log(
       "[NavigationGuard] Effect running - location:",
@@ -37,7 +35,6 @@ export default function NavigationGuard({
       allowNavigationRef.current,
     );
 
-    // If we've set the flag to allow navigation, skip all blocking
     if (allowNavigationRef.current) {
       console.log(
         "[NavigationGuard] Navigation allowed, updating previousPath",
@@ -50,29 +47,20 @@ export default function NavigationGuard({
     const wasOnResults = previousPathRef.current === "/results";
     const isNowOnResults = location.pathname === "/results";
     const isLeavingResults = wasOnResults && !isNowOnResults;
-
-    // Don't block navigation to study programme detail pages (feels like same context to user)
     const isGoingToDetailView =
       location.pathname.startsWith("/study-programme/");
 
-    // User trying to leave /results without login and with quiz results
     if (!user && hasQuizResults && isLeavingResults && !isGoingToDetailView) {
       console.log(
         "[NavigationGuard] BLOCKING - Storing destination:",
         location.pathname,
       );
 
-      // Store the intended destination
       setIntendedDestination(location.pathname);
-
-      // Show the reminder dialog (don't navigate back - just freeze rendering)
       setShowDialog(true);
-
-      // Don't update previousPath - we're still conceptually on results
       return;
     }
 
-    // Update previous path for next navigation
     previousPathRef.current = location.pathname;
   }, [location.pathname, user, hasQuizResults]);
 
@@ -88,12 +76,8 @@ export default function NavigationGuard({
 
     // Set flag to allow next navigation BEFORE any state updates or navigation
     allowNavigationRef.current = true;
-
-    // Close dialog
     setShowDialog(false);
     setIntendedDestination(null);
-
-    // Navigate to where user wanted to go
     navigate(destination);
   };
 
@@ -105,11 +89,8 @@ export default function NavigationGuard({
     // Set flag to allow next navigation BEFORE any state updates or navigation
     allowNavigationRef.current = true;
 
-    // Close dialog
     setShowDialog(false);
     setIntendedDestination(null);
-
-    // Navigate to login with redirect info
     navigate("/login", {
       state: { redirectTo: destination },
     });
