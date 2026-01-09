@@ -49,8 +49,16 @@ export default function NavigationGuard({
     const isLeavingResults = wasOnResults && !isNowOnResults;
     const isGoingToDetailView =
       location.pathname.startsWith("/study-programme/");
+    const isGoingToAuth =
+      location.pathname === "/login" || location.pathname === "/register";
 
-    if (!user && hasQuizResults && isLeavingResults && !isGoingToDetailView) {
+    if (
+      !user &&
+      hasQuizResults &&
+      isLeavingResults &&
+      !isGoingToDetailView &&
+      !isGoingToAuth
+    ) {
       console.log(
         "[NavigationGuard] BLOCKING - Storing destination:",
         location.pathname,

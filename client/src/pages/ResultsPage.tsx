@@ -53,6 +53,7 @@ const ResultsPage: React.FC = () => {
   const [showLoginReminder, setShowLoginReminder] = useState(false);
   const previousPathRef = useRef<string>("/results");
   const intendedPathRef = useRef<string | null>(null);
+  const allowNavigationRef = useRef<boolean>(false);
 
   useEffect(() => {
     const fetchStudyProgrammes = async () => {
@@ -113,21 +114,42 @@ const ResultsPage: React.FC = () => {
 
   // Show login reminder when navigating away if user is not logged in
   useEffect(() => {
+    // Never show dialog if currently on login or register page
+    const isOnAuthPage =
+      location.pathname === "/login" || location.pathname === "/register";
+
+    if (isOnAuthPage) {
+      setShowLoginReminder(false);
+      allowNavigationRef.current = false;
+      previousPathRef.current = location.pathname;
+      return;
+    }
+
     // Check if we're leaving the results page
     if (
       location.pathname !== "/results" &&
       previousPathRef.current === "/results"
     ) {
-      // User is navigating away from results
       // Don't show reminder when navigating to login or register pages
       const isNavigatingToAuth =
         location.pathname === "/login" || location.pathname === "/register";
-      if (!user && hasQuizResults && !isNavigatingToAuth) {
+
+      // Only show reminder if not logged in, has results, and not going to auth pages
+      if (
+        !user &&
+        hasQuizResults &&
+        !isNavigatingToAuth &&
+        !allowNavigationRef.current
+      ) {
         // Store the intended path and show dialog
         intendedPathRef.current = location.pathname;
         setShowLoginReminder(true);
         // Navigate back to results temporarily
         navigate("/results");
+      } else {
+        // Clear flags and allow navigation to auth pages
+        allowNavigationRef.current = false;
+        setShowLoginReminder(false);
       }
     }
     // Update the previous path
@@ -137,11 +159,19 @@ const ResultsPage: React.FC = () => {
   // Handle closing the dialog - navigates to the intended destination
   const handleDialogClose = () => {
     setShowLoginReminder(false);
+    allowNavigationRef.current = true;
     if (intendedPathRef.current) {
       const destination = intendedPathRef.current;
       intendedPathRef.current = null;
       navigate(destination);
     }
+  };
+
+  // Handle login button click in dialog
+  const handleLoginClick = () => {
+    setShowLoginReminder(false);
+    allowNavigationRef.current = true;
+    navigate("/login", { state: { redirectTo: "/results" } });
   };
 
   // Show dialog when closing the browser/tab
@@ -182,9 +212,7 @@ const ResultsPage: React.FC = () => {
       <LoginReminderResultList
         open={showLoginReminder}
         onClose={handleDialogClose}
-        onLoginClick={() =>
-          navigate("/login", { state: { redirectTo: "/results" } })
-        }
+        onLoginClick={handleLoginClick}
       />
     </MainLayout>
   );
