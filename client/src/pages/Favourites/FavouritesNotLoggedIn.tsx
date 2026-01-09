@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import theme from "../../theme/theme";
-import LogoMenu from "../../components/Header";
 import DesktopLayout from "../../layouts/DesktopLayout";
+import MainLayout from "../../layouts/MainLayout";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/buttons/PrimaryButton";
 import GreenCard from "../../components/cards/GreenCardBaseNotQuiz";
@@ -40,7 +40,14 @@ const FavouritesNotLoggedIn: React.FC = () => {
         mx: "auto",
         px: { xs: 1, sm: 0 },
         textAlign: "center",
-        mt: { xs: 16, sm: 41, md: -3 },
+        mt: {
+          xs: 15, // media breaking point for very narrow phones
+          sm: 41,
+          md: -3,
+        },
+        "@media (min-width: 380px) and (max-width: 599px)": {
+          mt: 35, // media breaking point for small phones
+        },
         position: "relative",
         color: theme.palette.text.primary,
         display: "flex",
@@ -53,14 +60,7 @@ const FavouritesNotLoggedIn: React.FC = () => {
       {/* Green Card Container */}
       <GreenCard>
         {/* Card Title */}
-        <Typography
-          variant="subtitle1"
-          sx={{
-            fontWeight: "bold",
-            color: theme.palette.text.subHeader,
-            mb: 3,
-          }}
-        >
+        <Typography variant="subtitle1" sx={{ mb: 3, lineHeight: 1.3 }}>
           {cardTitle}
         </Typography>
 
@@ -87,28 +87,7 @@ const FavouritesNotLoggedIn: React.FC = () => {
   }
 
   // For Mobile view
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        bgcolor: theme.palette.background.default,
-      }}
-    >
-      <LogoMenu />
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {MainContent}
-      </Box>
-    </Box>
-  );
+  return <MainLayout>{MainContent}</MainLayout>;
 };
 
 export default FavouritesNotLoggedIn;
