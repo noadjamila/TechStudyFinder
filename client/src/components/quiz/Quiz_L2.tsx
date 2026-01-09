@@ -49,7 +49,6 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
   const [error, setError] = useState<{ title: string; message: string } | null>(
     null,
   );
-  // NOTE: Transition handling will be refined in PR 3 (back navigation)
 
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
@@ -69,10 +68,6 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
 
   const TOTAL_QUESTIONS = questions.length;
   const currentQuestion = questions[currentIndex];
-
-  // NOTE: Transition handling will be refined in PR 3 (back navigation)
-  // const next = () =>
-  //   setCurrentIndex((i) => Math.min(i + 1, TOTAL_QUESTIONS - 1));
 
   /**
    * Converts the scores object into an array of type-score pairs.
