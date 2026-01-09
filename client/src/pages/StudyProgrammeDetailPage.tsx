@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -28,6 +28,8 @@ import DesktopLayout from "../layouts/DesktopLayout";
 import { getStudyProgrammeById } from "../api/quizApi";
 import { getFavorites, addFavorite, removeFavorite } from "../api/favoritesApi";
 import DeadlineDisplay from "../components/DeadlineDisplay";
+import { useAuth } from "../contexts/AuthContext";
+import LoginReminderFavouritesDialog from "../components/dialogs/LoginReminderFavouritesDialog";
 
 /**
  * StudyProgrammeDetailPage displays detailed information about a single study programme.
@@ -36,10 +38,13 @@ import DeadlineDisplay from "../components/DeadlineDisplay";
 const StudyProgrammeDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
   const [programme, setProgramme] = useState<StudyProgramme | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [showLoginReminder, setShowLoginReminder] = useState(false);
   const muiTheme = useTheme();
   const toggleSidebar = () => {};
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
@@ -89,6 +94,12 @@ const StudyProgrammeDetailPage: React.FC = () => {
 
   const toggleFavorite = async () => {
     if (!id) return;
+
+    // Check if user is logged in
+    if (!user) {
+      setShowLoginReminder(true);
+      return;
+    }
 
     const wasFavorited = isFavorite;
     setIsFavorite(!isFavorite);
@@ -156,7 +167,14 @@ const StudyProgrammeDetailPage: React.FC = () => {
         <Box sx={{ padding: 3 }}>
           <BackButton
             label="Zurück"
-            onClick={() => navigate(-1)}
+            onClick={() => {
+              const previousPage = (location.state as any)?.previousPage;
+              if (previousPage) {
+                navigate(previousPage);
+              } else {
+                navigate(-1);
+              }
+            }}
             sx={{
               marginBottom: 2,
             }}
@@ -228,7 +246,14 @@ const StudyProgrammeDetailPage: React.FC = () => {
       >
         <BackButton
           label="Zurück"
-          onClick={() => navigate(-1)}
+          onClick={() => {
+            const previousPage = (location.state as any)?.previousPage;
+            if (previousPage) {
+              navigate(previousPage);
+            } else {
+              navigate(-1);
+            }
+          }}
           sx={{
             marginBottom: { xs: 0, sm: 1.5 },
             height: { xs: "35px", sm: "45px" },
@@ -832,6 +857,21 @@ const StudyProgrammeDetailPage: React.FC = () => {
         // MOBILE VIEW
         MainContent
       )}
+
+      {/* Login reminder dialog for not logged in users trying to add favorites */}
+      <LoginReminderFavouritesDialog
+        open={showLoginReminder}
+        onClose={() => setShowLoginReminder(false)}
+        onLoginClick={() => {
+          const previousPage = (location.state as any)?.previousPage;
+          navigate("/login", {
+            state: {
+              redirectTo: location.pathname,
+              previousPage: previousPage,
+            },
+          });
+        }}
+      />
     </div>
   );
 };
