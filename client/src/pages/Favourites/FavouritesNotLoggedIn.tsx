@@ -53,14 +53,7 @@ const FavouritesNotLoggedIn: React.FC = () => {
       {/* Green Card Container */}
       <GreenCard>
         {/* Card Title */}
-        <Typography
-          variant="subtitle1"
-          sx={{
-            fontWeight: "bold",
-            color: theme.palette.text.subHeader,
-            mb: 3,
-          }}
-        >
+        <Typography variant="subtitle1" sx={{ mb: 3, lineHeight: 1.3 }}>
           {cardTitle}
         </Typography>
 
