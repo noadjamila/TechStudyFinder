@@ -29,8 +29,13 @@ interface ResultsProps {
 }
 
 /**
- * Results component displays filtered study programmes.
- * Receives study programmes as props from parent component.
+ * Results component displays filtered study programmes with interactive features.
+ *
+ * Receives study programmes as props from parent component and provides:
+ * - Filtering options by location and degree type
+ * - Favorite/unfavorite functionality (requires user authentication)
+ * - Login reminder dialog when attempting to favorite while not logged in
+ * - Automatic loading of user's favorites on component mount and navigation
  */
 const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   const navigate = useNavigate();
@@ -92,10 +97,43 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
     } catch (error: any) {
       // Handle 409 Conflict (already exists) by keeping it as favorited
       if (error.message && error.message.includes("409")) {
-        console.log("Favorite already exists, keeping as favorited");
+        console.error("Favorite already exists, keeping as favorited");
         setFavorites((prev) => {
           const newFavorites = new Set(prev);
           newFavorites.add(programmeId); // Keep it favorited
+          return newFavorites;
+        });
+      } else {
+        console.error("Error toggling favorite:", error);
+        // For other errors, revert the local state
+        setFavorites((prev) => {
+          const reverted = new Set(prev);
+          if (isFavorited) {
+            reverted.add(programmeId);
+          } else {
+            reverted.delete(programmeId);
+          }
+          return reverted;
+        });
+      }
+    }
+
+    // Save/remove favorite in database
+    try {
+      if (isFavorited) {
+        // Remove from favorites
+        await removeFavorite(programmeId);
+      } else {
+        // Add to favorites
+        await addFavorite(programmeId);
+      }
+    } catch (error: any) {
+      // Handle 409 Conflict (already exists) by keeping it as favorited
+      if (error.message && error.message.includes("409")) {
+        console.error("Favorite already exists, keeping as favorited");
+        setFavorites((prev) => {
+          const newFavorites = new Set(prev);
+          newFavorites.add(programmeId);
           return newFavorites;
         });
       } else {
