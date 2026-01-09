@@ -28,6 +28,7 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Continuous Integration](docs/continuous-integration.md)
 - [Continuous Deployment](docs/continuous-deployment.md)
+- [Server Setup (Production)](docs/server-setup.md)
 - [License](LICENSE)
 - [Question Documentation](docs/questions.md)
 - [Database Schema](docs/database_schema.md)

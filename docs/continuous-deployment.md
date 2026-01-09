@@ -103,3 +103,19 @@ The following GitHub secrets must be configured in your repository for the deplo
 - **GHCR_TOKEN**: A token with `read:packages` for pulling images on the server (used by the deploy script).
 
 Make sure to add these secrets in your repository's **Settings > Secrets and variables > Actions** section.
+
+## Production Setup Checklist
+
+Use this list when handing over the project to a new server owner.
+
+1. Provision an Ubuntu server, open the required ports (80/443 and 5001 if not behind a proxy).
+2. Install Docker Engine and the Docker Compose plugin.
+3. Create the deploy user and project directory at `/home/deployuser/projects/techstudyfinder`.
+4. Add `/home/deployuser/projects/techstudyfinder/docker-compose.yml` and `.env`.
+5. Add `/usr/local/bin/techstudyfinder-deploy.sh` and make it executable.
+6. Add `/etc/techstudyfinder.env` with `GITHUB_REPO_OWNER` and `GHCR_TOKEN`.
+7. Install the systemd unit and timer files in `/etc/systemd/system/` and enable the timer.
+8. Configure Nginx reverse proxy and TLS certificates for your domain.
+9. Initialize the database and verify the app responds on the public URL.
+
+For a full walkthrough, see `docs/server-setup.md`.
