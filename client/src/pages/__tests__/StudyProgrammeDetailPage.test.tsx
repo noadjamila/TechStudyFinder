@@ -4,6 +4,7 @@ import { ThemeProvider } from "@mui/material";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import StudyProgrammeDetailPage from "../StudyProgrammeDetailPage";
 import theme from "../../theme/theme";
+import { AuthProvider } from "../../contexts/AuthContext";
 
 const mockedNavigate = vi.fn();
 
@@ -19,6 +20,12 @@ vi.mock("react-router-dom", async () => {
 });
 
 // Mock APIs
+vi.mock("../../api/authApi", () => ({
+  getCurrentUser: vi.fn().mockResolvedValue(null),
+  login: vi.fn(),
+  logout: vi.fn(),
+}));
+
 vi.mock("../../api/quizApi", () => ({
   getStudyProgrammeById: vi.fn(),
 }));
@@ -68,12 +75,14 @@ const renderWithTheme = (initialRoute = "/study-programme/12345") => {
   return render(
     <MemoryRouter initialEntries={[initialRoute]}>
       <ThemeProvider theme={theme}>
-        <Routes>
-          <Route
-            path="/study-programme/:id"
-            element={<StudyProgrammeDetailPage />}
-          />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route
+              path="/study-programme/:id"
+              element={<StudyProgrammeDetailPage />}
+            />
+          </Routes>
+        </AuthProvider>
       </ThemeProvider>
     </MemoryRouter>,
   );
