@@ -51,8 +51,12 @@ export default function NavigationGuard({
     const isNowOnResults = location.pathname === "/results";
     const isLeavingResults = wasOnResults && !isNowOnResults;
 
+    // Don't block navigation to study programme detail pages (feels like same context to user)
+    const isGoingToDetailView =
+      location.pathname.startsWith("/study-programme/");
+
     // User trying to leave /results without login and with quiz results
-    if (!user && hasQuizResults && isLeavingResults) {
+    if (!user && hasQuizResults && isLeavingResults && !isGoingToDetailView) {
       console.log(
         "[NavigationGuard] BLOCKING - Storing destination:",
         location.pathname,
@@ -61,19 +65,16 @@ export default function NavigationGuard({
       // Store the intended destination
       setIntendedDestination(location.pathname);
 
-      // Show the reminder dialog
+      // Show the reminder dialog (don't navigate back - just freeze rendering)
       setShowDialog(true);
 
-      // Navigate back to results to block the navigation
-      navigate("/results", { replace: true });
-
-      // Don't update previousPath - we're still on results
+      // Don't update previousPath - we're still conceptually on results
       return;
     }
 
     // Update previous path for next navigation
     previousPathRef.current = location.pathname;
-  }, [location.pathname, user, hasQuizResults, navigate]);
+  }, [location.pathname, user, hasQuizResults]);
 
   // Handle closing the dialog - allow navigation to intended destination
   const handleDialogClose = () => {
@@ -116,7 +117,11 @@ export default function NavigationGuard({
 
   return (
     <>
-      {children}
+      {/* Only render the new route if dialog is not blocking */}
+      {!showDialog && children}
+
+      {/* If dialog is shown, keep rendering the results page content */}
+      {showDialog && <div style={{ position: "relative" }}>{children}</div>}
 
       {/* Reminder dialog */}
       <LoginReminderResultList
