@@ -41,7 +41,7 @@ export default function QuizFlow() {
   // }, []);
 
   useEffect(() => {
-    if (showResults && showLevelSuccess === false) {
+    if (showResults && !showLevelSuccess) {
       navigate("/results", { state: { answers } });
     }
   }, [showResults, showLevelSuccess]);
