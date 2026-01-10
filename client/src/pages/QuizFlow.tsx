@@ -9,6 +9,7 @@ import { Answer, AnswerMap } from "../types/QuizAnswer.types";
 import { calculateRiasecScores } from "../services/calculateRiasecScores";
 import { riasecScoresToApiPayload } from "../services/riasecPayload";
 import { postFilterLevel } from "../api/quizApi";
+import { fetchQuestions } from "../api/quizApi";
 
 type Level = 1 | 2 | 3;
 
@@ -55,6 +56,32 @@ export default function QuizFlow() {
   const [showLevelSuccess, setShowLevelSuccess] = useState(true);
   const [showResults, setShowResults] = useState(false);
 
+  async function ensureLevel2Questions() {
+    setSession((prev) => {
+      if (prev.level2Questions) return prev;
+
+      return {
+        ...prev,
+        level2Questions: [],
+      };
+    });
+
+    const questions = await fetchQuestions();
+
+    setSession((prev) => ({
+      ...prev,
+      level2Questions: questions,
+      updatedAt: Date.now(),
+    }));
+  }
+
+  useEffect(() => {
+    if (!session) return;
+    if (session.currentLevel === 2) {
+      ensureLevel2Questions();
+    }
+  }, [session?.currentLevel]);
+
   function handleAnswer(answer: Answer) {
     setSession((prev) => ({
       ...prev,
@@ -85,7 +112,7 @@ export default function QuizFlow() {
   }
 
   useEffect(() => {
-    if (!showResults && showLevelSuccess) return;
+    if (showResults && !showLevelSuccess) return;
     navigate("/results", { state: { answers: session.answers } });
   }, [showResults, showLevelSuccess, session, navigate]);
 
@@ -111,14 +138,17 @@ export default function QuizFlow() {
   }
 
   if (session.currentLevel === 2) {
+    if (!session.level2Questions) {
+      return <div>Lädt Fragen…</div>;
+    }
     return (
       <Quiz_L2
         onAnswer={handleAnswer}
-        onComplete={() => {
-          goToNextLevel();
+        onComplete={async () => {
           setShowLevelSuccess(true);
           setShowResults(true);
-          await handleLevelComplete(answers, 2);
+          await handleLevelComplete(session.answers, session.currentLevel);
+          goToNextLevel();
         }}
         oneLevelBack={goToPreviousLevel}
       />
