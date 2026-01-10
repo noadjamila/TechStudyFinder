@@ -1,5 +1,5 @@
-import { AnswerMap } from "../types/QuizAnswer.types";
-import { RiasecType } from "../types/RiasecTypes";
+import { AnswerMap } from "./QuizAnswer.types";
+import { RiasecType } from "./RiasecTypes";
 
 export type QuizSession = {
   sessionId: string;
