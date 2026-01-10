@@ -4,7 +4,6 @@ import { RiasecType } from "../../types/RiasecTypes";
 import ErrorScreen from "../error-screen/ErrorScreen";
 import CardStack from "../cards/CardStackLevel2";
 import { Stack, Typography } from "@mui/material";
-import { postFilterLevel } from "../../api/quizApi";
 import BaseCard from "../cards/QuizCardBase";
 import PrimaryButton from "../buttons/PrimaryButton";
 import SecondaryButton from "../buttons/SecondaryButton";
