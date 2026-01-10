@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Quiz_L1 from "../components/quiz/Quiz_L1";
 import Quiz_L2 from "../components/quiz/Quiz_L2";
 import LevelSuccessScreen from "../components/quiz/LevelSuccessScreen";
-import { Answer, AnswerMap } from "../types/QuizAnswer.types";
+import { Answer } from "../types/QuizAnswer.types";
+import { QuizSession } from "../types/QuizSession";
+import { createQuizSession } from "../session/createQuizSession";
 
 type Level = 1 | 2 | 3;
 
@@ -17,59 +19,81 @@ type Level = 1 | 2 | 3;
 export default function QuizFlow() {
   const navigate = useNavigate();
 
+  /*
   const [answers, setAnswers] = useState<AnswerMap>({});
   const [currentLevel, setCurrentLevel] = useState<Level>(1);
+  */
+  const [session, setSession] = useState<QuizSession>(() =>
+    createQuizSession(),
+  );
   const [showLevelSuccess, setShowLevelSuccess] = useState(true);
   const [showResults, setShowResults] = useState(false);
 
-  function updateAnswer(answer: Answer) {
-    setAnswers((prev) => ({
+  function handleAnswer(answer: Answer) {
+    setSession((prev) => ({
       ...prev,
-      [answer.questionId]: answer,
+      answers: {
+        ...prev.answers,
+        [answer.questionId]: answer,
+      },
+      updatedAt: Date.now(),
     }));
   }
 
-  function handleLevelBack() {
-    setCurrentLevel((lvl) => Math.max(lvl - 1, 1) as Level);
+  function goToPreviousLevel() {
+    setSession((prev) => ({
+      ...prev,
+      currentLevel: Math.max(prev.currentLevel - 1, 1) as Level,
+      currentQuestionIndex: 0,
+      updatedAt: Date.now(),
+    }));
+  }
+
+  function goToNextLevel() {
+    setSession((prev) => ({
+      ...prev,
+      currentLevel: Math.max(prev.currentLevel + 1, 1) as Level,
+      currentQuestionIndex: 0,
+      updatedAt: Date.now(),
+    }));
   }
 
   useEffect(() => {
-    if (showResults && showLevelSuccess === false) {
-      navigate("/results", { state: { answers } });
-    }
-  }, [showResults, showLevelSuccess, answers]);
+    if (!showResults && showLevelSuccess) return;
+    navigate("/results", { state: { answers: session.answers } });
+  }, [showResults, showLevelSuccess, session, navigate]);
 
   if (showLevelSuccess) {
     return (
       <LevelSuccessScreen
-        currentLevel={currentLevel}
+        currentLevel={session.currentLevel}
         onContinue={() => setShowLevelSuccess(false)}
       />
     );
   }
 
-  if (currentLevel === 1) {
+  if (session.currentLevel === 1) {
     return (
       <Quiz_L1
-        onAnswer={(answer: Answer) => updateAnswer(answer)}
+        onAnswer={(answer: Answer) => handleAnswer(answer)}
         onComplete={() => {
-          setCurrentLevel(2);
+          goToNextLevel();
           setShowLevelSuccess(true);
         }}
       />
     );
   }
 
-  if (currentLevel === 2) {
+  if (session.currentLevel === 2) {
     return (
       <Quiz_L2
-        onAnswer={updateAnswer}
+        onAnswer={handleAnswer}
         onComplete={() => {
-          setCurrentLevel(3);
+          goToNextLevel();
           setShowLevelSuccess(true);
           setShowResults(true);
         }}
-        oneLevelBack={handleLevelBack}
+        oneLevelBack={goToPreviousLevel}
       />
     );
   }
