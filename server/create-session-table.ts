@@ -13,7 +13,7 @@ async function createSessionTable() {
       WITH (OIDS=FALSE);
       CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "session" ("expire");
     `);
-    console.log("Session table created successfully!");
+    console.debug("Session table created successfully!");
   } catch (err) {
     console.error("Error creating session table:", err);
     process.exit(1);
