@@ -26,11 +26,19 @@ export function calculateRiasecScores(
 /**
  * Extracts the RIASEC type from a question ID.
  * @param questionId
- * @returns The RIASEC type extracted from the question ID.
+ * @returns The RIASEC type extracted from last segment of the question ID.
  */
 function extractRiasecType(questionId: string): RiasecType {
   const parts = questionId.split(".");
-  return parts[parts.length - 1] as RiasecType;
+  const candidate = parts[parts.length - 1];
+
+  if (candidate in initialScores) {
+    return candidate as RiasecType;
+  }
+
+  throw new Error(
+    `Invalid questionId format "${questionId}": "${candidate}" is not a valid RIASEC type.`,
+  );
 }
 
 /**
@@ -38,7 +46,7 @@ function extractRiasecType(questionId: string): RiasecType {
  * @param value - The answer value ("yes", "no", or "skip").
  * @returns The points associated with the answer value.
  */
-function answerValueToPoints(value: unknown): number {
+function answerValueToPoints(value: string | number | boolean): number {
   switch (value) {
     case "yes":
       return 1;
