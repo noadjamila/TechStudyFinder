@@ -16,12 +16,12 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
  * For password fields, includes a visibility toggle icon.
  */
 export default function InputField({
-  label,
-  sx,
-  type,
-  disabled,
-  ...props
-}: TextFieldProps) {
+                                     label,
+                                     sx,
+                                     type,
+                                     disabled,
+                                     ...props
+                                   }: TextFieldProps) {
   const [showPassword, setShowPassword] = useState(false);
   const isPasswordField = type === "password";
 
@@ -69,22 +69,22 @@ export default function InputField({
         InputProps={
           isPasswordField
             ? {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                      size="small"
-                      aria-label="Passwort-Sichtbarkeit umschalten"
-                      sx={{
-                        marginRight: "-8px",
-                      }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={handleClickShowPassword}
+                    edge="end"
+                    size="small"
+                    aria-label="Passwort-Sichtbarkeit umschalten"
+                    sx={{
+                      marginRight: "-8px",
+                    }}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }
             : undefined
         }
         {...props}

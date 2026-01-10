@@ -3,11 +3,37 @@ import { useNavigate } from "react-router-dom";
 import Quiz_L1 from "../components/quiz/Quiz_L1";
 import Quiz_L2 from "../components/quiz/Quiz_L2";
 import LevelSuccessScreen from "../components/quiz/LevelSuccessScreen";
-import { Answer } from "../types/QuizAnswer.types";
 import { QuizSession } from "../types/QuizSession";
 import { createQuizSession } from "../session/createQuizSession";
+import { Answer, AnswerMap } from "../types/QuizAnswer.types";
+import { calculateRiasecScores } from "../services/calculateRiasecScores";
+import { riasecScoresToApiPayload } from "../services/riasecPayload";
+import { postFilterLevel } from "../api/quizApi";
 
 type Level = 1 | 2 | 3;
+
+/**
+ * Handles the completion of a level by calculating RIASEC scores
+ * and sending them to the backend.
+ * @param answers
+ * @param levelNumber - The level number that was completed.
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ */
+async function handleLevelComplete(answers: AnswerMap, levelNumber: Level) {
+  const scores = calculateRiasecScores(answers);
+  const payload = riasecScoresToApiPayload(scores);
+
+  // Send the RIASEC scores to the backend
+  try {
+    await postFilterLevel({
+      level: levelNumber,
+      answers: payload,
+    });
+  } catch (error) {
+    // Log the error so API failures do not result in unhandled promise rejections
+    console.error("Failed to post filter level data:", error);
+  }
+}
 
 /**
  * Manages the multi-level quiz flow.
@@ -92,6 +118,7 @@ export default function QuizFlow() {
           goToNextLevel();
           setShowLevelSuccess(true);
           setShowResults(true);
+          await handleLevelComplete(answers, 2);
         }}
         oneLevelBack={goToPreviousLevel}
       />
