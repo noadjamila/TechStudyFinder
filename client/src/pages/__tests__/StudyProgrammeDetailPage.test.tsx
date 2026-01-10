@@ -1,10 +1,10 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import StudyProgrammeDetailPage from "../StudyProgrammeDetailPage";
-import "@testing-library/jest-dom";
-import { vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { ThemeProvider } from "@mui/material";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { ThemeProvider, CssBaseline } from "@mui/material";
+import StudyProgrammeDetailPage from "../StudyProgrammeDetailPage";
 import theme from "../../theme/theme";
+import * as quizApi from "../../api/quizApi";
 
 const mockedNavigate = vi.fn();
 
@@ -20,26 +20,42 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-// Mock window.matchMedia for responsive tests
-Object.defineProperty(window, "matchMedia", {
-  writable: true,
-  value: vi.fn().mockImplementation((query) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
-});
+vi.mock("../../api/quizApi");
 
-const renderWithProviders = (id: string) => {
+const mockProgramme = {
+  studiengang_id: "12345",
+  name: "Informatik",
+  hochschule: "Technische Universität Berlin",
+  abschluss: "Bachelor of Science",
+  homepage:
+    "https://www.tu.berlin/studieren/studienangebot/gesamtes-studienangebot/studiengang/informatik-b-sc",
+  studienbeitrag: "Keine Studiengebühren",
+  beitrag_kommentar: "Semesterbeitrag ca. 315 EUR (inkl. Semesterticket)",
+  anmerkungen:
+    "Der Bachelorstudiengang Informatik vermittelt grundlegende Kenntnisse und Methoden der Informatik sowie die Fähigkeit, diese anzuwenden.",
+  regelstudienzeit: "6 Semester",
+  zulassungssemester: "Wintersemester",
+  zulassungsmodus: "Zulassungsbeschränkt (NC)",
+  zulassungsvoraussetzungen:
+    "Allgemeine Hochschulreife oder Fachhochschulreife",
+  zulassungslink: "https://www.tu.berlin/studieren/bewerbung-zulassung",
+  schwerpunkte: [
+    "Algorithmik",
+    "Software Engineering",
+    "Künstliche Intelligenz",
+    "Datenbanken",
+  ],
+  sprachen: ["Deutsch", "Englisch"],
+  standorte: ["Berlin"],
+  studienfelder: ["Informatik", "Mathematik"],
+  studienform: ["Vollzeit", "Teilzeit"],
+  fristen: null,
+};
+
+const renderWithTheme = (initialRoute = "/study-programme/12345") => {
   return render(
-    <MemoryRouter initialEntries={[`/study-programme/${id}`]}>
+    <MemoryRouter initialEntries={[initialRoute]}>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
         <Routes>
           <Route
             path="/study-programme/:id"
@@ -54,95 +70,213 @@ const renderWithProviders = (id: string) => {
 describe("StudyProgrammeDetailPage Component", () => {
   beforeEach(() => {
     mockedNavigate.mockClear();
+    vi.mocked(quizApi.getStudyProgrammeById).mockResolvedValue(mockProgramme);
+    // Mock window.scrollTo
+    window.scrollTo = vi.fn();
   });
 
-  it("renders study programme details for valid ID", () => {
-    renderWithProviders("1");
-
-    expect(
-      screen.getByText("Communication Systems and Networks"),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Technische Hochschule Köln")).toBeInTheDocument();
-    expect(screen.getByText("Master")).toBeInTheDocument();
+  describe("Loading State", () => {
+    it("shows loading state initially", () => {
+      renderWithTheme();
+      expect(screen.getByText("Lädt...")).toBeInTheDocument();
+    });
   });
 
-  it("renders back button with correct label", () => {
-    renderWithProviders("1");
+  describe("Content Rendering", () => {
+    it("renders programme name as main heading", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(
+          screen.getByRole("heading", { name: "Informatik", level: 1 }),
+        ).toBeInTheDocument();
+      });
+    });
 
-    const backButton = screen.getByText("Zurück");
-    expect(backButton).toBeInTheDocument();
+    it("renders university name with location icon", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(
+          screen.getByText("Technische Universität Berlin"),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it("renders degree with stars icon", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(screen.getByText("Bachelor of Science")).toBeInTheDocument();
+      });
+    });
+
+    it("renders back button", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(screen.getByText("Zurück")).toBeInTheDocument();
+      });
+    });
+
+    it("navigates back to results when back button is clicked", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        const backButton = screen.getByText("Zurück");
+        fireEvent.click(backButton);
+        expect(mockedNavigate).toHaveBeenCalledWith("/results");
+      });
+    });
   });
 
-  it("navigates back to results when back button is clicked", () => {
-    renderWithProviders("1");
+  describe("Sections Rendering", () => {
+    it("renders Allgemeine Informationen section", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(
+          screen.getByText("Allgemeine Informationen"),
+        ).toBeInTheDocument();
+      });
+    });
 
-    const backButton = screen.getByText("Zurück");
-    fireEvent.click(backButton);
+    it("renders studienform information", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(screen.getByText(/Vollzeit, Teilzeit/i)).toBeInTheDocument();
+      });
+    });
 
-    expect(mockedNavigate).toHaveBeenCalledWith("/results");
+    it("renders regelstudienzeit", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(screen.getByText("6 Semester")).toBeInTheDocument();
+      });
+    });
+
+    it("renders standorte", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(screen.getByText("Berlin")).toBeInTheDocument();
+      });
+    });
+
+    it("renders sprachen", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(screen.getByText("Deutsch, Englisch")).toBeInTheDocument();
+      });
+    });
+
+    it("renders Schwerpunkte section with chips", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(screen.getByText("Schwerpunkte")).toBeInTheDocument();
+        expect(screen.getByText("Algorithmik")).toBeInTheDocument();
+        expect(screen.getByText("Software Engineering")).toBeInTheDocument();
+        expect(screen.getByText("Künstliche Intelligenz")).toBeInTheDocument();
+        expect(screen.getByText("Datenbanken")).toBeInTheDocument();
+      });
+    });
+
+    it("renders Studienfelder section with chips", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(screen.getByText("Studienfelder")).toBeInTheDocument();
+        expect(screen.getByText("Mathematik")).toBeInTheDocument();
+      });
+    });
+
+    it("renders Zulassung accordion", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(screen.getByText("Zulassung")).toBeInTheDocument();
+      });
+    });
+
+    it("expands Zulassung accordion when clicked", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        const zulassungHeader = screen.getByText("Zulassung");
+        fireEvent.click(zulassungHeader);
+        expect(screen.getByText("Zulassungssemester:")).toBeInTheDocument();
+        expect(screen.getByText("Wintersemester")).toBeInTheDocument();
+      });
+    });
+
+    it("renders Kosten accordion", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(screen.getByText("Kosten")).toBeInTheDocument();
+      });
+    });
+
+    it("expands Kosten accordion when clicked", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        const kostenHeader = screen.getByText("Kosten");
+        fireEvent.click(kostenHeader);
+        expect(screen.getByText("Studienbeitrag:")).toBeInTheDocument();
+        expect(screen.getByText("Keine Studiengebühren")).toBeInTheDocument();
+      });
+    });
+
+    it("renders Anmerkungen section", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(screen.getByText("Anmerkungen")).toBeInTheDocument();
+        expect(
+          screen.getByText(/Der Bachelorstudiengang Informatik vermittelt/i),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it("renders homepage link", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        const link = screen.getByText("Zur Studiengangs-Homepage →");
+        expect(link).toBeInTheDocument();
+        expect(link).toHaveAttribute(
+          "href",
+          "https://www.tu.berlin/studieren/studienangebot/gesamtes-studienangebot/studiengang/informatik-b-sc",
+        );
+      });
+    });
   });
 
-  it("renders favorite button with unfavorited state by default", () => {
-    renderWithProviders("1");
+  describe("Favorite Functionality", () => {
+    it("renders favorite button", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(
+          screen.getByLabelText("Zu Favoriten hinzufügen"),
+        ).toBeInTheDocument();
+      });
+    });
 
-    const favoriteButton = screen.getByLabelText("Zu Favoriten hinzufügen");
-    expect(favoriteButton).toBeInTheDocument();
+    it("toggles favorite state when clicked", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        const favoriteButton = screen.getByLabelText("Zu Favoriten hinzufügen");
+        fireEvent.click(favoriteButton);
+        expect(
+          screen.getByLabelText("Aus Favoriten entfernen"),
+        ).toBeInTheDocument();
+      });
+    });
   });
 
-  it("toggles favorite state when favorite button is clicked", () => {
-    renderWithProviders("1");
-
-    const favoriteButton = screen.getByLabelText("Zu Favoriten hinzufügen");
-    fireEvent.click(favoriteButton);
-
-    expect(
-      screen.getByLabelText("Aus Favoriten entfernen"),
-    ).toBeInTheDocument();
+  describe("Responsive Design", () => {
+    it("renders data source component", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        // DataSource component should be rendered
+        expect(screen.getByText(/Hochschulkompass/i)).toBeInTheDocument();
+      });
+    });
   });
 
-  it("renders university icon and stars icon", () => {
-    const { container } = renderWithProviders("1");
-
-    // Check for MUI icons by finding svg elements with specific test ids or parent structure
-    const icons = container.querySelectorAll("svg");
-    expect(icons.length).toBeGreaterThan(0);
-  });
-
-  it("renders details section with heading and description", () => {
-    renderWithProviders("1");
-
-    expect(screen.getByText("Studiengangs-Details")).toBeInTheDocument();
-    expect(
-      screen.getByText(/Weitere Informationen zu diesem Studiengang/i),
-    ).toBeInTheDocument();
-  });
-
-  it("renders DataSource component", () => {
-    renderWithProviders("1");
-
-    expect(screen.getByAltText("HRK Logo")).toBeInTheDocument();
-  });
-
-  it("displays not found message for invalid ID", () => {
-    renderWithProviders("999");
-
-    expect(screen.getByText("Studiengang nicht gefunden")).toBeInTheDocument();
-  });
-
-  it("shows back button on not found page", () => {
-    renderWithProviders("999");
-
-    const backButton = screen.getByText("Zurück");
-    expect(backButton).toBeInTheDocument();
-  });
-
-  it("renders correct study programme for different IDs", () => {
-    renderWithProviders("3");
-
-    expect(screen.getByText("Informatik")).toBeInTheDocument();
-    expect(
-      screen.getByText("Rheinische Friedrich-Wilhelms-Universität Bonn"),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Bachelor of Science")).toBeInTheDocument();
+  describe("Scroll Behavior", () => {
+    it("scrolls to top when component mounts", async () => {
+      renderWithTheme();
+      await waitFor(() => {
+        expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
+      });
+    });
   });
 });

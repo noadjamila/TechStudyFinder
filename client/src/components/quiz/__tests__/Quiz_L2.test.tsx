@@ -257,6 +257,8 @@ describe("Quiz_L2", () => {
     expect(onAnswer).toHaveBeenCalledWith(
       expect.objectContaining({ questionId: "level2.question0", value: "yes" }),
     );
-    expect(onComplete).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(onComplete).toHaveBeenCalledTimes(1);
+    });
   });
 });
