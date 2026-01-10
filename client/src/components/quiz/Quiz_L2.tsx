@@ -10,12 +10,6 @@ import SecondaryButton from "../buttons/SecondaryButton";
 import theme from "../../theme/theme";
 import { Answer } from "../../types/QuizAnswer.types";
 
-/**
- * NOTE:
- * This component is intentionally simplified as of now (PR 1).
- * Score calculation and backend submission are reintroduced in PR 2.
- */
-
 export interface QuizL2Props {
   onAnswer: (answer: Answer) => void;
   onComplete: () => void;
