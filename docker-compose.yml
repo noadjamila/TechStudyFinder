@@ -1,5 +1,5 @@
 services:
-  # PostgreSQL Database 
+  # PostgreSQL Database
   # Run with: docker-compose --profile local up
   db:
     image: postgres:15-alpine
@@ -34,7 +34,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-        required: false 
+        required: false
     ports:
       - "127.0.0.1:5001:5001"
     environment:
