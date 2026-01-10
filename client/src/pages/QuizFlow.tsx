@@ -14,6 +14,7 @@ type Level = 1 | 2 | 3;
  * Handles the completion of a level by calculating RIASEC scores
  * and sending them to the backend.
  * @param answers
+ * @param levelNumber - The level number that was completed.
  * @returns {Promise<void>} A promise that resolves when the operation is complete.
  */
 async function handleLevelComplete(answers: AnswerMap, levelNumber: Level) {
@@ -21,10 +22,15 @@ async function handleLevelComplete(answers: AnswerMap, levelNumber: Level) {
   const payload = riasecScoresToApiPayload(scores);
 
   // Send the RIASEC scores to the backend
-  await postFilterLevel({
-    level: levelNumber,
-    answers: payload,
-  });
+  try {
+    await postFilterLevel({
+      level: levelNumber,
+      answers: payload,
+    });
+  } catch (error) {
+    // Log the error so API failures do not result in unhandled promise rejections
+    console.error("Failed to post filter level data:", error);
+  }
 }
 
 /**
@@ -80,11 +86,11 @@ export default function QuizFlow() {
     return (
       <Quiz_L2
         onAnswer={updateAnswer}
-        onComplete={() => {
+        onComplete={async () => {
           setCurrentLevel(3);
           setShowLevelSuccess(true);
           setShowResults(true);
-          handleLevelComplete(answers, 2);
+          await handleLevelComplete(answers, 2);
         }}
         oneLevelBack={() => {
           setCurrentLevel(1);
