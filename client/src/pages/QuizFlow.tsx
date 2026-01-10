@@ -105,7 +105,7 @@ export default function QuizFlow() {
   function goToNextLevel() {
     setSession((prev) => ({
       ...prev,
-      currentLevel: Math.max(prev.currentLevel + 1, 1) as Level,
+      currentLevel: Math.min(prev.currentLevel + 1, 3) as Level,
       currentQuestionIndex: 0,
       updatedAt: Date.now(),
     }));
