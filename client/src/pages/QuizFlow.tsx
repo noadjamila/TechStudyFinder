@@ -24,14 +24,12 @@ async function handleLevelComplete(answers: AnswerMap, levelNumber: Level) {
   const scores = calculateRiasecScores(answers);
   const payload = riasecScoresToApiPayload(scores);
 
-  // Send the RIASEC scores to the backend
   try {
     await postFilterLevel({
       level: levelNumber,
       answers: payload,
     });
   } catch (error) {
-    // Log the error so API failures do not result in unhandled promise rejections
     console.error("Failed to post filter level data:", error);
   }
 }
@@ -46,10 +44,6 @@ async function handleLevelComplete(answers: AnswerMap, levelNumber: Level) {
 export default function QuizFlow() {
   const navigate = useNavigate();
 
-  /*
-  const [answers, setAnswers] = useState<AnswerMap>({});
-  const [currentLevel, setCurrentLevel] = useState<Level>(1);
-  */
   const [session, setSession] = useState<QuizSession>(() =>
     createQuizSession(),
   );

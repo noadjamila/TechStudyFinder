@@ -18,19 +18,15 @@ export interface QuizL2Props {
 }
 
 /**
- * `Quiz_L2` is the component for the second level of the quiz.
- * It fetches level 2 questions, manages quiz state (current question,
- * user responses, and scoring), renders the corresponding
- * `QuizLayout` component and sends the RIASEC scores to the backend.
+ * Level 2 quiz flow component.
  *
- * @description
- * - Fetches level 2 questions from the backend on mount.
- * - Uses local state to track the current question index and score per RIASEC type.
- * - Increments or decrements scores depending on user selection ("yes", "no", or "skip").
- * - Displays the current quiz question.
- * - Sends the RIASEC scores to the backend when the quiz is completed.
+ * Fetches level 2 questions on mount, stores them in the session state,
+ * and renders a card-based question flow. Tracks the current question index,
+ * handles forward/back navigation (including returning to the previous level),
+ * and emits answers and completion events to the parent.
  *
- * @returns {JSX.Element} A rendered quiz interface with progress tracking and scoring.
+ * @param {QuizL2Props} props Component callbacks for answering, completion, and back navigation.
+ * @returns {JSX.Element} The rendered quiz UI or a loading state while questions are fetched.
  */
 const Quiz_L2: React.FC<QuizL2Props> = ({
   onAnswer,
@@ -69,9 +65,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
   const TOTAL_QUESTIONS = questions.length;
   const currentQuestion = questions[session.currentQuestionIndex];
 
-  /**
-   * Updates the index in the Session when going one question back
-   */
+  // Updates the index in the Session when going one question back
   function goOneQuestionBack() {
     setSession((prev) => ({
       ...prev,
@@ -79,6 +73,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
       updatedAt: Date.now(),
     }));
   }
+
   /**
    * Handles the option to go back one Question.
    * Switches Levels if user is on the first Question.
@@ -90,8 +85,11 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
       goOneQuestionBack();
     }
   };
+
   /**
    * Updates the index in the Session when going to the next question
+   * by incrementing the currentQuestionIndex by 1.
+   * Also updates the updatedAt timestamp.
    */
   function goToNextQuestion() {
     setSession((prev) => ({
@@ -117,7 +115,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
       answeredAt: Date.now(),
     });
 
-    // Last question -> send scores to backend
+    // Last question: send scores to backend
     setTimeout(() => {
       if (session.currentQuestionIndex === TOTAL_QUESTIONS - 1) {
         onComplete();
@@ -128,7 +126,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
     }, 300);
   };
 
-  // While questions are still loading (but no error yet), show a simple loading state.
+  // While questions are still loading (but no error yet), show a simple loading state
   if (TOTAL_QUESTIONS === 0) {
     return (
       <QuizLayout currentIndex={0} questionsTotal={0}>

@@ -69,9 +69,12 @@ export async function getQuizLevel(level: number): Promise<QuizLevelResponse> {
     throw new Error("Could not fetch quiz questions from the backend.");
   }
 }
+
 /**
  * Fetches level 2 questions from the backend API on component mount.
  * Handles errors and updates the local state with the fetched questions.
+ * @returns {Promise<{ id: string; text: string; riasec_type: RiasecType; }[]>} An array of level 2 questions.
+ * @throws {Error} Throws if the network request fails.
  */
 export async function fetchQuestions() {
   const res = await fetch("/api/quiz/level/2");
@@ -88,38 +91,6 @@ export async function fetchQuestions() {
     riasec_type: RiasecType;
   }[];
 }
-
-// const [error, setError] = useState<{ title: string; message: string } | null>(
-//   null,
-// );
-// export async function fetchQuestions() {
-//   try {
-//     const res = await fetch(`/api/quiz/level/${2}`);
-
-//     if (!res.ok) {
-//       throw new Error(`HTTP error! status: ${res.status}`);
-//     }
-
-//     const data = await res.json();
-
-//     if (!data.questions || data.questions.length === 0) {
-//       throw new Error("No questions found in the response.");
-//     }
-
-//     return data.questions as {
-//       id: string;
-//       text: string;
-//       riasec_type: RiasecType;
-//     }[];
-//   } catch (err) {
-//     console.error(err);
-//     setError({
-//       title: "Fehler beim Laden der Fragen",
-//       message:
-//         "Die Fragen konnten nicht geladen werden. Bitte versuche es später erneut.",
-//     });
-//   }
-// };
 
 /**
  * Fetches a single study programme by ID from the backend.
