@@ -8,6 +8,7 @@ import {
   DialogProps,
   Typography,
   Box,
+  Alert,
 } from "@mui/material";
 
 interface StyledDialogProps extends DialogProps {
@@ -17,6 +18,7 @@ interface StyledDialogProps extends DialogProps {
   onConfirm?: () => void;
   cancelLabel?: string;
   confirmLabel?: string;
+  error?: string | null;
 }
 
 const CustomDialog = styled(Dialog)(({ theme }) => ({
@@ -79,6 +81,7 @@ export default function StyledDialog({
   onConfirm,
   cancelLabel = "Abbrechen",
   confirmLabel = "OK",
+  error,
   ...props
 }: StyledDialogProps) {
   return (
@@ -88,6 +91,12 @@ export default function StyledDialog({
       <DialogContent sx={{ textAlign: "center" }}>
         <ContentText>{text}</ContentText>
       </DialogContent>
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
 
       <Actions>
         <OptionBox onClick={onCancel ?? (() => onClose?.({}, "backdropClick"))}>
