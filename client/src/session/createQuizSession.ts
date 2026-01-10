@@ -6,6 +6,7 @@ export function createQuizSession(): QuizSession {
     currentLevel: 1,
     currentQuestionIndex: 0,
     answers: {},
+    level2Questions: [],
     startedAt: Date.now(),
     updatedAt: Date.now(),
   };

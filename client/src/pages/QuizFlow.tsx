@@ -54,11 +54,13 @@ export default function QuizFlow() {
     createQuizSession(),
   );
   const [showLevelSuccess, setShowLevelSuccess] = useState(true);
-  const [showResults, setShowResults] = useState(false);
+  const [_showResults, setShowResults] = useState(false);
 
   async function ensureLevel2Questions() {
     setSession((prev) => {
-      if (prev.level2Questions) return prev;
+      if (prev.level2Questions && prev.level2Questions.length > 0) {
+        return prev;
+      }
 
       return {
         ...prev,
@@ -76,7 +78,6 @@ export default function QuizFlow() {
   }
 
   useEffect(() => {
-    if (!session) return;
     if (session.currentLevel === 2) {
       ensureLevel2Questions();
     }
@@ -111,10 +112,18 @@ export default function QuizFlow() {
     }));
   }
 
-  useEffect(() => {
-    if (showResults && !showLevelSuccess) return;
+  function completeLevel2() {
+    setShowLevelSuccess(true);
+    setShowResults(true);
+    handleLevelComplete(session.answers, 2);
+    setSession((prev) => ({
+      ...prev,
+      currentLevel: 3,
+      currentQuestionIndex: 0,
+      updatedAt: Date.now(),
+    }));
     navigate("/results", { state: { answers: session.answers } });
-  }, [showResults, showLevelSuccess, session, navigate]);
+  }
 
   if (showLevelSuccess) {
     return (
@@ -144,12 +153,7 @@ export default function QuizFlow() {
     return (
       <Quiz_L2
         onAnswer={handleAnswer}
-        onComplete={async () => {
-          setShowLevelSuccess(true);
-          setShowResults(true);
-          await handleLevelComplete(session.answers, session.currentLevel);
-          goToNextLevel();
-        }}
+        onComplete={completeLevel2}
         oneLevelBack={goToPreviousLevel}
       />
     );
