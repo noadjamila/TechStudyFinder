@@ -2,8 +2,13 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, test, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import QuizFlow from "../QuizFlow";
+import * as quizApi from "../../api/quizApi";
 
 const navigateMock = vi.fn();
+
+vi.spyOn(quizApi, "postFilterLevel").mockResolvedValue({
+  ids: [],
+});
 
 vi.mock("react-router-dom", async () => {
   const actual =
