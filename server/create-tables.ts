@@ -18,7 +18,7 @@ async function createTables() {
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
   try {
-    console.log("Creating users table...");
+    console.debug("Creating users table...");
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -29,9 +29,9 @@ async function createTables() {
       );
       CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
     `);
-    console.log("✓ Users table created");
+    console.debug("✓ Users table created");
 
-    console.log("Creating favoriten table...");
+    console.debug("Creating favoriten table...");
     await pool.query(`
       CREATE TABLE IF NOT EXISTS favoriten (
         id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -43,9 +43,9 @@ async function createTables() {
       CREATE INDEX IF NOT EXISTS idx_favoriten_user_id ON favoriten(user_id);
       CREATE INDEX IF NOT EXISTS idx_favoriten_studiengang_id ON favoriten(studiengang_id);
     `);
-    console.log("✓ Favoriten table created");
+    console.debug("✓ Favoriten table created");
 
-    console.log("\n✓ All tables created successfully!");
+    console.debug("\n✓ All tables created successfully!");
     process.exit(0);
   } catch (err) {
     console.error("Error creating tables:", err);
