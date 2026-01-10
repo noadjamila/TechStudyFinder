@@ -1,6 +1,7 @@
 -- Favorites table for storing user's favorite study programmes
+-- Using GENERATED ALWAYS AS IDENTITY to prevent manual ID insertion
 CREATE TABLE IF NOT EXISTS favoriten (
-  id SERIAL PRIMARY KEY,
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   studiengang_id VARCHAR(255) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

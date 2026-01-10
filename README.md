@@ -68,10 +68,16 @@ Run the application locally with the following steps:
 
 To set up and populate the database, follow these steps:
 
-1. Configure your environment variables:
+1. **Create the database schema**
+   First, initialize the database tables with the proper schema. This uses `IDENTITY` columns to prevent ID conflicts:
+   ```bash
+   psql -U your_user -d your_database -f server/init.sql
+   ```
+   Alternatively, use Docker Compose with the `--profile local` flag to automatically set up PostgreSQL with the correct schema.
+2. Configure your environment variables:
    Ensure your `.env` file contains the correct database connection details (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`).
-2. Store the XML files with the data under server/db/xml.
-3. Run the following command to create the necessary tables and to fill them with your XML and RIASEC data:
+3. Store the XML files with the data under server/db/xml.
+4. Run the following command to populate the tables with your XML and RIASEC data:
 
 ```bash
 cd server
