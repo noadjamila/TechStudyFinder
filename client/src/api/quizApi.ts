@@ -3,6 +3,7 @@ import {
   FilterResponse,
   QuizLevelResponse,
 } from "../types/QuizApi.types";
+import { RiasecType } from "../types/RiasecTypes";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
@@ -67,6 +68,28 @@ export async function getQuizLevel(level: number): Promise<QuizLevelResponse> {
     console.error("[getQuizLevel] Error during API call:", err);
     throw new Error("Could not fetch quiz questions from the backend.");
   }
+}
+
+/**
+ * Fetches level 2 questions from the backend API on component mount.
+ * Handles errors and updates the local state with the fetched questions.
+ * @returns {Promise<{ id: string; text: string; riasec_type: RiasecType; }[]>} An array of level 2 questions.
+ * @throws {Error} Throws if the network request fails.
+ */
+export async function fetchQuestions() {
+  const res = await fetch("/api/quiz/level/2");
+
+  if (!res.ok) {
+    throw new Error("Failed to load level 2 questions");
+  }
+
+  const data = await res.json();
+
+  return data.questions as {
+    id: string;
+    text: string;
+    riasec_type: RiasecType;
+  }[];
 }
 
 /**

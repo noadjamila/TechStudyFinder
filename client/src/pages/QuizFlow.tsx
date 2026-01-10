@@ -9,6 +9,7 @@ import { Answer, AnswerMap } from "../types/QuizAnswer.types";
 import { calculateRiasecScores } from "../services/calculateRiasecScores";
 import { riasecScoresToApiPayload } from "../services/riasecPayload";
 import { postFilterLevel } from "../api/quizApi";
+import { fetchQuestions } from "../api/quizApi";
 
 type Level = 1 | 2 | 3;
 
@@ -23,14 +24,12 @@ async function handleLevelComplete(answers: AnswerMap, levelNumber: Level) {
   const scores = calculateRiasecScores(answers);
   const payload = riasecScoresToApiPayload(scores);
 
-  // Send the RIASEC scores to the backend
   try {
     await postFilterLevel({
       level: levelNumber,
       answers: payload,
     });
   } catch (error) {
-    // Log the error so API failures do not result in unhandled promise rejections
     console.error("Failed to post filter level data:", error);
   }
 }
@@ -44,12 +43,39 @@ async function handleLevelComplete(answers: AnswerMap, levelNumber: Level) {
  */
 export default function QuizFlow() {
   const navigate = useNavigate();
-  
+
   const [session, setSession] = useState<QuizSession>(() =>
     createQuizSession(),
   );
   const [showLevelSuccess, setShowLevelSuccess] = useState(true);
-  const [showResults, setShowResults] = useState(false);
+  const [_showResults, setShowResults] = useState(false);
+
+  async function ensureLevel2Questions() {
+    setSession((prev) => {
+      if (prev.level2Questions && prev.level2Questions.length > 0) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        level2Questions: [],
+      };
+    });
+
+    const questions = await fetchQuestions();
+
+    setSession((prev) => ({
+      ...prev,
+      level2Questions: questions,
+      updatedAt: Date.now(),
+    }));
+  }
+
+  useEffect(() => {
+    if (session.currentLevel === 2) {
+      ensureLevel2Questions();
+    }
+  }, [session?.currentLevel]);
 
   function handleAnswer(answer: Answer) {
     setSession((prev) => ({
@@ -74,26 +100,36 @@ export default function QuizFlow() {
   function goToNextLevel() {
     setSession((prev) => ({
       ...prev,
-      currentLevel: Math.max(prev.currentLevel + 1, 1) as Level,
+      currentLevel: Math.min(prev.currentLevel + 1, 3) as Level,
       currentQuestionIndex: 0,
       updatedAt: Date.now(),
     }));
   }
 
-  // useEffect(() => {
-  //   loadLatestSession().then((stored) => {
-  //     if (stored) {
-  //       setSession(stored);
-  //     } else {
-  //       setSession(createQuizSession());
-  //     }
-  //   });
-  // }, []);
+  useEffect(() => {
+     loadLatestSession().then((stored) => {
+       if (stored) {
+         setSession(stored);
+       } else {
+         setSession(createQuizSession());
+       }
+     });
+  }, []);
 
   useEffect(() => {
     if (!showResults && showLevelSuccess) return;
+  function completeLevel2() {
+    setShowLevelSuccess(true);
+    setShowResults(true);
+    handleLevelComplete(session.answers, 2);
+    setSession((prev) => ({
+      ...prev,
+      currentLevel: 3,
+      currentQuestionIndex: 0,
+      updatedAt: Date.now(),
+    }));
     navigate("/results", { state: { answers: session.answers } });
-  }, [showResults, showLevelSuccess, session, navigate]);
+  }
 
   if (showLevelSuccess) {
     return (
@@ -117,15 +153,13 @@ export default function QuizFlow() {
   }
 
   if (session.currentLevel === 2) {
+    if (!session.level2Questions) {
+      return <div>Lädt Fragen…</div>;
+    }
     return (
       <Quiz_L2
         onAnswer={handleAnswer}
-        onComplete={() => {
-          goToNextLevel();
-          setShowLevelSuccess(true);
-          setShowResults(true);
-          await handleLevelComplete(answers, 2);
-        }}
+        onComplete={completeLevel2}
         oneLevelBack={goToPreviousLevel}
       />
     );

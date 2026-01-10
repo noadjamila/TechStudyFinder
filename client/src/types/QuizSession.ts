@@ -1,6 +1,9 @@
 import { AnswerMap } from "./QuizAnswer.types";
 import { RiasecType } from "./RiasecTypes";
 
+/**
+ * Represents a quiz session with its state and progress.
+ */
 export type QuizSession = {
   sessionId: string;
 
