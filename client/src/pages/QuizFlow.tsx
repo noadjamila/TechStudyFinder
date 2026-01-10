@@ -17,6 +17,7 @@ type Level = 1 | 2 | 3;
 export default function QuizFlow() {
   const navigate = useNavigate();
 
+  //const [session, setSession] = useState<QuizSession | null>(null);
   const [answers, setAnswers] = useState<AnswerMap>({});
   const [currentLevel, setCurrentLevel] = useState<Level>(1);
   const [showLevelSuccess, setShowLevelSuccess] = useState(true);
@@ -28,6 +29,16 @@ export default function QuizFlow() {
       [answer.questionId]: answer,
     }));
   }
+
+  // useEffect(() => {
+  //   loadLatestSession().then((stored) => {
+  //     if (stored) {
+  //       setSession(stored);
+  //     } else {
+  //       setSession(createQuizSession());
+  //     }
+  //   });
+  // }, []);
 
   useEffect(() => {
     if (showResults && showLevelSuccess === false) {

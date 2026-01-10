@@ -1,4 +1,4 @@
-import { QuizSession } from "./QuizSession";
+import { QuizSession } from "../types/QuizSession";
 
 export function createQuizSession(): QuizSession {
   return {
