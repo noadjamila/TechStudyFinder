@@ -78,7 +78,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
     if (!currentQuestion || isTransitioning) return;
 
     onAnswer({
-      questionId: `level2.question${currentIndex}`,
+      questionId: `level2.question${currentIndex}.${currentQuestion.riasec_type}`,
       value: option,
       answeredAt: Date.now(),
     });
