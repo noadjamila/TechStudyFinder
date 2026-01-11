@@ -227,6 +227,10 @@ export default function QuizFlow(): JSX.Element | null {
       studyProgrammeIds: level1IDS,
     });
 
+    const latestAnswers = sessionRef.current.answers;
+    handleLevelComplete(latestAnswers, 2).catch((error) => {
+      console.error("Error completing level 2:", error);
+    });
     setSession((prev) => ({
       ...prev,
       resultIds: res.ids,
@@ -234,6 +238,7 @@ export default function QuizFlow(): JSX.Element | null {
       currentQuestionIndex: 0,
       updatedAt: Date.now(),
     }));
+    navigate("/results", { state: { answers: latestAnswers } });
   }
 
   if (showLevelSuccess) {
