@@ -39,41 +39,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
   onQuestionBack,
   onQuestionNext,
 }) => {
-  const [session, setSession] = useState<QuizSession>(() =>
-    createQuizSession(),
-  );
-
-  const [error, setError] = useState<{ title: string; message: string } | null>(
-    null,
-  );
   const questions = session.level2Questions ?? [];
-
-  useEffect(() => {
-    if (questions.length > 0) return;
-    let isMounted = true;
-
-    fetchQuestions()
-      .then((loadedQuestions) => {
-        if (!isMounted) return;
-        setSession((prev) => ({
-          ...prev,
-          level2Questions: loadedQuestions,
-          updatedAt: Date.now(),
-        }));
-      })
-      .catch((err) => {
-        console.error(err);
-        setError({
-          title: "Fehler beim Laden der Fragen",
-          message:
-            "Die Fragen konnten nicht geladen werden. Bitte versuche es später erneut.",
-        });
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [questions.length]);
 
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
@@ -118,16 +84,20 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
       setIsTransitioning(false);
     }, 300);
   };
-  // In case of an error, display the ErrorScreen component.
-  if (error != null) {
-    return <ErrorScreen title={error.title} message={error.message} />;
-  }
   // While questions are still loading (but no error yet), show a simple loading state
   if (TOTAL_QUESTIONS === 0) {
     return (
       <QuizLayout currentIndex={0} questionsTotal={0}>
         <div>Lädt...</div>
       </QuizLayout>
+    );
+  }
+  if (!currentQuestion) {
+    return (
+      <ErrorScreen
+        title="Frage nicht gefunden"
+        message="Bitte lade die Seite neu."
+      />
     );
   }
 
