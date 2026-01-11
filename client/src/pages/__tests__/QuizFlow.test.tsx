@@ -34,10 +34,23 @@ vi.mock("../../components/quiz/LevelSuccessScreen", () => ({
 
 vi.mock("../../components/quiz/Quiz_L1", () => ({
   __esModule: true,
-  default: ({ onNextLevel }: { onNextLevel: (ids: string[]) => void }) => (
+  default: ({
+    onAnswer,
+    onComplete,
+  }: {
+    onAnswer: (answer: any) => void;
+    onComplete: () => void;
+  }) => (
     <div>
       <div>Mock Level 1</div>
-      <button onClick={() => onNextLevel(["1", "2"])}>go-to-l2</button>
+      <button
+        onClick={() => {
+          onAnswer({ questionId: "l1", value: "yes", answeredAt: 1 });
+          onComplete();
+        }}
+      >
+        go-to-l2
+      </button>
     </div>
   ),
 }));
@@ -45,15 +58,25 @@ vi.mock("../../components/quiz/Quiz_L1", () => ({
 vi.mock("../../components/quiz/Quiz_L2", () => ({
   __esModule: true,
   default: ({
-    previousIds,
-    onNextLevel,
+    onAnswer,
+    onComplete,
+    oneLevelBack,
   }: {
-    previousIds: string[];
-    onNextLevel: (ids: string[]) => void;
+    onAnswer: (answer: any) => void;
+    onComplete: () => void;
+    oneLevelBack: () => void;
   }) => (
     <div>
-      <div>Mock Level 2 - previous IDs: {previousIds.join(",")}</div>
-      <button onClick={() => onNextLevel(["3"])}>go-to-l3</button>
+      <div>Mock Level 2</div>
+      <button
+        onClick={() => {
+          onAnswer({ questionId: "l2", value: "yes", answeredAt: 2 });
+          onComplete();
+        }}
+      >
+        go-to-l3
+      </button>
+      <button onClick={oneLevelBack}>back</button>
     </div>
   ),
 }));
@@ -107,12 +130,17 @@ describe("QuizFlow", () => {
 
     fireEvent.click(screen.getByText("continue")); // L1
     fireEvent.click(screen.getByText("go-to-l2")); // finish L1
-    fireEvent.click(screen.getByText("continue")); // L2
+    fireEvent.click(screen.getByText("continue")); // show L2 success screen
     fireEvent.click(screen.getByText("go-to-l3")); // finish L2
     fireEvent.click(screen.getByText("continue"));
 
     expect(navigateMock).toHaveBeenCalledWith("/results", {
-      state: { idsFromLevel2: ["3"] },
+      state: {
+        answers: {
+          l1: { questionId: "l1", value: "yes", answeredAt: 1 },
+          l2: { questionId: "l2", value: "yes", answeredAt: 2 },
+        },
+      },
     });
   });
 });
