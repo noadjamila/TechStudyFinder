@@ -10,6 +10,7 @@ import { Answer } from "../../types/QuizAnswer.types";
 import { QuizSession } from "../../types/QuizSession";
 import { createQuizSession } from "../../session/createQuizSession";
 import { fetchQuestions } from "../../api/quizApi";
+import ErrorScreen from "../error-screen/ErrorScreen";
 
 export interface QuizL2Props {
   onAnswer: (answer: Answer) => void;
@@ -36,6 +37,10 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
   const [session, setSession] = useState<QuizSession>(() =>
     createQuizSession(),
   );
+
+  const [error, setError] = useState<{ title: string; message: string } | null>(
+    null,
+  );
   const questions = session.level2Questions ?? [];
 
   useEffect(() => {
@@ -52,7 +57,12 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
         }));
       })
       .catch((err) => {
-        console.error("Failed to load level 2 questions", err);
+        console.error(err);
+        setError({
+          title: "Fehler beim Laden der Fragen",
+          message:
+            "Die Fragen konnten nicht geladen werden. Bitte versuche es später erneut.",
+        });
       });
 
     return () => {
@@ -125,7 +135,10 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
       setIsTransitioning(false);
     }, 300);
   };
-
+  // In case of an error, display the ErrorScreen component.
+  if (error != null) {
+    return <ErrorScreen title={error.title} message={error.message} />;
+  }
   // While questions are still loading (but no error yet), show a simple loading state
   if (TOTAL_QUESTIONS === 0) {
     return (
