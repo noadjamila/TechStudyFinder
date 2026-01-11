@@ -7,6 +7,12 @@ const STORE_NAME = "sessions";
 const KEY = "latest-session";
 
 function openDb() {
+  if (typeof indexedDB === "undefined") {
+    return Promise.reject(
+      new Error("IndexedDB is not supported in this environment."),
+    );
+  }
+
   return indexedDbOpen(DB_NAME, DB_VERSION, {
     upgrade(db) {
       if (!db.objectStoreNames.contains(STORE_NAME)) {
