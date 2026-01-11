@@ -44,6 +44,9 @@ export async function saveSession(session: QuizSession): Promise<void> {
  */
 export async function loadLatestSession(): Promise<QuizSession | null> {
   const db = await openDb();
-  const session = await db.transaction(STORE_NAME).objectStore(STORE_NAME).put;
+  const session = await db
+    .transaction(STORE_NAME)
+    .objectStore(STORE_NAME)
+    .get(KEY);
   return session ?? null;
 }
