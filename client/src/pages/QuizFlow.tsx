@@ -85,10 +85,7 @@ export default function QuizFlow(): JSX.Element | null {
     }
   }, [session?.currentLevel]);
 
-  /**
-   * Updates the session state with the provided answer.
-   * @param answer
-   */
+  // Keep ref in sync for immediate reads during chained callbacks.
   useEffect(() => {
     sessionRef.current = session;
   }, [session]);
@@ -184,7 +181,6 @@ export default function QuizFlow(): JSX.Element | null {
   /**
    * Completes the current level (Level 2) by performing the following actions:
    * - Sets the level success state to true.
-   * - Displays the results.
    * - Handles the completion of the level with the provided answers and level id.
    * - Updates the session to transition to the next level (Level 3), resets the question index,
    *   and updates the timestamp for when the action occurred.
