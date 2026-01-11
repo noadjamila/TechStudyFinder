@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, JSX } from "react";
 import { useNavigate } from "react-router-dom";
 import Quiz_L1 from "../components/quiz/Quiz_L1";
 import Quiz_L2 from "../components/quiz/Quiz_L2";
@@ -21,7 +21,10 @@ type Level = 1 | 2 | 3;
  * @param levelNumber - The level number that was completed.
  * @returns {Promise<void>} A promise that resolves when the operation is complete.
  */
-async function handleLevelComplete(answers: AnswerMap, levelNumber: Level) {
+async function handleLevelComplete(
+  answers: AnswerMap,
+  levelNumber: Level,
+): Promise<void> {
   const scores = calculateRiasecScores(answers);
   const payload = riasecScoresToApiPayload(scores);
 
@@ -42,14 +45,13 @@ async function handleLevelComplete(answers: AnswerMap, levelNumber: Level) {
  *
  * @returns {JSX.Element | null} The current level's quiz page or null if completed.
  */
-export default function QuizFlow() {
+export default function QuizFlow(): JSX.Element | null {
   const navigate = useNavigate();
 
   const [session, setSession] = useState<QuizSession>(() =>
     createQuizSession(),
   );
   const [showLevelSuccess, setShowLevelSuccess] = useState(true);
-  const [_showResults, setShowResults] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const sessionRef = useRef(session);
 
@@ -76,7 +78,7 @@ export default function QuizFlow() {
 
   useEffect(() => {
     if (session.currentLevel === 2) {
-      ensureLevel2Questions();
+      ensureLevel2Questions().then((r) => r);
     }
   }, [session?.currentLevel]);
 
@@ -132,31 +134,41 @@ export default function QuizFlow() {
   }
 
   useEffect(() => {
-    loadLatestSession().then((stored) => {
-      if (stored) {
-        setSession(stored);
-      } else {
-        setSession(createQuizSession());
+    let isMounted = true;
+
+    (async () => {
+      try {
+        const stored = await loadLatestSession();
+        if (!isMounted) return;
+        setSession(stored ?? createQuizSession());
+        setIsHydrated(true);
+      } catch (error) {
+        console.error("Failed to load persisted quiz session:", error);
+        if (isMounted) setIsHydrated(true);
       }
-      setIsHydrated(true);
-    });
+    })();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
-    if (!_showResults && showLevelSuccess) return;
-  }, [_showResults, showLevelSuccess]);
-
-  useEffect(() => {
     if (!isHydrated) return;
-    saveSession(session).catch((error) => {
-      console.error("Failed to persist quiz session:", error);
-    });
+    const id = window.setTimeout(() => {
+      saveSession(session).catch((error) => {
+        console.error("Failed to persist quiz session:", error);
+      });
+    }, 300);
+    return () => {
+      window.clearTimeout(id);
+    };
   }, [isHydrated, session]);
+
   function completeLevel2() {
     setShowLevelSuccess(true);
-    setShowResults(true);
     const latestAnswers = sessionRef.current.answers;
-    handleLevelComplete(latestAnswers, 2);
+    handleLevelComplete(latestAnswers, 2).then((r) => r);
     setSession((prev) => ({
       ...prev,
       currentLevel: 3,
