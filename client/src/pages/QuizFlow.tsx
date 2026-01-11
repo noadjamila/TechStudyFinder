@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Quiz_L1 from "../components/quiz/Quiz_L1";
 import Quiz_L2 from "../components/quiz/Quiz_L2";
@@ -51,6 +51,7 @@ export default function QuizFlow() {
   const [showLevelSuccess, setShowLevelSuccess] = useState(true);
   const [_showResults, setShowResults] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const sessionRef = useRef(session);
 
   async function ensureLevel2Questions() {
     setSession((prev) => {
@@ -79,15 +80,21 @@ export default function QuizFlow() {
     }
   }, [session?.currentLevel]);
 
+  useEffect(() => {
+    sessionRef.current = session;
+  }, [session]);
+
   function handleAnswer(answer: Answer) {
-    setSession((prev) => ({
-      ...prev,
+    const next = {
+      ...sessionRef.current,
       answers: {
-        ...prev.answers,
+        ...sessionRef.current.answers,
         [answer.questionId]: answer,
       },
       updatedAt: Date.now(),
-    }));
+    };
+    sessionRef.current = next;
+    setSession(next);
   }
 
   function goToPreviousLevel() {
@@ -148,14 +155,15 @@ export default function QuizFlow() {
   function completeLevel2() {
     setShowLevelSuccess(true);
     setShowResults(true);
-    handleLevelComplete(session.answers, 2);
+    const latestAnswers = sessionRef.current.answers;
+    handleLevelComplete(latestAnswers, 2);
     setSession((prev) => ({
       ...prev,
       currentLevel: 3,
       currentQuestionIndex: 0,
       updatedAt: Date.now(),
     }));
-    navigate("/results", { state: { answers: session.answers } });
+    navigate("/results", { state: { answers: latestAnswers } });
   }
 
   if (showLevelSuccess) {

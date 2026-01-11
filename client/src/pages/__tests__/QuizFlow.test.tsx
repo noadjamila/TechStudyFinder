@@ -9,6 +9,7 @@ const navigateMock = vi.fn();
 vi.spyOn(quizApi, "postFilterLevel").mockResolvedValue({
   ids: [],
 });
+vi.spyOn(quizApi, "fetchQuestions").mockResolvedValue([]);
 
 vi.mock("react-router-dom", async () => {
   const actual =

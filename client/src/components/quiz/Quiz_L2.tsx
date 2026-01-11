@@ -66,7 +66,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
     if (!currentQuestion || isTransitioning) return;
     setIsTransitioning(true);
     onAnswer({
-      questionId: `level2.question${session.currentQuestionIndex}`,
+      questionId: `level2.question${session.currentQuestionIndex}.${currentQuestion.riasec_type}`,
       value: option,
       answeredAt: Date.now(),
     });
@@ -81,7 +81,10 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
       setIsTransitioning(false);
     }, 300);
   };
-
+  // In case of an error, display the ErrorScreen component.
+  if (error != null) {
+    return <ErrorScreen title={error.title} message={error.message} />;
+  }
   // While questions are still loading (but no error yet), show a simple loading state
   if (TOTAL_QUESTIONS === 0) {
     return (
