@@ -11,6 +11,7 @@ import { calculateRiasecScores } from "../services/calculateRiasecScores";
 import { riasecScoresToApiPayload } from "../services/riasecPayload";
 import { postFilterLevel } from "../api/quizApi";
 import { fetchQuestions } from "../api/quizApi";
+import { loadLatestSession, saveSession } from "../session/persistQuizSession";
 
 type Level = 1 | 2 | 3;
 
@@ -21,23 +22,19 @@ type Level = 1 | 2 | 3;
  * @param levelNumber - The level number that was completed.
  * @returns {Promise<void>} A promise that resolves when the operation is complete.
  */
-/**
 async function handleLevelComplete(answers: AnswerMap, levelNumber: Level) {
-  console.log("Level complete:", levelNumber, answers);
   const scores = calculateRiasecScores(answers);
   const payload = riasecScoresToApiPayload(scores);
-  console.log("Payload:", payload);
+
   try {
     await postFilterLevel({
       level: levelNumber,
       answers: payload,
-
     });
   } catch (error) {
     console.error("Failed to post filter level data:", error);
   }
 }
-  */
 
 /**
  * Manages the multi-level quiz flow.
@@ -56,6 +53,7 @@ export default function QuizFlow() {
   const [_showResults, setShowResults] = useState(false);
   const sessionRef = useRef(session);
   //const [idsFromLevel1, setIdsFromLevel1] = useState<string[]>([]);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   /**
    * Ensures that the level 2 questions are fetched from the API and stored in the session state.
@@ -65,6 +63,7 @@ export default function QuizFlow() {
       if (prev.level2Questions && prev.level2Questions.length > 0) {
         return prev;
       }
+
       return {
         ...prev,
         level2Questions: [],
@@ -143,6 +142,45 @@ export default function QuizFlow() {
       currentQuestionIndex: 0,
       updatedAt: Date.now(),
     }));
+
+  function goOneQuestionBack() {
+    setSession((prev) => ({
+      ...prev,
+      currentQuestionIndex: Math.max(prev.currentQuestionIndex - 1, 0),
+      updatedAt: Date.now(),
+    }));
+  }
+
+  function goToNextQuestion() {
+    setSession((prev) => ({
+      ...prev,
+      currentQuestionIndex: prev.currentQuestionIndex + 1,
+      updatedAt: Date.now(),
+    }));
+  }
+
+  useEffect(() => {
+    loadLatestSession().then((stored) => {
+      if (stored) {
+        setSession(stored);
+      } else {
+        setSession(createQuizSession());
+      }
+      setIsHydrated(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!_showResults && showLevelSuccess) return;
+  }, [_showResults, showLevelSuccess]);
+
+  useEffect(() => {
+    if (!isHydrated) return;
+    saveSession(session).catch((error) => {
+      console.error("Failed to persist quiz session:", error);
+    });
+  }, [isHydrated, session]);
+  function completeLevel2() {
     setShowLevelSuccess(true);
   }
   useEffect(() => {}, [session.level1IDS]);
@@ -210,9 +248,12 @@ export default function QuizFlow() {
     }
     return (
       <Quiz_L2
+        session={session}
         onAnswer={handleAnswer}
         onComplete={completeLevel2}
         oneLevelBack={goToPreviousLevel}
+        onQuestionBack={goOneQuestionBack}
+        onQuestionNext={goToNextQuestion}
       />
     );
   }
