@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { JSX, useState } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
 import CardStack from "../cards/CardStackLevel2";
 import { Stack, Typography } from "@mui/material";
@@ -36,7 +36,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
   oneLevelBack,
   onQuestionBack,
   onQuestionNext,
-}) => {
+}: QuizL2Props): JSX.Element => {
   const questions = session.level2Questions ?? [];
 
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
