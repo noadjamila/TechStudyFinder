@@ -8,6 +8,7 @@ import SecondaryButton from "../buttons/SecondaryButton";
 import theme from "../../theme/theme";
 import { Answer } from "../../types/QuizAnswer.types";
 import { QuizSession } from "../../types/QuizSession";
+import ErrorScreen from "../error-screen/ErrorScreen";
 
 export interface QuizL2Props {
   session: QuizSession;
@@ -81,16 +82,20 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
       setIsTransitioning(false);
     }, 300);
   };
-  // In case of an error, display the ErrorScreen component.
-  if (error != null) {
-    return <ErrorScreen title={error.title} message={error.message} />;
-  }
   // While questions are still loading (but no error yet), show a simple loading state
   if (TOTAL_QUESTIONS === 0) {
     return (
       <QuizLayout currentIndex={0} questionsTotal={0}>
         <div>Lädt...</div>
       </QuizLayout>
+    );
+  }
+  if (!currentQuestion) {
+    return (
+      <ErrorScreen
+        title="Frage nicht gefunden"
+        message="Bitte lade die Seite neu."
+      />
     );
   }
 
