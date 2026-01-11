@@ -121,8 +121,9 @@ export default function QuizFlow(): JSX.Element | null {
 
   /**
    * Navigates to the next level in the session, ensuring the level does not go above the maximum level (3).
-
-
+   * Resets the current question index to 0 and updates the timestamp of the session.
+   * @return {void} Does not return a value. Modifies the session state directly.
+   */
   function goToNextLevel() {
     setSession((prev) => ({
       ...prev,
@@ -141,6 +142,12 @@ export default function QuizFlow(): JSX.Element | null {
       updatedAt: Date.now(),
     }));
 
+  /**
+   * Navigates one question back in the current level of the quiz session.
+   * Ensures that the question index does not go below zero.
+   * Updates the session state with the new question index and timestamp.
+   * @return {void} Does not return a value. Modifies the session state directly.
+   */
   function goOneQuestionBack() {
     setSession((prev) => ({
       ...prev,
@@ -149,6 +156,11 @@ export default function QuizFlow(): JSX.Element | null {
     }));
   }
 
+  /**
+   * Navigates to the next question in the current level of the quiz session.
+   * Increments the current question index by one and updates the session state with the new index and timestamp.
+   * @return {void} Does not return a value. Modifies the session state directly.
+   */
   function goToNextQuestion() {
     setSession((prev) => ({
       ...prev,
