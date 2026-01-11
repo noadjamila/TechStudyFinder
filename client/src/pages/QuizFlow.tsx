@@ -82,7 +82,7 @@ export default function QuizFlow(): JSX.Element | null {
 
   useEffect(() => {
     if (session.currentLevel === 2) {
-      ensureLevel2Questions().then((r) => r);
+      ensureLevel2Questions();
     }
   }, [session?.currentLevel]);
 
