@@ -51,6 +51,9 @@ export default function QuizFlow() {
   const [_showResults, setShowResults] = useState(false);
   const sessionRef = useRef(session);
 
+  /**
+   * Ensures that the level 2 questions are fetched from the API and stored in the session state.
+   */
   async function ensureLevel2Questions() {
     setSession((prev) => {
       if (prev.level2Questions && prev.level2Questions.length > 0) {
@@ -78,6 +81,10 @@ export default function QuizFlow() {
     }
   }, [session?.currentLevel]);
 
+  /**
+   * Updates the session state with the provided answer.
+   * @param answer
+   */
   useEffect(() => {
     sessionRef.current = session;
   }, [session]);
@@ -95,6 +102,12 @@ export default function QuizFlow() {
     setSession(next);
   }
 
+  /**
+   * Navigates to the previous level in the session, ensuring the level does not go below the minimum level (1).
+   * Resets the current question index to 0 and updates the timestamp of the session.
+   *
+   * @return {void} Does not return a value. Modifies the session state directly.
+   */
   function goToPreviousLevel() {
     setSession((prev) => ({
       ...prev,
@@ -104,6 +117,9 @@ export default function QuizFlow() {
     }));
   }
 
+  /**
+   * Navigates to the next level in the session, ensuring the level does not go above the maximum level (3).
+   */
   function goToNextLevel() {
     setSession((prev) => ({
       ...prev,
@@ -113,6 +129,15 @@ export default function QuizFlow() {
     }));
   }
 
+  /**
+   * Completes the current level (Level 2) by performing the following actions:
+   * - Sets the level success state to true.
+   * - Displays the results.
+   * - Handles the completion of the level with the provided answers and level id.
+   * - Updates the session to transition to the next level (Level 3), resets the question index,
+   *   and updates the timestamp for when the action occurred.
+   * - Navigates to the results page, passing the user's answers in the navigation state.
+   */
   function completeLevel2() {
     setShowLevelSuccess(true);
     setShowResults(true);
