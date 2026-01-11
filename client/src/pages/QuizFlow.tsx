@@ -10,6 +10,7 @@ import { calculateRiasecScores } from "../services/calculateRiasecScores";
 import { riasecScoresToApiPayload } from "../services/riasecPayload";
 import { postFilterLevel } from "../api/quizApi";
 import { fetchQuestions } from "../api/quizApi";
+import { loadLatestSession, saveSession } from "../session/persistQuizSession";
 
 type Level = 1 | 2 | 3;
 
@@ -49,6 +50,7 @@ export default function QuizFlow() {
   );
   const [showLevelSuccess, setShowLevelSuccess] = useState(true);
   const [_showResults, setShowResults] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   async function ensureLevel2Questions() {
     setSession((prev) => {
@@ -106,18 +108,43 @@ export default function QuizFlow() {
     }));
   }
 
+  function goOneQuestionBack() {
+    setSession((prev) => ({
+      ...prev,
+      currentQuestionIndex: Math.max(prev.currentQuestionIndex - 1, 0),
+      updatedAt: Date.now(),
+    }));
+  }
+
+  function goToNextQuestion() {
+    setSession((prev) => ({
+      ...prev,
+      currentQuestionIndex: prev.currentQuestionIndex + 1,
+      updatedAt: Date.now(),
+    }));
+  }
+
   useEffect(() => {
-     loadLatestSession().then((stored) => {
-       if (stored) {
-         setSession(stored);
-       } else {
-         setSession(createQuizSession());
-       }
-     });
+    loadLatestSession().then((stored) => {
+      if (stored) {
+        setSession(stored);
+      } else {
+        setSession(createQuizSession());
+      }
+      setIsHydrated(true);
+    });
   }, []);
 
   useEffect(() => {
-    if (!showResults && showLevelSuccess) return;
+    if (!_showResults && showLevelSuccess) return;
+  }, [_showResults, showLevelSuccess]);
+
+  useEffect(() => {
+    if (!isHydrated) return;
+    saveSession(session).catch((error) => {
+      console.error("Failed to persist quiz session:", error);
+    });
+  }, [isHydrated, session]);
   function completeLevel2() {
     setShowLevelSuccess(true);
     setShowResults(true);
@@ -158,9 +185,12 @@ export default function QuizFlow() {
     }
     return (
       <Quiz_L2
+        session={session}
         onAnswer={handleAnswer}
         onComplete={completeLevel2}
         oneLevelBack={goToPreviousLevel}
+        onQuestionBack={goOneQuestionBack}
+        onQuestionNext={goToNextQuestion}
       />
     );
   }
