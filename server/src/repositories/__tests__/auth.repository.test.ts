@@ -19,24 +19,42 @@ describe("findUserForLogin", () => {
   });
 
   it("returns user when bcrypt validates successfully", async () => {
-    mockQuery.mockResolvedValueOnce({
-      rows: [{ id: 2, username: "dbUser", password_hash: "hash" }],
-    });
+    const dbUser = { id: 2, username: "dbUser", password_hash: "hash" };
+
+    mockQuery
+      .mockResolvedValueOnce({}) // CREATE TABLE IF NOT EXISTS
+      .mockResolvedValueOnce({
+        rows: [], // Column check - empty rows means column doesn't exist
+      })
+      .mockResolvedValueOnce({}) // ALTER TABLE ADD COLUMN
+      .mockResolvedValueOnce({
+        rows: [dbUser], // findUserByUsername returns the user
+      });
     mockCompare.mockResolvedValueOnce(true);
 
     const user = await findUserForLogin("dbUser", "secret");
 
     expect(user).toEqual({ id: 2, username: "dbUser" });
+    expect(mockCompare).toHaveBeenCalledWith("secret", "hash");
   });
 
   it("returns null when bcrypt fails", async () => {
-    mockQuery.mockResolvedValueOnce({
-      rows: [{ id: 2, username: "dbUser", password_hash: "hash" }],
-    });
+    const dbUser = { id: 2, username: "dbUser", password_hash: "hash" };
+
+    mockQuery
+      .mockResolvedValueOnce({}) // CREATE TABLE IF NOT EXISTS
+      .mockResolvedValueOnce({
+        rows: [], // Column check - empty rows means column doesn't exist
+      })
+      .mockResolvedValueOnce({}) // ALTER TABLE ADD COLUMN
+      .mockResolvedValueOnce({
+        rows: [dbUser], // findUserByUsername returns the user
+      });
     mockCompare.mockResolvedValueOnce(false);
 
     const user = await findUserForLogin("dbUser", "wrong");
 
     expect(user).toBeNull();
+    expect(mockCompare).toHaveBeenCalledWith("wrong", "hash");
   });
 });

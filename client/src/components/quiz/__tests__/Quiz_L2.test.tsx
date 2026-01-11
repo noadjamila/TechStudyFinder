@@ -260,6 +260,8 @@ describe("Quiz_L2", () => {
         value: "yes",
       }),
     );
-    expect(onComplete).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(onComplete).toHaveBeenCalledTimes(1);
+    });
   });
 });

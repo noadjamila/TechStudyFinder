@@ -9,6 +9,7 @@ self.addEventListener("activate", () => {
   console.log("[Service Worker] Activated");
 });
 
-self.addEventListener("fetch", (event) => {
-  // empty for now, until used for actual implementation
-});
+// Uncomment when implementing fetch caching/offline functionality
+// self.addEventListener("fetch", (event) => {
+//   // Implementation for caching and offline support
+// });

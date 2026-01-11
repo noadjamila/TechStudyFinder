@@ -31,6 +31,9 @@ declare module "@mui/material/styles" {
       favoriteIconToggled: string;
       favoriteIconUntoggled: string;
     };
+    detailspage: {
+      link: string;
+    };
   }
 
   interface PaletteOptions {
@@ -57,6 +60,9 @@ declare module "@mui/material/styles" {
       filterUnselected?: string;
       favoriteIconToggled?: string;
       favoriteIconUntoggled?: string;
+    };
+    detailspage?: {
+      link?: string;
     };
   }
   declare module "*.png" {

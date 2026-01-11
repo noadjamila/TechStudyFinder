@@ -1,11 +1,12 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import Homescreen from "../Home/Homescreen";
+import Homescreen from "../Homescreen";
 import "@testing-library/jest-dom";
 import { vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "../../theme/theme";
 import { ReactElement } from "react";
+import { AuthProvider } from "../../contexts/AuthContext";
 
 const mockedNavigate = vi.fn();
 
@@ -21,12 +22,18 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
+vi.mock("../../api/authApi", () => ({
+  getCurrentUser: vi.fn().mockResolvedValue(null),
+  login: vi.fn(),
+  logout: vi.fn(),
+}));
+
 const renderWithProviders = (ui: ReactElement, { route = "/" } = {}) => {
   return render(
     <MemoryRouter initialEntries={[route]}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        {ui}
+        <AuthProvider>{ui}</AuthProvider>
       </ThemeProvider>
     </MemoryRouter>,
   );
@@ -35,6 +42,7 @@ const renderWithProviders = (ui: ReactElement, { route = "/" } = {}) => {
 describe("Homescreen Component", () => {
   beforeEach(() => {
     mockedNavigate.mockClear();
+    vi.clearAllMocks();
   });
   it("renders the title, subtitle, info text, and quiz button", () => {
     renderWithProviders(<Homescreen />);

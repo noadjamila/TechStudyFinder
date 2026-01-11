@@ -45,6 +45,10 @@ const theme = createTheme({
     favorites: {
       inactive: "#CAC4D0",
     },
+
+    detailspage: {
+      link: "#1976d2",
+    },
   },
   typography: {
     fontFamily: "Fira Sans, sans-serif",
@@ -78,7 +82,7 @@ const theme = createTheme({
       lineHeight: 1.2,
     },
     subtitle1: {
-      fontSize: "15px",
+      fontSize: "20px",
       fontFamily: "Fira Sans, sans-serif",
       fontWeight: "normal",
     },

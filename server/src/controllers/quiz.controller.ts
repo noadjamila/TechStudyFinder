@@ -4,6 +4,7 @@ import {
   filterLevel2,
   filterLevel3,
   getQuestionsLevel2Service,
+  getStudyProgrammeByIdService,
 } from "../services/quiz.service";
 import { FilterRequest } from "../types/filterRequest";
 
@@ -78,6 +79,31 @@ export async function getQuestions(req: Request, res: Response) {
     res.status(500).json({
       error: "Internal Server Error",
       message: "Error retrieving questions",
+    });
+  }
+}
+
+export async function getStudyProgrammeById(req: Request, res: Response) {
+  try {
+    const result = await getStudyProgrammeByIdService(req.params.id);
+
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        error: "Study programme not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      studyProgramme: result,
+    });
+  } catch (error) {
+    console.error("Error retrieving study programme", error);
+    return res.status(500).json({
+      success: false,
+      error: "Internal Server Error",
+      message: "Error retrieving study programme",
     });
   }
 }

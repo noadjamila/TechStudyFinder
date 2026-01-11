@@ -52,24 +52,19 @@ const QuizLayout = ({
       <Box
         sx={{
           width: "100%",
-          maxWidth: {
-            xs: 420,
-            md: 600,
-            lg: 900,
-          },
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          px: 2,
           mt: 2,
           boxSizing: "border-box",
           margin: "0 auto",
+          padding: "30px",
+          maxWidth: 480,
         }}
       >
         <Box
           sx={{
             width: "100%",
-            px: 2,
             pt: 4,
           }}
         >
@@ -78,7 +73,7 @@ const QuizLayout = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              mb: 4,
+              mb: 5,
             }}
           >
             <Box>
@@ -111,9 +106,7 @@ const QuizLayout = ({
         <Box
           sx={{
             width: "100%",
-            maxWidth: 420,
-            mt: 4,
-            px: 2,
+            mt: 5,
           }}
         >
           {children}

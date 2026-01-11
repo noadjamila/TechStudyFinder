@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ThemeProvider } from "@mui/material";
 import { MemoryRouter } from "react-router-dom";
-import StudyProgrammeCard from "../StudyProgrammeCard";
+import StudyProgrammeCard from "../../cards/StudyProgrammeCard";
 import theme from "../../../theme/theme";
 import { StudyProgramme } from "../../../types/StudyProgramme.types";
 
@@ -21,10 +21,25 @@ vi.mock("react-router-dom", async () => {
 });
 
 const mockProgramme: StudyProgramme = {
-  id: 1,
+  studiengang_id: "1",
   name: "Computer Science",
-  university: "Technical University Munich",
-  degree: "Bachelor of Science",
+  hochschule: "Technical University Munich",
+  abschluss: "Bachelor of Science",
+  homepage: "https://example.com",
+  studienbeitrag: "500 EUR",
+  beitrag_kommentar: "Per Semester",
+  anmerkungen: "Test notes",
+  regelstudienzeit: "6 Semester",
+  zulassungssemester: "WS/SS",
+  zulassungsmodus: "NC",
+  zulassungsvoraussetzungen: "Abitur",
+  zulassungslink: "https://example.com/apply",
+  schwerpunkte: ["AI", "Software Engineering"],
+  sprachen: ["Deutsch", "Englisch"],
+  standorte: ["München"],
+  studienfelder: ["Informatik"],
+  studienform: ["Vollzeit"],
+  fristen: null,
 };
 
 const renderWithTheme = (component: React.ReactElement) => {
@@ -132,7 +147,7 @@ describe("StudyProgrammeCard Component", () => {
       const favoriteButton = screen.getByLabelText("Zu Favoriten hinzufügen");
       fireEvent.click(favoriteButton);
 
-      expect(onToggleFavorite).toHaveBeenCalledWith(1);
+      expect(onToggleFavorite).toHaveBeenCalledWith("1");
       expect(onToggleFavorite).toHaveBeenCalledTimes(1);
     });
 
@@ -301,10 +316,24 @@ describe("StudyProgrammeCard Component", () => {
   describe("Different Programme Data", () => {
     it("renders different programme correctly", () => {
       const differentProgramme: StudyProgramme = {
-        id: 42,
+        studiengang_id: "42",
         name: "Data Science",
-        university: "LMU München",
-        degree: "Master of Science",
+        hochschule: "LMU München",
+        abschluss: "Master of Science",
+        homepage: "https://example.com",
+        studienbeitrag: "0 EUR",
+        beitrag_kommentar: "Keine Gebühren",
+        anmerkungen: "",
+        regelstudienzeit: "4 Semester",
+        zulassungssemester: "WS",
+        zulassungsmodus: "Frei",
+        zulassungsvoraussetzungen: "Bachelor",
+        zulassungslink: "https://example.com/apply",
+        schwerpunkte: ["Machine Learning"],
+        sprachen: ["Englisch"],
+        standorte: ["München"],
+        studienfelder: ["Datenwissenschaft"],
+        studienform: ["Vollzeit"],
       };
 
       renderWithTheme(<StudyProgrammeCard programme={differentProgramme} />);
@@ -316,10 +345,24 @@ describe("StudyProgrammeCard Component", () => {
 
     it("navigates to correct id for different programme", () => {
       const differentProgramme: StudyProgramme = {
-        id: 99,
+        studiengang_id: "99",
         name: "Software Engineering",
-        university: "TU Berlin",
-        degree: "Bachelor",
+        hochschule: "TU Berlin",
+        abschluss: "Bachelor",
+        homepage: "https://example.com",
+        studienbeitrag: "300 EUR",
+        beitrag_kommentar: "Per Semester",
+        anmerkungen: "",
+        regelstudienzeit: "6 Semester",
+        zulassungssemester: "WS",
+        zulassungsmodus: "NC",
+        zulassungsvoraussetzungen: "Abitur",
+        zulassungslink: "https://example.com/apply",
+        schwerpunkte: ["Web Development"],
+        sprachen: ["Deutsch"],
+        standorte: ["Berlin"],
+        studienfelder: ["Informatik"],
+        studienform: ["Vollzeit"],
       };
 
       renderWithTheme(<StudyProgrammeCard programme={differentProgramme} />);

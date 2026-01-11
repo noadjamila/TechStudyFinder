@@ -55,11 +55,15 @@ export default function QuizFlow() {
     }));
   }
 
+  function handleLevelBack() {
+    setCurrentLevel((lvl) => Math.max(lvl - 1, 1) as Level);
+  }
+
   useEffect(() => {
     if (showResults && !showLevelSuccess) {
       navigate("/results", { state: { answers } });
     }
-  }, [showResults, showLevelSuccess]);
+  }, [showResults, showLevelSuccess, answers]);
 
   if (showLevelSuccess) {
     return (
@@ -92,9 +96,7 @@ export default function QuizFlow() {
           setShowResults(true);
           await handleLevelComplete(answers, 2);
         }}
-        oneLevelBack={() => {
-          setCurrentLevel(1);
-        }}
+        oneLevelBack={handleLevelBack}
       />
     );
   }

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
 import { RiasecType } from "../../types/RiasecTypes";
 import ErrorScreen from "../error-screen/ErrorScreen";
-import CardStack from "./CardStack";
+import CardStack from "../cards/CardStackLevel2";
 import { Stack, Typography } from "@mui/material";
-import BaseCard from "../BaseCard";
+import BaseCard from "../cards/QuizCardBase";
 import PrimaryButton from "../buttons/PrimaryButton";
 import SecondaryButton from "../buttons/SecondaryButton";
 import theme from "../../theme/theme";
@@ -43,20 +43,14 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
   const [error, setError] = useState<{ title: string; message: string } | null>(
     null,
   );
-  // NOTE: Transition handling will be refined in PR 3 (back navigation)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
   const TOTAL_QUESTIONS = questions.length;
   const currentQuestion = questions[currentIndex];
 
-  // NOTE: Transition handling will be refined in PR 3 (back navigation)
-  // const next = () =>
-  //   setCurrentIndex((i) => Math.min(i + 1, TOTAL_QUESTIONS - 1));
-
   /**
-   * Handles  the option to go back one Question.
-   * Updates the scores based on the previous selcted answer.
+   * Handles the option to go back one Question.
    * Switches Levels if user is on the first Question.
    */
   const goBack = () => {
@@ -76,7 +70,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
    */
   const handleSelect = (option: "yes" | "no" | "skip") => {
     if (!currentQuestion || isTransitioning) return;
-
+    setIsTransitioning(true);
     onAnswer({
       questionId: `level2.question${currentIndex}.${currentQuestion.riasec_type}`,
       value: option,
@@ -84,11 +78,14 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
     });
 
     // Last question -> send scores to backend
-    if (currentIndex === TOTAL_QUESTIONS - 1) {
-      onComplete();
-    } else {
-      setCurrentIndex((i) => i + 1);
-    }
+    setTimeout(() => {
+      if (currentIndex === TOTAL_QUESTIONS - 1) {
+        onComplete();
+      } else {
+        setCurrentIndex((i) => i + 1);
+      }
+      setIsTransitioning(false);
+    }, 300);
   };
 
   /**
@@ -151,49 +148,53 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
             cardText={currentQuestion.text}
             sx={{
               height: {
-                xs: 300,
+                xs: 280,
                 md: 200,
+              },
+              maxWidth: {
+                xs: 250,
+                md: 320,
               },
             }}
             cardColor={theme.palette.decorative.green}
           ></BaseCard>
+        </CardStack>
 
-          <Stack
-            spacing={2}
+        <Stack
+          spacing={2}
+          sx={{
+            mt: 3,
+            justifyContent: "center",
+            padding: "0 2em",
+          }}
+        >
+          <PrimaryButton
+            label={"Ja"}
+            onClick={() => handleSelect("yes")}
+            ariaText="Antwort Ja"
+          />
+          <SecondaryButton
+            label={"Nein"}
+            onClick={() => handleSelect("no")}
+            ariaText="Antwort Nein"
+          />
+          <Typography
+            aria-label="Antwort Überspringen"
+            onClick={() => handleSelect("skip")}
             sx={{
-              mt: 3,
-              justifyContent: "center",
-              padding: "0 2em",
+              fontSize: "0.875rem",
+              cursor: "pointer",
+              color: theme.palette.text.skipButton,
+              textAlign: "center",
+              textDecoration: "underline",
+              "&:hover": {
+                color: theme.palette.text.primary,
+              },
             }}
           >
-            <PrimaryButton
-              label={"Ja"}
-              onClick={() => handleSelect("yes")}
-              ariaText="Antwort Ja"
-            />
-            <SecondaryButton
-              label={"Nein"}
-              onClick={() => handleSelect("no")}
-              ariaText="Antwort Nein"
-            />
-            <Typography
-              aria-label="Antwort Überspringen"
-              onClick={() => handleSelect("skip")}
-              sx={{
-                fontSize: "0.875rem",
-                cursor: "pointer",
-                color: theme.palette.text.skipButton,
-                textAlign: "center",
-                textDecoration: "underline",
-                "&:hover": {
-                  color: theme.palette.text.primary,
-                },
-              }}
-            >
-              Überspringen
-            </Typography>
-          </Stack>
-        </CardStack>
+            Überspringen
+          </Typography>
+        </Stack>
 
         <Stack
           sx={{
@@ -209,7 +210,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
           <img
             src="/mascot_walking_pink.svg"
             width={61}
-            height={90}
+            height={70}
             alt="Mascot"
           />
         </Stack>

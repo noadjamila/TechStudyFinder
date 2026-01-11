@@ -29,41 +29,18 @@ export default function CardStack({
           lg: 700,
         },
         mx: "auto",
+        display: "flex",
+        justifyContent: "flex-end",
       }}
     >
-      {/*Faded card on the left side*/}
-      {currentIndex > 1 && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: 10,
-            left: {
-              xs: -35,
-              md: -45,
-            },
-            width: "100%",
-            height: "90%",
-            borderRadius: 2,
-            bgcolor: theme.palette.decorative.green,
-            opacity: 0.4,
-            transform: "scale(0.97)",
-            zIndex: 0,
-            boxShadow: 8,
-          }}
-        />
-      )}
-
-      {/*Faded card on the right side*/}
+      {/* Single faded card */}
       {currentIndex < totalCards && (
         <Box
           sx={{
             position: "absolute",
             top: 10,
-            right: {
-              xs: -35,
-              md: -45,
-            },
-            width: "100%",
+            alignSelf: "flex-end",
+            width: currentIndex > 1 ? "100%" : "80%",
             height: "90%",
             borderRadius: 2,
             bgcolor: theme.palette.decorative.green,
@@ -75,8 +52,10 @@ export default function CardStack({
         />
       )}
 
-      {/*The active card in the center*/}
-      <Box sx={{ position: "relative", zIndex: 1 }}>{children}</Box>
+      {/* Active card */}
+      <Box sx={{ position: "relative", zIndex: 1, width: "100%" }}>
+        {children}
+      </Box>
     </Box>
   );
 }
