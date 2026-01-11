@@ -10,12 +10,6 @@ import SecondaryButton from "../buttons/SecondaryButton";
 import theme from "../../theme/theme";
 import { Answer } from "../../types/QuizAnswer.types";
 
-/**
- * NOTE:
- * This component is intentionally simplified as of now (PR 1).
- * Score calculation and backend submission are reintroduced in PR 2.
- */
-
 export interface QuizL2Props {
   onAnswer: (answer: Answer) => void;
   onComplete: () => void;
@@ -53,41 +47,12 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
-  /*
-   * TODO (PR 2):
-   * Local score state will be removed;
-   * scores will be derived from AnswerMap
-   */
-  // const [_scores, setScores] =
-  //   useState<Record<RiasecType, number>>(initialScores);
-  //
-  // const pointsMap: Record<string, number> = {
-  //   yes: 1,
-  //   no: -1,
-  //   skip: 0,
-  // };
-
   const TOTAL_QUESTIONS = questions.length;
   const currentQuestion = questions[currentIndex];
 
   // NOTE: Transition handling will be refined in PR 3 (back navigation)
   // const next = () =>
   //   setCurrentIndex((i) => Math.min(i + 1, TOTAL_QUESTIONS - 1));
-
-  /**
-   * Converts the scores object into an array of type-score pairs.
-   *
-   * @param {Record<RiasecType, number>} scores - The RIASEC scores.
-   * @returns {{ type: RiasecType; score: number }[]} Array of type-score objects.
-   */
-  // const scoresToArray = (
-  //   scores: Record<RiasecType, number>,
-  // ): { type: RiasecType; score: number }[] => {
-  //   return Object.entries(scores).map(([type, score]) => ({
-  //     type: type as RiasecType,
-  //     score,
-  //   }));
-  // };
 
   /**
    * Handles  the option to go back one Question.
@@ -113,7 +78,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
     if (!currentQuestion || isTransitioning) return;
 
     onAnswer({
-      questionId: `level2.question${currentIndex}`,
+      questionId: `level2.question${currentIndex}.${currentQuestion.riasec_type}`,
       value: option,
       answeredAt: Date.now(),
     });
@@ -125,31 +90,6 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
       setCurrentIndex((i) => i + 1);
     }
   };
-
-  /*
-   * TODO (PR 2):
-   * Send RIASEC scores to backend once score calculation
-   * is implemented based on AnswerMap
-   */
-  // const sendData = async (scores: { type: RiasecType; score: number }[]) => {
-  //   try {
-  //     const response = await postFilterLevel({
-  //       level: 2,
-  //       answers: scores,
-  //       studyProgrammeIds: previousIds,
-  //     });
-  //
-  //     const idsArray = response.ids.map((item: any) => item.studiengang_id);
-  //     console.log("IDs as strings:", idsArray);
-  //   } catch (err) {
-  //     console.error("Error sending the data: ", err);
-  //     setError({
-  //       title: "Fehler beim Senden",
-  //       message:
-  //         "Der Server konnte die Daten nicht verarbeiten. Bitte versuche es später erneut.",
-  //     });
-  //   }
-  // };
 
   /**
    * Fetches level 2 questions from the backend API on component mount.
