@@ -24,12 +24,13 @@ export interface QuizL2Props {
 /**
  * Level 2 quiz flow component.
  *
- * Renders a card-based question flow. Tracks the current question index,
- * handles forward/back navigation (including returning to the previous level),
- * and emits answers and completion events to the parent.
+ * Renders a card-based question flow from session-provided questions.
+ * Tracks the current question index, handles forward/back navigation
+ * (including returning to the previous level), and emits answers and
+ * completion events to the parent.
  *
  * @param {QuizL2Props} props Component callbacks for answering, completion, and back navigation.
- * @returns {JSX.Element} The rendered quiz UI or a loading state while questions are fetched.
+ * @returns {JSX.Element} The rendered quiz UI or a loading state while questions are missing.
  */
 const Quiz_L2: React.FC<QuizL2Props> = ({
   session,
