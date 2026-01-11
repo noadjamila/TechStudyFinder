@@ -202,7 +202,9 @@ export default function QuizFlow(): JSX.Element | null {
   function completeLevel2() {
     setShowLevelSuccess(true);
     const latestAnswers = sessionRef.current.answers;
-    handleLevelComplete(latestAnswers, 2).then((r) => r);
+    handleLevelComplete(latestAnswers, 2).catch((error) => {
+      console.error("Error completing level 2:", error);
+    });
     setSession((prev) => ({
       ...prev,
       currentLevel: 3,
