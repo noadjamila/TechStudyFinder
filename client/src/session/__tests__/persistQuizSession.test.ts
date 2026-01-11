@@ -1,17 +1,18 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import type { QuizSession } from "../../types/QuizSession";
-import { loadLatestSession, saveSession } from "../persistQuizSession";
 
-const store = vi.hoisted(() => new Map<string, QuizSession>());
+const dbState = vi.hoisted(() => ({
+  value: null as QuizSession | null,
+}));
 
 const openDbMock = vi.hoisted(() =>
   vi.fn(async () => ({
     transaction: () => ({
       objectStore: () => ({
-        put: (value: QuizSession, key: string) => {
-          store.set(key, value);
+        put: (value: QuizSession) => {
+          dbState.value = value;
         },
-        get: (key: string) => Promise.resolve(store.get(key) ?? null),
+        get: () => Promise.resolve(dbState.value),
       }),
       done: Promise.resolve(),
     }),
@@ -22,12 +23,19 @@ vi.mock("idb", () => ({
   openDB: openDbMock,
 }));
 
+let loadLatestSession: () => Promise<QuizSession | null>;
+let saveSession: (session: QuizSession) => Promise<void>;
+
 describe("persistQuizSession", () => {
   const originalIndexedDb = globalThis.indexedDB;
 
-  beforeEach(() => {
-    store.clear();
+  beforeEach(async () => {
+    dbState.value = null;
     globalThis.indexedDB = {} as IDBFactory;
+    vi.resetModules();
+    const module = await import("../persistQuizSession");
+    loadLatestSession = module.loadLatestSession;
+    saveSession = module.saveSession;
   });
 
   afterEach(() => {
