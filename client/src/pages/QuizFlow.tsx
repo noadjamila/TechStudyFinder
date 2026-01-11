@@ -23,7 +23,6 @@ type Level = 1 | 2 | 3;
 async function handleLevelComplete(answers: AnswerMap, levelNumber: Level) {
   const scores = calculateRiasecScores(answers);
   const payload = riasecScoresToApiPayload(scores);
-
   try {
     await postFilterLevel({
       level: levelNumber,
@@ -48,6 +47,7 @@ export default function QuizFlow() {
     createQuizSession(),
   );
   const [showLevelSuccess, setShowLevelSuccess] = useState(true);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_showResults, setShowResults] = useState(false);
   const sessionRef = useRef(session);
 
@@ -140,23 +140,31 @@ export default function QuizFlow() {
    */
   function completeLevel2() {
     setShowLevelSuccess(true);
-    setShowResults(true);
+    // setShowResults(true);
     const latestAnswers = sessionRef.current.answers;
     handleLevelComplete(latestAnswers, 2);
+
     setSession((prev) => ({
       ...prev,
       currentLevel: 3,
       currentQuestionIndex: 0,
       updatedAt: Date.now(),
     }));
-    navigate("/results", { state: { answers: latestAnswers } });
   }
 
   if (showLevelSuccess) {
     return (
       <LevelSuccessScreen
         currentLevel={session.currentLevel}
-        onContinue={() => setShowLevelSuccess(false)}
+        onContinue={() => {
+          setShowLevelSuccess(false);
+
+          if (session.currentLevel === 3) {
+            navigate("/results", {
+              state: { answers: session.answers },
+            });
+          }
+        }}
       />
     );
   }

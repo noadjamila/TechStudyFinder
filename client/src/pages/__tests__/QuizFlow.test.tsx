@@ -126,6 +126,66 @@ describe("QuizFlow", () => {
 
     expect(screen.getByText("Mock Success Level 2")).toBeInTheDocument();
   });
+  test("handleAnswer stores answer in session", () => {
+    render(
+      <MemoryRouter>
+        <QuizFlow />
+      </MemoryRouter>,
+    );
+
+    // Start Level 1
+    fireEvent.click(screen.getByText("continue"));
+
+    // Klick triggert onAnswer({ questionId: "l1", ... })
+    fireEvent.click(screen.getByText("go-to-l2"));
+
+    // Danach Level-2-SuccessScreen sichtbar → Antwort muss gespeichert sein
+    fireEvent.click(screen.getByText("continue"));
+    fireEvent.click(screen.getByText("go-to-l3"));
+    fireEvent.click(screen.getByText("continue"));
+
+    expect(navigateMock).toHaveBeenCalledWith(
+      "/results",
+      expect.objectContaining({
+        state: {
+          answers: expect.objectContaining({
+            l1: {
+              questionId: "l1",
+              value: "yes",
+              answeredAt: 1,
+            },
+          }),
+        },
+      }),
+    );
+  });
+  test("handleAnswer updates updatedAt timestamp", () => {
+    const nowSpy = vi.spyOn(Date, "now").mockReturnValue(123456);
+
+    render(
+      <MemoryRouter>
+        <QuizFlow />
+      </MemoryRouter>,
+    );
+
+    fireEvent.click(screen.getByText("continue"));
+    fireEvent.click(screen.getByText("go-to-l2"));
+
+    fireEvent.click(screen.getByText("continue"));
+    fireEvent.click(screen.getByText("go-to-l3"));
+    fireEvent.click(screen.getByText("continue"));
+
+    expect(navigateMock).toHaveBeenCalledWith(
+      "/results",
+      expect.objectContaining({
+        state: {
+          answers: expect.any(Object),
+        },
+      }),
+    );
+
+    nowSpy.mockRestore();
+  });
 
   test("navigates to /result after level 2", () => {
     render(
