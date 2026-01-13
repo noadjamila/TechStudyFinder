@@ -50,6 +50,10 @@ export async function register(req: Request, res: Response) {
     }
 
     // Fallback for unknown error types
-    return res.status(500).json({ error: "Registrierung fehlgeschlagen" });
+    return res
+      .status(500)
+      .json({
+        error: "Registrierung fehlgeschlagen - bitte versuche es erneut!",
+      });
   }
 }

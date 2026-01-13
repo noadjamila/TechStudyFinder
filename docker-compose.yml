@@ -12,8 +12,8 @@ services:
       POSTGRES_PASSWORD: changeme_in_production
       POSTGRES_DB: techstudyfinder
     volumes:
-      # Mount init.sql to automatically create tables on first start
-      - ./server/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      # Mount schema files to automatically create tables on first start
+      - ./server/db/schema:/docker-entrypoint-initdb.d:ro
       # Persist database data
       - postgres_data:/var/lib/postgresql/data
     ports:

@@ -13,7 +13,7 @@ const DUMMY_BCRYPT_HASH =
   "$2b$12$C6UzMDM.H6dfI/f/IKcEe.OvJH5tq3c5F5QyXv3D1Gx5aFQvZyKqG";
 
 /**
- * Note: Database tables should be created via init.sql script
+ * Note: Database tables should be created via schema files in server/db/schema/
  * Tables use GENERATED ALWAYS AS IDENTITY to prevent manual ID insertion
  */
 
