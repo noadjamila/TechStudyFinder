@@ -7,8 +7,12 @@ import LoginReminderDialog from "../LoginReminderDialog";
 describe("LoginReminderDialog Component", () => {
   const mockOnClose = vi.fn();
   const mockOnLoginClick = vi.fn();
-  const testMessage =
-    "Du musst dich erst einloggen, um deine Favoriten speichern zu können.";
+  const testMessage = (
+    <>
+      Du musst dich erst <strong>einloggen</strong>, um deine Favoriten
+      speichern zu können.
+    </>
+  );
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -24,7 +28,8 @@ describe("LoginReminderDialog Component", () => {
       />,
     );
 
-    expect(screen.getByText(testMessage)).toBeInTheDocument();
+    expect(screen.getByText(/Du musst dich erst/i)).toBeInTheDocument();
+    expect(screen.getByText(/einloggen/i)).toBeInTheDocument();
   });
 
   it("does not render the dialog when open is false", () => {
@@ -37,7 +42,7 @@ describe("LoginReminderDialog Component", () => {
       />,
     );
 
-    expect(screen.queryByText(testMessage)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Du musst dich erst/i)).not.toBeInTheDocument();
   });
 
   it("renders the custom message prop correctly", () => {
@@ -145,9 +150,9 @@ describe("LoginReminderDialog Component", () => {
       />,
     );
 
-    const message = screen.getByText(testMessage);
-    expect(message).toBeInTheDocument();
-    expect(message).toHaveStyle({ textAlign: "center" });
+    const messageElement = screen.getByText(/Du musst dich erst/i).closest("p");
+    expect(messageElement).toBeInTheDocument();
+    expect(messageElement).toHaveStyle({ textAlign: "center" });
   });
 
   it("has correct dialog styling with rounded corners and proper spacing", () => {

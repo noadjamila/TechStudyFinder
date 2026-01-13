@@ -66,11 +66,13 @@ export default function NavigationGuard({
 
       setIntendedDestination(location.pathname);
       setShowDialog(true);
+      // Navigate back to results to keep user on the results page
+      navigate("/results", { replace: true });
       return;
     }
 
     previousPathRef.current = location.pathname;
-  }, [location.pathname, user, hasQuizResults]);
+  }, [location.pathname, user, hasQuizResults, navigate]);
 
   // Handle closing the dialog - allow navigation to intended destination
   const handleDialogClose = () => {
@@ -106,18 +108,24 @@ export default function NavigationGuard({
 
   return (
     <>
-      {/* Only render the new route if dialog is not blocking */}
-      {!showDialog && children}
-
-      {/* If dialog is shown, keep rendering the results page content */}
-      {showDialog && <div style={{ position: "relative" }}>{children}</div>}
+      {children}
 
       {/* Reminder dialog */}
       <LoginReminderDialog
         open={showDialog}
         onClose={handleDialogClose}
         onLoginClick={handleLoginClick}
-        message="Beachte: du bist nicht eingeloggt. Deine Ergebnisse können nach einer Zeit nicht mehr abgerufen werden."
+        message={
+          <>
+            Beachte: <br />
+            <strong>Du bist nicht eingeloggt.</strong>
+            <br />
+            Deine Ergebnisse können nicht gespeichert werden.
+            <br />
+            Wenn du deine Ergebnisse auch später noch sehen willst, logge dich
+            jetzt ein.
+          </>
+        }
       />
     </>
   );

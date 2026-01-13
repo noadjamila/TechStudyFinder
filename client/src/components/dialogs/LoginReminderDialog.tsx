@@ -17,11 +17,19 @@ import PrimaryButton from "../buttons/PrimaryButton";
  * Used for features requiring authentication (e.g., saving favorites, preserving quiz results).
  */
 
+// Shared message for favorites feature requiring login
+export const FAVORITES_LOGIN_MESSAGE = (
+  <>
+    Du musst dich erst <strong>einloggen</strong>, um deine Favoriten speichern
+    zu können.
+  </>
+);
+
 interface LoginReminderDialogProps {
   open: boolean;
   onClose: () => void;
   onLoginClick: () => void;
-  message: string;
+  message: React.ReactNode;
 }
 
 const CustomDialog = styled(Dialog)(({ theme }) => ({
@@ -61,6 +69,7 @@ const ContentText = styled(DialogContentText)(({ theme }) => ({
   fontFamily: "Fira Sans, sans-serif",
   fontWeight: "normal",
   lineHeight: 1.5,
+  whiteSpace: "pre-line",
   [theme.breakpoints.down("sm")]: {
     fontSize: "16px",
     lineHeight: 1.4,

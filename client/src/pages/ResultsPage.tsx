@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Box } from "@mui/material";
 import Results from "../components/quiz/Results";
 import DataSource from "../components/DataSource";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 import MainLayout from "../layouts/MainLayout";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { getStudyProgrammeById } from "../api/quizApi";
 import NoResultsYet from "../components/quiz/NoResultsYet";
 import { useAuth } from "../contexts/AuthContext";
-import LoginReminderDialog from "../components/dialogs/LoginReminderDialog";
 
 /**
  * ResultsPage component displays the results of the quiz.
@@ -17,7 +16,6 @@ import LoginReminderDialog from "../components/dialogs/LoginReminderDialog";
  */
 const ResultsPage: React.FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { user } = useAuth();
   const idsFromQuiz = location.state?.idsFromLevel2 || [];
 
@@ -50,10 +48,6 @@ const ResultsPage: React.FC = () => {
       localStorage.getItem("quizCompleted") === "true"
     );
   });
-  const [showLoginReminder, setShowLoginReminder] = useState(false);
-  const previousPathRef = useRef<string>("/results");
-  const intendedPathRef = useRef<string | null>(null);
-  const allowNavigationRef = useRef<boolean>(false);
 
   useEffect(() => {
     const fetchStudyProgrammes = async () => {
@@ -112,68 +106,6 @@ const ResultsPage: React.FC = () => {
     fetchStudyProgrammes();
   }, []);
 
-  // Show login reminder when navigating away if user is not logged in
-  useEffect(() => {
-    // Never show dialog if currently on login or register page
-    const isOnAuthPage =
-      location.pathname === "/login" || location.pathname === "/register";
-
-    if (isOnAuthPage) {
-      setShowLoginReminder(false);
-      allowNavigationRef.current = false;
-      previousPathRef.current = location.pathname;
-      return;
-    }
-
-    // Check if we're leaving the results page
-    if (
-      location.pathname !== "/results" &&
-      previousPathRef.current === "/results"
-    ) {
-      // Don't show reminder when navigating to login or register pages
-      const isNavigatingToAuth =
-        location.pathname === "/login" || location.pathname === "/register";
-
-      // Only show reminder if not logged in, has results, and not going to auth pages
-      if (
-        !user &&
-        hasQuizResults &&
-        !isNavigatingToAuth &&
-        !allowNavigationRef.current
-      ) {
-        // Store the intended path and show dialog
-        intendedPathRef.current = location.pathname;
-        setShowLoginReminder(true);
-        // Navigate back to results temporarily
-        navigate("/results");
-      } else {
-        // Clear flags and allow navigation to auth pages
-        allowNavigationRef.current = false;
-        setShowLoginReminder(false);
-      }
-    }
-    // Update the previous path
-    previousPathRef.current = location.pathname;
-  }, [location.pathname, user, hasQuizResults, navigate]);
-
-  // Handle closing the dialog - navigates to the intended destination
-  const handleDialogClose = () => {
-    setShowLoginReminder(false);
-    allowNavigationRef.current = true;
-    if (intendedPathRef.current) {
-      const destination = intendedPathRef.current;
-      intendedPathRef.current = null;
-      navigate(destination);
-    }
-  };
-
-  // Handle login button click in dialog
-  const handleLoginClick = () => {
-    setShowLoginReminder(false);
-    allowNavigationRef.current = true;
-    navigate("/login", { state: { redirectTo: "/results" } });
-  };
-
   // Show dialog when closing the browser/tab
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -207,14 +139,6 @@ const ResultsPage: React.FC = () => {
           )}
         </>
       )}
-
-      {/* Login reminder dialog for not logged in users */}
-      <LoginReminderDialog
-        open={showLoginReminder}
-        onClose={handleDialogClose}
-        onLoginClick={handleLoginClick}
-        message="Beachte: du bist nicht eingeloggt. Deine Ergebnisse können nach einer Zeit nicht mehr abgerufen werden."
-      />
     </MainLayout>
   );
 };
