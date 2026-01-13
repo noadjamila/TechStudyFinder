@@ -15,12 +15,14 @@ import NoResultsYet from "../components/quiz/NoResultsYet";
  */
 const ResultsPage: React.FC = () => {
   const location = useLocation();
-  const idsFromQuiz = location.state?.idsFromLevel2 || [];
+  const idsFromQuiz = (location.state?.resultIds ?? []).map(
+    (r: { studiengang_id: string }) => r.studiengang_id,
+  );
 
   // Initialize state with cached data if available (synchronous, instant)
   const [studyProgrammes, setStudyProgrammes] = useState<StudyProgramme[]>(
     () => {
-      if (idsFromQuiz.length === 0) {
+      if (location.state?.resultIds !== undefined) {
         // Try to load cached results immediately
         const cachedResults = localStorage.getItem("quizResults");
         if (cachedResults) {
@@ -50,7 +52,7 @@ const ResultsPage: React.FC = () => {
   useEffect(() => {
     const fetchStudyProgrammes = async () => {
       // Check if we have new quiz results (even if empty array was explicitly passed)
-      if (location.state?.idsFromLevel2 !== undefined) {
+      if (location.state?.resultIds !== undefined) {
         if (idsFromQuiz.length === 0) {
           // Quiz returned no results - clear cache but mark quiz as completed
           localStorage.removeItem("quizResults");
@@ -60,9 +62,9 @@ const ResultsPage: React.FC = () => {
           setLoading(false);
           return;
         }
-
         // Fetch new results
         setLoading(true);
+
         const promises = idsFromQuiz.map((id: string) =>
           getStudyProgrammeById(id),
         );
