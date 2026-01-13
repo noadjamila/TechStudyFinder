@@ -7,6 +7,8 @@ import { QuizSession } from "../types/QuizSession";
 export function createQuizSession(): QuizSession {
   return {
     sessionId: crypto.randomUUID(),
+    level1IDS: [],
+    resultIds: [],
     currentLevel: 1,
     currentQuestionIndex: 0,
     answers: {},

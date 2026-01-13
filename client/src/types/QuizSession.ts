@@ -10,6 +10,9 @@ export type QuizSession = {
   currentLevel: 1 | 2 | 3;
   currentQuestionIndex: number;
 
+  level1IDS?: string[];
+  resultIds?: string[];
+
   answers: AnswerMap;
 
   level2Questions?: {

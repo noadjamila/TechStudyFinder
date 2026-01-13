@@ -19,7 +19,6 @@ export async function postFilterLevel(
   payload: QuizFilterPayload,
 ): Promise<FilterResponse> {
   const endpoint = `${API_BASE_URL}/quiz/filter`;
-
   try {
     const res = await fetch(endpoint, {
       method: "POST",
@@ -32,7 +31,6 @@ export async function postFilterLevel(
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
-
     return await res.json();
   } catch (err) {
     console.error("[postFilterLevel] Error during API call:", err);

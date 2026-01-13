@@ -5,6 +5,7 @@ import Quiz_L2 from "../components/quiz/Quiz_L2";
 import LevelSuccessScreen from "../components/quiz/LevelSuccessScreen";
 import { QuizSession } from "../types/QuizSession";
 import { createQuizSession } from "../session/createQuizSession";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Answer, AnswerMap } from "../types/QuizAnswer.types";
 import { calculateRiasecScores } from "../services/calculateRiasecScores";
 import { riasecScoresToApiPayload } from "../services/riasecPayload";
@@ -20,18 +21,23 @@ type Level = 1 | 2 | 3;
  * @param levelNumber - The level number that was completed.
  * @returns {Promise<void>} A promise that resolves when the operation is complete.
  */
+/**
 async function handleLevelComplete(answers: AnswerMap, levelNumber: Level) {
+  console.log("Level complete:", levelNumber, answers);
   const scores = calculateRiasecScores(answers);
   const payload = riasecScoresToApiPayload(scores);
+  console.log("Payload:", payload);
   try {
     await postFilterLevel({
       level: levelNumber,
       answers: payload,
+
     });
   } catch (error) {
     console.error("Failed to post filter level data:", error);
   }
 }
+  */
 
 /**
  * Manages the multi-level quiz flow.
@@ -47,9 +53,9 @@ export default function QuizFlow() {
     createQuizSession(),
   );
   const [showLevelSuccess, setShowLevelSuccess] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_showResults, setShowResults] = useState(false);
   const sessionRef = useRef(session);
+  //const [idsFromLevel1, setIdsFromLevel1] = useState<string[]>([]);
 
   /**
    * Ensures that the level 2 questions are fetched from the API and stored in the session state.
@@ -59,7 +65,6 @@ export default function QuizFlow() {
       if (prev.level2Questions && prev.level2Questions.length > 0) {
         return prev;
       }
-
       return {
         ...prev,
         level2Questions: [],
@@ -119,7 +124,8 @@ export default function QuizFlow() {
 
   /**
    * Navigates to the next level in the session, ensuring the level does not go above the maximum level (3).
-   */
+
+
   function goToNextLevel() {
     setSession((prev) => ({
       ...prev,
@@ -128,7 +134,18 @@ export default function QuizFlow() {
       updatedAt: Date.now(),
     }));
   }
-
+    */
+  function handleLevel1Complete(ids: string[]) {
+    setSession((prev) => ({
+      ...prev,
+      level1IDS: ids,
+      currentLevel: 2,
+      currentQuestionIndex: 0,
+      updatedAt: Date.now(),
+    }));
+    setShowLevelSuccess(true);
+  }
+  useEffect(() => {}, [session.level1IDS]);
   /**
    * Completes the current level (Level 2) by performing the following actions:
    * - Sets the level success state to true.
@@ -138,14 +155,22 @@ export default function QuizFlow() {
    *   and updates the timestamp for when the action occurred.
    * - Navigates to the results page, passing the user's answers in the navigation state.
    */
-  function completeLevel2() {
+  async function completeLevel2() {
     setShowLevelSuccess(true);
     // setShowResults(true);
-    const latestAnswers = sessionRef.current.answers;
-    handleLevelComplete(latestAnswers, 2);
+    const { answers, level1IDS } = sessionRef.current;
+    const scores = calculateRiasecScores(answers);
+    const payload = riasecScoresToApiPayload(scores);
+
+    const res = await postFilterLevel({
+      level: 2,
+      answers: payload,
+      studyProgrammeIds: level1IDS,
+    });
 
     setSession((prev) => ({
       ...prev,
+      resultIds: res.ids,
       currentLevel: 3,
       currentQuestionIndex: 0,
       updatedAt: Date.now(),
@@ -158,10 +183,10 @@ export default function QuizFlow() {
         currentLevel={session.currentLevel}
         onContinue={() => {
           setShowLevelSuccess(false);
-
+          setShowResults(true);
           if (session.currentLevel === 3) {
             navigate("/results", {
-              state: { answers: session.answers },
+              state: { resultIds: sessionRef.current.resultIds },
             });
           }
         }}
@@ -173,10 +198,8 @@ export default function QuizFlow() {
     return (
       <Quiz_L1
         onAnswer={(answer: Answer) => handleAnswer(answer)}
-        onComplete={() => {
-          goToNextLevel();
-          setShowLevelSuccess(true);
-        }}
+        level1ids={handleLevel1Complete}
+        onComplete={() => {}}
       />
     );
   }
