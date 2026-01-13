@@ -27,7 +27,15 @@ describe("Quiz_L1", () => {
   });
 
   test("renders question and options", () => {
-    renderWithTheme(<Quiz_L1 onAnswer={vi.fn()} onComplete={vi.fn()} />);
+    renderWithTheme(
+      <Quiz_L1
+        onAnswer={vi.fn()}
+        onComplete={vi.fn()}
+        level1ids={function (_ids: string[]): void {
+          throw new Error("Function not implemented.");
+        }}
+      />,
+    );
 
     expect(screen.getByText("Möchtest du ...")).toBeInTheDocument();
     expect(
@@ -48,7 +56,13 @@ describe("Quiz_L1", () => {
     (postFilterLevel as Mock).mockResolvedValue({ ids: [1, 2, 3] });
 
     renderWithTheme(
-      <Quiz_L1 onAnswer={mockOnAnswer} onComplete={mockOnComplete} />,
+      <Quiz_L1
+        onAnswer={mockOnAnswer}
+        onComplete={mockOnComplete}
+        level1ids={function (_ids: string[]): void {
+          throw new Error("Function not implemented.");
+        }}
+      />,
     );
 
     fireEvent.click(screen.getByText(/ein Studium beginnen\?/i));
@@ -70,7 +84,15 @@ describe("Quiz_L1", () => {
   test("shows alert on API error", async () => {
     (postFilterLevel as Mock).mockRejectedValue(new Error("fail"));
 
-    renderWithTheme(<Quiz_L1 onAnswer={vi.fn()} onComplete={vi.fn()} />);
+    renderWithTheme(
+      <Quiz_L1
+        onAnswer={vi.fn()}
+        onComplete={vi.fn()}
+        level1ids={function (_ids: string[]): void {
+          throw new Error("Function not implemented.");
+        }}
+      />,
+    );
 
     fireEvent.click(screen.getByText(/ein Studium beginnen\?/i));
 
