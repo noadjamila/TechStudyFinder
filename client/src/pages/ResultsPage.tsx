@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { getStudyProgrammeById } from "../api/quizApi";
 import NoResultsYet from "../components/quiz/NoResultsYet";
 import { useAuth } from "../contexts/AuthContext";
-import LoginReminderResultList from "../components/dialogs/LoginReminderResultList";
+import LoginReminderDialog from "../components/dialogs/LoginReminderDialog";
 
 /**
  * ResultsPage component displays the results of the quiz.
@@ -209,10 +209,11 @@ const ResultsPage: React.FC = () => {
       )}
 
       {/* Login reminder dialog for not logged in users */}
-      <LoginReminderResultList
+      <LoginReminderDialog
         open={showLoginReminder}
         onClose={handleDialogClose}
         onLoginClick={handleLoginClick}
+        message="Beachte: du bist nicht eingeloggt. Deine Ergebnisse können nach einer Zeit nicht mehr abgerufen werden."
       />
     </MainLayout>
   );

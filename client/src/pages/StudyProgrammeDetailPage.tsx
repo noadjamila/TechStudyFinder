@@ -29,7 +29,7 @@ import { getStudyProgrammeById } from "../api/quizApi";
 import { getFavorites, addFavorite, removeFavorite } from "../api/favoritesApi";
 import DeadlineDisplay from "../components/DeadlineDisplay";
 import { useAuth } from "../contexts/AuthContext";
-import LoginReminderFavouritesDialog from "../components/dialogs/LoginReminderFavouritesDialog";
+import LoginReminderDialog from "../components/dialogs/LoginReminderDialog";
 
 /**
  * StudyProgrammeDetailPage displays detailed information about a single study programme.
@@ -859,9 +859,10 @@ const StudyProgrammeDetailPage: React.FC = () => {
       )}
 
       {/* Login reminder dialog for not logged in users trying to add favorites */}
-      <LoginReminderFavouritesDialog
+      <LoginReminderDialog
         open={showLoginReminder}
         onClose={() => setShowLoginReminder(false)}
+        message="Du musst dich erst einloggen, um deine Favoriten speichern zu können."
         onLoginClick={() => {
           const previousPage = (location.state as any)?.previousPage;
           navigate("/login", {

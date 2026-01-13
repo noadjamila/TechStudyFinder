@@ -16,7 +16,7 @@ import StudyProgrammeCard from "../cards/StudyProgrammeCard";
 import { useNavigate, useLocation } from "react-router-dom";
 import GreenCard from "../cards/GreenCardBaseNotQuiz";
 import PrimaryButton from "../buttons/PrimaryButton";
-import LoginReminderDialog from "../dialogs/LoginReminderFavouritesDialog";
+import LoginReminderDialog from "../dialogs/LoginReminderDialog";
 import {
   addFavorite,
   removeFavorite,
@@ -425,6 +425,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
         onLoginClick={() =>
           navigate("/login", { state: { redirectTo: location.pathname } })
         }
+        message="Du musst dich erst einloggen, um deine Favoriten speichern zu können."
       />
     </Box>
   );

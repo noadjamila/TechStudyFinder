@@ -2,11 +2,13 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { vi } from "vitest";
-import LoginReminderResultList from "../LoginReminderResultList";
+import LoginReminderDialog from "../LoginReminderDialog";
 
-describe("LoginReminderResultList Component", () => {
+describe("LoginReminderDialog Component", () => {
   const mockOnClose = vi.fn();
   const mockOnLoginClick = vi.fn();
+  const testMessage =
+    "Du musst dich erst einloggen, um deine Favoriten speichern zu können.";
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -14,42 +16,52 @@ describe("LoginReminderResultList Component", () => {
 
   it("renders the dialog when open is true", () => {
     render(
-      <LoginReminderResultList
+      <LoginReminderDialog
         open={true}
         onClose={mockOnClose}
         onLoginClick={mockOnLoginClick}
+        message={testMessage}
       />,
     );
 
-    expect(
-      screen.getByText(
-        /Beachte: du bist nicht eingeloggt. Deine Ergebnisse können nach einer Zeit nicht mehr abgerufen werden./i,
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText(testMessage)).toBeInTheDocument();
   });
 
   it("does not render the dialog when open is false", () => {
     render(
-      <LoginReminderResultList
+      <LoginReminderDialog
         open={false}
         onClose={mockOnClose}
         onLoginClick={mockOnLoginClick}
+        message={testMessage}
       />,
     );
 
-    expect(
-      screen.queryByText(
-        /Beachte: du bist nicht eingeloggt. Deine Ergebnisse können nach einer Zeit nicht mehr abgerufen werden./i,
-      ),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(testMessage)).not.toBeInTheDocument();
+  });
+
+  it("renders the custom message prop correctly", () => {
+    const customMessage =
+      "Beachte: du bist nicht eingeloggt. Deine Ergebnisse können nach einer Zeit nicht mehr abgerufen werden.";
+    render(
+      <LoginReminderDialog
+        open={true}
+        onClose={mockOnClose}
+        onLoginClick={mockOnLoginClick}
+        message={customMessage}
+      />,
+    );
+
+    expect(screen.getByText(customMessage)).toBeInTheDocument();
   });
 
   it("renders the login button", () => {
     render(
-      <LoginReminderResultList
+      <LoginReminderDialog
         open={true}
         onClose={mockOnClose}
         onLoginClick={mockOnLoginClick}
+        message={testMessage}
       />,
     );
 
@@ -59,10 +71,11 @@ describe("LoginReminderResultList Component", () => {
 
   it("renders the close button", () => {
     render(
-      <LoginReminderResultList
+      <LoginReminderDialog
         open={true}
         onClose={mockOnClose}
         onLoginClick={mockOnLoginClick}
+        message={testMessage}
       />,
     );
 
@@ -72,10 +85,11 @@ describe("LoginReminderResultList Component", () => {
 
   it("calls onClose when close button is clicked", () => {
     render(
-      <LoginReminderResultList
+      <LoginReminderDialog
         open={true}
         onClose={mockOnClose}
         onLoginClick={mockOnLoginClick}
+        message={testMessage}
       />,
     );
 
@@ -88,10 +102,11 @@ describe("LoginReminderResultList Component", () => {
 
   it("calls onClose and onLoginClick when login button is clicked", () => {
     render(
-      <LoginReminderResultList
+      <LoginReminderDialog
         open={true}
         onClose={mockOnClose}
         onLoginClick={mockOnLoginClick}
+        message={testMessage}
       />,
     );
 
@@ -104,10 +119,11 @@ describe("LoginReminderResultList Component", () => {
 
   it("calls onClose when clicking outside the dialog (backdrop)", () => {
     render(
-      <LoginReminderResultList
+      <LoginReminderDialog
         open={true}
         onClose={mockOnClose}
         onLoginClick={mockOnLoginClick}
+        message={testMessage}
       />,
     );
 
@@ -119,28 +135,28 @@ describe("LoginReminderResultList Component", () => {
     expect(mockOnClose).toHaveBeenCalled();
   });
 
-  it("displays the correct warning message about results expiration", () => {
+  it("displays the message with correct styling", () => {
     render(
-      <LoginReminderResultList
+      <LoginReminderDialog
         open={true}
         onClose={mockOnClose}
         onLoginClick={mockOnLoginClick}
+        message={testMessage}
       />,
     );
 
-    const message = screen.getByText(
-      /Beachte: du bist nicht eingeloggt. Deine Ergebnisse können nach einer Zeit nicht mehr abgerufen werden./i,
-    );
+    const message = screen.getByText(testMessage);
     expect(message).toBeInTheDocument();
     expect(message).toHaveStyle({ textAlign: "center" });
   });
 
   it("has correct dialog styling with rounded corners and proper spacing", () => {
     const { baseElement } = render(
-      <LoginReminderResultList
+      <LoginReminderDialog
         open={true}
         onClose={mockOnClose}
         onLoginClick={mockOnLoginClick}
+        message={testMessage}
       />,
     );
 
@@ -150,10 +166,11 @@ describe("LoginReminderResultList Component", () => {
 
   it("close button has proper aria label for accessibility", () => {
     render(
-      <LoginReminderResultList
+      <LoginReminderDialog
         open={true}
         onClose={mockOnClose}
         onLoginClick={mockOnLoginClick}
+        message={testMessage}
       />,
     );
 

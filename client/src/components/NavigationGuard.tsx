@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import LoginReminderResultList from "./dialogs/LoginReminderResultList";
+import LoginReminderDialog from "./dialogs/LoginReminderDialog";
 
 /**
  * NavigationGuard shows a reminder dialog when user tries to leave
@@ -113,10 +113,11 @@ export default function NavigationGuard({
       {showDialog && <div style={{ position: "relative" }}>{children}</div>}
 
       {/* Reminder dialog */}
-      <LoginReminderResultList
+      <LoginReminderDialog
         open={showDialog}
         onClose={handleDialogClose}
         onLoginClick={handleLoginClick}
+        message="Beachte: du bist nicht eingeloggt. Deine Ergebnisse können nach einer Zeit nicht mehr abgerufen werden."
       />
     </>
   );

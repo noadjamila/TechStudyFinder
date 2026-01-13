@@ -13,14 +13,15 @@ import CloseIcon from "@mui/icons-material/Close";
 import PrimaryButton from "../buttons/PrimaryButton";
 
 /**
- * LoginReminderResultList displays a dialog warning users that quiz results will expire if not logged in.
- * Shows a login button to navigate to the login page and preserve results.
+ * LoginReminderDialog displays a reminder dialog prompting users to login.
+ * Used for features requiring authentication (e.g., saving favorites, preserving quiz results).
  */
 
-interface LoginReminderResultListProps {
+interface LoginReminderDialogProps {
   open: boolean;
   onClose: () => void;
   onLoginClick: () => void;
+  message: string;
 }
 
 const CustomDialog = styled(Dialog)(({ theme }) => ({
@@ -83,11 +84,12 @@ const CloseButtonWrapper = styled(Box)(({ theme }) => ({
   top: theme.spacing(1),
 }));
 
-export default function LoginReminderResultList({
+export default function LoginReminderDialog({
   open,
   onClose,
   onLoginClick,
-}: LoginReminderResultListProps) {
+  message,
+}: LoginReminderDialogProps) {
   const handleLoginClick = () => {
     onClose();
     onLoginClick();
@@ -116,10 +118,7 @@ export default function LoginReminderResultList({
       </Title>
 
       <DialogContent sx={{ textAlign: "center", pb: 1 }}>
-        <ContentText>
-          Beachte: du bist nicht eingeloggt. Deine Ergebnisse können nach einer
-          Zeit nicht mehr abgerufen werden.
-        </ContentText>
+        <ContentText>{message}</ContentText>
       </DialogContent>
 
       <Actions>
