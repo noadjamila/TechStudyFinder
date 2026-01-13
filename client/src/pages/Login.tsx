@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Box, Alert, Typography } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
-import PrimaryButton from "../../components/buttons/PrimaryButton";
-import BackButton from "../../components/buttons/BackButton";
-import FormField from "../../components/login-register/InputField";
-import FormHeader from "../../components/login-register/FormHeader";
-import theme from "../../theme/theme";
-import BottomHills from "../../components/login-register/BottomHills";
-import LoginResultDialog from "../../components/dialogs/LoginResultDialog";
-import { useAuth } from "../../contexts/AuthContext";
+import PrimaryButton from "../components/buttons/PrimaryButton";
+import BackButton from "../components/buttons/BackButton";
+import FormField from "../components/login-register/InputField";
+import FormHeader from "../components/login-register/FormHeader";
+import theme from "../theme/theme";
+import BottomHills from "../components/login-register/BottomHills";
+import LoginResultDialog from "../components/dialogs/LoginResultDialog";
+import { useAuth } from "../contexts/AuthContext";
 
 /**
  * Login page component.

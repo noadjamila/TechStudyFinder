@@ -5,8 +5,8 @@ import ResultsPage from "./pages/ResultsPage";
 import StudyProgrammeDetailPage from "./pages/StudyProgrammeDetailPage";
 import Settings from "./pages/Settings";
 import Register from "./pages/Register";
-import Login from "./pages/Login/Login";
-import Favourites from "./pages/Favourites/FavouritesContainer";
+import Login from "./pages/Login";
+import Favourites from "./pages/Favourites";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NavigationGuard from "./components/NavigationGuard";
 
