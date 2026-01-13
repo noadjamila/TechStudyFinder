@@ -18,7 +18,7 @@ export async function register(req: Request, res: Response) {
 
   // Validate username first
   if (!username || typeof username !== "string") {
-    return res.status(400).json({ error: "Username is required" });
+    return res.status(400).json({ error: "Username ist erforderlich" });
   }
 
   const usernameValidation = validateUsername(username);
@@ -28,7 +28,7 @@ export async function register(req: Request, res: Response) {
 
   // Then validate password
   if (!password || typeof password !== "string") {
-    return res.status(400).json({ error: "Password is required" });
+    return res.status(400).json({ error: "Passwort ist erforderlich" });
   }
 
   const passwordValidation = validatePassword(password);
@@ -50,6 +50,6 @@ export async function register(req: Request, res: Response) {
     }
 
     // Fallback for unknown error types
-    return res.status(500).json({ error: "Registration failed" });
+    return res.status(500).json({ error: "Registrierung fehlgeschlagen" });
   }
 }
