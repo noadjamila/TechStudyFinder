@@ -8,6 +8,10 @@ import Register from "./pages/Register";
 import Login from "./pages/Login/Login";
 import Favourites from "./pages/Favourites/FavouritesContainer";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminPage from "./pages/admin/AdminDashboard";
+import AdminUpload from "./pages/admin/AdminUpload";
+import AdminInstructions from "./pages/admin/AdminInstructions";
+import AdminEdit from "./pages/admin/AdminEdit";
 
 export default function App() {
   return (
@@ -30,6 +34,10 @@ export default function App() {
         path="/study-programme/:id"
         element={<StudyProgrammeDetailPage />}
       />
+      <Route path="/admin/*" element={<AdminPage />} />
+      <Route path="/admin/upload" element={<AdminUpload />} />
+      <Route path="/admin/instructions" element={<AdminInstructions />} />
+      <Route path="/admin/edit" element={<AdminEdit />} />
     </Routes>
   );
 }
