@@ -87,7 +87,8 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
    */
   const handleNavigation = (newValue: number, path: string) => {
     setValue(newValue);
-    navigate(path);
+    // Pass current location as "from" state for checkpoint detection
+    navigate(path, { state: { from: location.pathname } });
   };
   // desktop view (Vertical Sidebar)
   if (isSidebarMode) {
