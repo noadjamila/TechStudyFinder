@@ -121,3 +121,31 @@ export async function saveQuizResults(resultIds: string[]): Promise<void> {
     throw new Error(data.error || `HTTP error! status: ${res.status}`);
   }
 }
+
+/**
+ * Retrieves saved quiz results for the authenticated user.
+ *
+ * @returns {Promise<string[] | null>} Array of study programme IDs or null if no results found.
+ * @throws {Error} Throws if the network request fails or user is not authenticated.
+ */
+export async function getQuizResults(): Promise<string[] | null> {
+  const endpoint = `${API_BASE_URL}/quiz/results`;
+
+  const res = await fetch(endpoint, {
+    method: "GET",
+    credentials: "include", // Include session cookie
+  });
+
+  if (res.status === 404) {
+    // No results found - not an error
+    return null;
+  }
+
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.error || `HTTP error! status: ${res.status}`);
+  }
+
+  const data = await res.json();
+  return data.resultIds;
+}
