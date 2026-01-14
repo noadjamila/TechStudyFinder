@@ -5,9 +5,8 @@ import DataSource from "../components/DataSource";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 import MainLayout from "../layouts/MainLayout";
 import { useLocation } from "react-router-dom";
-import { getStudyProgrammeById, saveQuizResults } from "../api/quizApi";
+import { getStudyProgrammeById } from "../api/quizApi";
 import NoResultsYet from "../components/quiz/NoResultsYet";
-import { useAuth } from "../contexts/AuthContext";
 
 /**
  * ResultsPage component displays the results of the quiz.
@@ -16,7 +15,6 @@ import { useAuth } from "../contexts/AuthContext";
  */
 const ResultsPage: React.FC = () => {
   const location = useLocation();
-  const { user } = useAuth();
   const idsFromQuiz = location.state?.idsFromLevel2 || [];
 
   const [studyProgrammes, setStudyProgrammes] = useState<StudyProgramme[]>([]);
@@ -68,17 +66,6 @@ const ResultsPage: React.FC = () => {
           setError("Fehler beim Laden der Studiengänge");
         }
 
-        // Save to database if user is authenticated
-        if (user && idsFromQuiz.length > 0) {
-          try {
-            await saveQuizResults(idsFromQuiz);
-            console.debug("Quiz results saved to database");
-          } catch (err) {
-            console.error("Failed to save quiz results to database:", err);
-            // Don't block the UI, just log the error
-          }
-        }
-
         setStudyProgrammes(validResults);
         setHasQuizResults(true);
         setLoading(false);
@@ -86,7 +73,7 @@ const ResultsPage: React.FC = () => {
     };
 
     fetchStudyProgrammes();
-  }, [user]);
+  }, [idsFromQuiz.join(",")]); // Only re-run when IDs change
 
   return (
     <MainLayout>
