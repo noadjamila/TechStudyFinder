@@ -16,7 +16,7 @@ import { useAuth } from "../contexts/AuthContext";
  */
 const ResultsPage: React.FC = () => {
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const idsFromQuiz = location.state?.idsFromLevel2 || [];
 
   const [studyProgrammes, setStudyProgrammes] = useState<StudyProgramme[]>([]);
@@ -26,6 +26,12 @@ const ResultsPage: React.FC = () => {
 
   useEffect(() => {
     const fetchStudyProgrammes = async () => {
+      // Wait for authentication to complete before proceeding
+      if (authLoading) {
+        setLoading(true); // Keep showing loading state while auth is processing
+        return;
+      }
+
       setLoading(true);
 
       let idsToFetch: string[] = [];
@@ -83,15 +89,17 @@ const ResultsPage: React.FC = () => {
       if (validResults.length === 0 && idsToFetch.length > 0) {
         console.error("All study programmes failed to load");
         setError("Fehler beim Laden der Studiengänge");
+        setHasQuizResults(true); // Set to true so error can be displayed
+      } else {
+        setHasQuizResults(validResults.length > 0);
       }
 
       setStudyProgrammes(validResults);
-      setHasQuizResults(validResults.length > 0);
       setLoading(false);
     };
 
     fetchStudyProgrammes();
-  }, [location.state, user?.id]); // Re-run when navigation state or user changes
+  }, [location.state, user?.id, authLoading]); // Re-run when navigation state, user, or auth loading state changes
 
   return (
     <MainLayout>

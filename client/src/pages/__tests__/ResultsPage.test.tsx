@@ -266,6 +266,39 @@ describe("ResultsPage Component", () => {
       spy.mockRestore();
     });
 
+    it("waits for authentication to load before fetching results", async () => {
+      // Override useAuth mock to return loading state
+      const authContext = await import("../../contexts/AuthContext");
+      const { getQuizResults } = await import("../../api/quizApi");
+
+      const spy = vi.spyOn(authContext, "useAuth").mockReturnValue({
+        user: null,
+        isLoading: true,
+        login: vi.fn(),
+        logout: vi.fn(),
+        setUser: vi.fn(),
+      });
+
+      const { findByText } = render(
+        <MemoryRouter initialEntries={[{ pathname: "/results" }]}>
+          <ThemeProvider theme={theme}>
+            <Routes>
+              <Route path="/results" element={<ResultsPage />} />
+            </Routes>
+          </ThemeProvider>
+        </MemoryRouter>,
+      );
+
+      // Should show loading state
+      await findByText(/Lädt.../i);
+
+      // Should NOT fetch quiz results while auth is loading
+      expect(getQuizResults).not.toHaveBeenCalled();
+
+      // Restore the original mock
+      spy.mockRestore();
+    });
+
     it("handles database fetch error gracefully", async () => {
       // Override the mock before rendering
       const { getQuizResults } = await import("../../api/quizApi");
