@@ -19,6 +19,7 @@ vi.mock("react-router-dom", async () => {
 vi.mock("../../contexts/AuthContext", () => ({
   useAuth: () => ({
     user: { id: 1, username: "testuser" },
+    isLoading: false,
     login: vi.fn(),
     logout: vi.fn(),
     setUser: vi.fn(),
@@ -112,7 +113,7 @@ describe("QuizFlow", () => {
   });
 
   test("navigates to /result after level 2", async () => {
-    const { findByText } = render(
+    render(
       <MemoryRouter>
         <QuizFlow />
       </MemoryRouter>,
@@ -123,9 +124,8 @@ describe("QuizFlow", () => {
     fireEvent.click(screen.getByText("continue")); // L2
     fireEvent.click(screen.getByText("go-to-l3")); // finish L2
 
-    // Wait for the async saveQuizResults to complete and success screen to appear
-    await findByText("Mock Success Level 3");
-
+    // Wait for the success screen to appear after async operation
+    await screen.findByText("Mock Success Level 3");
     fireEvent.click(screen.getByText("continue"));
 
     expect(navigateMock).toHaveBeenCalledWith("/results", {

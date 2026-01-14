@@ -44,6 +44,7 @@ const ResultsPage: React.FC = () => {
         } catch (err) {
           console.error("Failed to load saved quiz results:", err);
           setError("Fehler beim Laden der gespeicherten Ergebnisse");
+          setHasQuizResults(true); // Set to true so error can be displayed
           setLoading(false);
           return;
         }
