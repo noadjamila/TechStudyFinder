@@ -142,9 +142,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
    * @param scores The RIASEC scores to send.
    */
   const sendData = async (scores: Record<RiasecType, number>) => {
-    console.log(previousIds, scores);
     const transformedScores = convertQuizResponses(scores);
-    console.log("Transformed Scores:", transformedScores);
     const scoresArray = scoresToArray(transformedScores);
 
     try {
@@ -155,7 +153,6 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
       });
 
       const idsArray = response.ids.map((item: any) => item.studiengang_id);
-      console.log("IDs as strings:", idsArray);
       onNextLevel(idsArray);
     } catch (err) {
       console.error("Error sending the data: ", err);
