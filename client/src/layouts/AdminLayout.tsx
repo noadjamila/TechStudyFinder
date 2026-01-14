@@ -14,6 +14,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         sx={{
           mt: { xs: 11, sm: 12, md: 15 },
           mx: 6,
+          mb: 6,
         }}
       >
         {children}

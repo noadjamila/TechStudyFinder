@@ -1,103 +1,95 @@
-import React from "react";
-import { Typography, alpha } from "@mui/material";
+import { Typography, Box, Paper, alpha } from "@mui/material";
 import theme from "../../theme/theme";
-import { useCallback, useState } from "react";
-import UploadIcon from "@mui/icons-material/Upload";
-
-type UploadStatus = "idle" | "success" | "error";
+import { useState } from "react";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 import Layout from "../../layouts/AdminLayout";
+import UploadSection from "../../components/admin/UploadSection";
+import Spinner from "../../components/admin/Spinner";
 
 export default function AdminUpload() {
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [status, setStatus] = useState<UploadStatus>("idle");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
-  const handleFile = useCallback((file: File) => {
-    if (file.type !== "text/xml" && !file.name.endsWith(".xml")) {
-      setStatus("error");
-      setErrorMessage("Bitte nur XML-Dateien hochladen.");
-      return;
-    }
+  const handleSubmit = (
+    __degreeprogrammeFile: File | null,
+    __institutionsFile: File | null,
+  ) => {
+    setIsUploading(true);
+    // API call
 
-    setFileName(file.name);
-    setStatus("success");
-    setErrorMessage(null);
-
-    // OPTIONAL: Dateiinhalt lesen
-    const reader = new FileReader();
-    reader.onload = () => {
-      const content = reader.result as string;
-      console.log("XML Inhalt:", content);
-      // hier z. B. XML validieren oder an API senden
-    };
-    reader.readAsText(file);
-  }, []);
-
-  const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
-  };
-
-  const onFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) handleFile(file);
+    setTimeout(() => {
+      setIsUploading(false);
+      setIsSuccess(true);
+    }, 3000);
   };
 
   return (
     <Layout>
-      <Typography variant="h2" align="center" mt={4}>
-        Daten aktualisieren
-      </Typography>
+      <Box
+        sx={{
+          maxWidth: "900px",
+          mx: "auto",
+        }}
+      >
+        {/* Header Section */}
+        <Box sx={{ textAlign: "center" }}>
+          <Typography
+            variant="h2"
+            sx={{
+              mb: 2,
+              color: theme.palette.text.primary,
+            }}
+          >
+            Daten aktualisieren
+          </Typography>
+        </Box>
 
-      <Typography variant="h5" align="center" mt={2}>
-        Laden Sie eine XML-Datei hoch, um die Studiendaten zu aktualisieren.
-      </Typography>
-      <div>
-        <div
-          onDrop={onDrop}
-          onDragOver={(e) => e.preventDefault()}
-          style={{
-            border: `2px dashed ${theme.palette.decorative.greenDark}`,
-            padding: "40px",
-            textAlign: "center",
-            borderRadius: "8px",
-            backgroundColor: alpha(theme.palette.decorative.green, 0.2),
-            cursor: "pointer",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "16px",
-            color: theme.palette.text.subHeader,
-            marginTop: "30px",
-          }}
-          onClick={() => document.getElementById("xml-upload")?.click()}
-        >
-          <input
-            type="file"
-            accept=".xml"
-            onChange={onFileSelect}
-            style={{ display: "none" }}
-            id="xml-upload"
-          />
-          <UploadIcon fontSize="large" />
-
-          <label htmlFor="xml-upload">
-            <strong>XML-Datei hier ablegen</strong>
-            <br />
-            oder klicken zum Auswählen
-          </label>
-        </div>
-
-        {status === "success" && (
-          <p style={{ color: "green" }}>✅ {fileName} erfolgreich geladen</p>
+        {isSuccess && (
+          <Box
+            sx={{
+              mt: 4,
+            }}
+          >
+            <Paper
+              elevation={0}
+              sx={{
+                p: 4,
+                display: "flex",
+                flexDirection: "row",
+                gap: 2,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 2,
+                backgroundColor: alpha(theme.palette.decorative.green, 0.3),
+                border: `2px solid ${theme.palette.decorative.green}`,
+              }}
+            >
+              <CheckCircleIcon
+                sx={{
+                  fontSize: 36,
+                  color: theme.palette.decorative.greenDark,
+                }}
+              />
+              <Typography variant="body1" color="text.secondary">
+                Daten erfolgreich aktualisiert!
+              </Typography>
+            </Paper>
+          </Box>
         )}
 
-        {status === "error" && (
-          <p style={{ color: "red" }}>❌ {errorMessage}</p>
+        {isUploading ? (
+          <Box
+            sx={{
+              mt: 6,
+            }}
+          >
+            <Spinner text="Datenbank wird aktualisiert..." />
+          </Box>
+        ) : (
+          <UploadSection onSubmit={handleSubmit} />
         )}
-      </div>
+      </Box>
     </Layout>
   );
 }

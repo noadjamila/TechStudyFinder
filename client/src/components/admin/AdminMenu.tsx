@@ -16,6 +16,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import UploadIcon from "@mui/icons-material/Upload";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SourceIcon from "@mui/icons-material/Source";
+import BackIcon from "@mui/icons-material/ArrowBack";
 
 const MENU_ITEM_SX = {
   borderRadius: 999,
@@ -77,6 +78,13 @@ const LogoMenu = () => {
       icon: <SourceIcon fontSize="small" />,
       onClick: () => {
         navigate("/admin/instructions");
+      },
+    },
+    {
+      label: "Zurück zur App",
+      icon: <BackIcon fontSize="small" />,
+      onClick: () => {
+        navigate("/");
       },
     },
   ];
