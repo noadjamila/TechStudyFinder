@@ -140,6 +140,20 @@ export async function saveQuizResults(
     });
   }
 
+  if (resultIds.length === 0) {
+    return res.status(400).json({
+      success: false,
+      error: "resultIds cannot be empty",
+    });
+  }
+
+  if (!resultIds.every((id) => typeof id === "string")) {
+    return res.status(400).json({
+      success: false,
+      error: "All resultIds must be strings",
+    });
+  }
+
   try {
     await saveQuizResultsService(userId, resultIds);
     return res.status(200).json({
