@@ -3,6 +3,7 @@ import {
   getQuestionsLevel2,
   getFilteredResultsLevel2,
   saveUserQuizResults,
+  getUserQuizResults,
 } from "../repositories/quiz.repository";
 import { RiasecScores } from "../types/riasecScores";
 import { getStudyProgrammeById } from "../repositories/quiz.repository";
@@ -19,6 +20,18 @@ export async function saveQuizResultsService(
   resultIds: string[],
 ): Promise<void> {
   await saveUserQuizResults(userId, resultIds);
+}
+
+/**
+ * Retrieves user quiz results from the database.
+ *
+ * @param userId the user's ID
+ * @returns array of study programme IDs or null if no results found
+ */
+export async function getQuizResultsService(
+  userId: number,
+): Promise<string[] | null> {
+  return await getUserQuizResults(userId);
 }
 
 /**

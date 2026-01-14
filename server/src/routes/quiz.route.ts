@@ -4,6 +4,7 @@ import {
   getQuestions,
   getStudyProgrammeById,
   saveQuizResults,
+  getQuizResults,
 } from "../controllers/quiz.controller";
 
 const router = express.Router();
@@ -15,5 +16,7 @@ router.get("/level/:levelId", getQuestions);
 router.get("/study-programme/:id", getStudyProgrammeById);
 
 router.post("/results", saveQuizResults);
+
+router.get("/results", getQuizResults);
 
 export default router;

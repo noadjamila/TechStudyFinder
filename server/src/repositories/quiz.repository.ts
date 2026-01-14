@@ -24,6 +24,29 @@ export async function saveUserQuizResults(
 }
 
 /**
+ * Retrieves user quiz results from the database.
+ *
+ * @param userId the user's ID
+ * @returns array of study programme IDs or null if no results found
+ */
+export async function getUserQuizResults(
+  userId: number,
+): Promise<string[] | null> {
+  const query = `
+    SELECT result_ids FROM user_quiz_results
+    WHERE user_id = $1
+  `;
+
+  const result = await pool.query(query, [userId]);
+
+  if (result.rows.length === 0) {
+    return null;
+  }
+
+  return result.rows[0].result_ids;
+}
+
+/**
  * Retrieves filtered study programme IDs for level 1 based on the provided study type.
  *
  * @param studientyp the type of study programme (undergraduate, graduate or all)

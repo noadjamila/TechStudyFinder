@@ -6,6 +6,7 @@ import {
   getQuestionsLevel2Service,
   getStudyProgrammeByIdService,
   saveQuizResultsService,
+  getQuizResultsService,
 } from "../services/quiz.service";
 import { FilterRequest } from "../types/filterRequest";
 
@@ -150,6 +151,47 @@ export async function saveQuizResults(
     return res.status(500).json({
       success: false,
       error: "Error saving quiz results",
+    });
+  }
+}
+
+/**
+ * Retrieves user quiz results from the database.
+ * Requires authentication.
+ *
+ * @param req request object
+ * @param res response object
+ * @returns user's saved quiz result IDs
+ */
+export async function getQuizResults(req: Request, res: Response) {
+  const userId = (req.session as any).user?.id;
+
+  if (!userId) {
+    return res.status(401).json({
+      success: false,
+      error: "Not authenticated",
+    });
+  }
+
+  try {
+    const resultIds = await getQuizResultsService(userId);
+
+    if (resultIds === null) {
+      return res.status(404).json({
+        success: false,
+        message: "No quiz results found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      resultIds,
+    });
+  } catch (err) {
+    console.error("Error retrieving quiz results:", err);
+    return res.status(500).json({
+      success: false,
+      error: "Error retrieving quiz results",
     });
   }
 }
