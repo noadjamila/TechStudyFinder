@@ -2,10 +2,24 @@ import {
   getFilteredResultsLevel1,
   getQuestionsLevel2,
   getFilteredResultsLevel2,
+  saveUserQuizResults,
 } from "../repositories/quiz.repository";
 import { RiasecScores } from "../types/riasecScores";
 import { getStudyProgrammeById } from "../repositories/quiz.repository";
 import { StudyProgramme } from "../types/studyProgramme";
+
+/**
+ * Saves user quiz results to the database.
+ *
+ * @param userId the user's ID
+ * @param resultIds array of study programme IDs
+ */
+export async function saveQuizResultsService(
+  userId: number,
+  resultIds: string[],
+): Promise<void> {
+  await saveUserQuizResults(userId, resultIds);
+}
 
 /**
  * Handles filtering for level 1 based on the provided answers.

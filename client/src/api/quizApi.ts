@@ -96,3 +96,28 @@ export async function getStudyProgrammeById(
   const data = await res.json();
   return data.studyProgramme ?? null;
 }
+
+/**
+ * Saves quiz results for the authenticated user.
+ *
+ * @param {string[]} resultIds Array of study programme IDs.
+ * @returns {Promise<void>} A promise that resolves when results are saved.
+ * @throws {Error} Throws if the network request fails or user is not authenticated.
+ */
+export async function saveQuizResults(resultIds: string[]): Promise<void> {
+  const endpoint = `${API_BASE_URL}/quiz/results`;
+
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include", // Include session cookie
+    body: JSON.stringify({ resultIds }),
+  });
+
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.error || `HTTP error! status: ${res.status}`);
+  }
+}
