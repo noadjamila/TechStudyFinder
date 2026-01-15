@@ -16,6 +16,7 @@ import favoritesRouter from "./src/routes/favorites.route";
 import "./src/types/express-session";
 import session from "express-session";
 import pgSession from "connect-pg-simple";
+import adminRoutes from "./src/routes/admin.route";
 
 const isTesting =
   process.env.NODE_ENV === "test" || !!process.env.JEST_WORKER_ID;
@@ -89,6 +90,7 @@ app.use("/api", testRouter);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/auth", authRouter);
 app.use("/api/users/favorites", favoritesRouter);
+app.use("/api/admin", adminRoutes);
 
 // Test DB route
 app.get("/api/test-db", async (_req, res) => {

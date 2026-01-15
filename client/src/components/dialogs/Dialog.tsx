@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Dialog,
   DialogTitle,
@@ -13,7 +14,7 @@ import {
 
 interface StyledDialogProps extends DialogProps {
   title: string;
-  text: string;
+  text: string | React.ReactNode;
   onCancel?: () => void;
   onConfirm?: () => void;
   cancelLabel?: string;
@@ -88,8 +89,10 @@ export default function StyledDialog({
     <CustomDialog open={open} onClose={onClose} {...props}>
       <Title>{title}</Title>
 
-      <DialogContent sx={{ textAlign: "center" }}>
-        <ContentText>{text}</ContentText>
+      <DialogContent
+        sx={{ textAlign: typeof text === "string" ? "center" : "left" }}
+      >
+        {typeof text === "string" ? <ContentText>{text}</ContentText> : text}
       </DialogContent>
 
       {error && (

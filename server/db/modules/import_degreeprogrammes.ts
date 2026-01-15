@@ -4,16 +4,22 @@ import { Client } from "pg";
 import path from "path";
 import { getTextDe, batchInsert } from "./xml_import_helpers";
 
-export async function importDegreeProgrammes(client: Client) {
-  const xmlPath = path.join(__dirname, "../xml/degreeprogrammes.xml");
+export async function importDegreeProgrammes(client: Client, xmlData?: string) {
+  let xmlContent: string;
 
-  if (!fs.existsSync(xmlPath)) {
-    throw new Error(`XML file not found: ${xmlPath}`);
+  if (xmlData) {
+    // XML-Daten wurden direkt übergeben
+    xmlContent = xmlData;
+  } else {
+    // Fallback: Datei vom Standard-Pfad lesen
+    const xmlPath = path.join(__dirname, "../xml/degreeprogrammes.xml");
+    if (!fs.existsSync(xmlPath)) {
+      throw new Error(`XML file not found: ${xmlPath}`);
+    }
+    xmlContent = fs.readFileSync(xmlPath, "utf-8");
   }
 
-  const xmlData = fs.readFileSync(xmlPath, "utf-8");
-
-  const result = await parseStringPromise(xmlData, {
+  const result = await parseStringPromise(xmlContent, {
     explicitArray: false,
     mergeAttrs: true,
   });
