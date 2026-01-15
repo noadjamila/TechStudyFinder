@@ -14,6 +14,7 @@ const CSV_DIR = path.join(ROOT_DIR, "db/data");
 
 const SCHEMA_FILES = [
   "users.sql",
+  "session.sql",
   "institutions.sql",
   "degreeprogrammes.sql",
   "favourites.sql",
