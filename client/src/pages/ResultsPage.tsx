@@ -7,6 +7,7 @@ import MainLayout from "../layouts/MainLayout";
 import { useLocation } from "react-router-dom";
 import { getStudyProgrammeById } from "../api/quizApi";
 import NoResultsYet from "../components/quiz/NoResultsYet";
+import { useApiClient } from "../hooks/useApiClient";
 
 /**
  * ResultsPage component displays the results of the quiz.
@@ -15,6 +16,7 @@ import NoResultsYet from "../components/quiz/NoResultsYet";
  */
 const ResultsPage: React.FC = () => {
   const location = useLocation();
+  const { apiFetch } = useApiClient();
   const idsFromQuiz = location.state?.idsFromLevel2 || [];
 
   // Initialize state with cached data if available (synchronous, instant)
@@ -64,7 +66,7 @@ const ResultsPage: React.FC = () => {
         // Fetch new results
         setLoading(true);
         const promises = idsFromQuiz.map((id: string) =>
-          getStudyProgrammeById(id),
+          getStudyProgrammeById(id, apiFetch),
         );
         const results = await Promise.allSettled(promises);
 

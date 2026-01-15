@@ -6,6 +6,7 @@ import { getStudyProgrammeById } from "../../api/quizApi";
 import { removeFavorite } from "../../api/favoritesApi";
 import MainLayout from "../../layouts/MainLayout";
 import FavouritesEmpty from "./FavouritesEmpty";
+import { useApiClient } from "../../hooks/useApiClient";
 
 interface FavouritesListProps {
   favorites: string[]; // Array of study programme IDs (e.g., ["g1234", "g5678"])
@@ -21,6 +22,7 @@ interface FavouritesListProps {
  * @returns {React.ReactElement} The favorites list component
  */
 const FavouritesList: React.FC<FavouritesListProps> = ({ favorites }) => {
+  const { apiFetch } = useApiClient();
   const [studyProgrammes, setStudyProgrammes] = useState<StudyProgramme[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFading, setIsFading] = useState(false); // Controls fade animation when removing last favourite
@@ -41,7 +43,9 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ favorites }) => {
       setLoading(true);
 
       // Fetch each favorite programme in parallel
-      const promises = favorites.map((id: string) => getStudyProgrammeById(id));
+      const promises = favorites.map((id: string) =>
+        getStudyProgrammeById(id, apiFetch),
+      );
       const results = await Promise.allSettled(promises);
 
       // Process results - filter successful ones
@@ -85,11 +89,11 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ favorites }) => {
 
       // Remove from database
       try {
-        await removeFavorite(programmeId);
+        await removeFavorite(programmeId, apiFetch);
       } catch (error) {
         console.error("Error removing favorite:", error);
         // Re-add the card if removal failed
-        getStudyProgrammeById(programmeId).then((data) => {
+        getStudyProgrammeById(programmeId, apiFetch).then((data) => {
           if (data) {
             setStudyProgrammes([data]);
             setIsFading(false);
@@ -108,11 +112,11 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ favorites }) => {
 
       // Remove from database
       try {
-        await removeFavorite(programmeId);
+        await removeFavorite(programmeId, apiFetch);
       } catch (error) {
         console.error("Error removing favorite:", error);
         // Re-add the card if removal failed
-        getStudyProgrammeById(programmeId).then((data) => {
+        getStudyProgrammeById(programmeId, apiFetch).then((data) => {
           if (data) {
             setStudyProgrammes((prev) => [...prev, data]);
           }

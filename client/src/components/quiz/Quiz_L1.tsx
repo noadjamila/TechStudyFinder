@@ -6,6 +6,7 @@ import theme from "../../theme/theme";
 import { postFilterLevel } from "../../api/quizApi";
 import { Box } from "@mui/material";
 import { Stack } from "@mui/material";
+import { useApiClient } from "../../hooks/useApiClient";
 
 /** Callback function executed upon successful completion of the level.
  * It receives an array of filtered IDs from the backend. */
@@ -22,6 +23,7 @@ export interface QuizL1Props {
  * @returns {JSX.Element} The rendered Level 1 Quiz.
  */
 export default function Quiz_L1({ onNextLevel }: QuizL1Props) {
+  const { apiFetch } = useApiClient();
   const [selected, setSelected] = useState<string | undefined>();
 
   const handleSelectAndNext = async (selectedType: string) => {
@@ -33,10 +35,13 @@ export default function Quiz_L1({ onNextLevel }: QuizL1Props) {
           { studientyp: selectedType },
         ];
 
-        const res = await postFilterLevel({
-          level: 1,
-          answers: answersPayload,
-        });
+        const res = await postFilterLevel(
+          {
+            level: 1,
+            answers: answersPayload,
+          },
+          apiFetch,
+        );
         onNextLevel(res.ids);
       } catch (err) {
         console.error("Mistake while filtering", err);

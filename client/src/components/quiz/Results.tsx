@@ -23,6 +23,7 @@ import {
   getFavorites,
 } from "../../api/favoritesApi";
 import { useAuth } from "../../contexts/AuthContext";
+import { useApiClient } from "../../hooks/useApiClient";
 
 interface ResultsProps {
   studyProgrammes: StudyProgramme[];
@@ -36,6 +37,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const { apiFetch } = useApiClient();
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [selectedDegree, setSelectedDegree] = useState<string>("");
@@ -45,7 +47,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   useEffect(() => {
     const loadFavorites = async () => {
       try {
-        const favoriteIds = await getFavorites();
+        const favoriteIds = await getFavorites(apiFetch);
         setFavorites(new Set(favoriteIds));
       } catch (error) {
         console.error("Failed to load favorites:", error);
@@ -84,10 +86,10 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
     try {
       if (isFavorited) {
         // Remove from favorites
-        await removeFavorite(programmeId);
+        await removeFavorite(programmeId, apiFetch);
       } else {
         // Add to favorites
-        await addFavorite(programmeId);
+        await addFavorite(programmeId, apiFetch);
       }
     } catch (error: any) {
       // Handle 409 Conflict (already exists) by keeping it as favorited
