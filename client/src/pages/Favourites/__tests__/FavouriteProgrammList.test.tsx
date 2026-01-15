@@ -27,6 +27,13 @@ vi.mock("../../../contexts/AuthContext", () => ({
   })),
 }));
 
+// Mock useApiClient hook
+vi.mock("../../../hooks/useApiClient", () => ({
+  useApiClient: vi.fn(() => ({
+    apiFetch: fetch,
+  })),
+}));
+
 // Mock the API
 vi.mock("../../../api/quizApi", () => ({
   getStudyProgrammeById: vi.fn((id: string) => {
@@ -151,7 +158,7 @@ describe("FavouritesList", () => {
       fireEvent.click(favoriteButton);
 
       await waitFor(() => {
-        expect(removeFavorite).toHaveBeenCalledWith("g1234");
+        expect(removeFavorite).toHaveBeenCalledWith("g1234", fetch);
       });
     }
   });
