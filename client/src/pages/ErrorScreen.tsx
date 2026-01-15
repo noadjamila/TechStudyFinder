@@ -19,6 +19,17 @@ type ErrorScreenProps = {
   maxWidth?: number;
 };
 
+/**
+ * Displays error pages for 404, 401, and 500 errors.
+ * Shows error code and a speech bubble with the error message.
+ * Provides navigation options to reload, go back, or return to the home page.
+ * Accessible at '/error' with error details passed via location state.
+ *
+ * @param {number | string} [code] - HTTP status code or custom error code
+ * @param {string} [title] - Error title displayed in the speech bubble
+ * @param {string} [message] - Error message shown to the user
+ * @param {number} [maxWidth] - Maximum width of the speech bubble content
+ */
 export const ErrorScreen: React.FC<ErrorScreenProps> = ({
   code: propCode,
   title = "Oooops!",

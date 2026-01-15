@@ -6,6 +6,14 @@ type SpeechBubbleProps = {
   maxWidth?: number;
 };
 
+/**
+ * Displays a circular speech bubble with a tail pointing down-left.
+ * Used in error screens to show messages from the mascot.
+ * The bubble is created using CSS with a rotated triangle tail.
+ *
+ * @param {React.ReactNode} children - Content to display inside the speech bubble
+ * @param {number} [maxWidth] - Optional maximum width for the bubble
+ */
 export const SpeechBubble: React.FC<SpeechBubbleProps> = ({ children }) => {
   return (
     <Box
