@@ -117,7 +117,7 @@ export default function Login() {
         <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
           <BackButton
             label="Zurück"
-            onClick={() => navigate("/")}
+            onClick={() => navigate(-1)}
             disabled={loading}
           />
           <PrimaryButton
