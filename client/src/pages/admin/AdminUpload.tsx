@@ -1,4 +1,4 @@
-import { Typography, Box, Paper, alpha } from "@mui/material";
+import { Typography, Box, Paper, alpha, Alert } from "@mui/material";
 import theme from "../../theme/theme";
 import { useState } from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -8,20 +8,41 @@ import UploadSection from "../../components/admin/UploadSection";
 import Spinner from "../../components/admin/Spinner";
 
 export default function AdminUpload() {
-  const [isUploading, setIsUploading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (
-    __degreeprogrammeFile: File | null,
-    __institutionsFile: File | null,
+  const handleSubmit = async (
+    degreeprogrammeFile: File | null,
+    institutionsFile: File | null,
   ) => {
-    setIsUploading(true);
-    // API call
+    setIsProcessing(true);
 
-    setTimeout(() => {
-      setIsUploading(false);
+    try {
+      const res = await fetch("/api/admin/upload-dat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          degreeprogrammeFile: degreeprogrammeFile,
+          institutionsFile: institutionsFile,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+
       setIsSuccess(true);
-    }, 3000);
+    } catch (err) {
+      console.error("Error during API call:", err);
+      setError(
+        "Fehler beim Verbinden mit dem Backend oder Verarbeiten der Daten.",
+      );
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -44,6 +65,17 @@ export default function AdminUpload() {
             Daten aktualisieren
           </Typography>
         </Box>
+
+        {error && (
+          <Alert
+            severity="error"
+            sx={{
+              mb: 4,
+            }}
+          >
+            {error}
+          </Alert>
+        )}
 
         {isSuccess && (
           <Box
@@ -78,7 +110,7 @@ export default function AdminUpload() {
           </Box>
         )}
 
-        {isUploading ? (
+        {isProcessing && (
           <Box
             sx={{
               mt: 6,
@@ -86,7 +118,9 @@ export default function AdminUpload() {
           >
             <Spinner text="Datenbank wird aktualisiert..." />
           </Box>
-        ) : (
+        )}
+
+        {!isProcessing && !isSuccess && (
           <UploadSection onSubmit={handleSubmit} />
         )}
       </Box>
