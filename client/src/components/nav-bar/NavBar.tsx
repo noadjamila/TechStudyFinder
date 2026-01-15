@@ -278,18 +278,6 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
           })
         }
         onProceedNavigation={() => handleProceedNavigation()}
-        message={
-          <>
-            Beachte: <br />
-            <strong>Du bist nicht eingeloggt.</strong>
-            <br />
-            Deine Ergebnisse können nicht gespeichert werden.
-            <br />
-            Wenn du deine Ergebnisse auch später noch sehen willst,
-            <br />
-            logge dich jetzt ein.
-          </>
-        }
       />
     </>
   );

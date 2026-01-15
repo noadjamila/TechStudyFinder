@@ -66,17 +66,6 @@ const LoginCheckpoint: React.FC<LoginCheckpointProps> = ({
         open={true}
         onClose={handleProceed}
         onLoginClick={handleLoginClick}
-        message={
-          <>
-            Beachte: <br />
-            <strong>Du bist nicht eingeloggt.</strong>
-            <br />
-            Deine Ergebnisse können nicht gespeichert werden.
-            <br />
-            Wenn du deine Ergebnisse auch später noch sehen willst, logge dich
-            jetzt ein.
-          </>
-        }
       />
     );
   }

@@ -34,7 +34,14 @@ export default function App() {
       />
       <Route path="/results" element={<ResultsPage />} />
       <Route path="/favorites" element={<Favourites />} />
-      <Route path="/impressum" element={<Impressum />} />
+      <Route
+        path="/impressum"
+        element={
+          <LoginCheckpoint>
+            <Impressum />
+          </LoginCheckpoint>
+        }
+      />
       <Route
         path="/favorites"
         element={

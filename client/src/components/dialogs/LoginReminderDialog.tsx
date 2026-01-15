@@ -26,12 +26,25 @@ export const FAVORITES_LOGIN_MESSAGE = (
   </>
 );
 
+// Shared message for navigation from results without login
+export const RESULTS_NAVIGATION_MESSAGE = (
+  <>
+    Beachte: <br />
+    <strong>Du bist nicht eingeloggt.</strong>
+    <br />
+    Deine Ergebnisse können nicht gespeichert werden.
+    <br />
+    Wenn du deine Ergebnisse auch später noch sehen willst, logge dich jetzt
+    ein.
+  </>
+);
+
 interface LoginReminderDialogProps {
   open: boolean;
   onClose: () => void;
   onLoginClick: () => void;
   onProceedNavigation?: () => void;
-  message: React.ReactNode;
+  message?: React.ReactNode;
 }
 
 const CustomDialog = styled(Dialog)(({ theme }) => ({
@@ -120,7 +133,7 @@ export default function LoginReminderDialog({
   onClose,
   onLoginClick,
   onProceedNavigation,
-  message,
+  message = RESULTS_NAVIGATION_MESSAGE,
 }: LoginReminderDialogProps) {
   const handleLoginClick = () => {
     onClose();
