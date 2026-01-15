@@ -81,7 +81,7 @@ export default function DropMenu() {
     {
       label: "Impressum",
       icon: <FolderIcon fontSize="small" />,
-      onClick: handleMenuClose,
+      onClick: () => handleNavigate("/impressum"),
     },
     {
       label: "Datenschutz",
