@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
+import { navigateTo500Error } from "../utils/errorHandler";
 
 /**
  * Custom hook that provides a fetch wrapper with automatic 500 error handling
@@ -14,13 +15,7 @@ export function useApiClient() {
         const response = await fetch(input, init);
 
         if (response.status === 500) {
-          navigate("/error", {
-            state: {
-              code: 500,
-              message:
-                "Da ist wohl etwas schief gelaufen!\nProbier es später nochmal.",
-            },
-          });
+          navigateTo500Error(navigate);
           throw new Error("Server error");
         }
 
@@ -31,13 +26,7 @@ export function useApiClient() {
           throw error;
         }
         // For network errors, also redirect to 500
-        navigate("/error", {
-          state: {
-            code: 500,
-            message:
-              "Da ist wohl etwas schief gelaufen!\nProbier es später nochmal.",
-          },
-        });
+        navigateTo500Error(navigate);
         throw error;
       }
     },

@@ -32,6 +32,15 @@ export const ErrorScreen: React.FC<ErrorScreenProps> = ({
   const code = propCode ?? location.state?.code;
   const message =
     propMessage ?? location.state?.message ?? "Ein Fehler ist aufgetreten.";
+  const intendedDestination = location.state?.originalUrl;
+
+  const handleReload = () => {
+    if (intendedDestination) {
+      navigate(intendedDestination);
+    } else {
+      window.location.reload();
+    }
+  };
 
   React.useEffect(() => {
     // Prevent all scrolling
@@ -135,10 +144,7 @@ export const ErrorScreen: React.FC<ErrorScreenProps> = ({
         }}
       >
         {code === 500 && (
-          <SecondaryButton
-            label="Seite neu laden"
-            onClick={() => window.location.reload()}
-          />
+          <SecondaryButton label="Seite neu laden" onClick={handleReload} />
         )}
         <PrimaryButton
           label="Zurück zur vorherigen Seite"
