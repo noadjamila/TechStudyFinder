@@ -4,11 +4,15 @@ import { RiasecType, initialScores } from "../../types/RiasecTypes";
 import ErrorScreen from "../error-screen/ErrorScreen";
 import CardStack from "../cards/CardStackLevel2";
 import { Stack, Typography } from "@mui/material";
-import { postFilterLevel } from "../../api/quizApi";
+import { postFilterLevel, getQuizLevel } from "../../api/quizApi";
 import BaseCard from "../cards/QuizCardBase";
 import PrimaryButton from "../buttons/PrimaryButton";
 import SecondaryButton from "../buttons/SecondaryButton";
 import theme from "../../theme/theme";
+import {
+  convertQuizResponses,
+  scoresToArray,
+} from "../../services/level2Service";
 
 export interface QuizL2Props {
   previousIds: string[];
@@ -66,21 +70,6 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
     setCurrentIndex((i) => Math.min(i + 1, TOTAL_QUESTIONS - 1));
 
   /**
-   * Converts the scores object into an array of type-score pairs.
-   *
-   * @param {Record<RiasecType, number>} scores - The RIASEC scores.
-   * @returns {{ type: RiasecType; score: number }[]} Array of type-score objects.
-   */
-  const scoresToArray = (
-    scores: Record<RiasecType, number>,
-  ): { type: RiasecType; score: number }[] => {
-    return Object.entries(scores).map(([type, score]) => ({
-      type: type as RiasecType,
-      score,
-    }));
-  };
-
-  /**
    * Handles  the option to go back one Question.
    * Updates the scores based on the previous selcted answer.
    * Switches Levels if user is on the first Question.
@@ -134,8 +123,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
 
       // Last question -> send scores to backend
       if (currentIndex === TOTAL_QUESTIONS - 1) {
-        const scoresArray = scoresToArray(newScores);
-        void sendData(scoresArray);
+        void sendData(newScores);
       }
       return newScores;
     });
@@ -153,17 +141,18 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
    * Sends the scores to the backend server.
    * @param scores The RIASEC scores to send.
    */
-  const sendData = async (scores: { type: RiasecType; score: number }[]) => {
-    console.debug(previousIds, scores);
+  const sendData = async (scores: Record<RiasecType, number>) => {
+    const transformedScores = convertQuizResponses(scores);
+    const scoresArray = scoresToArray(transformedScores);
+
     try {
       const response = await postFilterLevel({
         level: 2,
-        answers: scores,
+        answers: scoresArray,
         studyProgrammeIds: previousIds,
       });
 
       const idsArray = response.ids.map((item: any) => item.studiengang_id);
-      console.debug("IDs as strings:", idsArray);
       onNextLevel(idsArray);
     } catch (err) {
       console.error("Error sending the data: ", err);
@@ -182,13 +171,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const res = await fetch(`/api/quiz/level/${2}`);
-
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        const data = await res.json();
+        const data = await getQuizLevel(2);
 
         if (!data.questions || data.questions.length === 0) {
           throw new Error("No questions found in the response.");

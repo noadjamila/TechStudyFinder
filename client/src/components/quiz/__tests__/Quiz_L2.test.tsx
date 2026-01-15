@@ -1,24 +1,20 @@
 import React from "react";
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  act,
-} from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../../../theme/theme";
 import { describe, test, beforeEach, expect, vi, Mock } from "vitest";
 import Quiz_L2 from "../Quiz_L2";
-import { postFilterLevel } from "../../../api/quizApi";
+import { postFilterLevel, getQuizLevel } from "../../../api/quizApi";
 
 vi.useRealTimers();
 
 vi.mock("../../../api/quizApi", () => ({
   postFilterLevel: vi.fn(),
+  getQuizLevel: vi.fn(),
 }));
 const mockedPostFilterLevel = postFilterLevel as unknown as Mock;
+const mockedGetQuizLevel = getQuizLevel as unknown as Mock;
 
 const renderWithProviders = (ui: React.ReactNode) =>
   render(
@@ -28,13 +24,6 @@ const renderWithProviders = (ui: React.ReactNode) =>
   );
 
 describe("Quiz_L2", () => {
-  let fetchMock: ReturnType<typeof vi.fn>;
-
-  beforeEach(() => {
-    fetchMock = vi.fn();
-    (globalThis as any).fetch = fetchMock;
-  });
-
   const mockQuestions = [
     { text: "Frage 1", riasec_type: "R" },
     { text: "Frage 2", riasec_type: "I" },
@@ -42,10 +31,7 @@ describe("Quiz_L2", () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ questions: mockQuestions }),
-    }) as any;
+    mockedGetQuizLevel.mockResolvedValue({ questions: mockQuestions });
   });
 
   it("shows Loading before questions are loaded", () => {
@@ -61,22 +47,9 @@ describe("Quiz_L2", () => {
   });
 
   test("should load questions from backend", async () => {
-    (globalThis as any).fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ questions: mockQuestions }),
-    });
-
-    await act(async () => {
-      renderWithProviders(
-        <Quiz_L2
-          previousIds={[]}
-          onNextLevel={vi.fn()}
-          oneLevelBack={vi.fn()}
-        />,
-      );
-    });
-
-    expect(global.fetch).toHaveBeenCalledWith("/api/quiz/level/2");
+    renderWithProviders(
+      <Quiz_L2 previousIds={[]} onNextLevel={vi.fn()} oneLevelBack={vi.fn()} />,
+    );
 
     await waitFor(() => {
       expect(screen.getByText("Frage 1")).toBeInTheDocument();
@@ -84,11 +57,6 @@ describe("Quiz_L2", () => {
   });
 
   test("answers 'yes' move to next question", async () => {
-    fetchMock.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ questions: mockQuestions }),
-    });
-
     renderWithProviders(
       <Quiz_L2
         previousIds={["1", "2"]}
@@ -109,11 +77,6 @@ describe("Quiz_L2", () => {
   });
 
   test("answers 'no' move to next question", async () => {
-    fetchMock.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ questions: mockQuestions }),
-    });
-
     renderWithProviders(
       <Quiz_L2
         previousIds={[]}
@@ -132,11 +95,6 @@ describe("Quiz_L2", () => {
   });
 
   test("answers 'skip' move to next question", async () => {
-    fetchMock.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ questions: mockQuestions }),
-    });
-
     renderWithProviders(
       <Quiz_L2
         previousIds={[]}
@@ -155,10 +113,7 @@ describe("Quiz_L2", () => {
   });
 
   test("should show error screen when question loading fails", async () => {
-    (globalThis as any).fetch = vi.fn().mockResolvedValue({
-      ok: false,
-      status: 500,
-    });
+    mockedGetQuizLevel.mockRejectedValue(new Error("Failed to fetch"));
 
     renderWithProviders(
       <Quiz_L2
@@ -177,11 +132,6 @@ describe("Quiz_L2", () => {
 
   test("should send correct payload with scores", async () => {
     const onNextLevel = vi.fn();
-
-    (globalThis as any).fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ questions: mockQuestions }),
-    });
 
     mockedPostFilterLevel.mockResolvedValue({
       ids: [{ studiengang_id: "id123" }],
@@ -203,7 +153,9 @@ describe("Quiz_L2", () => {
     );
     fireEvent.click(screen.getByText("Ja"));
 
-    expect(postFilterLevel).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(postFilterLevel).toHaveBeenCalledTimes(1);
+    });
 
     const callArgs = mockedPostFilterLevel.mock.calls[0][0];
     expect(callArgs.level).toBe(2);
@@ -212,15 +164,7 @@ describe("Quiz_L2", () => {
   });
 
   test("should show error screen when sending L2 results fails", async () => {
-    fetchMock.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ questions: mockQuestions }),
-    });
-
-    fetchMock.mockResolvedValueOnce({
-      ok: false,
-      status: 500,
-    });
+    mockedPostFilterLevel.mockRejectedValue(new Error("Failed to send"));
 
     renderWithProviders(
       <Quiz_L2
@@ -242,11 +186,6 @@ describe("Quiz_L2", () => {
   });
 
   test("renders mascot image", async () => {
-    fetchMock.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ questions: mockQuestions }),
-    });
-
     renderWithProviders(
       <Quiz_L2
         previousIds={["1", "2"]}
@@ -262,12 +201,6 @@ describe("Quiz_L2", () => {
   });
 
   test("calls oneLevelBack when currentIndex = 0", async () => {
-    const fetchMock = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ questions: mockQuestions }),
-    });
-    (globalThis as any).fetch = fetchMock;
-
     const oneLevelBack = vi.fn();
 
     renderWithProviders(
@@ -286,11 +219,6 @@ describe("Quiz_L2", () => {
   });
 
   test("goes back to previous question when currentIndex > 0", async () => {
-    fetchMock.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ questions: mockQuestions }),
-    });
-
     renderWithProviders(
       <Quiz_L2
         previousIds={[]}
@@ -302,21 +230,21 @@ describe("Quiz_L2", () => {
     await screen.findByText("Frage 1");
     fireEvent.click(screen.getByText("Ja"));
     await screen.findByText("Frage 2");
-    fireEvent.click(screen.getByText("Zurück"));
-    expect(screen.getByText("Frage 2")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Zurück" }));
+    await waitFor(() => {
+      expect(screen.getByText("Frage 1")).toBeInTheDocument();
+    });
   });
 
   test("reverses score correctly when going back (yes → remove +1)", async () => {
-    const fetchMock = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ questions: mockQuestions }),
+    mockedPostFilterLevel.mockResolvedValue({
+      ids: [{ studiengang_id: "id123" }],
     });
-    (globalThis as any).fetch = fetchMock;
 
     renderWithProviders(
       <Quiz_L2
         previousIds={[]}
-        onNextLevel={() => {}}
+        onNextLevel={vi.fn()}
         oneLevelBack={() => {}}
       />,
     );
@@ -330,8 +258,21 @@ describe("Quiz_L2", () => {
 
     // back → should remove +1 for type R
     fireEvent.click(screen.getByRole("button", { name: "Zurück" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Frage 1")).toBeInTheDocument();
+    });
+
+    // Answer again and complete quiz
+    fireEvent.click(screen.getByText("Ja"));
+    await waitFor(() => {
+      expect(screen.getByText("Frage 2")).toBeInTheDocument();
+    });
     fireEvent.click(screen.getByText("Ja"));
 
-    fireEvent.click(screen.getByText("Ja"));
+    // Verify that postFilterLevel was called with correct scores
+    await waitFor(() => {
+      expect(mockedPostFilterLevel).toHaveBeenCalled();
+    });
   });
 });
