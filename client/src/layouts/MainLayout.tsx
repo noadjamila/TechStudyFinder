@@ -14,8 +14,10 @@ import React from "react";
  */
 export default function MainLayout({
   children,
+  hasQuizResults = false,
 }: {
   children: React.ReactNode;
+  hasQuizResults?: boolean;
 }) {
   const muiTheme = useTheme();
   const toggleSidebar = () => {};
@@ -66,7 +68,7 @@ export default function MainLayout({
         // MOBILE VIEW: Logo menu and navigation bar are rendered outside the main content flow
         <>
           <Header fixed={true} />
-          <Navigationbar />
+          <Navigationbar hasQuizResults={hasQuizResults} />
 
           <div
             style={{

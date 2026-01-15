@@ -105,7 +105,7 @@ const ResultsPage: React.FC = () => {
   }, []);
 
   return (
-    <MainLayout>
+    <MainLayout hasQuizResults={hasQuizResults}>
       {!hasQuizResults ? (
         <NoResultsYet />
       ) : (
