@@ -52,6 +52,12 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: "Fira Sans, sans-serif",
+    h1: {
+      fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
+      fontSize: "6rem", // 48px on desktop
+      fontWeight: "bold",
+      marginBottom: "2000px",
+    },
     h2: {
       fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
       fontSize: "2.2rem", // 35.2px on desktop

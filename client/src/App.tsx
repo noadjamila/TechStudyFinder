@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login/Login";
 import Favourites from "./pages/Favourites/FavouritesContainer";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { ErrorScreen } from "./pages/ErrorScreen";
 
 export default function App() {
   return (
@@ -29,6 +30,12 @@ export default function App() {
       <Route
         path="/study-programme/:id"
         element={<StudyProgrammeDetailPage />}
+      />
+      <Route
+        path="/error-test"
+        element={
+          <ErrorScreen code={404} message="Diese Seite gibt es nicht." />
+        }
       />
     </Routes>
   );
