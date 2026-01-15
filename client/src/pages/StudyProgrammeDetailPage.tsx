@@ -866,11 +866,10 @@ const StudyProgrammeDetailPage: React.FC = () => {
         onClose={() => setShowLoginReminder(false)}
         message={FAVORITES_LOGIN_MESSAGE}
         onLoginClick={() => {
-          const previousPage = (location.state as any)?.previousPage;
+          const intendedDestination = location.pathname;
           navigate("/login", {
             state: {
-              redirectTo: location.pathname,
-              previousPage: previousPage,
+              redirectTo: intendedDestination,
             },
           });
         }}

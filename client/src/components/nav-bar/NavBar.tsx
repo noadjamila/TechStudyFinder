@@ -37,7 +37,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
   const location = useLocation();
   const theme = useTheme();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [aimedPath, setAimedPath] = useState("");
+  const [intendedDestination, setIntendedDestination] = useState("");
   const { user, isLoading } = useAuth();
 
   // Navigation Elements configuration
@@ -95,7 +95,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
   const handleNavigation = (newValue: number, path: string) => {
     if (location.pathname === "/results" && !user && !isLoading) {
       setIsDialogOpen(true);
-      setAimedPath(path);
+      setIntendedDestination(path);
     } else {
       setValue(newValue);
       navigate(path);
@@ -104,7 +104,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
 
   const handleProceedNavigation = () => {
     setIsDialogOpen(false);
-    navigate(aimedPath);
+    navigate(intendedDestination);
   };
 
   return (
@@ -272,7 +272,11 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
       <LoginReminderDialog
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
-        onLoginClick={() => navigate("/login")}
+        onLoginClick={() =>
+          navigate("/login", {
+            state: { redirectTo: intendedDestination },
+          })
+        }
         onProceedNavigation={() => handleProceedNavigation()}
         message={
           <>

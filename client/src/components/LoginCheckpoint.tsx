@@ -53,8 +53,9 @@ const LoginCheckpoint: React.FC<LoginCheckpointProps> = ({
   };
 
   const handleLoginClick = () => {
+    const intendedDestination = location.pathname;
     navigate("/login", {
-      state: { redirectTo: location.pathname },
+      state: { redirectTo: intendedDestination },
     });
   };
 

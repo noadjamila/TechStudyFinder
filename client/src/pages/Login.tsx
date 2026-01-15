@@ -62,11 +62,7 @@ export default function Login() {
     if (loginSuccess) {
       // Redirect to the intended destination, or home if not specified
       const redirectTo = location.state?.redirectTo || "/";
-      const previousPage = location.state?.previousPage;
-      navigate(
-        redirectTo,
-        previousPage ? { state: { previousPage } } : undefined,
-      );
+      navigate(redirectTo);
     }
   };
 
