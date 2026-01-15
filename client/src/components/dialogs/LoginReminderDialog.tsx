@@ -8,6 +8,7 @@ import {
   styled,
   IconButton,
   Box,
+  Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import PrimaryButton from "../buttons/PrimaryButton";
@@ -29,6 +30,7 @@ interface LoginReminderDialogProps {
   open: boolean;
   onClose: () => void;
   onLoginClick: () => void;
+  onProceedNavigation?: () => void;
   message: React.ReactNode;
 }
 
@@ -87,6 +89,26 @@ const Actions = styled(DialogActions)(({ theme }) => ({
   },
 }));
 
+const OptionBox = styled(Box)(({ theme }) => ({
+  padding: "10px 18px",
+  borderRadius: "10px",
+  cursor: "pointer",
+  userSelect: "none",
+  transition: "0.2s ease",
+  textAlign: "center",
+  flex: 1,
+  margin: "0 6px",
+
+  "&:hover": {
+    borderColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.light + "22",
+  },
+
+  "&:active": {
+    transform: "scale(0.97)",
+  },
+}));
+
 const CloseButtonWrapper = styled(Box)(({ theme }) => ({
   position: "absolute",
   right: theme.spacing(1),
@@ -97,6 +119,7 @@ export default function LoginReminderDialog({
   open,
   onClose,
   onLoginClick,
+  onProceedNavigation,
   message,
 }: LoginReminderDialogProps) {
   const handleLoginClick = () => {
@@ -131,11 +154,17 @@ export default function LoginReminderDialog({
       </DialogContent>
 
       <Actions>
-        <PrimaryButton
-          label="Login"
-          onClick={handleLoginClick}
-          ariaText="Zur Login-Seite navigieren"
-        />
+        <OptionBox onClick={onProceedNavigation}>
+          <Typography>Seite trotzdem verlassen</Typography>
+        </OptionBox>
+
+        <OptionBox>
+          <PrimaryButton
+            label="Login"
+            onClick={handleLoginClick}
+            ariaText="Zur Login-Seite navigieren"
+          />
+        </OptionBox>
       </Actions>
     </CustomDialog>
   );

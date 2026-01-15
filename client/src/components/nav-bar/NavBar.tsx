@@ -11,6 +11,9 @@ import ResultIcon from "@mui/icons-material/Bookmark";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useNavigate, useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import LoginReminderDialog from "../dialogs/LoginReminderDialog";
+import { useAuth } from "../../contexts/AuthContext";
+
 /**
  * Props for the NavBar component.
  * Controls the display mode of the navigation (sidebar for desktop or bottom bar for mobile).
@@ -33,6 +36,10 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [aimedPath, setAimedPath] = useState("");
+  const { user, isLoading } = useAuth();
+
   // Navigation Elements configuration
   const navItems = [
     { label: "Home", icon: HomeIcon, path: "/" },
@@ -86,14 +93,23 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
    * @param {string} path - The route path to navigate to.
    */
   const handleNavigation = (newValue: number, path: string) => {
-    setValue(newValue);
-    // Pass current location as "from" state for checkpoint detection
-    navigate(path, { state: { from: location.pathname } });
+    if (location.pathname === "/results" && !user && !isLoading) {
+      setIsDialogOpen(true);
+      setAimedPath(path);
+    } else {
+      setValue(newValue);
+      navigate(path);
+    }
   };
-  // desktop view (Vertical Sidebar)
-  if (isSidebarMode) {
-    return (
-      <>
+
+  const handleProceedNavigation = () => {
+    setIsDialogOpen(false);
+    navigate(aimedPath);
+  };
+
+  return (
+    <>
+      {isSidebarMode ? (
         <Box
           sx={{
             width: "100%",
@@ -167,93 +183,112 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
             </Box>
           ))}
         </Box>
-      </>
-    );
-  }
-  // mobile view (Horizontal Bottom Bar)
-  return (
-    <>
-      <Paper
-        sx={{
-          position: "fixed",
-          bottom: 20,
-          left: "50%",
-          width: "80%",
-          transform: "translateX(-50%)",
-          borderRadius: 50,
-          zIndex: 1000,
-        }}
-        elevation={0}
-      >
-        <BottomNavigation
-          showLabels
-          value={value}
-          onChange={(_, newValue) =>
-            handleNavigation(newValue, navItems[newValue].path)
-          }
-          sx={{
-            height: 70,
-            borderRadius: 999,
-            backgroundColor: theme.palette.navigation.navbar,
-            "& .MuiBottomNavigationAction-root": {
-              minWidth: "auto",
-              padding: "6px 20px",
-              color: theme.palette.text.secondary,
-            },
-            "& .Mui-selected": {
-              color: "#999",
-            },
-            "& .Mui-selected .MuiBottomNavigationAction-label": {
-              color: "#999 !important",
-              fontSize: "0.75rem",
-              marginTop: 0.5,
-            },
-            "& .Mui-selected svg": {
-              color: theme.palette.secondary.main,
-            },
-          }}
-        >
-          {/* Iterate over navigation items */}
-          {navItems.map((item, index) => (
-            <BottomNavigationAction
-              key={item.label}
-              label={item.label}
-              icon={
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    ...(value === index && {
-                      width: 45,
-                      height: 35,
-                      borderRadius: 999,
-                      backgroundColor: theme.palette.secondary.light,
-                    }),
-                  }}
-                >
-                  {/* code and style for the icons */}
-                  <item.icon
-                    sx={{
-                      color: value === index ? "#FFFFFF !important" : undefined,
-                    }}
-                  />
-                </Box>
+      ) : (
+        <>
+          <Paper
+            sx={{
+              position: "fixed",
+              bottom: 20,
+              left: "50%",
+              width: "80%",
+              transform: "translateX(-50%)",
+              borderRadius: 50,
+              zIndex: 1000,
+            }}
+            elevation={0}
+          >
+            <BottomNavigation
+              showLabels
+              value={value}
+              onChange={(_, newValue) =>
+                handleNavigation(newValue, navItems[newValue].path)
               }
               sx={{
-                "&.Mui-selected svg": {
-                  color: theme.palette.secondary.main,
+                height: 70,
+                borderRadius: 999,
+                backgroundColor: theme.palette.navigation.navbar,
+                "& .MuiBottomNavigationAction-root": {
+                  minWidth: "auto",
+                  padding: "6px 20px",
+                  color: theme.palette.text.secondary,
                 },
-                "&.Mui-selected": {
+                "& .Mui-selected": {
+                  color: "#999",
+                },
+                "& .Mui-selected .MuiBottomNavigationAction-label": {
+                  color: "#999 !important",
+                  fontSize: "0.75rem",
+                  marginTop: 0.5,
+                },
+                "& .Mui-selected svg": {
                   color: theme.palette.secondary.main,
-                  borderRadius: 3,
                 },
               }}
-            />
-          ))}
-        </BottomNavigation>
-      </Paper>
+            >
+              {/* Iterate over navigation items */}
+              {navItems.map((item, index) => (
+                <BottomNavigationAction
+                  key={item.label}
+                  label={item.label}
+                  icon={
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        ...(value === index && {
+                          width: 45,
+                          height: 35,
+                          borderRadius: 999,
+                          backgroundColor: theme.palette.secondary.light,
+                        }),
+                      }}
+                    >
+                      {/* code and style for the icons */}
+                      <item.icon
+                        sx={{
+                          color:
+                            value === index ? "#FFFFFF !important" : undefined,
+                        }}
+                      />
+                    </Box>
+                  }
+                  sx={{
+                    "&.Mui-selected svg": {
+                      color: theme.palette.secondary.main,
+                    },
+                    "&.Mui-selected": {
+                      color: theme.palette.secondary.main,
+                      borderRadius: 3,
+                    },
+                  }}
+                />
+              ))}
+            </BottomNavigation>
+          </Paper>
+        </>
+      )}
+
+      <LoginReminderDialog
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onLoginClick={() => navigate("/login")}
+        onProceedNavigation={() => handleProceedNavigation()}
+        message={
+          <>
+            Beachte: <br />
+            <strong>Du bist nicht eingeloggt.</strong>
+            <br />
+            Deine Ergebnisse können nicht gespeichert werden.
+            <br />
+            Wenn du deine Ergebnisse auch später noch sehen willst,
+            <br />
+            logge dich jetzt ein.
+          </>
+        }
+      />
     </>
   );
 };
+
 export default NavBar;
