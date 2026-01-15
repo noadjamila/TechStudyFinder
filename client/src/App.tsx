@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Favourites from "./pages/Favourites";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Impressum from "./pages/Impressum";
 import LoginCheckpoint from "./components/LoginCheckpoint";
 
 export default function App() {
@@ -32,6 +33,8 @@ export default function App() {
         }
       />
       <Route path="/results" element={<ResultsPage />} />
+      <Route path="/favorites" element={<Favourites />} />
+      <Route path="/impressum" element={<Impressum />} />
       <Route
         path="/favorites"
         element={
