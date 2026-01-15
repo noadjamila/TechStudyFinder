@@ -4,9 +4,13 @@ import MainLayout from "../layouts/MainLayout";
 export default function Impressum() {
   return (
     <MainLayout>
-      <Container maxWidth="md">
+      <Container maxWidth="md" sx={{ px: { xs: 1, sm: 3 } }}>
         <Box sx={{ py: 4 }}>
-          <Typography variant="h2" component="h1" sx={{ mb: 4 }}>
+          <Typography
+            variant="h2"
+            component="h1"
+            sx={{ mb: 4, fontSize: { xs: "1.75rem", sm: "2.5rem" } }}
+          >
             Impressum
           </Typography>
 
@@ -38,8 +42,18 @@ export default function Impressum() {
             </Link>
           </Typography>
 
-          <Typography variant="h3" component="h2" sx={{ mt: 4, mb: 2 }}>
-            Vertretungsberechtigter Vorstand
+          <Typography
+            variant="h3"
+            component="h2"
+            sx={{
+              mt: 4,
+              mb: 2,
+              fontSize: { xs: "1.25rem", sm: "1.5rem" },
+              wordBreak: "break-word",
+              hyphens: "auto",
+            }}
+          >
+            Vertretungs&shy;berechtigter Vorstand
           </Typography>
 
           <Typography variant="body1" sx={{ mb: 2 }}>
@@ -63,7 +77,11 @@ export default function Impressum() {
             Prof. Dr. Friedrich Steimann
           </Typography>
 
-          <Typography variant="h3" component="h2" sx={{ mt: 4, mb: 2 }}>
+          <Typography
+            variant="h3"
+            component="h2"
+            sx={{ mt: 4, mb: 2, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             Vereinsregister
           </Typography>
 
@@ -72,7 +90,11 @@ export default function Impressum() {
             Registernummer VR 3429
           </Typography>
 
-          <Typography variant="h3" component="h2" sx={{ mt: 4, mb: 2 }}>
+          <Typography
+            variant="h3"
+            component="h2"
+            sx={{ mt: 4, mb: 2, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             Umsatzsteuer-ID
           </Typography>
 
@@ -82,7 +104,11 @@ export default function Impressum() {
             (DE122273104)
           </Typography>
 
-          <Typography variant="h3" component="h2" sx={{ mt: 4, mb: 2 }}>
+          <Typography
+            variant="h3"
+            component="h2"
+            sx={{ mt: 4, mb: 2, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             Inhaltlich verantwortlich gemäß § 18 Abs. 2 MStV
           </Typography>
 
@@ -99,7 +125,11 @@ export default function Impressum() {
             E-Mail: <Link href="mailto:berlin@gi.de">berlin@gi.de</Link>
           </Typography>
 
-          <Typography variant="h3" component="h2" sx={{ mt: 4, mb: 2 }}>
+          <Typography
+            variant="h3"
+            component="h2"
+            sx={{ mt: 4, mb: 2, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             Haftungshinweis
           </Typography>
 
@@ -122,7 +152,11 @@ export default function Impressum() {
             </Link>
           </Typography>
 
-          <Typography variant="h3" component="h2" sx={{ mt: 4, mb: 2 }}>
+          <Typography
+            variant="h3"
+            component="h2"
+            sx={{ mt: 4, mb: 2, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             Haftung für externe Links
           </Typography>
 
@@ -134,7 +168,11 @@ export default function Impressum() {
             verantwortlich.
           </Typography>
 
-          <Typography variant="h3" component="h2" sx={{ mt: 4, mb: 2 }}>
+          <Typography
+            variant="h3"
+            component="h2"
+            sx={{ mt: 4, mb: 2, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             Zweck der App
           </Typography>
 
