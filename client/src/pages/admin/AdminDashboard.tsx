@@ -19,6 +19,11 @@ const cardBaseSx = {
   cursor: "pointer",
 };
 
+/**
+ * Admin Dashboard Page.
+ * Main dashboard for admin users with navigation options.
+ * @returns JSX Element
+ */
 export default function AdminDashboard() {
   const navigate = useNavigate();
 

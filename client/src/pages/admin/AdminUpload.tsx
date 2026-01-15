@@ -1,12 +1,16 @@
-import { Typography, Box, Paper, alpha, Alert } from "@mui/material";
+import { Typography, Box, alpha, Alert } from "@mui/material";
 import theme from "../../theme/theme";
 import { useState } from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-
 import Layout from "../../layouts/AdminLayout";
 import UploadSection from "../../components/admin/UploadSection";
 import Spinner from "../../components/admin/Spinner";
 
+/**
+ * Admin Upload Page.
+ * Page for admins to upload XML files to update the database.
+ * @returns JSX Element
+ */
 export default function AdminUpload() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
@@ -17,29 +21,54 @@ export default function AdminUpload() {
     institutionsFile: File | null,
   ) => {
     setIsProcessing(true);
+    setIsSuccess(false);
+    setError(null);
+
+    if (!degreeprogrammeFile || !institutionsFile) {
+      setError("Bitte beide XML-Dateien hochladen.");
+      setIsProcessing(false);
+      return;
+    }
 
     try {
-      const res = await fetch("/api/admin/upload-dat", {
+      const formData = new FormData();
+      formData.append("degreeprogrammes", degreeprogrammeFile);
+      formData.append("institutions", institutionsFile);
+
+      const res = await fetch("/api/admin/upload-data", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          degreeprogrammeFile: degreeprogrammeFile,
-          institutionsFile: institutionsFile,
-        }),
+        body: formData,
       });
 
+      // Prüfen ob Response JSON enthält
+      const contentType = res.headers.get("content-type");
+      let data: any = {};
+
+      if (contentType && contentType.includes("application/json")) {
+        try {
+          data = await res.json();
+        } catch (parseError) {
+          console.error("Fehler beim Parsen der JSON-Response:", parseError);
+        }
+      }
+
       if (!res.ok) {
-        throw new Error(`HTTP error! Status: ${res.status}`);
+        // Backend-Fehlermeldung anzeigen, falls vorhanden
+        const errorMessage =
+          data?.error || data?.details || `HTTP-Fehler! Status: ${res.status}`;
+        throw new Error(errorMessage);
       }
 
       setIsSuccess(true);
+      setError(null);
     } catch (err) {
       console.error("Error during API call:", err);
-      setError(
-        "Fehler beim Verbinden mit dem Backend oder Verarbeiten der Daten.",
-      );
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Fehler beim Verbinden mit dem Backend oder Verarbeiten der Daten.";
+      setError(errorMessage);
+      setIsSuccess(false);
     } finally {
       setIsProcessing(false);
     }
@@ -72,42 +101,38 @@ export default function AdminUpload() {
             sx={{
               mb: 4,
             }}
+            onClose={() => setError(null)}
           >
-            {error}
+            <Typography variant="body1" sx={{ fontWeight: 600, mb: 0.5 }}>
+              Fehler beim Hochladen
+            </Typography>
+            <Typography variant="body2">{error}</Typography>
           </Alert>
         )}
 
         {isSuccess && (
-          <Box
+          <Alert
+            severity="success"
+            icon={<CheckCircleIcon />}
             sx={{
               mt: 4,
+              mb: 4,
+              backgroundColor: alpha(theme.palette.decorative.green, 0.2),
+              border: `2px solid ${theme.palette.decorative.green}`,
+              "& .MuiAlert-icon": {
+                color: theme.palette.decorative.greenDark,
+              },
             }}
+            onClose={() => setIsSuccess(false)}
           >
-            <Paper
-              elevation={0}
-              sx={{
-                p: 4,
-                display: "flex",
-                flexDirection: "row",
-                gap: 2,
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 2,
-                backgroundColor: alpha(theme.palette.decorative.green, 0.3),
-                border: `2px solid ${theme.palette.decorative.green}`,
-              }}
-            >
-              <CheckCircleIcon
-                sx={{
-                  fontSize: 36,
-                  color: theme.palette.decorative.greenDark,
-                }}
-              />
-              <Typography variant="body1" color="text.secondary">
-                Daten erfolgreich aktualisiert!
-              </Typography>
-            </Paper>
-          </Box>
+            <Typography variant="body1" sx={{ fontWeight: 600, mb: 0.5 }}>
+              Datenbank erfolgreich aktualisiert!
+            </Typography>
+            <Typography variant="body2">
+              Die hochgeladenen XML-Dateien wurden erfolgreich verarbeitet und
+              die Datenbank wurde aktualisiert.
+            </Typography>
+          </Alert>
         )}
 
         {isProcessing && (
@@ -120,9 +145,7 @@ export default function AdminUpload() {
           </Box>
         )}
 
-        {!isProcessing && !isSuccess && (
-          <UploadSection onSubmit={handleSubmit} />
-        )}
+        {!isProcessing && <UploadSection onSubmit={handleSubmit} />}
       </Box>
     </Layout>
   );

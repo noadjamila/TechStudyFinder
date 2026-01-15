@@ -5,6 +5,11 @@ interface LoadingIndicatorProps {
   text?: string;
 }
 
+/**
+ * Spinner component to indicate loading state.
+ * @param text Optional text to display below the spinner.
+ * @returns JSX Element
+ */
 const Spinner = ({ text = "Lädt…" }: LoadingIndicatorProps) => {
   return (
     <Paper

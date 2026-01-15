@@ -38,11 +38,10 @@ interface MenuItemConfig {
 }
 
 /**
- * LogoMenu component.
- * Renders the top navigation bar primarily used in mobile view.
+ * LogoMenu component for admins.
+ * Renders the top navigation bar.
  * It includes a menu icon for a dropdown, the app title, and the logo, all horizontally arranged.
  *
- * @param {boolean} fixed - Whether the AppBar should have fixed positioning. Defaults to false.
  * @returns {React.FC} The rendered App Bar component.
  */
 const LogoMenu = () => {

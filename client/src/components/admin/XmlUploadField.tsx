@@ -10,6 +10,7 @@ import {
   Alert,
   Collapse,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import theme from "../../theme/theme";
 import { useCallback, useState } from "react";
@@ -35,6 +36,13 @@ interface UploadedFile {
   content: string;
 }
 
+/**
+ * XML Upload Component for admin interface
+ * @param filename Expected filename for validation
+ * @param onUploaded Callback when a file is successfully uploaded
+ * @param onRemoved Callback when the uploaded file is removed
+ * @returns JSX.Element
+ */
 export default function XmlUpload({
   filename,
   onUploaded,
@@ -45,19 +53,27 @@ export default function XmlUpload({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleFile = useCallback(
     (file: File) => {
+      setIsUploading(true);
       if (file.type !== "text/xml" && !file.name.endsWith(".xml")) {
         setStatus("error");
         setErrorMessage("Bitte nur XML-Dateien hochladen.");
+        setIsUploading(false);
+        return;
+      }
+
+      if (filename && file.name !== filename) {
+        setStatus("error");
+        setErrorMessage(`Die Datei muss den Namen "${filename}" haben.`);
+        setIsUploading(false);
         return;
       }
 
       setStatus("success");
       setErrorMessage(null);
-
-      onUploaded(file);
 
       const reader = new FileReader();
       reader.onload = () => {
@@ -67,6 +83,8 @@ export default function XmlUpload({
           content: reader.result as string,
         });
         setErrorMessage(null);
+        setIsUploading(false);
+        onUploaded(file);
       };
       reader.readAsText(file);
     },
@@ -109,6 +127,27 @@ export default function XmlUpload({
 
   const uploadId = `xml-upload-${filename?.replace(/\./g, "-") || "default"}`;
 
+  if (isUploading) {
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <CircularProgress
+          size={48}
+          thickness={4}
+          sx={{
+            color: theme.palette.decorative.blueDark,
+          }}
+        />
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ width: "100%" }}>
       {!uploadedFile && (
@@ -150,6 +189,7 @@ export default function XmlUpload({
               onChange={onFileSelect}
               style={{ display: "none" }}
               id={uploadId}
+              data-testid="file-input"
             />
             <UploadIcon
               sx={{
@@ -269,6 +309,7 @@ export default function XmlUpload({
                     backgroundColor: alpha(theme.palette.error.main, 0.1),
                   },
                 }}
+                data-testid="delete-button"
               >
                 <DeleteIcon />
               </IconButton>

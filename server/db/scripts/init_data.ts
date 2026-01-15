@@ -17,6 +17,7 @@ const SCHEMA_FILES = [
   "institutions.sql",
   "degreeprogrammes.sql",
   "favourites.sql",
+  "degreeprogramme_view.sql",
 ];
 
 const CSV_FILES = ["studiengebiete_riasec.csv", "studienfelder_riasec.csv"];

@@ -10,6 +10,12 @@ import WarningIcon from "@mui/icons-material/Warning";
 import XmlUpload from "./XmlUploadField";
 import StyledDialog from "../../components/dialogs/Dialog";
 
+/**
+ * Upload Section Component for Admin UI.
+ * Section to upload two XML files for degree programmes and institutions.
+ * @param onSubmit Callback function when both files are uploaded and submitted.
+ * @returns JSX Element
+ */
 export default function UploadSection({
   onSubmit,
 }: {
@@ -149,7 +155,7 @@ export default function UploadSection({
                 </Typography>
               </Box>
               <XmlUpload
-                filename="degreeprogramme.xml"
+                filename="degreeprogrammes.xml"
                 onUploaded={handleDegreeprogrammeFile}
                 onRemoved={() => setDegreeprogrammeFile(null)}
               />
