@@ -99,7 +99,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
     } catch (error: any) {
       // Handle 409 Conflict (already exists) by keeping it as favorited
       if (error.message && error.message.includes("409")) {
-        console.error("Favorite already exists, keeping as favorited");
+        console.debug("Favorite already exists, keeping as favorited");
         setFavorites((prev) => {
           const newFavorites = new Set(prev);
           newFavorites.add(programmeId); // Keep it favorited
