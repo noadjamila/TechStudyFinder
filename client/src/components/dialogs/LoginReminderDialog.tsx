@@ -153,18 +153,42 @@ export default function LoginReminderDialog({
         <ContentText>{message}</ContentText>
       </DialogContent>
 
-      <Actions>
-        <OptionBox onClick={onProceedNavigation}>
-          <Typography>Seite trotzdem verlassen</Typography>
-        </OptionBox>
+      <Actions
+        sx={{
+          flexDirection: onProceedNavigation ? "row" : "column",
+          justifyContent: onProceedNavigation ? "space-between" : "center",
+        }}
+      >
+        {onProceedNavigation && (
+          <OptionBox onClick={onProceedNavigation} sx={{ flex: "0 0 auto" }}>
+            <Typography
+              sx={{
+                fontSize: "16px",
+                fontWeight: "normal",
+                lineHeight: 1.2,
+              }}
+            >
+              Seite trotzdem
+              <br />
+              verlassen
+            </Typography>
+          </OptionBox>
+        )}
 
-        <OptionBox>
+        <Box
+          sx={{
+            flex: "0 0 auto",
+            margin: onProceedNavigation ? "0 6px" : "0 auto",
+            maxWidth: onProceedNavigation ? "none" : "200px",
+            marginLeft: onProceedNavigation ? "auto" : "auto",
+          }}
+        >
           <PrimaryButton
             label="Login"
             onClick={handleLoginClick}
             ariaText="Zur Login-Seite navigieren"
           />
-        </OptionBox>
+        </Box>
       </Actions>
     </CustomDialog>
   );
