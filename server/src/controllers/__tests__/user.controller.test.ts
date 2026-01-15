@@ -60,7 +60,7 @@ describe("Users Registration Endpoint - Unit Tests", () => {
     });
 
     expect(response.status).toBe(400);
-    expect(response.body.error).toContain("Username is required");
+    expect(response.body.error).toContain("Username ist erforderlich");
   });
 
   it("rejects registration without password", async () => {
@@ -69,6 +69,6 @@ describe("Users Registration Endpoint - Unit Tests", () => {
     });
 
     expect(response.status).toBe(400);
-    expect(response.body.error).toContain("Password is required");
+    expect(response.body.error).toContain("Passwort ist erforderlich");
   });
 });
