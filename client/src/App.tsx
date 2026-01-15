@@ -31,10 +31,11 @@ export default function App() {
         path="/study-programme/:id"
         element={<StudyProgrammeDetailPage />}
       />
+      <Route path="/error" element={<ErrorScreen />} />
       <Route
-        path="/error-test"
+        path="*"
         element={
-          <ErrorScreen code={404} message="Diese Seite gibt es nicht." />
+          <ErrorScreen code={404} message="Diese Seite gibt es nicht!" />
         }
       />
     </Routes>

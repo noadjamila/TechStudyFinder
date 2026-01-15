@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Box, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { SpeechBubble } from "../components/error-screen/SpeechBubble";
 import PrimaryButton from "../components/buttons/PrimaryButton";
 import SecondaryButton from "../components/buttons/SecondaryButton";
@@ -13,19 +13,25 @@ type ErrorScreenProps = {
   title?: string;
 
   /** Main error message shown inside the speech bubble */
-  message: string;
+  message?: string;
 
   /** Max width of the content */
   maxWidth?: number;
 };
 
 export const ErrorScreen: React.FC<ErrorScreenProps> = ({
-  code,
+  code: propCode,
   title = "Oooops!",
-  message,
+  message: propMessage,
   maxWidth = 360,
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Use props or fallback to location.state
+  const code = propCode ?? location.state?.code;
+  const message =
+    propMessage ?? location.state?.message ?? "Ein Fehler ist aufgetreten.";
 
   React.useEffect(() => {
     // Prevent all scrolling
@@ -94,7 +100,12 @@ export const ErrorScreen: React.FC<ErrorScreenProps> = ({
             <Typography variant="body1" fontWeight={600}>
               {title}
             </Typography>
-            <Typography variant="body2">{message}</Typography>
+            <Typography
+              variant="body2"
+              sx={{ whiteSpace: "pre-line", textAlign: "center" }}
+            >
+              {message}
+            </Typography>
           </Box>
         </SpeechBubble>
       </Box>
@@ -106,7 +117,7 @@ export const ErrorScreen: React.FC<ErrorScreenProps> = ({
         sx={{
           position: "absolute",
           bottom: "35%",
-          left: { xs: "15%", sm: "35%", md: "33%", lg: "43%" },
+          left: { xs: "13%", sm: "35%", md: "33%", lg: "43%" },
           width: { xs: 60, sm: 55, md: 55, lg: 55 },
           zIndex: 1,
           objectFit: "contain",
@@ -123,6 +134,12 @@ export const ErrorScreen: React.FC<ErrorScreenProps> = ({
           gap: 3,
         }}
       >
+        {code === 500 && (
+          <SecondaryButton
+            label="Seite neu laden"
+            onClick={() => window.location.reload()}
+          />
+        )}
         <PrimaryButton
           label="Zurück zur vorherigen Seite"
           onClick={() => navigate(-1)}
