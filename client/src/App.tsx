@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login/Login";
 import Favourites from "./pages/Favourites/FavouritesContainer";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Impressum from "./pages/Impressum";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
       <Route path="/quiz" element={<QuizFlow />} />
       <Route path="/results" element={<ResultsPage />} />
       <Route path="/favorites" element={<Favourites />} />
+      <Route path="/impressum" element={<Impressum />} />
       <Route
         path="/settings"
         element={
