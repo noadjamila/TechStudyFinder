@@ -8,7 +8,10 @@ import MainLayout from "../layouts/MainLayout";
 import PrimaryButton from "../components/buttons/PrimaryButton";
 import { useAuth } from "../contexts/AuthContext";
 import Dialog from "../components/dialogs/Dialog";
-import { clearQuizResults } from "../session/persistQuizSession";
+import {
+  clearQuizResults,
+  clearQuizSession,
+} from "../session/persistQuizSession";
 
 /**
  * Homescreen component.
@@ -25,6 +28,13 @@ const Homescreen: React.FC = () => {
   const [showLogoutMessage, setShowLogoutMessage] = useState(false);
   const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
   const [__isLoggingOut, setIsLoggingOut] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      // Quiz wird verlassen → Session löschen
+      clearQuizSession().catch(console.error);
+    };
+  }, []);
 
   useEffect(() => {
     clearQuizResults().catch(console.error);

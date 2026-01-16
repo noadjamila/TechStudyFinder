@@ -11,7 +11,6 @@ import { riasecScoresToApiPayload } from "../services/riasecPayload";
 import { postFilterLevel } from "../api/quizApi";
 import { fetchQuestions } from "../api/quizApi";
 import { loadLatestSession, saveSession } from "../session/persistQuizSession";
-import { clearQuizSession } from "../session/persistQuizSession";
 
 type Level = 1 | 2 | 3;
 
@@ -48,12 +47,6 @@ async function handleLevelComplete(
  * @returns {JSX.Element | null} The current level's quiz page or null if completed.
  */
 export default function QuizFlow(): JSX.Element | null {
-  useEffect(() => {
-    return () => {
-      // Quiz wird verlassen → Session löschen
-      clearQuizSession().catch(console.error);
-    };
-  }, []);
   const navigate = useNavigate();
 
   const [session, setSession] = useState<QuizSession>(() =>
