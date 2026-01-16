@@ -8,8 +8,6 @@ import SecondaryButton from "../buttons/SecondaryButton";
 import theme from "../../theme/theme";
 import { Answer } from "../../types/QuizAnswer.types";
 import { QuizSession } from "../../types/QuizSession";
-import { createQuizSession } from "../../session/createQuizSession";
-import { fetchQuestions } from "../../api/quizApi";
 import ErrorScreen from "../error-screen/ErrorScreen";
 
 export interface QuizL2Props {
