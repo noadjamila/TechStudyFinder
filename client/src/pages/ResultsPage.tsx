@@ -19,21 +19,28 @@ import {
  */
 const ResultsPage: React.FC = () => {
   const location = useLocation();
-  const idsFromQuiz = (location.state?.resultIds ?? []).map(
-    (r: { studiengang_id: string }) => r.studiengang_id,
-  );
+  type ResultId = string | { studiengang_id: string };
+
+  const rawResultIds: ResultId[] = location.state?.resultIds ?? [];
+
+  const idsFromQuiz = rawResultIds
+    .map((r) => (typeof r === "string" ? r : r?.studiengang_id))
+    .filter((id): id is string => typeof id === "string" && id.length > 0);
 
   const [studyProgrammes, setStudyProgrammes] = useState<StudyProgramme[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const [error, setError] = useState<string | null>(null);
-  const [hasQuizResults, setHasQuizResults] = useState<boolean>(false);
+  const [hasQuizResults, setHasQuizResults] = useState<boolean>(() => {
+    return location.state?.resultIds !== undefined;
+  });
 
   useEffect(() => {
     let isMounted = true;
 
     (async () => {
       if (location.state?.resultIds !== undefined) {
+        setHasQuizResults(true);
         if (idsFromQuiz.length === 0) {
           await saveQuizResults([]);
           if (!isMounted) return;
@@ -52,13 +59,28 @@ const ResultsPage: React.FC = () => {
         const results = await Promise.allSettled(promises);
 
         const validResults: StudyProgramme[] = [];
-        results.forEach((r) => {
+        results.forEach((r, index) => {
           if (r.status === "fulfilled" && r.value) {
             validResults.push(r.value);
+          } else if (r.status === "rejected") {
+            console.error(
+              `Failed to load study programme ${idsFromQuiz[index]}:`,
+              r.reason,
+            );
+          } else if (r.status === "fulfilled" && r.value === null) {
+            console.warn(
+              `Study programme ${idsFromQuiz[index]} not found (404)`,
+            );
           }
         });
 
         await saveQuizResults(validResults);
+
+        // Only show error if ALL programmes failed to load
+        if (validResults.length === 0 && idsFromQuiz.length > 0) {
+          console.error("All study programmes failed to load");
+          setError("Fehler beim Laden der Studiengänge");
+        }
 
         if (!isMounted) return;
         setStudyProgrammes(validResults);

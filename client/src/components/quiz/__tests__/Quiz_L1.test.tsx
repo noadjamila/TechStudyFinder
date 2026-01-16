@@ -6,7 +6,6 @@ import { ThemeProvider } from "@mui/material/styles";
 import theme from "../../../theme/theme";
 import Quiz_L1 from "../Quiz_L1";
 import { postFilterLevel } from "../../../api/quizApi";
-import { Answer } from "../../../types/QuizAnswer.types";
 
 const renderWithTheme = (ui: React.ReactElement) =>
   render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
@@ -52,6 +51,8 @@ describe("Quiz_L1", () => {
   test("calls API, onAnswer, and onComplete after selecting an option", async () => {
     const mockOnAnswer = vi.fn();
     const mockOnComplete = vi.fn();
+    const mockLevel1ids = vi.fn();
+
     vi.spyOn(Date, "now").mockReturnValue(1700000000000);
     (postFilterLevel as Mock).mockResolvedValue({ ids: [1, 2, 3] });
 
@@ -59,9 +60,7 @@ describe("Quiz_L1", () => {
       <Quiz_L1
         onAnswer={mockOnAnswer}
         onComplete={mockOnComplete}
-        level1ids={function (_ids: string[]): void {
-          throw new Error("Function not implemented.");
-        }}
+        level1ids={mockLevel1ids} // ✅ nicht mehr throwen
       />,
     );
 
@@ -71,14 +70,17 @@ describe("Quiz_L1", () => {
       expect(postFilterLevel).toHaveBeenCalled();
     });
 
-    const expectedAnswer: Answer = {
+    expect(mockLevel1ids).toHaveBeenCalledWith([1, 2, 3]); // ✅ optional, aber sinnvoll
+
+    expect(mockOnAnswer).toHaveBeenCalledWith({
       questionId: "level1.studyType",
       value: "undergraduate",
       answeredAt: 1700000000000,
-    };
+    });
 
-    expect(mockOnAnswer).toHaveBeenCalledWith(expectedAnswer);
-    expect(mockOnComplete).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockOnComplete).toHaveBeenCalled();
+    });
   });
 
   test("shows alert on API error", async () => {

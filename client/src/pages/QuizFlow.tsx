@@ -15,31 +15,6 @@ import { loadLatestSession, saveSession } from "../session/persistQuizSession";
 type Level = 1 | 2 | 3;
 
 /**
- * Handles the completion of a level by calculating RIASEC scores
- * and sending them to the backend.
- * @param answers
- * @param levelNumber - The level number that was completed.
- * @returns {Promise<void>} A promise that resolves when the operation is complete.
-
-async function handleLevelComplete(
-  answers: AnswerMap,
-  levelNumber: Level,
-): Promise<void> {
-  const scores = calculateRiasecScores(answers);
-  const payload = riasecScoresToApiPayload(scores);
-
-  try {
-    await postFilterLevel({
-      level: levelNumber,
-      answers: payload,
-    });
-  } catch (error) {
-    console.error("Failed to post filter level data:", error);
-  }
-}
- */
-
-/**
  * Manages the multi-level quiz flow.
  * It handles transitions between the quiz levels,
  * maintaining state for selected IDs from level to level.
@@ -86,6 +61,12 @@ export default function QuizFlow(): JSX.Element | null {
     sessionRef.current = session;
   }, [session]);
 
+  /**
+   * Handles and processes an answer by updating the session state with the provided answer.
+   *
+   * @param {Answer} answer - The answer object containing the information about the question and its response.
+   * @return {void} This function does not return any value.
+   */
   function handleAnswer(answer: Answer) {
     const next = {
       ...sessionRef.current,
@@ -115,19 +96,12 @@ export default function QuizFlow(): JSX.Element | null {
   }
 
   /**
-   * Navigates to the next level in the session, ensuring the level does not go above the maximum level (3).
-   * Resets the current question index to 0 and updates the timestamp of the session.
-   * @return {void} Does not return a value. Modifies the session state directly.
-
-  function goToNextLevel() {
-    setSession((prev) => ({
-      ...prev,
-      currentLevel: Math.min(prev.currentLevel + 1, 3) as Level,
-      currentQuestionIndex: 0,
-      updatedAt: Date.now(),
-    }));
-  }
-*/
+   * Handles the completion of Level 1 by updating the session state, progressing to the next level,
+   * and showing the level success indicator.
+   *
+   * @param {string[]} ids - An array of IDs associated with Level 1 completion.
+   * @return {void} This method does not return a value.
+   */
   function handleLevel1Complete(ids: string[]) {
     setSession((prev) => ({
       ...prev,
@@ -136,6 +110,7 @@ export default function QuizFlow(): JSX.Element | null {
       currentQuestionIndex: 0,
       updatedAt: Date.now(),
     }));
+    setShowLevelSuccess(true);
   }
 
   /**
@@ -165,6 +140,9 @@ export default function QuizFlow(): JSX.Element | null {
     }));
   }
 
+  /**
+   * Checks if there is a Session already saved and loads it
+   */
   useEffect(() => {
     let isMounted = true;
 
@@ -185,6 +163,9 @@ export default function QuizFlow(): JSX.Element | null {
     };
   }, []);
 
+  /**
+   * Saves the current Session if no other question has already been saved
+   */
   useEffect(() => {
     if (!isHydrated) return;
     const id = window.setTimeout(() => {
