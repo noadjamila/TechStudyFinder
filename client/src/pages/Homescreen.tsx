@@ -31,7 +31,6 @@ const Homescreen: React.FC = () => {
 
   useEffect(() => {
     return () => {
-      // Quiz wird verlassen → Session löschen
       clearQuizSession().catch(console.error);
     };
   }, []);
