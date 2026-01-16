@@ -27,8 +27,8 @@ export default function QuizFlow(): JSX.Element | null {
   const [session, setSession] = useState<QuizSession>(() =>
     createQuizSession(),
   );
-  const [showLevelSuccess, setShowLevelSuccess] = useState(true);
   const [isHydrated, setIsHydrated] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_showResults, setShowResults] = useState(false);
   const sessionRef = useRef(session);
 
@@ -108,9 +108,9 @@ export default function QuizFlow(): JSX.Element | null {
       level1IDS: ids,
       currentLevel: 2,
       currentQuestionIndex: 0,
+      showSuccessScreen: true,
       updatedAt: Date.now(),
     }));
-    setShowLevelSuccess(true);
   }
 
   /**
@@ -184,11 +184,8 @@ export default function QuizFlow(): JSX.Element | null {
    * - Handles the completion of the level with the provided answers and level id.
    * - Updates the session to transition to the next level (Level 3), resets the question index,
    *   and updates the timestamp for when the action occurred.
-   * - Navigates to the results page, passing the user's answers in the navigation state.
    */
   async function completeLevel2() {
-    setShowLevelSuccess(true);
-    // setShowResults(true);
     const { answers, level1IDS } = sessionRef.current;
     const scores = calculateRiasecScores(answers);
     const payload = riasecScoresToApiPayload(scores);
@@ -208,19 +205,23 @@ export default function QuizFlow(): JSX.Element | null {
       resultIds: res.ids,
       currentLevel: 3,
       currentQuestionIndex: 0,
+      showSuccessScreen: true,
       updatedAt: Date.now(),
     }));
   }
 
-  console.log(session.currentLevel);
-  if (showLevelSuccess) {
+  if (session.showSuccessScreen) {
     return (
       <LevelSuccessScreen
         currentLevel={session.currentLevel}
         onContinue={() => {
-          setShowLevelSuccess(false);
-          setShowResults(true);
-          if (session.currentLevel === 3) {
+          setSession((prev) => ({
+            ...prev,
+            showSuccessScreen: false,
+            updatedAt: Date.now(),
+          }));
+
+          if (sessionRef.current.currentLevel === 3) {
             navigate("/results", {
               state: { resultIds: sessionRef.current.resultIds },
             });
