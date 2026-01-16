@@ -5,12 +5,13 @@ import Quiz_L2 from "../components/quiz/Quiz_L2";
 import LevelSuccessScreen from "../components/quiz/LevelSuccessScreen";
 import { QuizSession } from "../types/QuizSession";
 import { createQuizSession } from "../session/createQuizSession";
-import { Answer, AnswerMap } from "../types/QuizAnswer.types";
+import { Answer } from "../types/QuizAnswer.types";
 import { calculateRiasecScores } from "../services/calculateRiasecScores";
 import { riasecScoresToApiPayload } from "../services/riasecPayload";
 import { postFilterLevel } from "../api/quizApi";
 import { fetchQuestions } from "../api/quizApi";
 import { loadLatestSession, saveSession } from "../session/persistQuizSession";
+import { clearQuizSession } from "../session/persistQuizSession";
 
 type Level = 1 | 2 | 3;
 
@@ -20,7 +21,7 @@ type Level = 1 | 2 | 3;
  * @param answers
  * @param levelNumber - The level number that was completed.
  * @returns {Promise<void>} A promise that resolves when the operation is complete.
- */
+
 async function handleLevelComplete(
   answers: AnswerMap,
   levelNumber: Level,
@@ -37,6 +38,7 @@ async function handleLevelComplete(
     console.error("Failed to post filter level data:", error);
   }
 }
+ */
 
 /**
  * Manages the multi-level quiz flow.
@@ -46,6 +48,12 @@ async function handleLevelComplete(
  * @returns {JSX.Element | null} The current level's quiz page or null if completed.
  */
 export default function QuizFlow(): JSX.Element | null {
+  useEffect(() => {
+    return () => {
+      // Quiz wird verlassen → Session löschen
+      clearQuizSession().catch(console.error);
+    };
+  }, []);
   const navigate = useNavigate();
 
   const [session, setSession] = useState<QuizSession>(() =>
@@ -57,34 +65,28 @@ export default function QuizFlow(): JSX.Element | null {
   const sessionRef = useRef(session);
 
   /**
-   * Ensures that the level 2 questions are fetched from the API and stored in the session state.
+   * only Loads in the questions for Level 2 if there are no Questions saved in Session
    */
-  async function ensureLevel2Questions() {
-    setSession((prev) => {
-      if (prev.level2Questions && prev.level2Questions.length > 0) {
-        return prev;
-      }
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (session.currentLevel !== 2) return;
+    if (session.level2Questions && session.level2Questions.length > 0) return;
 
-      return {
+    let isMounted = true;
+
+    fetchQuestions().then((loadedQuestions) => {
+      if (!isMounted) return;
+      setSession((prev) => ({
         ...prev,
-        level2Questions: [],
-      };
+        level2Questions: loadedQuestions,
+        updatedAt: Date.now(),
+      }));
     });
 
-    const questions = await fetchQuestions();
-
-    setSession((prev) => ({
-      ...prev,
-      level2Questions: questions,
-      updatedAt: Date.now(),
-    }));
-  }
-
-  useEffect(() => {
-    if (session.currentLevel === 2) {
-      ensureLevel2Questions();
-    }
-  }, [session?.currentLevel]);
+    return () => {
+      isMounted = false;
+    };
+  }, [isHydrated, session.currentLevel]);
 
   // Keep ref in sync for immediate reads during chained callbacks.
   useEffect(() => {
@@ -123,7 +125,7 @@ export default function QuizFlow(): JSX.Element | null {
    * Navigates to the next level in the session, ensuring the level does not go above the maximum level (3).
    * Resets the current question index to 0 and updates the timestamp of the session.
    * @return {void} Does not return a value. Modifies the session state directly.
-   */
+
   function goToNextLevel() {
     setSession((prev) => ({
       ...prev,
@@ -132,7 +134,7 @@ export default function QuizFlow(): JSX.Element | null {
       updatedAt: Date.now(),
     }));
   }
-    */
+*/
   function handleLevel1Complete(ids: string[]) {
     setSession((prev) => ({
       ...prev,
@@ -141,6 +143,7 @@ export default function QuizFlow(): JSX.Element | null {
       currentQuestionIndex: 0,
       updatedAt: Date.now(),
     }));
+  }
 
   /**
    * Navigates one question back in the current level of the quiz session.
@@ -200,12 +203,7 @@ export default function QuizFlow(): JSX.Element | null {
       window.clearTimeout(id);
     };
   }, [isHydrated, session]);
-  function completeLevel2() {
-    setShowLevelSuccess(true);
-    const latestAnswers = sessionRef.current.answers;
-    handleLevelComplete(latestAnswers, 2).then((r) => r);
-  }
-  useEffect(() => {}, [session.level1IDS]);
+
   /**
    * Completes the current level (Level 2) by performing the following actions:
    * - Sets the level success state to true.
@@ -226,21 +224,21 @@ export default function QuizFlow(): JSX.Element | null {
       answers: payload,
       studyProgrammeIds: level1IDS,
     });
-
+    /*
     const latestAnswers = sessionRef.current.answers;
     handleLevelComplete(latestAnswers, 2).catch((error) => {
       console.error("Error completing level 2:", error);
     });
-    setSession((prev) => ({
+ */ setSession((prev) => ({
       ...prev,
       resultIds: res.ids,
       currentLevel: 3,
       currentQuestionIndex: 0,
       updatedAt: Date.now(),
     }));
-    navigate("/results", { state: { answers: latestAnswers } });
   }
 
+  console.log(session.currentLevel);
   if (showLevelSuccess) {
     return (
       <LevelSuccessScreen

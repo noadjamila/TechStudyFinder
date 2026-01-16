@@ -8,6 +8,7 @@ import MainLayout from "../layouts/MainLayout";
 import PrimaryButton from "../components/buttons/PrimaryButton";
 import { useAuth } from "../contexts/AuthContext";
 import Dialog from "../components/dialogs/Dialog";
+import { clearQuizResults } from "../session/persistQuizSession";
 
 /**
  * Homescreen component.
@@ -25,6 +26,9 @@ const Homescreen: React.FC = () => {
   const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
   const [__isLoggingOut, setIsLoggingOut] = useState(false);
 
+  useEffect(() => {
+    clearQuizResults().catch(console.error);
+  }, []);
   // Check for logout confirmation flag whenever the component mounts or location changes
   useEffect(() => {
     const confirmationFlag = sessionStorage.getItem("showLogoutConfirmation");
