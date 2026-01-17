@@ -11,6 +11,7 @@ export function createQuizSession(): QuizSession {
     resultIds: [],
     currentLevel: 1,
     currentQuestionIndex: 0,
+    showSuccessScreen: true,
     answers: {},
     level2Questions: [],
     startedAt: Date.now(),

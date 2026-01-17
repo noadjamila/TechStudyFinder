@@ -13,6 +13,8 @@ export type QuizSession = {
   level1IDS?: string[];
   resultIds?: string[];
 
+  showSuccessScreen?: boolean;
+
   answers: AnswerMap;
 
   level2Questions?: {

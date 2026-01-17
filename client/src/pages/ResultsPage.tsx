@@ -7,6 +7,10 @@ import MainLayout from "../layouts/MainLayout";
 import { useLocation } from "react-router-dom";
 import { getStudyProgrammeById } from "../api/quizApi";
 import NoResultsYet from "../components/quiz/NoResultsYet";
+import {
+  loadQuizResults,
+  saveQuizResults,
+} from "../session/persistQuizSession";
 
 /**
  * ResultsPage component displays the results of the quiz.
@@ -15,77 +19,62 @@ import NoResultsYet from "../components/quiz/NoResultsYet";
  */
 const ResultsPage: React.FC = () => {
   const location = useLocation();
-  const idsFromQuiz = (location.state?.resultIds ?? []).map(
-    (r: { studiengang_id: string }) => r.studiengang_id,
-  );
+  type ResultId = string | { studiengang_id: string };
 
-  // Initialize state with cached data if available (synchronous, instant)
-  const [studyProgrammes, setStudyProgrammes] = useState<StudyProgramme[]>(
-    () => {
-      if (location.state?.resultIds !== undefined) {
-        // Try to load cached results immediately
-        const cachedResults = localStorage.getItem("quizResults");
-        if (cachedResults) {
-          try {
-            return JSON.parse(cachedResults);
-          } catch (err) {
-            console.error("Error parsing cached results:", err);
-          }
-        }
-      }
-      // New quiz results coming in, start empty
-      return [];
-    },
-  );
+  const rawResultIds: ResultId[] = location.state?.resultIds ?? [];
 
-  const [loading, setLoading] = useState<boolean>(idsFromQuiz.length > 0);
+  const idsFromQuiz = rawResultIds
+    .map((r) => (typeof r === "string" ? r : r?.studiengang_id))
+    .filter((id): id is string => typeof id === "string" && id.length > 0);
+
+  const [studyProgrammes, setStudyProgrammes] = useState<StudyProgramme[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const [error, setError] = useState<string | null>(null);
   const [hasQuizResults, setHasQuizResults] = useState<boolean>(() => {
-    // Check if there are cached results or quiz was completed (even with 0 results)
-    return (
-      idsFromQuiz.length > 0 ||
-      localStorage.getItem("quizResults") !== null ||
-      localStorage.getItem("quizCompleted") === "true"
-    );
+    return location.state?.resultIds !== undefined;
   });
 
   useEffect(() => {
-    const fetchStudyProgrammes = async () => {
-      // Check if we have new quiz results (even if empty array was explicitly passed)
+    let isMounted = true;
+
+    (async () => {
       if (location.state?.resultIds !== undefined) {
+        setHasQuizResults(true);
         if (idsFromQuiz.length === 0) {
-          // Quiz returned no results - clear cache but mark quiz as completed
-          localStorage.removeItem("quizResults");
-          localStorage.setItem("quizCompleted", "true");
+          await saveQuizResults([]);
+          if (!isMounted) return;
           setStudyProgrammes([]);
-          setHasQuizResults(true); // User completed quiz, just got no results
+          setHasQuizResults(true);
           setLoading(false);
           return;
         }
-        // Fetch new results
+
         setLoading(true);
 
         const promises = idsFromQuiz.map((id: string) =>
           getStudyProgrammeById(id),
         );
+
         const results = await Promise.allSettled(promises);
 
-        // Process results - filter successful ones and log failures
         const validResults: StudyProgramme[] = [];
-        results.forEach((result, index) => {
-          if (result.status === "fulfilled" && result.value !== null) {
-            validResults.push(result.value);
-          } else if (result.status === "rejected") {
+        results.forEach((r, index) => {
+          if (r.status === "fulfilled" && r.value) {
+            validResults.push(r.value);
+          } else if (r.status === "rejected") {
             console.error(
               `Failed to load study programme ${idsFromQuiz[index]}:`,
-              result.reason,
+              r.reason,
             );
-          } else if (result.status === "fulfilled" && result.value === null) {
+          } else if (r.status === "fulfilled" && r.value === null) {
             console.warn(
               `Study programme ${idsFromQuiz[index]} not found (404)`,
             );
           }
         });
+
+        await saveQuizResults(validResults);
 
         // Only show error if ALL programmes failed to load
         if (validResults.length === 0 && idsFromQuiz.length > 0) {
@@ -93,17 +82,27 @@ const ResultsPage: React.FC = () => {
           setError("Fehler beim Laden der Studiengänge");
         }
 
-        // Save full study programme objects to localStorage
-        localStorage.setItem("quizResults", JSON.stringify(validResults));
-        localStorage.setItem("quizCompleted", "true");
+        if (!isMounted) return;
         setStudyProgrammes(validResults);
         setHasQuizResults(true);
         setLoading(false);
+        return;
       }
-      // If no new IDs, we already loaded from cache in useState initializer
-    };
 
-    fetchStudyProgrammes();
+      const cached = await loadQuizResults();
+      if (!isMounted) return;
+
+      if (cached) {
+        setStudyProgrammes(cached);
+        setHasQuizResults(true);
+      }
+
+      setLoading(false);
+    })();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (

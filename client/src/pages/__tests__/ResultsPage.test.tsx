@@ -4,8 +4,37 @@ import { ThemeProvider } from "@mui/material";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import ResultsPage from "../ResultsPage";
 import theme from "../../theme/theme";
+import * as persist from "../../session/persistQuizSession";
 
 const mockedNavigate = vi.fn();
+vi.mock("../../session/persistQuizSession", () => {
+  let cache: any = null;
+
+  return {
+    loadQuizResults: vi.fn(async () => cache),
+    saveQuizResults: vi.fn(async (results) => {
+      cache = results;
+    }),
+  };
+});
+vi.mock("../../api/quizApi", () => ({
+  getStudyProgrammeById: vi.fn(async (id: string) => ({
+    studiengang_id: id,
+    name: `Test Programme ${id}`,
+  })),
+}));
+
+vi.mock("../../components/quiz/Results", () => ({
+  __esModule: true,
+  default: ({ studyProgrammes }: any) => (
+    <div>
+      <h1>Meine Ergebnisse</h1>
+      {studyProgrammes.map((p: any) => (
+        <div key={p.studiengang_id}>{p.name}</div>
+      ))}
+    </div>
+  ),
+}));
 
 vi.mock("react-router-dom", async () => {
   const actual =
@@ -30,96 +59,104 @@ vi.mock("../../contexts/AuthContext", () => ({
 }));
 
 // Mock the API
-vi.mock("../../api/quizApi", () => ({
-  getStudyProgrammeById: vi.fn((id: string) => {
-    return Promise.resolve({
-      studiengang_id: id,
-      name: `Test Programme ${id}`,
-      hochschule: "Test University",
-      abschluss: "Bachelor of Science",
-      homepage: "https://example.com",
-      studienbeitrag: "500 EUR",
-      beitrag_kommentar: "Per Semester",
-      anmerkungen: "Test notes",
-      regelstudienzeit: "6 Semester",
-      zulassungssemester: "WS/SS",
-      zulassungsmodus: "NC",
-      zulassungsvoraussetzungen: "Abitur",
-      zulassungslink: "https://example.com/apply",
-      schwerpunkte: ["AI", "Software Engineering"],
-      sprachen: ["Deutsch", "Englisch"],
-      standorte: ["München"],
-      studienfelder: ["Informatik"],
-      studienform: ["Vollzeit"],
-      fristen: null,
-    });
-  }),
-}));
 
-const renderWithTheme = (component: React.ReactElement) => {
+beforeEach(async () => {
+  mockedNavigate.mockClear();
+
+  const api = await import("../../api/quizApi");
+  vi.mocked(api.getStudyProgrammeById).mockImplementation(
+    async (id: string) =>
+      ({
+        studiengang_id: id,
+        name: `Test Programme ${id}`,
+        hochschule: "Test University",
+        abschluss: "Bachelor of Science",
+        homepage: "https://example.com",
+        studienbeitrag: "500 EUR",
+        beitrag_kommentar: "Per Semester",
+        anmerkungen: "Test notes",
+        regelstudienzeit: "6 Semester",
+        zulassungssemester: "WS/SS",
+        zulassungsmodus: "NC",
+        zulassungsvoraussetzungen: "Abitur",
+        zulassungslink: "https://example.com/apply",
+        schwerpunkte: ["AI", "Software Engineering"],
+        sprachen: ["Deutsch", "Englisch"],
+        standorte: ["München"],
+        studienfelder: ["Informatik"],
+        studienform: ["Vollzeit"],
+        fristen: null,
+      }) as any,
+  );
+});
+
+const renderWithTheme = (
+  component: React.ReactElement,
+  entry: { pathname: string; state?: any } = {
+    pathname: "/results",
+    state: { resultIds: ["1", "2"] },
+  },
+) => {
   return render(
-    <MemoryRouter
-      initialEntries={[
-        { pathname: "/results", state: { idsFromLevel2: ["1", "2"] } },
-      ]}
-    >
-      <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <MemoryRouter initialEntries={[entry]}>
         <Routes>
           <Route path="/results" element={component} />
         </Routes>
-      </ThemeProvider>
-    </MemoryRouter>,
+      </MemoryRouter>
+    </ThemeProvider>,
   );
 };
 
 describe("ResultsPage Component", () => {
   beforeEach(() => {
     mockedNavigate.mockClear();
-    localStorage.clear();
   });
 
   it("renders the page title", async () => {
     renderWithTheme(<ResultsPage />);
-    await waitFor(() => {
-      expect(screen.getByText("Meine Ergebnisse")).toBeInTheDocument();
-    });
+    expect(await screen.findByText("Meine Ergebnisse")).toBeInTheDocument();
   });
 
-  it("shows loading state initially", () => {
-    renderWithTheme(<ResultsPage />);
-    expect(screen.getByText("Lädt...")).toBeInTheDocument();
+  test("shows loading state initially", async () => {
+    const api = await import("../../api/quizApi");
+    vi.mocked(api.getStudyProgrammeById).mockImplementation(
+      () => new Promise(() => {}) as any,
+    );
+
+    renderWithTheme(<ResultsPage />, {
+      pathname: "/results",
+      state: { resultIds: ["1"] },
+    });
+
+    expect(await screen.findByText(/lädt/i)).toBeInTheDocument();
   });
 
   it("fetches and displays study programmes from navigation state", async () => {
+    renderWithTheme(<ResultsPage />, {
+      pathname: "/results",
+      state: { resultIds: ["1", "2"] },
+    });
+
+    expect(await screen.findByText("Test Programme 1")).toBeInTheDocument();
+    expect(await screen.findByText("Test Programme 2")).toBeInTheDocument();
+  });
+
+  it("saves results to IndexedDB when fetched", async () => {
     renderWithTheme(<ResultsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Test Programme 1")).toBeInTheDocument();
+      expect(vi.mocked(persist.saveQuizResults)).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({ studiengang_id: "1" }),
+          expect.objectContaining({ studiengang_id: "2" }),
+        ]),
+      );
     });
   });
 
-  it("saves results to localStorage when fetched", async () => {
-    renderWithTheme(<ResultsPage />);
-
-    await waitFor(() => {
-      const cached = localStorage.getItem("quizResults");
-      expect(cached).not.toBeNull();
-      const parsed = JSON.parse(cached!);
-      expect(parsed).toHaveLength(2);
-    });
-  });
-
-  it("sets quizCompleted flag in localStorage", async () => {
-    renderWithTheme(<ResultsPage />);
-
-    await waitFor(() => {
-      expect(localStorage.getItem("quizCompleted")).toBe("true");
-    });
-  });
-
-  it("loads results from localStorage when no new IDs provided", async () => {
-    // Pre-populate localStorage
-    const mockResults = [
+  it("loads results from IndexedDB when no new IDs provided", async () => {
+    vi.mocked(persist.loadQuizResults).mockResolvedValueOnce([
       {
         studiengang_id: "cached1",
         name: "Cached Programme",
@@ -141,9 +178,7 @@ describe("ResultsPage Component", () => {
         studienform: ["Vollzeit"],
         fristen: null,
       },
-    ];
-    localStorage.setItem("quizResults", JSON.stringify(mockResults));
-    localStorage.setItem("quizCompleted", "true");
+    ] as any);
 
     render(
       <MemoryRouter initialEntries={["/results"]}>
