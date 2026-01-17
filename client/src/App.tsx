@@ -9,47 +9,17 @@ import Login from "./pages/Login";
 import Favourites from "./pages/Favourites";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Impressum from "./pages/Impressum";
-import LoginCheckpoint from "./components/LoginCheckpoint";
 
 export default function App() {
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <LoginCheckpoint>
-            <Homescreen />
-          </LoginCheckpoint>
-        }
-      />
+      <Route path="/" element={<Homescreen />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route
-        path="/quiz"
-        element={
-          <LoginCheckpoint>
-            <QuizFlow />
-          </LoginCheckpoint>
-        }
-      />
+      <Route path="/quiz" element={<QuizFlow />} />
       <Route path="/results" element={<ResultsPage />} />
       <Route path="/favorites" element={<Favourites />} />
-      <Route
-        path="/impressum"
-        element={
-          <LoginCheckpoint>
-            <Impressum />
-          </LoginCheckpoint>
-        }
-      />
-      <Route
-        path="/favorites"
-        element={
-          <LoginCheckpoint>
-            <Favourites />
-          </LoginCheckpoint>
-        }
-      />
+      <Route path="/impressum" element={<Impressum />} />
       <Route
         path="/settings"
         element={
