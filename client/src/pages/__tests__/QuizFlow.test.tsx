@@ -16,6 +16,20 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
+vi.mock("../../contexts/AuthContext", () => ({
+  useAuth: () => ({
+    user: { id: 1, username: "testuser" },
+    isLoading: false,
+    login: vi.fn(),
+    logout: vi.fn(),
+    setUser: vi.fn(),
+  }),
+}));
+
+vi.mock("../../api/quizApi", () => ({
+  saveQuizResults: vi.fn().mockResolvedValue(undefined),
+}));
+
 vi.mock("../../components/quiz/LevelSuccessScreen", () => ({
   __esModule: true,
   default: ({
@@ -98,7 +112,7 @@ describe("QuizFlow", () => {
     expect(screen.getByText("Mock Success Level 2")).toBeInTheDocument();
   });
 
-  test("navigates to /result after level 2", () => {
+  test("navigates to /result after level 2", async () => {
     render(
       <MemoryRouter>
         <QuizFlow />
@@ -109,6 +123,9 @@ describe("QuizFlow", () => {
     fireEvent.click(screen.getByText("go-to-l2")); // finish L1
     fireEvent.click(screen.getByText("continue")); // L2
     fireEvent.click(screen.getByText("go-to-l3")); // finish L2
+
+    // Wait for the success screen to appear after async operation
+    await screen.findByText("Mock Success Level 3");
     fireEvent.click(screen.getByText("continue"));
 
     expect(navigateMock).toHaveBeenCalledWith("/results", {
