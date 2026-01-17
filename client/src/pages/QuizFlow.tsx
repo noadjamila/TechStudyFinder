@@ -33,7 +33,7 @@ export default function QuizFlow(): JSX.Element | null {
   const sessionRef = useRef(session);
 
   /**
-   * only Loads in the questions for Level 2 if there are no Questions saved in Session
+   * Only loads the questions for level 2 if there are no questions saved in session
    */
   useEffect(() => {
     if (!isHydrated) return;
@@ -195,12 +195,8 @@ export default function QuizFlow(): JSX.Element | null {
       answers: payload,
       studyProgrammeIds: level1IDS,
     });
-    /*
-    const latestAnswers = sessionRef.current.answers;
-    handleLevelComplete(latestAnswers, 2).catch((error) => {
-      console.error("Error completing level 2:", error);
-    });
- */ setSession((prev) => ({
+
+    setSession((prev) => ({
       ...prev,
       resultIds: res.ids,
       currentLevel: 3,
