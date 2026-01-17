@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Quiz_L1 from "../components/quiz/Quiz_L1";
 import Quiz_L2 from "../components/quiz/Quiz_L2";
 import LevelSuccessScreen from "../components/quiz/LevelSuccessScreen";
+import { saveQuizResults } from "../api/quizApi";
+import { useAuth } from "../contexts/AuthContext";
 
 type Level = 1 | 2 | 3;
 
@@ -15,6 +17,7 @@ type Level = 1 | 2 | 3;
  */
 export default function QuizFlow() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [currentLevel, setCurrentLevel] = useState<Level>(1);
   const [showLevelSuccess, setShowLevelSuccess] = useState(true);
@@ -56,8 +59,20 @@ export default function QuizFlow() {
         oneLevelBack={() => {
           setCurrentLevel(1);
         }}
-        onNextLevel={(ids) => {
+        onNextLevel={async (ids) => {
           setIdsFromLevel2(ids);
+
+          // Save results to database if user is authenticated
+          if (user && ids.length > 0) {
+            try {
+              await saveQuizResults(ids);
+              console.debug("Quiz results saved to database");
+            } catch (err) {
+              console.error("Failed to save quiz results:", err);
+              // Continue to results even if save fails
+            }
+          }
+
           setCurrentLevel(3);
           setShowLevelSuccess(true);
           setShowResults(true);
