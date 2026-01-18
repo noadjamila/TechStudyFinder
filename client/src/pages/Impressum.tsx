@@ -1,5 +1,6 @@
 import { Container, Typography, Box, Link } from "@mui/material";
 import MainLayout from "../layouts/MainLayout";
+import theme from "../theme/theme";
 
 export default function Impressum() {
   return (
@@ -30,13 +31,20 @@ export default function Impressum() {
             <br />
             Telefon: +49 (0)228 302-145
             <br />
-            E-Mail: <Link href="mailto:info@gi.de">info@gi.de</Link>
+            E-Mail:{" "}
+            <Link
+              href="mailto:info@gi.de"
+              sx={{ color: theme.palette.detailspage.link }}
+            >
+              info@gi.de
+            </Link>
             <br />
             Internet:{" "}
             <Link
               href="https://www.gi.de"
               target="_blank"
               rel="noopener noreferrer"
+              sx={{ color: theme.palette.detailspage.link }}
             >
               https://www.gi.de
             </Link>
@@ -122,7 +130,13 @@ export default function Impressum() {
             10178 Berlin
             <br />
             <br />
-            E-Mail: <Link href="mailto:berlin@gi.de">berlin@gi.de</Link>
+            E-Mail:{" "}
+            <Link
+              href="mailto:berlin@gi.de"
+              sx={{ color: theme.palette.detailspage.link }}
+            >
+              berlin@gi.de
+            </Link>
           </Typography>
 
           <Typography
@@ -147,6 +161,7 @@ export default function Impressum() {
               href="https://gi.de/datenschutz"
               target="_blank"
               rel="noopener noreferrer"
+              sx={{ color: theme.palette.detailspage.link }}
             >
               https://gi.de/datenschutz
             </Link>
