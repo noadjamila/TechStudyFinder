@@ -1,5 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import Header from "../Header";
 import "@testing-library/jest-dom";
 import { AuthProvider } from "../../contexts/AuthContext";
@@ -11,8 +12,18 @@ vi.mock("../../api/authApi", () => ({
   logout: vi.fn(),
 }));
 
+vi.mock("../../hooks/useApiClient", () => ({
+  useApiClient: vi.fn(() => ({
+    apiFetch: fetch,
+  })),
+}));
+
 const renderWithAuth = (ui: React.ReactElement) => {
-  return render(<AuthProvider>{ui}</AuthProvider>);
+  return render(
+    <MemoryRouter>
+      <AuthProvider>{ui}</AuthProvider>
+    </MemoryRouter>,
+  );
 };
 
 describe("Header Component", () => {
