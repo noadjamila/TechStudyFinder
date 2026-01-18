@@ -257,7 +257,7 @@ export default function Register() {
                 fontWeight: "bold",
                 textDecoration: "underline",
                 "&:hover": {
-                  color: theme.palette.decorative.blueDark,
+                  color: theme.palette.detailspage.link,
                 },
               }}
               onClick={() => navigate("/login")}

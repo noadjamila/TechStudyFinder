@@ -137,7 +137,7 @@ export default function Login() {
                 fontWeight: "bold",
                 textDecoration: "underline",
                 "&:hover": {
-                  color: theme.palette.decorative.blueDark,
+                  color: theme.palette.detailspage.link,
                 },
               }}
               onClick={() => navigate("/register")}
