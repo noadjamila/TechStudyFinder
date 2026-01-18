@@ -253,11 +253,11 @@ export default function Register() {
               component="span"
               variant="body2"
               sx={{
-                color: theme.palette.decorative.blue,
                 cursor: "pointer",
                 fontWeight: "bold",
+                textDecoration: "underline",
                 "&:hover": {
-                  textDecoration: "underline",
+                  color: theme.palette.decorative.blueDark,
                 },
               }}
               onClick={() => navigate("/login")}
