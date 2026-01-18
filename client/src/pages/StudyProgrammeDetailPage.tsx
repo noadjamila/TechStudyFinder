@@ -32,6 +32,7 @@ import { useAuth } from "../contexts/AuthContext";
 import LoginReminderDialog, {
   FAVORITES_LOGIN_MESSAGE,
 } from "../components/dialogs/LoginReminderDialog";
+import { useApiClient } from "../hooks/useApiClient";
 
 /**
  * StudyProgrammeDetailPage displays detailed information about a single study programme.
@@ -42,6 +43,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const { apiFetch } = useApiClient();
   const [isFavorite, setIsFavorite] = useState(false);
   const [programme, setProgramme] = useState<StudyProgramme | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -61,7 +63,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
     const loadFavoriteState = async () => {
       if (!id) return;
       try {
-        const favoriteIds = await getFavorites();
+        const favoriteIds = await getFavorites(apiFetch);
         setIsFavorite(favoriteIds.includes(id));
       } catch (error) {
         console.error("Failed to load favorites:", error);
@@ -81,7 +83,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
 
       try {
         setLoading(true);
-        const data = await getStudyProgrammeById(id);
+        const data = await getStudyProgrammeById(id, apiFetch);
         setProgramme(data);
       } catch (err) {
         console.error("Error fetching study programme:", err);
@@ -108,9 +110,9 @@ const StudyProgrammeDetailPage: React.FC = () => {
 
     try {
       if (wasFavorited) {
-        await removeFavorite(id);
+        await removeFavorite(id, apiFetch);
       } else {
-        await addFavorite(id);
+        await addFavorite(id, apiFetch);
       }
     } catch (error: any) {
       if (error.message && error.message.includes("409")) {
