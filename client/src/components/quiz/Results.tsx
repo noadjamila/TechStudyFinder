@@ -6,7 +6,6 @@ import {
   Select,
   MenuItem,
   FormControl,
-  Snackbar,
 } from "@mui/material";
 import theme from "../../theme/theme";
 import { StudyProgramme } from "../../types/StudyProgramme.types";
@@ -17,6 +16,9 @@ import StudyProgrammeCard from "../cards/StudyProgrammeCard";
 import { useNavigate, useLocation } from "react-router-dom";
 import GreenCard from "../cards/GreenCardBaseNotQuiz";
 import PrimaryButton from "../buttons/PrimaryButton";
+import LoginReminderDialog, {
+  FAVORITES_LOGIN_MESSAGE,
+} from "../dialogs/LoginReminderDialog";
 import {
   addFavorite,
   removeFavorite,
@@ -30,8 +32,13 @@ interface ResultsProps {
 }
 
 /**
- * Results component displays filtered study programmes.
- * Receives study programmes as props from parent component.
+ * Results component displays filtered study programmes with interactive features.
+ *
+ * Receives study programmes as props from parent component and provides:
+ * - Filtering options by location and degree type
+ * - Favorite/unfavorite functionality (requires user authentication)
+ * - Login reminder dialog when attempting to favorite while not logged in
+ * - Automatic loading of user's favorites on component mount and navigation
  */
 const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   const navigate = useNavigate();
@@ -41,7 +48,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [selectedDegree, setSelectedDegree] = useState<string>("");
-  const [showLoginSnackbar, setShowLoginSnackbar] = useState(false);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
 
   // Load favorites from API on component mount and when location changes
   useEffect(() => {
@@ -64,7 +71,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   const toggleFavorite = async (programmeId: string) => {
     // Check if user is authenticated
     if (!user) {
-      setShowLoginSnackbar(true);
+      setShowLoginDialog(true);
       return;
     }
 
@@ -415,36 +422,15 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
         </>
       )}
 
-      {/* Login Required Snackbar */}
-      <Snackbar
-        open={showLoginSnackbar}
-        autoHideDuration={1800}
-        onClose={() => setShowLoginSnackbar(false)}
-        anchorOrigin={{ horizontal: "center", vertical: "top" }}
-      >
-        <Box
-          sx={{
-            backgroundColor: theme.palette.decorative.green,
-            borderRadius: 4,
-            boxShadow: 3,
-            px: { xs: 2, md: 4 },
-            py: { xs: 3, md: 4 },
-            maxWidth: { xs: 280, md: 400 },
-            textAlign: "center",
-          }}
-        >
-          <Typography
-            sx={{
-              color: theme.palette.text.primary,
-              fontSize: { xs: "0.95rem", md: "1rem" },
-              fontWeight: 500,
-            }}
-          >
-            Du musst dich erst einloggen, um deine Favoriten speichern zu
-            können.
-          </Typography>
-        </Box>
-      </Snackbar>
+      {/* Login Required Dialog */}
+      <LoginReminderDialog
+        open={showLoginDialog}
+        onClose={() => setShowLoginDialog(false)}
+        onLoginClick={() =>
+          navigate("/login", { state: { redirectTo: location.pathname } })
+        }
+        message={FAVORITES_LOGIN_MESSAGE}
+      />
     </Box>
   );
 };
