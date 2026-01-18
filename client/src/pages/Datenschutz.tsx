@@ -1,5 +1,6 @@
-import { Container, Typography, Box } from "@mui/material";
+import { Container, Typography, Box, Link } from "@mui/material";
 import MainLayout from "../layouts/MainLayout";
+import theme from "../theme/theme";
 
 export default function Datenschutz() {
   return (
@@ -31,14 +32,23 @@ export default function Datenschutz() {
           </Typography>
 
           <Typography variant="body1" sx={{ mb: 4 }}>
-            Verantwortlich für die Datenverarbeitung ist:
+            Verantwortliche Stelle im Sinne des Datenschutzrechts:
             <br />
             <br />
-            [Name/Organisation]
+            Gesellschaft für Informatik e.V.
             <br />
-            [Adresse]
+            Ahrstraße 45
             <br />
-            E-Mail: [E-Mail-Adresse]
+            53175 Bonn
+            <br />
+            <br />
+            E-Mail:{" "}
+            <Link
+              href="mailto:info@gi.de"
+              sx={{ color: theme.palette.detailspage.link }}
+            >
+              info@gi.de
+            </Link>
             <br />
             <br />
             Bei Fragen zum Datenschutz können Sie sich jederzeit an diese
@@ -67,8 +77,8 @@ export default function Datenschutz() {
             </li>
             <li>
               <Typography variant="body1">
-                <strong>Passwort:</strong> Wird verschlüsselt (gehasht)
-                gespeichert
+                <strong>Passwort:</strong> Wird nicht im Klartext gespeichert,
+                sondern mit einem sicheren Hashing-Verfahren verarbeitet.
               </Typography>
             </li>
             <li>
@@ -197,20 +207,17 @@ export default function Datenschutz() {
           <Box component="ul" sx={{ mb: 4, pl: 4 }}>
             <li>
               <Typography variant="body1">
-                <strong>Benutzerkonto-Daten:</strong> Bis zur Löschung Ihres
-                Kontos
-              </Typography>
-            </li>
-            <li>
-              <Typography variant="body1">
-                <strong>Favoriten und Quiz-Ergebnisse:</strong> Solange Ihr
-                Konto besteht (werden bei Kontolöschung automatisch gelöscht)
-              </Typography>
-            </li>
-            <li>
-              <Typography variant="body1">
                 <strong>Session-Cookie:</strong> Maximal 24 Stunden oder beim
                 Schließen des Browsers
+              </Typography>
+            </li>
+            <li>
+              <Typography variant="body1">
+                <strong>
+                  Benutzerkonto-Daten, Favoriten und Quiz-Ergebnisse:
+                </strong>{" "}
+                Solange Ihr Konto besteht (werden bei Kontolöschung automatisch
+                gelöscht)
               </Typography>
             </li>
           </Box>
@@ -294,8 +301,8 @@ export default function Datenschutz() {
           <Box component="ul" sx={{ mb: 4, pl: 4 }}>
             <li>
               <Typography variant="body1">
-                Passwörter werden mit modernen Hashing-Algorithmen (bcrypt)
-                verschlüsselt gespeichert
+                Passwörter werden mit modernen Hashing-Algorithmen (z. B.
+                bcrypt) gesichert gespeichert
               </Typography>
             </li>
             <li>
@@ -321,11 +328,15 @@ export default function Datenschutz() {
           </Typography>
 
           <Typography variant="body1" sx={{ mb: 4 }}>
-            Die in der Anwendung dargestellten Studiengangs-Informationen
-            stammen aus öffentlich zugänglichen Datenquellen. Diese Daten
-            unterliegen nicht dem Datenschutz, da es sich um allgemeine
-            Informationen über Studienprogramme handelt, nicht um
-            personenbezogene Daten.
+            Die in der Anwendung dargestellten Informationen zu Studiengängen
+            werden uns von Kooperationspartnern bzw. Dritten zur Verfügung
+            gestellt. Die Nutzung dieser Daten erfolgt auf vertraglicher
+            Grundlage.
+            <br />
+            <br />
+            Bei den dargestellten Informationen handelt es sich um sachliche
+            Angaben zu Studienprogrammen ohne Personenbezug. Es werden in diesem
+            Zusammenhang keine personenbezogenen Daten verarbeitet.
           </Typography>
 
           {/* Änderungen */}
