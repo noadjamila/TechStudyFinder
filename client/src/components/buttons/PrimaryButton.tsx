@@ -37,7 +37,7 @@ export default function PrimaryButton({
         borderRadius: "9px",
         fontWeight: "normal",
         "&:hover:not(:disabled)": {
-          color: theme.palette.decorative.blueDark,
+          bgcolor: theme.palette.decorative.blueDark,
         },
         "&:disabled": {
           bgcolor: theme.palette.primary.main,
