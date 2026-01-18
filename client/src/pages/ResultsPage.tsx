@@ -101,6 +101,21 @@ const ResultsPage: React.FC = () => {
     fetchStudyProgrammes();
   }, [location.state, user?.id, authLoading]); // Re-run when navigation state, user, or auth loading state changes
 
+  // Show dialog when closing the browser/tab
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (!user && hasQuizResults) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [user, hasQuizResults]);
+
   return (
     <MainLayout>
       {loading ? (

@@ -1,5 +1,5 @@
 import React, { useState, ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Menu,
   MenuItem,
@@ -14,6 +14,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import FolderIcon from "@mui/icons-material/Folder";
 import theme from "../theme/theme";
 import { useAuth } from "../contexts/AuthContext";
+import LoginReminderDialog from "./dialogs/LoginReminderDialog";
 
 const MENU_ITEM_SX = {
   borderRadius: 999,
@@ -36,9 +37,12 @@ interface MenuItemConfig {
 
 export default function DropMenu() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isLoading } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [intendedDestination, setIntendedDestination] = useState("");
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -60,7 +64,22 @@ export default function DropMenu() {
 
   const handleNavigate = (path: string) => {
     handleMenuClose();
-    navigate(path);
+    if (location.pathname === "/results" && !user && !isLoading) {
+      setIsDialogOpen(true);
+      setIntendedDestination(path);
+    } else {
+      navigate(path);
+    }
+  };
+
+  const handleProceedNavigation = () => {
+    setIsDialogOpen(false);
+    navigate(intendedDestination);
+  };
+
+  const handleLoginClick = () => {
+    setIsDialogOpen(false);
+    navigate("/login", { state: { redirectTo: intendedDestination } });
   };
 
   const menuItems: MenuItemConfig[] = [
@@ -141,6 +160,13 @@ export default function DropMenu() {
           </MenuItem>
         ))}
       </Menu>
+
+      <LoginReminderDialog
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onLoginClick={handleLoginClick}
+        onProceedNavigation={handleProceedNavigation}
+      />
     </>
   );
 }
