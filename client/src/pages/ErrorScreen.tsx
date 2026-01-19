@@ -93,7 +93,7 @@ export const ErrorScreen: React.FC<ErrorScreenProps> = ({
     >
       {code && (
         <Typography
-          variant="h1"
+          variant="errorScreenTitle"
           color="secondary"
           sx={{
             position: "absolute",

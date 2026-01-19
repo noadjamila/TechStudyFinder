@@ -18,6 +18,7 @@ export default defineConfig([
       "server/dist/**",
       "**/*.js.map",
       "**/*.d.ts.map",
+       "**/*.d.ts", 
     ],
   },
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
 import { RiasecType, initialScores } from "../../types/RiasecTypes";
-import ErrorScreen from "../error-screen/ErrorScreen";
+import { ErrorScreen } from "../../pages/ErrorScreen";
 import { useApiClient } from "../../hooks/useApiClient";
 import CardStack from "../cards/CardStackLevel2";
 import { Stack, Typography } from "@mui/material";
