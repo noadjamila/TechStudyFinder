@@ -5,6 +5,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Layout from "../../layouts/AdminLayout";
 import UploadSection from "../../components/admin/UploadSection";
 import Spinner from "../../components/admin/Spinner";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Admin Upload Page.
@@ -12,6 +13,7 @@ import Spinner from "../../components/admin/Spinner";
  * @returns JSX Element
  */
 export default function AdminUpload() {
+  const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,6 +63,10 @@ export default function AdminUpload() {
 
       setIsSuccess(true);
       setError(null);
+      setTimeout(() => {
+        setIsSuccess(false);
+        navigate("/admin/edit");
+      }, 2000);
     } catch (err) {
       console.error("Error during API call:", err);
       const errorMessage =

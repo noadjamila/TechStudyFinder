@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import multer from "multer";
-import { processUploadFiles } from "../services/admin.service";
+import {
+  processUploadFiles,
+  handleGetRiasecData,
+} from "../services/admin.service";
 
 /**
  * Multer configuration for handling XML file uploads in memory.
@@ -126,6 +129,19 @@ export async function uploadData(req: Request, res: Response) {
     res.status(500).json({
       error: errorMessage,
       details: details,
+    });
+  }
+}
+
+export async function getRiasecData(__req: Request, res: Response) {
+  try {
+    const riasecData = await handleGetRiasecData();
+    res.status(200).json(riasecData);
+  } catch (error) {
+    console.error("Fehler beim Abrufen der RIASEC-Daten:", error);
+    res.status(500).json({
+      error: "Fehler beim Abrufen der RIASEC-Daten",
+      details: error instanceof Error ? error.message : String(error),
     });
   }
 }

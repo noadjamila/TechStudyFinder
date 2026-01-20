@@ -1,4 +1,5 @@
 import { initializeDatabaseWithUpload } from "../../db/scripts/init_data_with_upload";
+import { getRiasecData } from "../repositories/admin.repository";
 
 interface UploadFiles {
   institutionsXml: string;
@@ -25,4 +26,14 @@ export async function processUploadFiles({
 
   // Datenbank-Initialisierung
   await initializeDatabaseWithUpload(institutionsXml, degreeprogrammesXml);
+}
+
+export async function handleGetRiasecData() {
+  try {
+    const riasecData = await getRiasecData();
+    return riasecData;
+  } catch (error) {
+    console.error("Fehler beim Abrufen der RIASEC-Daten:", error);
+    throw error;
+  }
 }

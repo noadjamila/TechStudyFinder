@@ -3,6 +3,7 @@ import {
   uploadData,
   uploadMiddleware,
   handleMulterError,
+  getRiasecData,
 } from "../controllers/admin.controller";
 
 export const adminRouter = Router();
@@ -16,5 +17,7 @@ adminRouter.post(
   handleMulterError,
   uploadData,
 );
+
+adminRouter.get("/riasec-data", getRiasecData);
 
 export default adminRouter;
