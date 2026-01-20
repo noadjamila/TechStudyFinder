@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
 import { RiasecType, initialScores } from "../../types/RiasecTypes";
-import ErrorScreen from "../error-screen/ErrorScreen";
+import { ErrorScreen } from "../../pages/ErrorScreen";
+import { useApiClient } from "../../hooks/useApiClient";
 import CardStack from "../cards/CardStackLevel2";
 import { Stack, Typography } from "@mui/material";
 import { postFilterLevel, getQuizLevel } from "../../api/quizApi";
@@ -40,6 +41,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
   onNextLevel,
   oneLevelBack,
 }) => {
+  const { apiFetch } = useApiClient();
   const [questions, setQuestions] = useState<
     { text: string; riasec_type: RiasecType }[]
   >([]);
@@ -146,11 +148,14 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
     const scoresArray = scoresToArray(transformedScores);
 
     try {
-      const response = await postFilterLevel({
-        level: 2,
-        answers: scoresArray,
-        studyProgrammeIds: previousIds,
-      });
+      const response = await postFilterLevel(
+        {
+          level: 2,
+          answers: scoresArray,
+          studyProgrammeIds: previousIds,
+        },
+        apiFetch,
+      );
 
       const idsArray = response.ids.map((item: any) => item.studiengang_id);
       onNextLevel(idsArray);
@@ -171,7 +176,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const data = await getQuizLevel(2);
+        const data = await getQuizLevel(2, apiFetch);
 
         if (!data.questions || data.questions.length === 0) {
           throw new Error("No questions found in the response.");

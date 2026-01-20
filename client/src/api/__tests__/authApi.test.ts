@@ -64,7 +64,7 @@ describe("authApi", () => {
       );
 
       await expect(authApi.login("alice", "wrong")).rejects.toThrow(
-        "Login failed",
+        "Login fehlgeschlagen",
       );
     });
   });
