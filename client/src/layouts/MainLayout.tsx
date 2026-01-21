@@ -32,9 +32,9 @@ export default function MainLayout({
       {children}
     </Box>
   ) : (
-    <Box sx={{ pt: "50px" }}>
+    <Box sx={{ pt: "50px", pb: "110px" }}>
       {" "}
-      {/* Offset for mobile navbar */}
+      {/* Offset for mobile header and bottom navbar */}
       {children}
     </Box>
   );
