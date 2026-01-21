@@ -135,7 +135,7 @@ export default function Datenschutz() {
           </Typography>
 
           <Typography variant="body1" sx={{ mb: 3 }}>
-            Wenn Sie den Studienempfehlungs-Quiz durchführen und angemeldet
+            Wenn Sie das Studienempfehlungs-Quiz durchführen und angemeldet
             sind, speichern wir:
           </Typography>
 
