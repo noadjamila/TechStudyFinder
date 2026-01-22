@@ -153,7 +153,6 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
       sx={{
         maxWidth: 650,
         margin: "0 auto",
-        paddingBottom: { xs: "120px", sm: 3 },
         minHeight: "100vh",
       }}
     >

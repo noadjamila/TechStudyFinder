@@ -150,7 +150,6 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ favorites }) => {
       sx={{
         maxWidth: 650,
         margin: "0 auto",
-        paddingBottom: { xs: "120px", sm: 3 },
         opacity: isFading ? 0 : 1,
         transition: "opacity 1800ms ease-in-out",
       }}
