@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Box, Alert, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import PrimaryButton from "../components/buttons/PrimaryButton";
@@ -154,6 +154,12 @@ export default function Register() {
     }
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter" && !loading) {
+      handleRegister();
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -195,6 +201,7 @@ export default function Register() {
           label="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          onKeyPress={handleKeyPress}
           disabled={loading}
           helperText={
             !validateUsername(username).valid
@@ -208,6 +215,7 @@ export default function Register() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyPress={handleKeyPress}
           disabled={loading}
           helperText={
             !validatePassword(password).valid
@@ -221,6 +229,7 @@ export default function Register() {
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
+          onKeyPress={handleKeyPress}
           disabled={loading}
           sx={{ mb: 3 }}
         />
