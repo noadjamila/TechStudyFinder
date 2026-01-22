@@ -36,3 +36,20 @@ export const initialScores: Record<RiasecType, number> = {
   [RiasecType.E]: 0,
   [RiasecType.C]: 0,
 };
+
+export interface RiasecData {
+  studiengebiete: RiasecItem[];
+  studienfelder: RiasecItem[];
+  studiengaenge: RiasecItem[];
+}
+
+export interface RiasecItem {
+  id: number;
+  name: string;
+  R: number | null;
+  I: number | null;
+  A: number | null;
+  S: number | null;
+  E: number | null;
+  C: number | null;
+}

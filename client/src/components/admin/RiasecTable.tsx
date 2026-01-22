@@ -21,24 +21,29 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import theme from "../../theme/theme";
-
-interface RiasecItem {
-  id: number;
-  name: string;
-  r: number | null;
-  i: number | null;
-  a: number | null;
-  s: number | null;
-  e: number | null;
-  c: number | null;
-  [key: string]: any;
-}
+import { RiasecItem } from "../../types/RiasecTypes";
 
 interface Props {
   items: RiasecItem[];
   tableKey: string;
 }
 
+/**
+ * RiasecTable Component
+ *
+ * Displays a table of RIASEC items (study areas, fields, or programs) with search and edit functionality.
+ *
+ * Features:
+ * - Search bar filters table rows by any property
+ * - Editable items via Edit dialog (except "id" and "name")
+ * - Highlights null values
+ * - Table headers are dynamic based on item keys
+ * - Action column with Edit button (not shown for "studiengaenge" table)
+ *
+ * @param param0 items: RiasecItem[] → array of items to display
+ * @param param1 tableKey: string → identifies which table is being rendered ("studiengebiete", "studienfelder", "studiengaenge")
+ * @returns JSX Element
+ */
 export default function RiasecTable({ items, tableKey }: Props) {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [editItem, setEditItem] = useState<RiasecItem | null>(null);
@@ -58,21 +63,27 @@ export default function RiasecTable({ items, tableKey }: Props) {
     );
   }, [items, searchTerm]);
 
-  // Spalten ermitteln (ohne id)
   const columns = useMemo(() => {
     if (!items.length) return [];
-    return Object.keys(items[0]);
+    return Object.keys(items[0]).filter((key) => key !== "id");
   }, [items]);
 
-  // Edit-Werte initialisieren wenn Dialog geöffnet wird
+  type EditValues = {
+    [K in keyof RiasecItem]?: RiasecItem[K] | null;
+  };
+
   useEffect(() => {
-    if (editItem) {
-      const values: { [key: string]: any } = {};
-      Object.keys(editItem).forEach((key) => {
-        values[key] = editItem[key];
+    if (!editItem) return;
+
+    const values: EditValues = {};
+
+    (Object.keys(editItem) as (keyof RiasecItem)[])
+      .filter((key) => key !== "id" && key !== "name")
+      .forEach((key) => {
+        values[key] = editItem[key] as any;
       });
-      setEditValues(values);
-    }
+
+    setEditValues(values);
   }, [editItem]);
 
   const handleEdit = (item: RiasecItem) => {
@@ -82,25 +93,47 @@ export default function RiasecTable({ items, tableKey }: Props) {
   const handleClose = () => {
     setEditItem(null);
     setEditValues({});
+    window.location.reload();
   };
 
   const handleEditValueChange = (key: string, value: any) => {
     setEditValues((prev) => ({ ...prev, [key]: value }));
   };
 
+  const getChangedValues = (original: RiasecItem, edited: EditValues) => {
+    const changes: EditValues = {};
+
+    (Object.keys(edited) as (keyof RiasecItem)[]).forEach((key) => {
+      if (key === "id") return; // id darf nie verändert werden
+
+      const originalValue = original[key];
+      const editedValue = edited[key];
+
+      if (editedValue !== undefined && editedValue !== originalValue) {
+        changes[key] = editedValue as any;
+      }
+    });
+
+    return changes;
+  };
+
   const handleSave = async () => {
     if (!editItem) return;
 
     try {
-      // TODO: API-Call zum Speichern implementieren
-      console.log("Speichern:", editItem.id, editValues);
+      const changes = getChangedValues(editItem, editValues);
 
-      // Hier würde der API-Call stehen:
-      // await fetch(`/api/admin/riasec-data/${editItem.id}`, {
-      //   method: "PUT",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(editValues),
-      // });
+      const data = {
+        table: tableKey,
+        id: editItem.id,
+        changes: changes,
+      };
+
+      await fetch(`/api/admin/edit-riasec-data`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
       handleClose();
     } catch (error) {
@@ -216,20 +249,22 @@ export default function RiasecTable({ items, tableKey }: Props) {
                 >
                   {columns.map((col) => (
                     <TableCell
-                      key={col}
+                      key={`${item.id}-${col}`}
                       sx={{
                         backgroundColor:
-                          item[col] === null
+                          item[col as keyof RiasecItem] === null
                             ? theme.palette.background.paper
                             : theme.palette.background.default,
                       }}
                     >
-                      {typeof item[col] === "number" ? (
+                      {typeof item[col as keyof RiasecItem] === "number" ? (
                         <Typography variant="body2">
-                          {item[col] === null ? "null" : item[col]}
+                          {item[col as keyof RiasecItem] === null
+                            ? "null"
+                            : item[col as keyof RiasecItem]}
                         </Typography>
                       ) : (
-                        item[col]
+                        item[col as keyof RiasecItem]
                       )}
                     </TableCell>
                   ))}
@@ -284,10 +319,10 @@ export default function RiasecTable({ items, tableKey }: Props) {
         <DialogContent sx={{ mt: 2 }}>
           {editItem &&
             Object.keys(editItem)
-              .filter((key) => key !== "name")
+              .filter((key) => key !== "id" && key !== "name")
               .map((key) => (
                 <TextField
-                  key={key}
+                  key={`edit-${editItem.id}-${key}`}
                   label={key}
                   fullWidth
                   margin="normal"
@@ -295,17 +330,18 @@ export default function RiasecTable({ items, tableKey }: Props) {
                   value={editValues[key] ?? ""}
                   onChange={(e) => {
                     const value =
-                      typeof editItem[key] === "number"
-                        ? parseFloat(e.target.value) || 0
+                      typeof editItem[key as keyof RiasecItem] === "number"
+                        ? e.target.value === ""
+                          ? null
+                          : Number(e.target.value)
                         : e.target.value;
                     handleEditValueChange(key, value);
                   }}
-                  type={typeof editItem[key] === "number" ? "number" : "text"}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "9px",
-                    },
-                  }}
+                  type={
+                    typeof editItem[key as keyof RiasecItem] === "number"
+                      ? "number"
+                      : "text"
+                  }
                 />
               ))}
         </DialogContent>

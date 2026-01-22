@@ -6,3 +6,15 @@ export type RiasecScores = {
   E: number;
   C: number;
 };
+
+export interface RiasecData {
+  studienfelder: any[];
+  studiengebiete: any[];
+  studiengaenge: any[];
+}
+
+export interface RiasecUpdate {
+  table: "studienfelder" | "studiengebiete";
+  id: number;
+  changes: { [key: string]: number | null };
+}

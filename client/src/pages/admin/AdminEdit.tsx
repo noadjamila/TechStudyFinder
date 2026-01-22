@@ -14,25 +14,24 @@ import Layout from "../../layouts/AdminLayout";
 import RiasecTable from "../../components/admin/RiasecTable";
 import theme from "../../theme/theme";
 import { useNavigate } from "react-router-dom";
+import { RiasecData } from "../../types/RiasecTypes";
 
-interface RiasecData {
-  studiengebiete: RiasecItem[];
-  studienfelder: RiasecItem[];
-  studiengaenge: RiasecItem[];
-}
-
-interface RiasecItem {
-  id: number;
-  name: string;
-  r: number | null;
-  i: number | null;
-  a: number | null;
-  s: number | null;
-  e: number | null;
-  c: number | null;
-  [key: string]: any;
-}
-
+/**
+ * AdminEdit Component
+ *
+ * This component allows viewing and managing RIASEC data for:
+ * studiengebiete (study areas), studienfelder (study fields), studiengaenge (study programs)
+ *
+ * Features:
+ * - Fetches data from /api/admin/riasec-data on mount
+ * - Shows loading indicator (CircularProgress), error alert (Alert), and warning if some RIASEC values are null
+ * - Displays the three tables in expandable Accordions
+ * - Clickable box navigates to instructions page
+ *
+ * Hooks:
+ * - useEffect: fetches data on component mount
+ * - useMemo: checks if RIASEC values are null (`hasNullRiasecValues`)
+ */
 export default function AdminEdit() {
   const navigate = useNavigate();
   const [error, setError] = useState<{ title: string; message: string } | null>(
@@ -50,7 +49,7 @@ export default function AdminEdit() {
       return false;
 
     return riasecData.studiengebiete.some((gebiet) =>
-      [gebiet.r, gebiet.i, gebiet.a, gebiet.s, gebiet.e, gebiet.c].some(
+      [gebiet.R, gebiet.I, gebiet.A, gebiet.S, gebiet.E, gebiet.C].some(
         (value) => value === null,
       ),
     );

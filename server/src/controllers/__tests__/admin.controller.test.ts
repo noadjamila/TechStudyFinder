@@ -4,8 +4,14 @@ import {
   uploadMiddleware,
   handleMulterError,
   uploadData,
+  editRiasecData,
+  getRiasecData,
 } from "../admin.controller";
-import { processUploadFiles } from "../../services/admin.service";
+import {
+  processUploadFiles,
+  handleEditRiasecData,
+  handleGetRiasecData,
+} from "../../services/admin.service";
 
 jest.mock("../../services/admin.service");
 
@@ -78,5 +84,84 @@ describe("Upload Controller", () => {
 
     expect(res.status).toBe(500);
     expect(res.body.error).toContain("Fehler beim Parsen der XML-Dateien");
+  });
+});
+
+describe("getRiasecData handler", () => {
+  let res: any;
+
+  beforeEach(() => {
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+  });
+
+  it("should return 200 and RIASEC data on success", async () => {
+    const mockData = {
+      studienfelder: [],
+      studiengebiete: [],
+      studiengaenge: [],
+    };
+    (handleGetRiasecData as jest.Mock).mockResolvedValue(mockData);
+
+    await getRiasecData({} as any, res);
+
+    expect(handleGetRiasecData).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(mockData);
+  });
+
+  it("should return 500 and error details on failure", async () => {
+    const mockError = new Error("DB failure");
+    (handleGetRiasecData as jest.Mock).mockRejectedValue(mockError);
+
+    await getRiasecData({} as any, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Fehler beim Abrufen der RIASEC-Daten",
+      details: "DB failure",
+    });
+  });
+});
+
+describe("editRiasecData handler", () => {
+  let req: any;
+  let res: any;
+
+  beforeEach(() => {
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+  });
+
+  it("should update RIASEC data and return 200 on success", async () => {
+    req = { body: { table: "studienfelder", id: 1, changes: { R: 5 } } };
+    (handleEditRiasecData as jest.Mock).mockResolvedValue(undefined);
+
+    await editRiasecData(req, res);
+
+    expect(handleEditRiasecData).toHaveBeenCalledWith(req.body);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "RIASEC-Daten erfolgreich aktualisiert",
+      success: true,
+    });
+  });
+
+  it("should return 500 and error details on failure", async () => {
+    req = { body: { table: "studienfelder", id: 1, changes: { R: 5 } } };
+    const mockError = new Error("Update failed");
+    (handleEditRiasecData as jest.Mock).mockRejectedValue(mockError);
+
+    await editRiasecData(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Fehler beim Aktualisieren der RIASEC-Daten",
+      details: "Update failed",
+    });
   });
 });

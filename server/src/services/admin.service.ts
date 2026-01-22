@@ -1,5 +1,9 @@
 import { initializeDatabaseWithUpload } from "../../db/scripts/init_data_with_upload";
-import { getRiasecData } from "../repositories/admin.repository";
+import {
+  getRiasecData,
+  updateRiasecData,
+} from "../repositories/admin.repository";
+import { RiasecUpdate } from "../types/riasecScores";
 
 interface UploadFiles {
   institutionsXml: string;
@@ -28,6 +32,16 @@ export async function processUploadFiles({
   await initializeDatabaseWithUpload(institutionsXml, degreeprogrammesXml);
 }
 
+/**
+ * Fetches all RIASEC-related data from the database.
+ * This includes:
+ * - `studiengebiete`
+ * - `studienfelder`
+ * - `studiengaenge`
+ *
+ * @returns {Promise<Array>} An array containing all rows from the three RIASEC tables.
+ * @throws Will throw an error if the database query fails.
+ */
 export async function handleGetRiasecData() {
   try {
     const riasecData = await getRiasecData();
@@ -35,5 +49,21 @@ export async function handleGetRiasecData() {
   } catch (error) {
     console.error("Fehler beim Abrufen der RIASEC-Daten:", error);
     throw error;
+  }
+}
+
+/**
+ * Updates an item in one of the RIASEC tables.
+ *
+ * @param {RiasecUpdate} riasecUpdates - Object containing the fields to update and their new values.
+ * @returns {Promise<void>} Resolves when the update is successful.
+ * @throws Will throw an error if the update operation fails.
+ */
+export async function handleEditRiasecData(riasecUpdates: RiasecUpdate) {
+  try {
+    await updateRiasecData(riasecUpdates);
+  } catch (err) {
+    console.error("Fehler beim Aktualisieren der Riasec-Daten: ", err);
+    throw err;
   }
 }

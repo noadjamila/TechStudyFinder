@@ -3,6 +3,7 @@ import multer from "multer";
 import {
   processUploadFiles,
   handleGetRiasecData,
+  handleEditRiasecData,
 } from "../services/admin.service";
 
 /**
@@ -133,6 +134,13 @@ export async function uploadData(req: Request, res: Response) {
   }
 }
 
+/**
+ * Express handler to fetch all RIASEC data.
+ * Calls the service `handleGetRiasecData` and returns JSON.
+ *
+ * @param {Request} __req - Express request object (unused here)
+ * @param {Response} res - Express response object
+ */
 export async function getRiasecData(__req: Request, res: Response) {
   try {
     const riasecData = await handleGetRiasecData();
@@ -141,6 +149,30 @@ export async function getRiasecData(__req: Request, res: Response) {
     console.error("Fehler beim Abrufen der RIASEC-Daten:", error);
     res.status(500).json({
       error: "Fehler beim Abrufen der RIASEC-Daten",
+      details: error instanceof Error ? error.message : String(error),
+    });
+  }
+}
+
+/**
+ * Express handler to update RIASEC data for an item.
+ * Calls the service `handleEditRiasecData` with the request body.
+ *
+ * @param {Request} req - Express request object. Expects `body` to contain the RIASEC updates.
+ * @param {Response} res - Express response object
+ */
+export async function editRiasecData(req: Request, res: Response) {
+  try {
+    const riasecUpdates = req.body;
+    await handleEditRiasecData(riasecUpdates);
+    res.status(200).json({
+      message: "RIASEC-Daten erfolgreich aktualisiert",
+      success: true,
+    });
+  } catch (error) {
+    console.error("Fehler beim Aktualisieren der RIASEC-Daten:", error);
+    res.status(500).json({
+      error: "Fehler beim Aktualisieren der RIASEC-Daten",
       details: error instanceof Error ? error.message : String(error),
     });
   }

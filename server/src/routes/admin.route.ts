@@ -4,13 +4,11 @@ import {
   uploadMiddleware,
   handleMulterError,
   getRiasecData,
+  editRiasecData,
 } from "../controllers/admin.controller";
 
 export const adminRouter = Router();
 
-/**
- * Route to handle XML file uploads for database initialization.
- */
 adminRouter.post(
   "/upload-data",
   uploadMiddleware,
@@ -19,5 +17,7 @@ adminRouter.post(
 );
 
 adminRouter.get("/riasec-data", getRiasecData);
+
+adminRouter.put("/edit-riasec-data", editRiasecData);
 
 export default adminRouter;
