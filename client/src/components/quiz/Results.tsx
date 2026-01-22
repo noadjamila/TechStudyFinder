@@ -16,6 +16,7 @@ import StudyProgrammeCard from "../cards/StudyProgrammeCard";
 import { useNavigate, useLocation } from "react-router-dom";
 import GreenCard from "../cards/GreenCardBaseNotQuiz";
 import PrimaryButton from "../buttons/PrimaryButton";
+import DataSource from "../DataSource";
 import LoginReminderDialog, {
   FAVORITES_LOGIN_MESSAGE,
 } from "../dialogs/LoginReminderDialog";
@@ -150,12 +151,13 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   return (
     <Box
       sx={{
-        maxWidth: 800,
-        margin: { xs: "0 auto", sm: "0" },
+        maxWidth: 650,
+        margin: "0 auto",
         paddingBottom: { xs: "120px", sm: 3 },
         minHeight: "100vh",
       }}
     >
+      <DataSource />
       <Typography variant="h2">Meine Ergebnisse</Typography>
 
       {studyProgrammes.length === 0 ? (

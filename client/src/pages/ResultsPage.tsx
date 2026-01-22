@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box } from "@mui/material";
 import Results from "../components/quiz/Results";
-import DataSource from "../components/DataSource";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 import MainLayout from "../layouts/MainLayout";
 import { useLocation } from "react-router-dom";
@@ -122,17 +121,12 @@ const ResultsPage: React.FC = () => {
         <Box sx={{ textAlign: "center", mt: 4 }}>Lädt...</Box>
       ) : !hasQuizResults ? (
         <NoResultsYet />
+      ) : error ? (
+        <Box sx={{ textAlign: "center", mt: 4, color: "error.main" }}>
+          {error}
+        </Box>
       ) : (
-        <>
-          <DataSource />
-          {error ? (
-            <Box sx={{ textAlign: "center", mt: 4, color: "error.main" }}>
-              {error}
-            </Box>
-          ) : (
-            <Results studyProgrammes={studyProgrammes} />
-          )}
-        </>
+        <Results studyProgrammes={studyProgrammes} />
       )}
     </MainLayout>
   );
