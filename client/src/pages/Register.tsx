@@ -168,16 +168,7 @@ export default function Register() {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        padding: theme.spacing(2),
-        pt: { xs: 8, sm: 12, md: 16, lg: 18 },
-        p: "30px",
-        pb: 4,
-        "@media (max-width: 375px)": {
-          pt: 6,
-          pb: 2,
-          pl: 2,
-          pr: 2,
-        },
+        padding: "30px",
       }}
     >
       <Box
