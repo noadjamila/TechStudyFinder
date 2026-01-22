@@ -11,6 +11,7 @@ import { riasecScoresToApiPayload } from "../services/riasecPayload";
 import { postFilterLevel } from "../api/quizApi";
 import { fetchQuestions } from "../api/quizApi";
 import { loadLatestSession, saveSession } from "../session/persistQuizSession";
+import { useApiClient } from "../hooks/useApiClient";
 
 type Level = 1 | 2 | 3;
 
@@ -23,13 +24,13 @@ type Level = 1 | 2 | 3;
  */
 export default function QuizFlow(): JSX.Element | null {
   const navigate = useNavigate();
+  const { apiFetch } = useApiClient();
 
   const [session, setSession] = useState<QuizSession>(() =>
     createQuizSession(),
   );
   const [isHydrated, setIsHydrated] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_showResults, setShowResults] = useState(false);
+  const [_showResults, _setShowResults] = useState(false);
   const sessionRef = useRef(session);
 
   /**
@@ -190,11 +191,14 @@ export default function QuizFlow(): JSX.Element | null {
     const scores = calculateRiasecScores(answers);
     const payload = riasecScoresToApiPayload(scores);
 
-    const res = await postFilterLevel({
-      level: 2,
-      answers: payload,
-      studyProgrammeIds: level1IDS,
-    });
+    const res = await postFilterLevel(
+      {
+        level: 2,
+        answers: payload,
+        studyProgrammeIds: level1IDS,
+      },
+      apiFetch,
+    );
 
     setSession((prev) => ({
       ...prev,
