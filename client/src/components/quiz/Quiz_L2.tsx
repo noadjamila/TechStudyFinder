@@ -280,6 +280,10 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
             pointerEvents: "none",
             pr: { xs: 10, md: 40, lg: 60 },
             mt: 4,
+            display: { xs: "none", sm: "block" },
+            "@media (max-width: 375px)": {
+              display: "none",
+            },
           }}
         >
           <img
