@@ -211,6 +211,9 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
                   minWidth: "auto",
                   padding: "6px 20px",
                   color: theme.palette.text.secondary,
+                  "@media (max-width: 320px)": {
+                    padding: "6px 12px",
+                  },
                 },
                 "& .Mui-selected": {
                   color: "#999",
