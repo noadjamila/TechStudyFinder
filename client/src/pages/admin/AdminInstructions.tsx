@@ -16,16 +16,26 @@ const cardBaseSx = {
   width: "100%",
   backgroundColor: alpha(theme.palette.decorative.pink, 0.3),
   mb: 2,
+  maxWidth: "800px",
+  alignItems: "center",
 };
 
 export default function AdminInstructions() {
   return (
     <Layout>
-      <Box maxWidth="900px" mt={4}>
+      <Box
+        mt={4}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
         <Typography
           variant="h2"
           align="center"
-          style={{ marginBottom: "20px" }}
+          style={{ marginBottom: "30px" }}
           gutterBottom
         >
           Anleitung zur RIASEC-Zuordnung

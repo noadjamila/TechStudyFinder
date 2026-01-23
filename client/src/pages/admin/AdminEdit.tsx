@@ -112,7 +112,7 @@ export default function AdminEdit() {
     <Layout>
       <Box
         sx={{
-          maxWidth: "1200px",
+          maxWidth: "800px",
           mx: "auto",
         }}
       >
