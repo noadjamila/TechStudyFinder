@@ -12,13 +12,13 @@ export async function addFavorite(req: Request, res: Response) {
     const userId = (req.session as any).user?.id;
     const { studiengangId } = req.body;
 
-    console.log("[addFavorite] Session:", (req.session as any).user);
-    console.log("[addFavorite] userId:", userId);
-    console.log("[addFavorite] studiengangId:", studiengangId);
+    console.debug("[addFavorite] Session:", (req.session as any).user);
+    console.debug("[addFavorite] userId:", userId);
+    console.debug("[addFavorite] studiengangId:", studiengangId);
 
     // Validation
     if (!userId) {
-      console.log("[addFavorite] No userId in session, returning 401");
+      console.debug("[addFavorite] No userId in session, returning 401");
       return res.status(401).json({ error: "User not authenticated" });
     }
 

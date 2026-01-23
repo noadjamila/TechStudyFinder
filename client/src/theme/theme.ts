@@ -1,5 +1,7 @@
 import { createTheme } from "@mui/material/styles";
 
+const defaultTheme = createTheme();
+
 const theme = createTheme({
   palette: {
     mode: "light",
@@ -86,6 +88,14 @@ const theme = createTheme({
       fontSize: "20px",
       fontFamily: "Fira Sans, sans-serif",
       fontWeight: "normal",
+    },
+    errorScreenTitle: {
+      ...defaultTheme.typography.h1,
+      fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
+      marginBottom: "2000px",
+      fontWeight: 700,
+      lineHeight: 1.167, // MUI h1 default
+      letterSpacing: "-0.01562em",
     },
   },
   components: {

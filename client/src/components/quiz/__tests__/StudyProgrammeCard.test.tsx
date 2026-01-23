@@ -178,7 +178,9 @@ describe("StudyProgrammeCard Component", () => {
       });
       fireEvent.click(card);
 
-      expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
+      expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
+        state: { previousPage: expect.any(String) },
+      });
     });
 
     it("navigates by default when clickable prop is not specified", () => {
@@ -187,7 +189,9 @@ describe("StudyProgrammeCard Component", () => {
       const card = screen.getByRole("button");
       fireEvent.click(card);
 
-      expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
+      expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
+        state: { previousPage: expect.any(String) },
+      });
     });
 
     it("does not navigate when clickable is false", () => {
@@ -260,7 +264,9 @@ describe("StudyProgrammeCard Component", () => {
       const card = screen.getByRole("button");
       fireEvent.keyDown(card, { key: "Enter" });
 
-      expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
+      expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
+        state: { previousPage: expect.any(String) },
+      });
     });
 
     it("navigates when Space key is pressed", () => {
@@ -271,7 +277,9 @@ describe("StudyProgrammeCard Component", () => {
       const card = screen.getByRole("button");
       fireEvent.keyDown(card, { key: " " });
 
-      expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
+      expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
+        state: { previousPage: expect.any(String) },
+      });
     });
 
     it("does not navigate on other key presses", () => {
@@ -370,7 +378,9 @@ describe("StudyProgrammeCard Component", () => {
       const card = screen.getByRole("button");
       fireEvent.click(card);
 
-      expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/99");
+      expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/99", {
+        state: { previousPage: expect.any(String) },
+      });
     });
   });
 });

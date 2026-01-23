@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Box, Alert, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import PrimaryButton from "../../components/buttons/PrimaryButton";
-import BackButton from "../../components/buttons/BackButton";
-import FormField from "../../components/login-register/InputField";
-import FormHeader from "../../components/login-register/FormHeader";
-import theme from "../../theme/theme";
-import BottomHills from "../../components/login-register/BottomHills";
-import LoginResultDialog from "../../components/dialogs/LoginResultDialog";
-import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate, useLocation } from "react-router-dom";
+import PrimaryButton from "../components/buttons/PrimaryButton";
+import BackButton from "../components/buttons/BackButton";
+import FormField from "../components/login-register/InputField";
+import FormHeader from "../components/login-register/FormHeader";
+import theme from "../theme/theme";
+import BottomHills from "../components/login-register/BottomHills";
+import LoginResultDialog from "../components/dialogs/LoginResultDialog";
+import { useAuth } from "../contexts/AuthContext";
 
 /**
  * Login page component.
@@ -19,6 +19,7 @@ import { useAuth } from "../../contexts/AuthContext";
  */
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -59,7 +60,9 @@ export default function Login() {
   const handleResultDialogClose = () => {
     setShowResultDialog(false);
     if (loginSuccess) {
-      navigate("/");
+      // Redirect to the intended destination, or home if not specified
+      const redirectTo = location.state?.redirectTo || "/";
+      navigate(redirectTo);
     }
   };
 
@@ -110,7 +113,7 @@ export default function Login() {
         <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
           <BackButton
             label="Zurück"
-            onClick={() => navigate("/")}
+            onClick={() => navigate(-1)}
             disabled={loading}
           />
           <PrimaryButton
@@ -130,11 +133,11 @@ export default function Login() {
               component="span"
               variant="body2"
               sx={{
-                color: theme.palette.decorative.blue,
                 cursor: "pointer",
                 fontWeight: "bold",
+                textDecoration: "underline",
                 "&:hover": {
-                  textDecoration: "underline",
+                  color: theme.palette.detailspage.link,
                 },
               }}
               onClick={() => navigate("/register")}
