@@ -4,6 +4,7 @@ import {
   processUploadFiles,
   handleGetRiasecData,
   handleEditRiasecData,
+  handleLogin,
 } from "../services/admin.service";
 
 /**
@@ -176,4 +177,74 @@ export async function editRiasecData(req: Request, res: Response) {
       details: error instanceof Error ? error.message : String(error),
     });
   }
+}
+
+/**
+ * Body: { adminname: string, password: string }
+ * Response: { message: string, admin?: { id: number, adminname: string } }
+ * Logs in an admin by verifying credentials and creating a session.
+ * Returns admin info on success.
+ * Errors:
+ * - 400: Missing credentials
+ * - 401: Invalid credentials
+ */
+export async function login(req: Request, res: Response) {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ message: "Missing credentials" });
+  }
+
+  try {
+    const admin = await handleLogin(username, password);
+
+    req.session.admin = { id: admin.id, username: admin.adminname };
+
+    // Explicitly save the session to ensure it's persisted
+    req.session.save((err) => {
+      if (err) {
+        console.error("Error saving session:", err);
+        return res.status(500).json({ message: "Error saving session" });
+      }
+
+      return res
+        .status(200)
+        .json({ message: "Login successful", user: req.session.admin });
+    });
+  } catch {
+    return res.status(401).json({ message: "Invalid credentials" });
+  }
+}
+
+/**
+ * Retrieves the id and username of the currently authenticated admin.
+ *
+ * @param req Express request object containing session
+ * @param res Express response object
+ * @returns Json with { id: number, username: string } or 401 HTTP response
+ */
+export async function getAdmin(req: Request, res: Response) {
+  if (!req.session.admin) {
+    return res.status(401).json({ error: "Nicht authentifiziert!" });
+  }
+
+  return res.json(req.session.admin);
+}
+
+/**
+ * Response: { message: string }
+ * Logs out the current admin by destroying the session.
+ * Returns a success message on completion.
+ * Errors:
+ * - 500: Logout failed
+ */
+export async function logout(req: Request, res: Response) {
+  if (req.session.admin) {
+    delete req.session.admin;
+  }
+
+  req.session.save((err) => {
+    if (err) return res.status(500).json({ message: "Logout failed" });
+    res.status(200).json({ message: "Logout successful" });
+  });
 }

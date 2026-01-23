@@ -8,10 +8,12 @@ import Register from "./pages/Register";
 import Login from "./pages/Login/Login";
 import Favourites from "./pages/Favourites/FavouritesContainer";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminLogin from "./pages/admin/AdminLogin";
 import AdminPage from "./pages/admin/AdminDashboard";
 import AdminUpload from "./pages/admin/AdminUpload";
 import AdminInstructions from "./pages/admin/AdminInstructions";
 import AdminEdit from "./pages/admin/AdminEdit";
+import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 
 export default function App() {
   return (
@@ -34,10 +36,40 @@ export default function App() {
         path="/study-programme/:id"
         element={<StudyProgrammeDetailPage />}
       />
-      <Route path="/admin/*" element={<AdminPage />} />
-      <Route path="/admin/upload" element={<AdminUpload />} />
-      <Route path="/admin/instructions" element={<AdminInstructions />} />
-      <Route path="/admin/edit" element={<AdminEdit />} />
+
+      <Route
+        path="/admin"
+        element={
+          <AdminProtectedRoute>
+            <AdminPage />
+          </AdminProtectedRoute>
+        }
+      />
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route
+        path="/admin/upload"
+        element={
+          <AdminProtectedRoute>
+            <AdminUpload />
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/instructions"
+        element={
+          <AdminProtectedRoute>
+            <AdminInstructions />
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/edit"
+        element={
+          <AdminProtectedRoute>
+            <AdminEdit />
+          </AdminProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

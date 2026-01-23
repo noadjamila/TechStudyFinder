@@ -1,10 +1,22 @@
-import { getRiasecData, updateRiasecData } from "../admin.repository";
+import {
+  getRiasecData,
+  updateRiasecData,
+  findAdminForLogin,
+} from "../admin.repository";
 import { pool } from "../../../db";
 import { RiasecUpdate } from "../../types/riasecScores";
+import bcrypt from "bcrypt";
 
 jest.mock("../../../db", () => ({
   pool: { query: jest.fn() },
 }));
+
+jest.mock("bcrypt", () => ({
+  compare: jest.fn(),
+}));
+
+const mockQuery = pool.query as jest.Mock;
+const mockCompare = bcrypt.compare as jest.Mock;
 
 describe("getRiasecData", () => {
   it("should fetch all three tables and return combined object", async () => {
@@ -84,5 +96,39 @@ describe("updateRiasecData", () => {
     expect(query).toContain("UPDATE studiengebiete");
     expect(query).toContain("riasec_r = $1");
     expect(values).toEqual([3, 2]);
+  });
+});
+
+describe("findUserForLogin", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("returns user when bcrypt validates successfully", async () => {
+    const dbUser = { id: 2, adminname: "dbUser", password_hash: "hash" };
+
+    mockQuery.mockResolvedValueOnce({
+      rows: [dbUser], // findUserByUsername returns the user
+    });
+    mockCompare.mockResolvedValueOnce(true);
+
+    const user = await findAdminForLogin("dbUser", "secret");
+
+    expect(user).toEqual({ id: 2, adminname: "dbUser" });
+    expect(mockCompare).toHaveBeenCalledWith("secret", "hash");
+  });
+
+  it("returns null when bcrypt fails", async () => {
+    const dbUser = { id: 2, username: "dbUser", password_hash: "hash" };
+
+    mockQuery.mockResolvedValueOnce({
+      rows: [dbUser], // findUserByUsername returns the user
+    });
+    mockCompare.mockResolvedValueOnce(false);
+
+    const user = await findAdminForLogin("dbUser", "wrong");
+
+    expect(user).toBeNull();
+    expect(mockCompare).toHaveBeenCalledWith("wrong", "hash");
   });
 });

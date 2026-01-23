@@ -6,14 +6,36 @@ import {
   uploadData,
   editRiasecData,
   getRiasecData,
+  login,
+  logout,
 } from "../admin.controller";
 import {
   processUploadFiles,
   handleEditRiasecData,
   handleGetRiasecData,
+  handleLogin,
 } from "../../services/admin.service";
+import { Request, Response } from "express";
 
 jest.mock("../../services/admin.service");
+jest.mock("bcrypt");
+
+let mockRequest: Partial<Request> & { session?: any; body?: any };
+let mockResponse: Partial<Response>;
+let statusMock: jest.Mock;
+let jsonMock: jest.Mock;
+
+beforeEach(() => {
+  jsonMock = jest.fn();
+  statusMock = jest.fn().mockReturnValue({ json: jsonMock });
+
+  mockResponse = {
+    status: statusMock,
+    json: jsonMock,
+  };
+
+  jest.clearAllMocks();
+});
 
 const app = express();
 
@@ -162,6 +184,103 @@ describe("editRiasecData handler", () => {
     expect(res.json).toHaveBeenCalledWith({
       error: "Fehler beim Aktualisieren der RIASEC-Daten",
       details: "Update failed",
+    });
+  });
+});
+
+describe("login", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("returns 400 for missing credentials", async () => {
+    mockRequest = {
+      body: {},
+      session: {},
+    } as any;
+
+    await login(mockRequest as Request, mockResponse as Response);
+
+    expect(statusMock).toHaveBeenCalledWith(400);
+    expect(jsonMock).toHaveBeenCalledWith({
+      message: "Missing credentials",
+    });
+  });
+
+  it("returns 401 and does not set session if user is not found", async () => {
+    (handleLogin as jest.Mock).mockRejectedValue(new Error("USER_NOT_FOUND"));
+
+    mockRequest = {
+      body: { username: "bad", password: "bad" },
+      session: {},
+    } as any;
+
+    await login(mockRequest as Request, mockResponse as Response);
+
+    expect(mockRequest.session!.admin).toBeUndefined();
+    expect(statusMock).toHaveBeenCalledWith(401);
+    expect(jsonMock).toHaveBeenCalledWith({
+      message: "Invalid credentials",
+    });
+  });
+});
+
+describe("logout", () => {
+  let req: any;
+  let res: any;
+
+  beforeEach(() => {
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+  });
+
+  it("logs out successfully when admin session exists", async () => {
+    req = {
+      session: {
+        admin: { id: 1, username: "admin" },
+        save: jest.fn((cb) => cb(null)),
+      },
+    };
+
+    await logout(req as Request, res as Response);
+
+    expect(req.session.admin).toBeUndefined();
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "Logout successful",
+    });
+  });
+
+  it("returns 200 even if no admin session exists", async () => {
+    req = {
+      session: {
+        save: jest.fn((cb) => cb(null)),
+      },
+    };
+
+    await logout(req as Request, res as Response);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "Logout successful",
+    });
+  });
+
+  it("returns 500 if session save fails", async () => {
+    req = {
+      session: {
+        admin: { id: 1 },
+        save: jest.fn((cb) => cb(new Error("save failed"))),
+      },
+    };
+
+    await logout(req as Request, res as Response);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "Logout failed",
     });
   });
 });

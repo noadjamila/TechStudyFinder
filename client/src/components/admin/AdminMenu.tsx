@@ -17,6 +17,9 @@ import UploadIcon from "@mui/icons-material/Upload";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SourceIcon from "@mui/icons-material/Source";
 import BackIcon from "@mui/icons-material/ArrowBack";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useAdminAuth } from "../../contexts/AdminAuthContext";
+import Dialog from "../dialogs/Dialog";
 
 const MENU_ITEM_SX = {
   borderRadius: 999,
@@ -48,6 +51,8 @@ const LogoMenu = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const { logout } = useAdminAuth();
+  const [showLogoutDialog, setShowLogoutDialog] = useState<boolean>(false);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -80,6 +85,13 @@ const LogoMenu = () => {
       },
     },
     {
+      label: "Ausloggen",
+      icon: <LogoutIcon fontSize="small" />,
+      onClick: () => {
+        setShowLogoutDialog(true);
+      },
+    },
+    {
       label: "Zurück zur App",
       icon: <BackIcon fontSize="small" />,
       onClick: () => {
@@ -87,6 +99,18 @@ const LogoMenu = () => {
       },
     },
   ];
+
+  const handleCancelLogout = () => {
+    setShowLogoutDialog(false);
+  };
+
+  const handleConfirmLogout = async () => {
+    try {
+      await logout();
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
 
   return (
     <AppBar
@@ -210,6 +234,16 @@ const LogoMenu = () => {
           />
         </Box>
       </Toolbar>
+
+      <Dialog
+        open={showLogoutDialog}
+        onClose={() => handleCancelLogout()}
+        title="Möchtest du dich wirklich ausloggen?"
+        text=""
+        cancelLabel="NEIN"
+        confirmLabel="JA"
+        onConfirm={() => handleConfirmLogout()}
+      />
     </AppBar>
   );
 };

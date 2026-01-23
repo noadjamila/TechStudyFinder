@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, beforeEach, vi, expect } from "vitest";
 import RiasecTable from "../admin/RiasecTable";
 import { BrowserRouter } from "react-router-dom";
+import { useAdminAuth } from "../../contexts/AdminAuthContext";
 
 type RiasecItem = {
   id: number;
@@ -14,7 +15,15 @@ type RiasecItem = {
   C: number | null;
 };
 
+vi.mock("../../contexts/AdminAuthContext", () => ({
+  useAdminAuth: vi.fn(),
+}));
+
 describe("RiasecTable", () => {
+  const mockedUseAuth = vi.mocked(useAdminAuth);
+
+  const mockUser = { id: 1, username: "testuser" };
+
   let fetchMock: typeof fetch;
 
   const items: RiasecItem[] = [
@@ -26,6 +35,14 @@ describe("RiasecTable", () => {
     vi.resetAllMocks();
     fetchMock = vi.fn() as unknown as typeof fetch;
     global.fetch = fetchMock;
+
+    mockedUseAuth.mockReturnValue({
+      admin: mockUser,
+      logout: vi.fn(),
+      login: vi.fn(),
+      setAdmin: vi.fn(),
+      isLoading: false,
+    });
   });
 
   it("renders table with items", () => {

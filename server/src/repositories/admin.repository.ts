@@ -1,5 +1,12 @@
 import { pool } from "../../db";
 import { RiasecData, RiasecUpdate } from "../types/riasecScores";
+import bcrypt from "bcrypt";
+
+type AuthAdmin = {
+  id: number;
+  adminname: string;
+  password_hash: string;
+};
 
 /**
  * Fetches all RIASEC data from the database.
@@ -130,4 +137,30 @@ export async function updateRiasecData(
   `;
 
   await pool.query(query, values);
+}
+
+/**
+ * Finds a admin by adminname and password for login.
+ * Uses constant time password comparison to prevent timing attacks.
+ * @param username
+ * @param password
+ * @returns The admin object with id and adminname if credentials are valid, otherwise null.
+ */
+export async function findAdminForLogin(
+  adminname: string,
+  password: string,
+): Promise<{ id: number; adminname: string } | null> {
+  const dbAdmin = await pool.query<AuthAdmin>(
+    "SELECT id, adminname, password_hash FROM admins WHERE adminname = $1",
+    [adminname],
+  );
+  const admin = dbAdmin.rows[0];
+
+  const passwordHash = admin.password_hash;
+
+  const isValid = await bcrypt.compare(password, passwordHash);
+
+  if (!admin || !isValid) return null;
+
+  return { id: admin.id, adminname: admin.adminname };
 }

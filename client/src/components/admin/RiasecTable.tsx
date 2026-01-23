@@ -276,6 +276,7 @@ export default function RiasecTable({ items, tableKey }: Props) {
                         color="primary"
                         size="small"
                         onClick={() => handleEdit(item)}
+                        aria-label="Edit"
                         sx={{
                           "&:hover": {
                             backgroundColor: theme.palette.primary.main,

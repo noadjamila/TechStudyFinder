@@ -2,11 +2,13 @@ import {
   processUploadFiles,
   handleGetRiasecData,
   handleEditRiasecData,
+  handleLogin,
 } from "../admin.service";
 import { initializeDatabaseWithUpload } from "../../../db/scripts/init_data_with_upload";
 import {
   getRiasecData,
   updateRiasecData,
+  findAdminForLogin,
 } from "../../repositories/admin.repository";
 import { RiasecUpdate } from "../../types/riasecScores";
 
@@ -17,6 +19,7 @@ jest.mock("../../../db/scripts/init_data_with_upload", () => ({
 jest.mock("../../repositories/admin.repository", () => ({
   getRiasecData: jest.fn(),
   updateRiasecData: jest.fn(),
+  findAdminForLogin: jest.fn(),
 }));
 
 describe("processUploadFiles", () => {
@@ -110,6 +113,27 @@ describe("handleEditRiasecData", () => {
 
     await expect(handleEditRiasecData(updates)).rejects.toThrow(
       "Update failed",
+    );
+  });
+});
+
+describe("login", () => {
+  it("returns user if credentials are valid", async () => {
+    const mockUser = { id: 1, username: "test" };
+
+    (findAdminForLogin as jest.Mock).mockResolvedValue(mockUser);
+
+    const result = await handleLogin("test", "password");
+
+    expect(findAdminForLogin).toHaveBeenCalledWith("test", "password");
+    expect(result).toEqual(mockUser);
+  });
+
+  it("throws error if user is not found", async () => {
+    (findAdminForLogin as jest.Mock).mockResolvedValue(null);
+
+    await expect(handleLogin("test", "wrongpassword")).rejects.toThrow(
+      "INVALID",
     );
   });
 });

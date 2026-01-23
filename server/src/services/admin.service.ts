@@ -2,6 +2,7 @@ import { initializeDatabaseWithUpload } from "../../db/scripts/init_data_with_up
 import {
   getRiasecData,
   updateRiasecData,
+  findAdminForLogin,
 } from "../repositories/admin.repository";
 import { RiasecUpdate } from "../types/riasecScores";
 
@@ -66,4 +67,15 @@ export async function handleEditRiasecData(riasecUpdates: RiasecUpdate) {
     console.error("Fehler beim Aktualisieren der Riasec-Daten: ", err);
     throw err;
   }
+}
+
+/**
+ * Admin Login
+ */
+export async function handleLogin(username: string, password: string) {
+  const admin = await findAdminForLogin(username, password);
+  if (!admin) {
+    throw new Error("INVALID");
+  }
+  return admin;
 }

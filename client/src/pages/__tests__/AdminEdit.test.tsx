@@ -2,6 +2,7 @@ import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { describe, it, beforeEach, vi, expect } from "vitest";
 import AdminEdit from "../admin/AdminEdit";
 import { BrowserRouter } from "react-router-dom";
+import { AdminAuthProvider } from "../../contexts/AdminAuthContext";
 
 vi.mock("../../components/admin/RiasecTable", () => ({
   default: () => <div>RiasecTableMock</div>,
@@ -16,32 +17,40 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-describe("AdminEdit component", () => {
-  let fetchMock: typeof fetch;
+const mockFetch = vi.fn();
+global.fetch = mockFetch as any;
 
+// Helper to create a mock response
+const createMockResponse = (data: any, ok: boolean = true) =>
+  ({
+    ok,
+    status: ok ? 200 : 401,
+    json: async () => data,
+  }) as Response;
+
+describe("AdminEdit component", () => {
   beforeEach(() => {
     vi.resetAllMocks();
-
-    // Mock global fetch
-    fetchMock = vi.fn() as unknown as typeof fetch;
-    global.fetch = fetchMock;
+    mockFetch.mockClear();
   });
 
   it("shows loading state initially", async () => {
-    (
-      fetchMock as unknown as { mockResolvedValueOnce: (value: any) => void }
-    ).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
+    // Mock /api/admin/me call from AdminAuthProvider
+    mockFetch.mockResolvedValueOnce(createMockResponse(null, false));
+    // Mock /api/admin/riasec-data call from AdminEdit
+    mockFetch.mockResolvedValueOnce(
+      createMockResponse({
         studiengebiete: [],
         studienfelder: [],
         studiengaenge: [],
       }),
-    } as Response);
+    );
 
     render(
       <BrowserRouter>
-        <AdminEdit />
+        <AdminAuthProvider>
+          <AdminEdit />
+        </AdminAuthProvider>
       </BrowserRouter>,
     );
 
@@ -59,17 +68,33 @@ describe("AdminEdit component", () => {
       studiengaenge: [],
     };
 
-    (
-      fetchMock as unknown as { mockResolvedValueOnce: (value: any) => void }
-    ).mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockData,
-    } as Response);
+    // Mock fetch to handle both calls
+    mockFetch.mockImplementation((url: string) => {
+      if (url.includes("/api/admin/me")) {
+        return Promise.resolve(createMockResponse(null, false));
+      }
+      if (url.includes("/api/admin/riasec-data")) {
+        return Promise.resolve(createMockResponse(mockData));
+      }
+      return Promise.reject(new Error(`Unexpected URL: ${url}`));
+    });
 
     render(
       <BrowserRouter>
-        <AdminEdit />
+        <AdminAuthProvider>
+          <AdminEdit />
+        </AdminAuthProvider>
       </BrowserRouter>,
+    );
+
+    // Wait for loading to finish
+    await waitFor(
+      () => {
+        expect(
+          screen.queryByText("Daten werden geladen..."),
+        ).not.toBeInTheDocument();
+      },
+      { timeout: 3000 },
     );
 
     await waitFor(() => {
@@ -83,13 +108,16 @@ describe("AdminEdit component", () => {
   });
 
   it("shows error alert when fetch fails", async () => {
-    (
-      fetchMock as unknown as { mockRejectedValueOnce: (value: any) => void }
-    ).mockRejectedValueOnce(new Error("Network error"));
+    // Mock /api/admin/me call from AdminAuthProvider
+    mockFetch.mockResolvedValueOnce(createMockResponse(null, false));
+    // Mock /api/admin/riasec-data call from AdminEdit - fails
+    mockFetch.mockRejectedValueOnce(new Error("Network error"));
 
     render(
       <BrowserRouter>
-        <AdminEdit />
+        <AdminAuthProvider>
+          <AdminEdit />
+        </AdminAuthProvider>
       </BrowserRouter>,
     );
 
@@ -114,17 +142,33 @@ describe("AdminEdit component", () => {
       studiengaenge: [],
     };
 
-    (
-      fetchMock as unknown as { mockResolvedValueOnce: (value: any) => void }
-    ).mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockData,
-    } as Response);
+    // Mock fetch to handle both calls
+    mockFetch.mockImplementation((url: string) => {
+      if (url.includes("/api/admin/me")) {
+        return Promise.resolve(createMockResponse(null, false));
+      }
+      if (url.includes("/api/admin/riasec-data")) {
+        return Promise.resolve(createMockResponse(mockData));
+      }
+      return Promise.reject(new Error(`Unexpected URL: ${url}`));
+    });
 
     render(
       <BrowserRouter>
-        <AdminEdit />
+        <AdminAuthProvider>
+          <AdminEdit />
+        </AdminAuthProvider>
       </BrowserRouter>,
+    );
+
+    // Wait for loading to finish
+    await waitFor(
+      () => {
+        expect(
+          screen.queryByText("Daten werden geladen..."),
+        ).not.toBeInTheDocument();
+      },
+      { timeout: 3000 },
     );
 
     await waitFor(() => {
@@ -135,25 +179,29 @@ describe("AdminEdit component", () => {
   });
 
   it("navigates to instructions page on click", async () => {
-    (
-      fetchMock as unknown as { mockResolvedValueOnce: (value: any) => void }
-    ).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
+    // Mock /api/admin/me call from AdminAuthProvider
+    mockFetch.mockResolvedValueOnce(createMockResponse(null, false));
+    // Mock /api/admin/riasec-data call from AdminEdit
+    mockFetch.mockResolvedValueOnce(
+      createMockResponse({
         studiengebiete: [],
         studienfelder: [],
         studiengaenge: [],
       }),
-    } as Response);
+    );
 
     render(
       <BrowserRouter>
-        <AdminEdit />
+        <AdminAuthProvider>
+          <AdminEdit />
+        </AdminAuthProvider>
       </BrowserRouter>,
     );
 
-    const button = screen.getByText("Erklärungen & Anleitungen");
-    fireEvent.click(button);
+    await waitFor(() => {
+      const button = screen.getByText("Erklärungen & Anleitungen");
+      fireEvent.click(button);
+    });
 
     expect(mockNavigate).toHaveBeenCalledWith("/admin/instructions");
   });
