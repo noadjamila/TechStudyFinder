@@ -43,10 +43,6 @@ export default function UploadSection({
   };
 
   const handleConfirmSubmit = () => {
-    console.log("Absenden:", {
-      degreeprogramme: degreeprogrammeFile?.name,
-      institutions: institutionsFile?.name,
-    });
     setConfirmDialogOpen(false);
     onSubmit(degreeprogrammeFile, institutionsFile);
   };
