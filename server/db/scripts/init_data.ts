@@ -47,6 +47,7 @@ async function main() {
 
     await client.query("BEGIN");
     await client.query("SET search_path TO public;");
+    await client.query("SET datestyle TO 'ISO, DMY';");
 
     // Create schemas
     console.debug("\n Creating schemas");
