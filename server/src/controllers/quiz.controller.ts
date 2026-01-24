@@ -5,6 +5,8 @@ import {
   filterLevel3,
   getQuestionsLevel2Service,
   getStudyProgrammeByIdService,
+  saveQuizResultsService,
+  getQuizResultsService,
 } from "../services/quiz.service";
 import { FilterRequest } from "../types/filterRequest";
 
@@ -104,6 +106,106 @@ export async function getStudyProgrammeById(req: Request, res: Response) {
       success: false,
       error: "Internal Server Error",
       message: "Error retrieving study programme",
+    });
+  }
+}
+
+/**
+ * Saves user quiz results to the database.
+ * Requires authentication.
+ *
+ * @param req request with resultIds in body
+ * @param res response object
+ * @returns success status
+ */
+export async function saveQuizResults(
+  req: Request<{}, {}, { resultIds: string[] }>,
+  res: Response,
+) {
+  const userId = (req.session as any).user?.id;
+
+  if (!userId) {
+    return res.status(401).json({
+      success: false,
+      error: "Not authenticated",
+    });
+  }
+
+  const { resultIds } = req.body;
+
+  if (!Array.isArray(resultIds)) {
+    return res.status(400).json({
+      success: false,
+      error: "resultIds must be an array",
+    });
+  }
+
+  if (resultIds.length === 0) {
+    return res.status(400).json({
+      success: false,
+      error: "resultIds cannot be empty",
+    });
+  }
+
+  if (!resultIds.every((id) => typeof id === "string")) {
+    return res.status(400).json({
+      success: false,
+      error: "All resultIds must be strings",
+    });
+  }
+
+  try {
+    await saveQuizResultsService(userId, resultIds);
+    return res.status(200).json({
+      success: true,
+      message: "Quiz results saved",
+    });
+  } catch (err) {
+    console.error("Error saving quiz results:", err);
+    return res.status(500).json({
+      success: false,
+      error: "Error saving quiz results",
+    });
+  }
+}
+
+/**
+ * Retrieves user quiz results from the database.
+ * Requires authentication.
+ *
+ * @param req request object
+ * @param res response object
+ * @returns user's saved quiz result IDs
+ */
+export async function getQuizResults(req: Request, res: Response) {
+  const userId = (req.session as any).user?.id;
+
+  if (!userId) {
+    return res.status(401).json({
+      success: false,
+      error: "Not authenticated",
+    });
+  }
+
+  try {
+    const resultIds = await getQuizResultsService(userId);
+
+    if (resultIds === null) {
+      return res.status(404).json({
+        success: false,
+        message: "No quiz results found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      resultIds,
+    });
+  } catch (err) {
+    console.error("Error retrieving quiz results:", err);
+    return res.status(500).json({
+      success: false,
+      error: "Error retrieving quiz results",
     });
   }
 }
