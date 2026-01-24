@@ -155,12 +155,12 @@ export async function findAdminForLogin(
     [adminname],
   );
   const admin = dbAdmin.rows[0];
+  if (!admin) return null;
 
   const passwordHash = admin.password_hash;
 
   const isValid = await bcrypt.compare(password, passwordHash);
-
-  if (!admin || !isValid) return null;
+  if (!isValid) return null;
 
   return { id: admin.id, adminname: admin.adminname };
 }
