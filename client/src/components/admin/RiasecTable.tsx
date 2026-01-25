@@ -17,15 +17,18 @@ import {
   Button,
   Typography,
   InputAdornment,
+  Alert,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import theme from "../../theme/theme";
 import { RiasecItem } from "../../types/RiasecTypes";
+import ErrorIcon from "@mui/icons-material/Error";
 
 interface Props {
   items: RiasecItem[];
   tableKey: string;
+  onUpdate: () => void;
 }
 
 /**
@@ -44,10 +47,11 @@ interface Props {
  * @param param1 tableKey: string → identifies which table is being rendered ("studiengebiete", "studienfelder", "studiengaenge")
  * @returns JSX Element
  */
-export default function RiasecTable({ items, tableKey }: Props) {
+export default function RiasecTable({ items, tableKey, onUpdate }: Props) {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [editItem, setEditItem] = useState<RiasecItem | null>(null);
   const [editValues, setEditValues] = useState<{ [key: string]: any }>({});
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const isStudiengangTable = useMemo(() => {
     return tableKey === "studiengaenge";
   }, [tableKey]);
@@ -93,7 +97,7 @@ export default function RiasecTable({ items, tableKey }: Props) {
   const handleClose = () => {
     setEditItem(null);
     setEditValues({});
-    window.location.reload();
+    onUpdate();
   };
 
   const handleEditValueChange = (key: string, value: any) => {
@@ -119,6 +123,7 @@ export default function RiasecTable({ items, tableKey }: Props) {
 
   const handleSave = async () => {
     if (!editItem) return;
+    setErrorMessage(null);
 
     try {
       const changes = getChangedValues(editItem, editValues);
@@ -137,6 +142,7 @@ export default function RiasecTable({ items, tableKey }: Props) {
 
       handleClose();
     } catch (error) {
+      setErrorMessage("Fehler beim Speichern.");
       console.error("Fehler beim Speichern:", error);
     }
   };
@@ -157,6 +163,15 @@ export default function RiasecTable({ items, tableKey }: Props) {
 
   return (
     <>
+      {errorMessage && (
+        <Alert
+          severity="error"
+          icon={<ErrorIcon />}
+          sx={{ mt: 2, borderRadius: 2 }}
+        >
+          {errorMessage}
+        </Alert>
+      )}
       <Box sx={{ mb: 2 }}>
         <TextField
           placeholder="Suchen..."

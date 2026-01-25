@@ -6,6 +6,7 @@ import {
   handleEditRiasecData,
   handleLogin,
 } from "../services/admin.service";
+import { RiasecUpdate } from "../types/riasecScores";
 
 /**
  * Multer configuration for handling XML file uploads in memory.
@@ -164,7 +165,10 @@ export async function getRiasecData(__req: Request, res: Response) {
  */
 export async function editRiasecData(req: Request, res: Response) {
   try {
-    const riasecUpdates = req.body;
+    const riasecUpdates = req.body as RiasecUpdate;
+    if (!req.body?.table || !req.body?.id || !req.body?.changes) {
+      return res.status(400).json({ error: "Ungültige Anfrage" });
+    }
     await handleEditRiasecData(riasecUpdates);
     res.status(200).json({
       message: "RIASEC-Daten erfolgreich aktualisiert",

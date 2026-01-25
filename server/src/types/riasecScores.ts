@@ -7,10 +7,21 @@ export type RiasecScores = {
   C: number;
 };
 
+interface RiasecTableItem {
+  id: number;
+  name: string;
+  R: number | null;
+  I: number | null;
+  A: number | null;
+  S: number | null;
+  E: number | null;
+  C: number | null;
+}
+
 export interface RiasecData {
-  studienfelder: any[];
-  studiengebiete: any[];
-  studiengaenge: any[];
+  studienfelder: RiasecTableItem[];
+  studiengebiete: RiasecTableItem[];
+  studiengaenge: RiasecTableItem[];
 }
 
 export interface RiasecUpdate {

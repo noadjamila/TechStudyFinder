@@ -55,43 +55,43 @@ export default function AdminEdit() {
     );
   }, [riasecData.studiengebiete]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-        const res = await fetch(`/api/admin/riasec-data`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+      const res = await fetch(`/api/admin/riasec-data`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        const data = await res.json();
-        console.log("RIASEC Data:", data);
-
-        setRiasecData({
-          studiengebiete: data.studiengebiete || [],
-          studienfelder: data.studienfelder || [],
-          studiengaenge: data.studiengaenge || [],
-        });
-      } catch (err) {
-        console.error(err);
-        setError({
-          title: "Fehler beim Laden der Daten",
-          message:
-            "Die Daten konnten nicht geladen werden. Bitte versuche es später erneut.",
-        });
-      } finally {
-        setLoading(false);
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
-    };
 
+      const data = await res.json();
+      console.log("RIASEC Data:", data);
+
+      setRiasecData({
+        studiengebiete: data.studiengebiete || [],
+        studienfelder: data.studienfelder || [],
+        studiengaenge: data.studiengaenge || [],
+      });
+    } catch (err) {
+      console.error(err);
+      setError({
+        title: "Fehler beim Laden der Daten",
+        message:
+          "Die Daten konnten nicht geladen werden. Bitte versuche es später erneut.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -106,6 +106,10 @@ export default function AdminEdit() {
 
   const getItemCount = (key: keyof RiasecData): number => {
     return riasecData[key]?.length || 0;
+  };
+
+  const handleUpdate = () => {
+    fetchData();
   };
 
   return (
@@ -311,7 +315,11 @@ export default function AdminEdit() {
                       }}
                     >
                       {items.length > 0 ? (
-                        <RiasecTable items={items} tableKey={key} />
+                        <RiasecTable
+                          items={items}
+                          tableKey={key}
+                          onUpdate={() => handleUpdate()}
+                        />
                       ) : (
                         <Box
                           sx={{
