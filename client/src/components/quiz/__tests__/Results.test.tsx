@@ -20,6 +20,23 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
+// Mock Auth Context
+vi.mock("../../../contexts/AuthContext", () => ({
+  useAuth: vi.fn(() => ({
+    user: { id: 1, username: "testuser" },
+    isAuthenticated: true,
+    login: vi.fn(),
+    logout: vi.fn(),
+  })),
+}));
+
+// Mock Favorites API
+vi.mock("../../../api/favoritesApi", () => ({
+  getFavorites: vi.fn(() => Promise.resolve([])),
+  addFavorite: vi.fn(() => Promise.resolve()),
+  removeFavorite: vi.fn(() => Promise.resolve()),
+}));
+
 const mockStudyProgrammes: StudyProgramme[] = [
   {
     studiengang_id: "1",
@@ -203,7 +220,9 @@ describe("Results Component", () => {
     });
     fireEvent.click(firstCard);
 
-    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
+      state: { previousPage: expect.any(String) },
+    });
   });
 
   it("navigates to correct detail page when different cards are clicked", () => {
@@ -214,7 +233,9 @@ describe("Results Component", () => {
     });
     fireEvent.click(dataCard);
 
-    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/2");
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/2", {
+      state: { previousPage: expect.any(String) },
+    });
   });
 
   it("makes cards keyboard accessible with Enter key", () => {
@@ -225,7 +246,9 @@ describe("Results Component", () => {
     });
     fireEvent.keyDown(firstCard, { key: "Enter" });
 
-    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
+      state: { previousPage: expect.any(String) },
+    });
   });
 
   it("makes cards keyboard accessible with Space key", () => {
@@ -236,6 +259,8 @@ describe("Results Component", () => {
     });
     fireEvent.keyDown(firstCard, { key: " " });
 
-    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
+      state: { previousPage: expect.any(String) },
+    });
   });
 });

@@ -17,11 +17,17 @@ vi.mock("../../session/persistQuizSession", () => {
     }),
   };
 });
+const mockUseAuth = vi.fn();
+
+vi.mock("../../contexts/AuthContext", () => ({
+  useAuth: () => mockUseAuth(),
+}));
 vi.mock("../../api/quizApi", () => ({
   getStudyProgrammeById: vi.fn(async (id: string) => ({
     studiengang_id: id,
     name: `Test Programme ${id}`,
   })),
+  getQuizResults: vi.fn(async () => null),
 }));
 
 vi.mock("../../components/quiz/Results", () => ({
@@ -48,20 +54,45 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-// Mock the Auth context
+/** Mock the Auth context
 vi.mock("../../contexts/AuthContext", () => ({
   useAuth: vi.fn(() => ({
     user: { id: 1, username: "testuser" },
-    isAuthenticated: true,
     login: vi.fn(),
     logout: vi.fn(),
+    isLoading: false,
+    setUser: vi.fn(),
   })),
 }));
-
-// Mock the API
+  **/
 
 beforeEach(async () => {
   mockedNavigate.mockClear();
+  vi.clearAllMocks();
+  let store: Record<string, string> = {};
+  Object.defineProperty(window, "sessionStorage", {
+    value: {
+      getItem: vi.fn((k: string) => store[k] ?? null),
+      setItem: vi.fn((k: string, v: string) => {
+        store[k] = String(v);
+      }),
+      removeItem: vi.fn((k: string) => {
+        delete store[k];
+      }),
+      clear: vi.fn(() => {
+        store = {};
+      }),
+    },
+    writable: true,
+  });
+
+  mockUseAuth.mockReturnValue({
+    user: { id: 1, username: "testuser" },
+    isLoading: false,
+    login: vi.fn(),
+    logout: vi.fn(),
+    setUser: vi.fn(),
+  });
 
   const api = await import("../../api/quizApi");
   vi.mocked(api.getStudyProgrammeById).mockImplementation(
@@ -109,10 +140,6 @@ const renderWithTheme = (
 };
 
 describe("ResultsPage Component", () => {
-  beforeEach(() => {
-    mockedNavigate.mockClear();
-  });
-
   it("renders the page title", async () => {
     renderWithTheme(<ResultsPage />);
     expect(await screen.findByText("Meine Ergebnisse")).toBeInTheDocument();
@@ -156,6 +183,14 @@ describe("ResultsPage Component", () => {
   });
 
   it("loads results from IndexedDB when no new IDs provided", async () => {
+    mockUseAuth.mockReturnValue({
+      user: null,
+      isLoading: false,
+      login: vi.fn(),
+      logout: vi.fn(),
+      setUser: vi.fn(),
+    });
+    window.sessionStorage.setItem("activeQuizResults", "1");
     vi.mocked(persist.loadQuizResults).mockResolvedValueOnce([
       {
         studiengang_id: "cached1",
@@ -196,6 +231,14 @@ describe("ResultsPage Component", () => {
   });
 
   it("shows NoResultsYet when no quiz has been completed", async () => {
+    mockUseAuth.mockReturnValue({
+      user: null,
+      isLoading: false,
+      login: vi.fn(),
+      logout: vi.fn(),
+      setUser: vi.fn(),
+    });
+    window.sessionStorage.removeItem("activeQuizResults");
     render(
       <MemoryRouter initialEntries={["/results"]}>
         <ThemeProvider theme={theme}>
@@ -205,7 +248,6 @@ describe("ResultsPage Component", () => {
         </ThemeProvider>
       </MemoryRouter>,
     );
-
     await waitFor(() => {
       expect(screen.getByText(/Starte jetzt das Quiz/i)).toBeInTheDocument();
       expect(
@@ -265,6 +307,183 @@ describe("ResultsPage Component", () => {
       expect(
         screen.getByText("Fehler beim Laden der Studiengänge"),
       ).toBeInTheDocument();
+    });
+  });
+  // Tests for saved results retrieval
+  describe("Saved Results Retrieval", () => {
+    it("fetches saved results from database when user is logged in and no navigation state", async () => {
+      // Override the mocks before rendering
+      const { getQuizResults, getStudyProgrammeById } =
+        await import("../../api/quizApi");
+      vi.mocked(getQuizResults).mockResolvedValue(["100", "101", "102"]);
+      vi.mocked(getStudyProgrammeById).mockImplementation((id: string) =>
+        Promise.resolve({
+          studiengang_id: id,
+          name: `Saved Programme ${id}`,
+          hochschule: "Test University",
+          abschluss: "Bachelor",
+        }),
+      );
+
+      render(
+        <MemoryRouter initialEntries={[{ pathname: "/results" }]}>
+          <ThemeProvider theme={theme}>
+            <Routes>
+              <Route path="/results" element={<ResultsPage />} />
+            </Routes>
+          </ThemeProvider>
+        </MemoryRouter>,
+      );
+
+      // Wait for async operations
+      await vi.waitFor(() => {
+        expect(getQuizResults).toHaveBeenCalled();
+      });
+    });
+
+    it("shows NoResultsYet when logged-in user has no saved results", async () => {
+      // Override the mock before rendering
+      const { getQuizResults } = await import("../../api/quizApi");
+      vi.mocked(getQuizResults).mockResolvedValue(null);
+
+      const { findByText } = render(
+        <MemoryRouter initialEntries={[{ pathname: "/results" }]}>
+          <ThemeProvider theme={theme}>
+            <Routes>
+              <Route path="/results" element={<ResultsPage />} />
+            </Routes>
+          </ThemeProvider>
+        </MemoryRouter>,
+      );
+
+      await findByText(/Keine Ergebnisse vorhanden/i);
+      expect(getQuizResults).toHaveBeenCalled();
+    });
+
+    it("shows NoResultsYet when anonymous user has no navigation state", async () => {
+      // Override useAuth mock to return null user
+      const authContext = await import("../../contexts/AuthContext");
+      const spy = vi.spyOn(authContext, "useAuth").mockReturnValue({
+        user: null,
+        isLoading: false,
+        login: vi.fn(),
+        logout: vi.fn(),
+        setUser: vi.fn(),
+      });
+
+      const { findByText } = render(
+        <MemoryRouter initialEntries={[{ pathname: "/results" }]}>
+          <ThemeProvider theme={theme}>
+            <Routes>
+              <Route path="/results" element={<ResultsPage />} />
+            </Routes>
+          </ThemeProvider>
+        </MemoryRouter>,
+      );
+
+      await findByText(/Keine Ergebnisse vorhanden/i);
+
+      // Restore the original mock
+      spy.mockRestore();
+    });
+
+    it("waits for authentication to load before fetching results", async () => {
+      // Override useAuth mock to return loading state
+      const api = await import("../../api/quizApi");
+      mockUseAuth.mockReturnValue({
+        user: null,
+        isLoading: true,
+        login: vi.fn(),
+        logout: vi.fn(),
+        setUser: vi.fn(),
+      });
+
+      const { findByText } = render(
+        <MemoryRouter initialEntries={[{ pathname: "/results" }]}>
+          <ThemeProvider theme={theme}>
+            <Routes>
+              <Route path="/results" element={<ResultsPage />} />
+            </Routes>
+          </ThemeProvider>
+        </MemoryRouter>,
+      );
+
+      // Should show loading state
+      await findByText(/Lädt.../i);
+
+      expect(api.getQuizResults).not.toHaveBeenCalled();
+    });
+
+    it("handles database fetch error gracefully", async () => {
+      // Override the mock before rendering
+      const { getQuizResults } = await import("../../api/quizApi");
+      vi.mocked(getQuizResults).mockRejectedValue(new Error("Database error"));
+      const api = await import("../../api/quizApi");
+      mockUseAuth.mockReturnValue({
+        user: { id: 1, username: "testuser" },
+        isLoading: false,
+        login: vi.fn(),
+        logout: vi.fn(),
+        setUser: vi.fn(),
+      });
+      vi.mocked(api.getQuizResults).mockRejectedValueOnce(
+        new Error("Database error"),
+      );
+
+      render(
+        <MemoryRouter initialEntries={[{ pathname: "/results" }]}>
+          <ThemeProvider theme={theme}>
+            <Routes>
+              <Route path="/results" element={<ResultsPage />} />
+            </Routes>
+          </ThemeProvider>
+        </MemoryRouter>,
+      );
+
+      // Wait for the error message to appear
+      expect(
+        await screen.findByText(
+          /Unerwarteter Fehler beim Laden der Ergebnisse/i,
+        ),
+      ).toBeInTheDocument();
+      expect(api.getQuizResults).toHaveBeenCalled();
+    });
+
+    it("prioritizes navigation state over database results", async () => {
+      // Override the mocks before rendering
+      const api = await import("../../api/quizApi");
+      vi.mocked(api.getQuizResults).mockResolvedValue(["100", "101"]);
+      vi.mocked(api.getStudyProgrammeById).mockImplementation(
+        async (id: string) =>
+          ({
+            studiengang_id: id,
+            name: `Programme ${id}`,
+            hochschule: "Test University",
+            abschluss: "Bachelor",
+          }) as any,
+      );
+
+      render(
+        <MemoryRouter
+          initialEntries={[
+            { pathname: "/results", state: { idsFromLevel2: ["1", "2"] } },
+          ]}
+        >
+          <ThemeProvider theme={theme}>
+            <Routes>
+              <Route path="/results" element={<ResultsPage />} />
+            </Routes>
+          </ThemeProvider>
+        </MemoryRouter>,
+      );
+
+      await vi.waitFor(() => {
+        // Should NOT call getQuizResults because navigation state exists
+        expect(api.getQuizResults).not.toHaveBeenCalled();
+        // Should fetch programmes from navigation state IDs
+        expect(api.getStudyProgrammeById).toHaveBeenCalledWith("1");
+        expect(api.getStudyProgrammeById).toHaveBeenCalledWith("2");
+      });
     });
   });
 });
