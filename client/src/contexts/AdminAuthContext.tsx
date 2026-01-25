@@ -73,7 +73,6 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       if (adminData) {
         setAdmin(adminData);
-        console.log(admin);
         setIsLoading(false);
       }
     } catch (error) {
