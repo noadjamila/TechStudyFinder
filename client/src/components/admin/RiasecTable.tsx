@@ -24,6 +24,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import theme from "../../theme/theme";
 import { RiasecItem } from "../../types/RiasecTypes";
 import ErrorIcon from "@mui/icons-material/Error";
+import PrimaryButton from "../buttons/PrimaryButton";
 
 interface Props {
   items: RiasecItem[];
@@ -97,7 +98,6 @@ export default function RiasecTable({ items, tableKey, onUpdate }: Props) {
   const handleClose = () => {
     setEditItem(null);
     setEditValues({});
-    onUpdate();
   };
 
   const handleEditValueChange = (key: string, value: any) => {
@@ -139,7 +139,7 @@ export default function RiasecTable({ items, tableKey, onUpdate }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-
+      onUpdate();
       handleClose();
     } catch (error) {
       setErrorMessage("Fehler beim Speichern.");
@@ -339,18 +339,27 @@ export default function RiasecTable({ items, tableKey, onUpdate }: Props) {
               .map((key) => (
                 <TextField
                   key={`edit-${editItem.id}-${key}`}
-                  label={key}
+                  label={key.toUpperCase()}
                   fullWidth
                   margin="normal"
                   size="small"
+                  inputProps={{
+                    min: 1,
+                    max: 5,
+                  }}
                   value={editValues[key] ?? ""}
                   onChange={(e) => {
-                    const value =
-                      typeof editItem[key as keyof RiasecItem] === "number"
-                        ? e.target.value === ""
-                          ? null
-                          : Number(e.target.value)
-                        : e.target.value;
+                    let value: any;
+                    if (typeof editItem[key as keyof RiasecItem] === "number") {
+                      if (e.target.value === "") {
+                        value = null;
+                      } else {
+                        const num = Number(e.target.value);
+                        value = Math.min(5, Math.max(1, num));
+                      }
+                    } else {
+                      value = e.target.value;
+                    }
                     handleEditValueChange(key, value);
                   }}
                   type={
@@ -371,20 +380,7 @@ export default function RiasecTable({ items, tableKey, onUpdate }: Props) {
           >
             Abbrechen
           </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSave}
-            sx={{
-              borderRadius: "9px",
-              backgroundColor: theme.palette.primary.main,
-              "&:hover": {
-                backgroundColor: theme.palette.decorative.blueDark,
-              },
-            }}
-          >
-            Speichern
-          </Button>
+          <PrimaryButton label="Speichern" onClick={handleSave} />
         </DialogActions>
       </Dialog>
     </>
