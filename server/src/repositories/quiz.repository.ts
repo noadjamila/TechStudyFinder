@@ -3,6 +3,50 @@ import { RiasecScores } from "../types/riasecScores";
 import { StudyProgramme } from "../types/studyProgramme";
 
 /**
+ * Saves or updates user quiz results in the database.
+ * Uses UPSERT to handle both new and existing results.
+ *
+ * @param userId the user's ID
+ * @param resultIds array of study programme IDs in order
+ */
+export async function saveUserQuizResults(
+  userId: number,
+  resultIds: string[],
+): Promise<void> {
+  const query = `
+    INSERT INTO user_quiz_results (user_id, result_ids, updated_at)
+    VALUES ($1, $2, NOW())
+    ON CONFLICT (user_id)
+    DO UPDATE SET result_ids = $2, updated_at = NOW()
+  `;
+
+  await pool.query(query, [userId, resultIds]);
+}
+
+/**
+ * Retrieves user quiz results from the database.
+ *
+ * @param userId the user's ID
+ * @returns array of study programme IDs or null if no results found
+ */
+export async function getUserQuizResults(
+  userId: number,
+): Promise<string[] | null> {
+  const query = `
+    SELECT result_ids FROM user_quiz_results
+    WHERE user_id = $1
+  `;
+
+  const result = await pool.query(query, [userId]);
+
+  if (result.rows.length === 0) {
+    return null;
+  }
+
+  return result.rows[0].result_ids;
+}
+
+/**
  * Retrieves filtered study programme IDs for level 1 based on the provided study type.
  *
  * @param studientyp the type of study programme (undergraduate, graduate or all)

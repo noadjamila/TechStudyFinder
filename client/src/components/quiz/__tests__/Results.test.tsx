@@ -220,7 +220,9 @@ describe("Results Component", () => {
     });
     fireEvent.click(firstCard);
 
-    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
+      state: { previousPage: expect.any(String) },
+    });
   });
 
   it("navigates to correct detail page when different cards are clicked", () => {
@@ -231,7 +233,9 @@ describe("Results Component", () => {
     });
     fireEvent.click(dataCard);
 
-    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/2");
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/2", {
+      state: { previousPage: expect.any(String) },
+    });
   });
 
   it("makes cards keyboard accessible with Enter key", () => {
@@ -242,7 +246,9 @@ describe("Results Component", () => {
     });
     fireEvent.keyDown(firstCard, { key: "Enter" });
 
-    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
+      state: { previousPage: expect.any(String) },
+    });
   });
 
   it("makes cards keyboard accessible with Space key", () => {
@@ -253,6 +259,8 @@ describe("Results Component", () => {
     });
     fireEvent.keyDown(firstCard, { key: " " });
 
-    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
+      state: { previousPage: expect.any(String) },
+    });
   });
 });
