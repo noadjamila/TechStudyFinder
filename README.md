@@ -86,6 +86,8 @@ After completing these steps, the database will be fully initialized and ready f
 
 **To update the data**, simply replace the XML files with new ones and run the `init_data.ts` script again. The table values will be overwritten with the new ones and the RIASEC values will be added again. If there are new areas of study in the data, you will receive a warning via the terminal that the table contains NULL values. You will then have to add the RIASEC values manually. See [here](docs/riasec-mapping.md) for an explanation of how to determine the RIASEC types.
 
+For more details, refer to the [Database Operations Guide](docs/database.md).
+
 ## Tech Stack
 
 **Frontend**: React (Progressive Web App)
