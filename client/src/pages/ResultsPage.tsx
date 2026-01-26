@@ -15,7 +15,7 @@ import { useAuth } from "../contexts/AuthContext";
 
 /**
  * ResultsPage component displays the results of the quiz.
- * It fetches study programmes based on quiz results or cached data.
+ * It fetches study programmes based on quiz results from navigation state or database.
  * @returns JSX.Element
  */
 const ResultsPage: React.FC = () => {

@@ -8,6 +8,12 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Favourites from "./pages/Favourites";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminPage from "./pages/admin/AdminDashboard";
+import AdminUpload from "./pages/admin/AdminUpload";
+import AdminInstructions from "./pages/admin/AdminInstructions";
+import AdminEdit from "./pages/admin/AdminEdit";
+import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 import { ErrorScreen } from "./pages/ErrorScreen";
 import Impressum from "./pages/Impressum";
 
@@ -32,6 +38,40 @@ export default function App() {
       <Route
         path="/study-programme/:id"
         element={<StudyProgrammeDetailPage />}
+      />
+
+      <Route
+        path="/admin"
+        element={
+          <AdminProtectedRoute>
+            <AdminPage />
+          </AdminProtectedRoute>
+        }
+      />
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route
+        path="/admin/upload"
+        element={
+          <AdminProtectedRoute>
+            <AdminUpload />
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/instructions"
+        element={
+          <AdminProtectedRoute>
+            <AdminInstructions />
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/edit"
+        element={
+          <AdminProtectedRoute>
+            <AdminEdit />
+          </AdminProtectedRoute>
+        }
       />
       <Route path="/error" element={<ErrorScreen />} />
       <Route

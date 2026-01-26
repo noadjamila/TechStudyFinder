@@ -68,10 +68,13 @@ Run the application locally with the following steps:
 
 To set up and populate the database, follow these steps:
 
-1. Configure your environment variables:
+1. **Configure your environment variables**
    Ensure your `.env` file contains the correct database connection details (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`).
-2. Store the XML files with the data under server/db/xml.
-3. Run the following command to create the necessary tables and to fill them with your XML and RIASEC data:
+
+2. **Store the XML files** with the data under `server/db/xml`.
+
+3. **Initialize the database**
+   Run the following command to create all necessary tables and populate them with your XML and RIASEC data:
 
 ```bash
 cd server

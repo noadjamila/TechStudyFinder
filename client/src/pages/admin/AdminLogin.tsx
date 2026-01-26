@@ -2,13 +2,9 @@ import { useState } from "react";
 import { Box, Alert, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
-import BackButton from "../../components/buttons/BackButton";
 import FormField from "../../components/login-register/InputField";
-import FormHeader from "../../components/login-register/FormHeader";
 import theme from "../../theme/theme";
-import BottomHills from "../../components/login-register/BottomHills";
-import LoginResultDialog from "../../components/dialogs/LoginResultDialog";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAdminAuth } from "../../contexts/AdminAuthContext";
 
 /**
  * Login page component.
@@ -19,13 +15,11 @@ import { useAuth } from "../../contexts/AuthContext";
  */
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login } = useAdminAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [showResultDialog, setShowResultDialog] = useState(false);
-  const [loginSuccess, setLoginSuccess] = useState(false);
 
   const handleLogin = async () => {
     setError(null);
@@ -43,23 +37,15 @@ export default function Login() {
     setLoading(true);
     try {
       await login(username, password);
-      // Show success popup
-      setLoginSuccess(true);
-      setShowResultDialog(true);
-    } catch {
-      // On error, show inline error message and clear both fields
-      setError("Login fehlgeschlagen - bitte versuche es erneut!");
+
+      navigate("/admin");
+    } catch (err) {
+      console.error("Admin Login failed: ", err);
+      setError("Login fehlgeschlagen: " + err);
       setUsername("");
       setPassword("");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleResultDialogClose = () => {
-    setShowResultDialog(false);
-    if (loginSuccess) {
-      navigate("/");
     }
   };
 
@@ -83,7 +69,31 @@ export default function Login() {
           pb: { xs: 18, sm: 20, md: 22 },
         }}
       >
-        <FormHeader />
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0, mb: 4 }}>
+          <Box
+            component="img"
+            src="/logo.png"
+            alt="Logo"
+            sx={{ width: 50, height: 50 }}
+          />
+          <Box>
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              Tech Study Finder
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                color: theme.palette.error.main,
+                fontWeight: 600,
+                letterSpacing: 0.6,
+                textTransform: "uppercase",
+                mt: 0.6,
+              }}
+            >
+              ADMIN-BEREICH
+            </Typography>
+          </Box>
+        </Box>
 
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
@@ -107,12 +117,7 @@ export default function Login() {
           sx={{ mb: 3 }}
         />
 
-        <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
-          <BackButton
-            label="Zurück"
-            onClick={() => navigate("/")}
-            disabled={loading}
-          />
+        <Box sx={{ display: "flex", justifyContent: "end" }}>
           <PrimaryButton
             label={loading ? "Login..." : "Login"}
             onClick={handleLogin}
@@ -122,34 +127,7 @@ export default function Login() {
             }}
           />
         </Box>
-
-        <Box sx={{ textAlign: "center", mt: 3 }}>
-          <Typography variant="body2">
-            Kein Konto?{" "}
-            <Typography
-              component="span"
-              variant="body2"
-              sx={{
-                color: theme.palette.decorative.blue,
-                cursor: "pointer",
-                fontWeight: "bold",
-                "&:hover": {
-                  textDecoration: "underline",
-                },
-              }}
-              onClick={() => navigate("/register")}
-            >
-              Registrieren
-            </Typography>
-          </Typography>
-        </Box>
       </Box>
-      <BottomHills />
-      <LoginResultDialog
-        open={showResultDialog}
-        success={loginSuccess}
-        onClose={handleResultDialogClose}
-      />
     </Box>
   );
 }

@@ -1,15 +1,47 @@
 services:
+  # PostgreSQL Database
+  # Run with: docker-compose --profile local up
+  db:
+    image: postgres:15-alpine
+    container_name: techstudyfinder-db
+    restart: unless-stopped
+    profiles:
+      - local
+    environment:
+      POSTGRES_USER: studyfinder
+      POSTGRES_PASSWORD: changeme_in_production
+      POSTGRES_DB: techstudyfinder
+    volumes:
+      # Persist database data
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U studyfinder"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Application
   app:
     # NOTE: GITHUB_REPO_OWNER environment variable must be set and must match
     # the GitHub repository owner exactly for the image pull to work
     image: ghcr.io/${GITHUB_REPO_OWNER}/techstudyfinder:latest
     container_name: techstudyfinder
     restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+        required: false
     ports:
       - "127.0.0.1:5001:5001"
     environment:
-      # Bind to all interfaces so the host can reach the container on the published port
       HOST: 0.0.0.0
       PORT: 5001
+      # Override DATABASE_URL in .env if using external database
     env_file:
       - .env
+
+volumes:
+  postgres_data:
+    driver: local

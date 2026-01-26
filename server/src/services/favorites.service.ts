@@ -13,7 +13,7 @@ export async function addFavorite(
 ): Promise<{ id: number; user_id: number; studiengang_id: string }> {
   try {
     const result = await favoritesRepository.addFavorite(userId, studiengangId);
-    console.log(
+    console.debug(
       `[FAVORITES] Added studiengang ${studiengangId} to favorites for user ${userId}`,
     );
     return result;
@@ -39,7 +39,7 @@ export async function removeFavorite(
       userId,
       studiengangId,
     );
-    console.log(
+    console.debug(
       `[FAVORITES] Removed studiengang ${studiengangId} from favorites for user ${userId}`,
     );
     return deleted;

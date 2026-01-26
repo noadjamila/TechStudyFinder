@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { AuthProvider } from "./contexts/AuthContext";
+import { AdminAuthProvider } from "./contexts/AdminAuthContext";
 
 import "./index.css";
 import App from "./App";
@@ -20,7 +21,9 @@ ReactDOM.createRoot(rootElement).render(
       <CssBaseline />
       <BrowserRouter>
         <AuthProvider>
-          <App />
+          <AdminAuthProvider>
+            <App />
+          </AdminAuthProvider>
         </AuthProvider>
       </BrowserRouter>
     </ThemeProvider>
@@ -30,9 +33,9 @@ ReactDOM.createRoot(rootElement).render(
 // Register Vite PWA Service Worker
 registerSW({
   onNeedRefresh() {
-    console.log("New content available; please refresh.");
+    console.debug("New content available; please refresh.");
   },
   onOfflineReady() {
-    console.log("App ready to work offline.");
+    console.debug("App ready to work offline.");
   },
 });
