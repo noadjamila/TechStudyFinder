@@ -1,6 +1,12 @@
 /// <reference types="jest" />
 import { Request, Response } from "express";
-import { filterLevel, getQuestions } from "../quiz.controller";
+import {
+  filterLevel,
+  getQuestions,
+  getStudyProgrammeById,
+  saveQuizResults,
+  getQuizResults,
+} from "../quiz.controller";
 import * as quizService from "../../services/quiz.service";
 
 // Mock the service module
@@ -291,5 +297,431 @@ describe("Quiz Controller - getQuestions Level 2", () => {
       "Error retrieving questions",
       mockError,
     );
+  });
+});
+
+describe("Quiz Controller - getStudyProgrammeById", () => {
+  let mockRequest: Partial<Request>;
+  let mockResponse: Partial<Response>;
+  let jsonMock: jest.Mock;
+  let statusMock: jest.Mock;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    // Setup response mock
+    jsonMock = jest.fn();
+    statusMock = jest.fn().mockReturnValue({ json: jsonMock });
+
+    mockResponse = {
+      status: statusMock,
+      json: jsonMock,
+    };
+  });
+
+  it("should return 200 with study programme data for valid ID", async () => {
+    // Arrange
+    const mockProgramme = {
+      studiengang_id: "12345",
+      name: "Informatik",
+      hochschule: "TU Berlin",
+      abschluss: "Bachelor of Science",
+      homepage: "https://example.com",
+      studienbeitrag: "0 EUR",
+      beitrag_kommentar: null,
+      anmerkungen: "Test programme",
+      regelstudienzeit: "6 Semester",
+      zulassungssemester: "WS",
+      zulassungsmodus: "NC",
+      zulassungsvoraussetzungen: "Abitur",
+      zulassungslink: "https://example.com/apply",
+      schwerpunkte: ["AI", "Software Engineering"],
+      sprachen: ["Deutsch", "Englisch"],
+      standorte: ["Berlin"],
+      studienfelder: ["Informatik"],
+      studienform: ["Vollzeit"],
+      fristen: null,
+    };
+    jest
+      .spyOn(quizService, "getStudyProgrammeByIdService")
+      .mockResolvedValue(mockProgramme);
+
+    mockRequest = {
+      params: {
+        id: "12345",
+      },
+    };
+
+    // Act
+    await getStudyProgrammeById(
+      mockRequest as Request,
+      mockResponse as Response,
+    );
+
+    // Assert
+    expect(quizService.getStudyProgrammeByIdService).toHaveBeenCalledWith(
+      "12345",
+    );
+    expect(statusMock).toHaveBeenCalledWith(200);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: true,
+      studyProgramme: mockProgramme,
+    });
+  });
+
+  it("should return 404 when study programme is not found", async () => {
+    // Arrange
+    jest
+      .spyOn(quizService, "getStudyProgrammeByIdService")
+      .mockResolvedValue(undefined);
+
+    mockRequest = {
+      params: {
+        id: "nonexistent",
+      },
+    };
+
+    // Act
+    await getStudyProgrammeById(
+      mockRequest as Request,
+      mockResponse as Response,
+    );
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(404);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      error: "Study programme not found",
+    });
+  });
+
+  it("should return 500 on service error", async () => {
+    // Arrange
+    const mockError = new Error("Database connection failed");
+    jest
+      .spyOn(quizService, "getStudyProgrammeByIdService")
+      .mockRejectedValue(mockError);
+    jest.spyOn(console, "error").mockImplementation(() => {});
+
+    mockRequest = {
+      params: {
+        id: "12345",
+      },
+    };
+
+    // Act
+    await getStudyProgrammeById(
+      mockRequest as Request,
+      mockResponse as Response,
+    );
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(500);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      error: "Internal Server Error",
+      message: "Error retrieving study programme",
+    });
+    expect(console.error).toHaveBeenCalledWith(
+      "Error retrieving study programme",
+      mockError,
+    );
+  });
+
+  it("should return 404 for empty string ID", async () => {
+    // Arrange
+    jest
+      .spyOn(quizService, "getStudyProgrammeByIdService")
+      .mockResolvedValue(undefined);
+
+    mockRequest = {
+      params: {
+        id: "",
+      },
+    };
+
+    // Act
+    await getStudyProgrammeById(
+      mockRequest as Request,
+      mockResponse as Response,
+    );
+
+    // Assert
+    expect(quizService.getStudyProgrammeByIdService).toHaveBeenCalledWith("");
+    expect(statusMock).toHaveBeenCalledWith(404);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      error: "Study programme not found",
+    });
+  });
+});
+
+describe("Quiz Controller - saveQuizResults", () => {
+  let mockRequest: Partial<Request>;
+  let mockResponse: Partial<Response>;
+  let jsonMock: jest.Mock;
+  let statusMock: jest.Mock;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    jsonMock = jest.fn();
+    statusMock = jest.fn().mockReturnValue({ json: jsonMock });
+
+    mockResponse = {
+      status: statusMock,
+      json: jsonMock,
+    };
+  });
+
+  it("should save quiz results for authenticated user", async () => {
+    // Arrange
+    jest
+      .spyOn(quizService, "saveQuizResultsService")
+      .mockResolvedValue(undefined);
+
+    mockRequest = {
+      session: {
+        user: { id: 1, username: "testuser" },
+      } as any,
+      body: {
+        resultIds: ["1", "2", "3"],
+      },
+    };
+
+    // Act
+    await saveQuizResults(mockRequest as Request, mockResponse as Response);
+
+    // Assert
+    expect(quizService.saveQuizResultsService).toHaveBeenCalledWith(1, [
+      "1",
+      "2",
+      "3",
+    ]);
+    expect(statusMock).toHaveBeenCalledWith(200);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: true,
+      message: "Quiz results saved",
+    });
+  });
+
+  it("should return 401 if user is not authenticated", async () => {
+    // Arrange
+    mockRequest = {
+      session: {} as any,
+      body: {
+        resultIds: ["1", "2", "3"],
+      },
+    };
+
+    // Act
+    await saveQuizResults(mockRequest as Request, mockResponse as Response);
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(401);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      error: "Not authenticated",
+    });
+  });
+
+  it("should return 400 if resultIds is not an array", async () => {
+    // Arrange
+    mockRequest = {
+      session: {
+        user: { id: 1, username: "testuser" },
+      } as any,
+      body: {
+        resultIds: "not-an-array",
+      },
+    };
+
+    // Act
+    await saveQuizResults(mockRequest as Request, mockResponse as Response);
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(400);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      error: "resultIds must be an array",
+    });
+  });
+
+  it("should return 400 if resultIds is an empty array", async () => {
+    // Arrange
+    mockRequest = {
+      session: {
+        user: { id: 1, username: "testuser" },
+      } as any,
+      body: {
+        resultIds: [],
+      },
+    };
+
+    // Act
+    await saveQuizResults(mockRequest as Request, mockResponse as Response);
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(400);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      error: "resultIds cannot be empty",
+    });
+  });
+
+  it("should return 400 if resultIds contains non-string elements", async () => {
+    // Arrange
+    mockRequest = {
+      session: {
+        user: { id: 1, username: "testuser" },
+      } as any,
+      body: {
+        resultIds: ["1", 2, "3", null, undefined],
+      },
+    };
+
+    // Act
+    await saveQuizResults(mockRequest as Request, mockResponse as Response);
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(400);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      error: "All resultIds must be strings",
+    });
+  });
+
+  it("should return 500 on service error", async () => {
+    // Arrange
+    const mockError = new Error("Database error");
+    jest
+      .spyOn(quizService, "saveQuizResultsService")
+      .mockRejectedValue(mockError);
+    jest.spyOn(console, "error").mockImplementation(() => {});
+
+    mockRequest = {
+      session: {
+        user: { id: 1, username: "testuser" },
+      } as any,
+      body: {
+        resultIds: ["1", "2", "3"],
+      },
+    };
+
+    // Act
+    await saveQuizResults(mockRequest as Request, mockResponse as Response);
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(500);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      error: "Error saving quiz results",
+    });
+  });
+});
+
+describe("Quiz Controller - getQuizResults", () => {
+  let mockRequest: Partial<Request>;
+  let mockResponse: Partial<Response>;
+  let jsonMock: jest.Mock;
+  let statusMock: jest.Mock;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    jsonMock = jest.fn();
+    statusMock = jest.fn().mockReturnValue({ json: jsonMock });
+
+    mockResponse = {
+      status: statusMock,
+      json: jsonMock,
+    };
+  });
+
+  it("should return quiz results for authenticated user", async () => {
+    // Arrange
+    jest
+      .spyOn(quizService, "getQuizResultsService")
+      .mockResolvedValue(["1", "2", "3"]);
+
+    mockRequest = {
+      session: {
+        user: { id: 1, username: "testuser" },
+      } as any,
+    };
+
+    // Act
+    await getQuizResults(mockRequest as Request, mockResponse as Response);
+
+    // Assert
+    expect(quizService.getQuizResultsService).toHaveBeenCalledWith(1);
+    expect(statusMock).toHaveBeenCalledWith(200);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: true,
+      resultIds: ["1", "2", "3"],
+    });
+  });
+
+  it("should return 401 if user is not authenticated", async () => {
+    // Arrange
+    mockRequest = {
+      session: {} as any,
+    };
+
+    // Act
+    await getQuizResults(mockRequest as Request, mockResponse as Response);
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(401);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      error: "Not authenticated",
+    });
+  });
+
+  it("should return 404 if no results found", async () => {
+    // Arrange
+    jest.spyOn(quizService, "getQuizResultsService").mockResolvedValue(null);
+
+    mockRequest = {
+      session: {
+        user: { id: 1, username: "testuser" },
+      } as any,
+    };
+
+    // Act
+    await getQuizResults(mockRequest as Request, mockResponse as Response);
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(404);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      message: "No quiz results found",
+    });
+  });
+
+  it("should return 500 on service error", async () => {
+    // Arrange
+    const mockError = new Error("Database error");
+    jest
+      .spyOn(quizService, "getQuizResultsService")
+      .mockRejectedValue(mockError);
+    jest.spyOn(console, "error").mockImplementation(() => {});
+
+    mockRequest = {
+      session: {
+        user: { id: 1, username: "testuser" },
+      } as any,
+    };
+
+    // Act
+    await getQuizResults(mockRequest as Request, mockResponse as Response);
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(500);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      error: "Error retrieving quiz results",
+    });
   });
 });

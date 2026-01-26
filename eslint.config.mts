@@ -14,9 +14,11 @@ export default defineConfig([
     ignores: [
       "client/public/**",
       "client/build/**",
+      "client/dist/**",
       "server/dist/**",
       "**/*.js.map",
       "**/*.d.ts.map",
+      "**/*.d.ts",
     ],
   },
 
@@ -133,12 +135,22 @@ export default defineConfig([
 
   // Client tests
   {
-    files: ["client/**/*.test.tsx", "client/**/__tests__/**/*.tsx"],
+    files: [
+      "client/**/*.test.ts",
+      "client/**/*.test.tsx",
+      "client/**/__tests__/**/*.ts",
+      "client/**/__tests__/**/*.tsx",
+    ],
     extends: [js.configs.recommended],
 
     languageOptions: {
       parser: tsParser,
-      globals: { ...globals.browser, ...globals.node, ...globals.jest },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.jest,
+        ...globals.vitest,
+      },
       parserOptions: {
         ecmaFeatures: { jsx: true },
         project: "client/tsconfig.json",

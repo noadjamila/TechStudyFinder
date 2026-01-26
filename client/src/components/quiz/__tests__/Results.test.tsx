@@ -20,30 +20,107 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
+// Mock Auth Context
+vi.mock("../../../contexts/AuthContext", () => ({
+  useAuth: vi.fn(() => ({
+    user: { id: 1, username: "testuser" },
+    isAuthenticated: true,
+    login: vi.fn(),
+    logout: vi.fn(),
+  })),
+}));
+
+// Mock Favorites API
+vi.mock("../../../api/favoritesApi", () => ({
+  getFavorites: vi.fn(() => Promise.resolve([])),
+  addFavorite: vi.fn(() => Promise.resolve()),
+  removeFavorite: vi.fn(() => Promise.resolve()),
+}));
+
 const mockStudyProgrammes: StudyProgramme[] = [
   {
-    id: 1,
+    studiengang_id: "1",
     name: "Computer Science",
-    university: "Technical University Munich",
-    degree: "Bachelor of Science",
+    hochschule: "Technical University Munich",
+    abschluss: "Bachelor of Science",
+    homepage: "https://example.com",
+    studienbeitrag: "500 EUR",
+    beitrag_kommentar: "Per Semester",
+    anmerkungen: "",
+    regelstudienzeit: "6 Semester",
+    zulassungssemester: "WS/SS",
+    zulassungsmodus: "NC",
+    zulassungsvoraussetzungen: "Abitur",
+    zulassungslink: "https://example.com/apply",
+    schwerpunkte: ["AI", "Software Engineering"],
+    sprachen: ["Deutsch", "Englisch"],
+    standorte: ["München"],
+    studienfelder: ["Informatik"],
+    studienform: ["Vollzeit"],
+    fristen: null,
   },
   {
-    id: 2,
+    studiengang_id: "2",
     name: "Data Science",
-    university: "Ludwig-Maximilians-Universität München",
-    degree: "Master of Science",
+    hochschule: "Ludwig-Maximilians-Universität München",
+    abschluss: "Master of Science",
+    homepage: "https://example.com",
+    studienbeitrag: "0 EUR",
+    beitrag_kommentar: "Keine Gebühren",
+    anmerkungen: "",
+    regelstudienzeit: "4 Semester",
+    zulassungssemester: "WS",
+    zulassungsmodus: "Frei",
+    zulassungsvoraussetzungen: "Bachelor",
+    zulassungslink: "https://example.com/apply",
+    schwerpunkte: ["Machine Learning", "Statistics"],
+    sprachen: ["Englisch"],
+    standorte: ["München"],
+    studienfelder: ["Datenwissenschaft"],
+    studienform: ["Vollzeit"],
+    fristen: null,
   },
   {
-    id: 3,
+    studiengang_id: "3",
     name: "Software Engineering",
-    university: "Technical University Munich",
-    degree: "Master of Science",
+    hochschule: "Technical University Munich",
+    abschluss: "Master of Science",
+    homepage: "https://example.com",
+    studienbeitrag: "500 EUR",
+    beitrag_kommentar: "Per Semester",
+    anmerkungen: "",
+    regelstudienzeit: "4 Semester",
+    zulassungssemester: "WS/SS",
+    zulassungsmodus: "NC",
+    zulassungsvoraussetzungen: "Bachelor Informatik",
+    zulassungslink: "https://example.com/apply",
+    schwerpunkte: ["Web Development", "Mobile Apps"],
+    sprachen: ["Deutsch", "Englisch"],
+    standorte: ["München"],
+    studienfelder: ["Informatik"],
+    studienform: ["Vollzeit"],
+    fristen: null,
   },
   {
-    id: 4,
+    studiengang_id: "4",
     name: "Information Systems",
-    university: "University of Cologne",
-    degree: "Bachelor of Science",
+    hochschule: "University of Cologne",
+    abschluss: "Bachelor of Science",
+    homepage: "https://example.com",
+    studienbeitrag: "0 EUR",
+    beitrag_kommentar: "Keine Gebühren",
+    anmerkungen: "",
+    regelstudienzeit: "6 Semester",
+    zulassungssemester: "WS",
+    zulassungsmodus: "NC",
+    zulassungsvoraussetzungen: "Abitur",
+    zulassungslink: "https://example.com/apply",
+    schwerpunkte: ["Business Informatics"],
+    sprachen: ["Deutsch"],
+    standorte: ["Köln"],
+    studienfelder: ["Wirtschaftsinformatik"],
+    studienform: ["Vollzeit"],
+    fristen: null,
   },
 ];
 
@@ -75,9 +152,11 @@ describe("Results Component", () => {
 
   it("shows empty state when no study programmes are provided", () => {
     renderWithTheme(<Results studyProgrammes={[]} />);
-    expect(screen.getByText("Keine Studiengänge gefunden")).toBeInTheDocument();
     expect(
-      screen.getByText("Versuchen Sie, Ihre Quizantworten anzupassen"),
+      screen.getByText(/Keine Studiengänge gefunden/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Versuche, deine Quizantworten anzupassen/i),
     ).toBeInTheDocument();
   });
 
@@ -94,9 +173,7 @@ describe("Results Component", () => {
   it("renders filter dropdowns with accessibility labels", () => {
     renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
 
-    expect(
-      screen.getByLabelText("Filter nach Universität oder Hochschule"),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Filter nach Standort")).toBeInTheDocument();
     expect(screen.getByLabelText("Filter nach Abschluss")).toBeInTheDocument();
   });
 
@@ -143,7 +220,9 @@ describe("Results Component", () => {
     });
     fireEvent.click(firstCard);
 
-    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
+      state: { previousPage: expect.any(String) },
+    });
   });
 
   it("navigates to correct detail page when different cards are clicked", () => {
@@ -154,7 +233,9 @@ describe("Results Component", () => {
     });
     fireEvent.click(dataCard);
 
-    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/2");
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/2", {
+      state: { previousPage: expect.any(String) },
+    });
   });
 
   it("makes cards keyboard accessible with Enter key", () => {
@@ -165,7 +246,9 @@ describe("Results Component", () => {
     });
     fireEvent.keyDown(firstCard, { key: "Enter" });
 
-    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
+      state: { previousPage: expect.any(String) },
+    });
   });
 
   it("makes cards keyboard accessible with Space key", () => {
@@ -176,6 +259,8 @@ describe("Results Component", () => {
     });
     fireEvent.keyDown(firstCard, { key: " " });
 
-    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1");
+    expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
+      state: { previousPage: expect.any(String) },
+    });
   });
 });

@@ -1,10 +1,20 @@
 import "@mui/material/styles";
+import "@mui/material/Typography";
+import type * as React from "react";
 
 declare module "@mui/material/styles" {
   interface TypeText {
     header?: string;
     subHeader?: string;
     skipButton?: string;
+  }
+
+  interface TypographyVariants {
+    errorScreenTitle: React.CSSProperties;
+  }
+
+  interface TypographyVariantsOptions {
+    errorScreenTitle?: React.CSSProperties;
   }
 
   interface Palette {
@@ -30,6 +40,9 @@ declare module "@mui/material/styles" {
       filterUnselected: string;
       favoriteIconToggled: string;
       favoriteIconUntoggled: string;
+    };
+    detailspage: {
+      link: string;
     };
   }
 
@@ -58,14 +71,24 @@ declare module "@mui/material/styles" {
       favoriteIconToggled?: string;
       favoriteIconUntoggled?: string;
     };
+    detailspage?: {
+      link?: string;
+    };
   }
-  declare module "*.png" {
-    const content: string;
-    export default content;
-  }
+}
 
-  declare module "*.jpg" {
-    const content: string;
-    export default content;
+declare module "@mui/material/Typography" {
+  interface TypographyPropsVariantOverrides {
+    errorScreenTitle: true;
   }
+}
+
+declare module "*.png" {
+  const content: string;
+  export default content;
+}
+
+declare module "*.jpg" {
+  const content: string;
+  export default content;
 }

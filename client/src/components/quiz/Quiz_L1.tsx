@@ -1,11 +1,12 @@
 import { useState } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
 import SecondaryButton from "../buttons/SecondaryButton";
-import BaseCard from "../BaseCard";
+import BaseCard from "../cards/QuizCardBase";
 import theme from "../../theme/theme";
 import { postFilterLevel } from "../../api/quizApi";
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { Answer } from "../../types/QuizAnswer.types";
+import { useApiClient } from "../../hooks/useApiClient";
 
 /**
  * Props for the Quiz_L1 component.
@@ -15,6 +16,7 @@ import { Answer } from "../../types/QuizAnswer.types";
  */
 export interface QuizL1Props {
   onAnswer: (answer: Answer) => void;
+  level1ids: (_ids: string[]) => void;
   onComplete: () => void;
 }
 
@@ -26,8 +28,13 @@ export interface QuizL1Props {
  * @param {QuizL1Props} props - The component props.
  * @returns {JSX.Element} The rendered Level 1 quiz component.
  */
-export default function Quiz_L1({ onAnswer, onComplete }: QuizL1Props) {
+export default function Quiz_L1({
+  onAnswer,
+  level1ids,
+  onComplete,
+}: QuizL1Props) {
   const [selected, setSelected] = useState<string | undefined>();
+  const { apiFetch } = useApiClient();
 
   const handleSelectAndNext = async (selectedType: string) => {
     setSelected(selectedType);
@@ -39,10 +46,14 @@ export default function Quiz_L1({ onAnswer, onComplete }: QuizL1Props) {
     });
 
     try {
-      await postFilterLevel({
-        level: 1,
-        answers: [{ studientyp: selectedType }],
-      });
+      const res = await postFilterLevel(
+        {
+          level: 1,
+          answers: [{ studientyp: selectedType }],
+        },
+        apiFetch,
+      );
+      level1ids(res.ids);
       onComplete();
     } catch (err) {
       console.error("Mistake while filtering", err);
@@ -67,48 +78,41 @@ export default function Quiz_L1({ onAnswer, onComplete }: QuizL1Props) {
         <img
           src="/mascot_standing_blue.svg"
           width={62}
-          height={90}
+          height={70}
           alt="Mascot"
           style={{
             alignSelf: "flex-start",
-            marginLeft: "55px",
+            marginLeft: "48px",
           }}
         />
 
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "100%",
-          }}
-        >
-          <BaseCard
-            cardText="Möchtest du ..."
-            sx={{
-              pt: 2,
-              pb: 4,
-            }}
-            cardColor={theme.palette.decorative.green}
-          ></BaseCard>
-
-          <Box sx={{ display: "grid", gap: 2, mt: 3 }}>
-            <SecondaryButton
-              label={"Ein Studium beginnen?"}
-              onClick={() => handleSelectAndNext("undergraduate")}
-            />
-            <SecondaryButton
-              label={"Einen Master studieren?"}
-              onClick={() => handleSelectAndNext("graduate")}
-            />
-            <SecondaryButton
-              label={"Dich erstmal umschauen?"}
-              onClick={() => handleSelectAndNext("all")}
-            />
-          </Box>
-        </Box>
+        <BaseCard
+          cardText="Möchtest du ..."
+          cardColor={theme.palette.decorative.green}
+        ></BaseCard>
       </Box>
+
+      <Stack
+        spacing={2}
+        sx={{
+          mt: 3,
+          justifyContent: "center",
+          padding: "0 2em",
+        }}
+      >
+        <SecondaryButton
+          label={"Ein Studium beginnen?"}
+          onClick={() => handleSelectAndNext("undergraduate")}
+        />
+        <SecondaryButton
+          label={"Einen Master studieren?"}
+          onClick={() => handleSelectAndNext("graduate")}
+        />
+        <SecondaryButton
+          label={"Dich erstmal umschauen?"}
+          onClick={() => handleSelectAndNext("all")}
+        />
+      </Stack>
     </QuizLayout>
   );
 }

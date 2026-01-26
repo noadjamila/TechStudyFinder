@@ -19,4 +19,5 @@ module.exports = {
   clearMocks: true,
   coverageDirectory: "coverage",
   verbose: true,
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
 };

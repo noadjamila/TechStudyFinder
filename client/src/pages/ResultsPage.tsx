@@ -1,97 +1,194 @@
-import React from "react";
-import { useMediaQuery, useTheme, Box } from "@mui/material";
+import React, { useState, useEffect, useMemo } from "react";
+import { Box } from "@mui/material";
 import Results from "../components/quiz/Results";
 import DataSource from "../components/DataSource";
 import { StudyProgramme } from "../types/StudyProgramme.types";
-import LogoMenu from "../components/logo-menu/LogoMenu";
-import Navigationbar from "../components/nav-bar/NavBar";
-import DesktopLayout from "../layouts/DesktopLayout";
+import MainLayout from "../layouts/MainLayout";
 import { useLocation } from "react-router-dom";
+import { getQuizResults, getStudyProgrammeById } from "../api/quizApi";
+import NoResultsYet from "../components/quiz/NoResultsYet";
+import {
+  loadQuizResults,
+  saveQuizResults,
+} from "../session/persistQuizSession";
+import { useAuth } from "../contexts/AuthContext";
 
+/**
+ * ResultsPage component displays the results of the quiz.
+ * It fetches study programmes based on quiz results or cached data.
+ * @returns JSX.Element
+ */
 const ResultsPage: React.FC = () => {
-  const muiTheme = useTheme();
-  const toggleSidebar = () => {};
-  const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
-
   const location = useLocation();
-  const __previousIds = location.state?.idsFromLevel2 || [];
+  const { user, isLoading: authLoading } = useAuth();
+  type ResultId = string | { studiengang_id: string };
 
-  const studyProgrammes: StudyProgramme[] = [
-    {
-      id: 1,
-      name: "Communication Systems and Networks",
-      university: "Technische Hochschule Köln",
-      degree: "Master",
-    },
-    {
-      id: 2,
-      name: "Betriebliche Umweltinformatik",
-      university: "Hochschule für Technik und Wirtschaft Berlin",
-      degree: "Master",
-    },
-    {
-      id: 3,
-      name: "Informatik",
-      university: "Rheinische Friedrich-Wilhelms-Universität Bonn",
-      degree: "Bachelor of Science",
-    },
-    {
-      id: 4,
-      name: "Medieninformatik",
-      university: "Universität zu Lübeck",
-      degree: "Bachelor of Science",
-    },
-    {
-      id: 5,
-      name: "Data Science",
-      university: "Ludwig-Maximilians-Universität München",
-      degree: "Master of Science",
-    },
-  ]; // Replace with actual data retrieval logic
+  const rawResultIds: ResultId[] =
+    location.state?.idsFromLevel2 ?? location.state?.resultIds ?? [];
 
-  const MainContent = isDesktop ? (
-    <Box
-      sx={{
-        width: "100%",
-        maxWidth: 800,
-        margin: "0 auto",
-      }}
-    >
-      <DataSource />
-      <Results studyProgrammes={studyProgrammes} />
-    </Box>
-  ) : (
-    <Box sx={{ pt: "50px" }}>
-      {" "}
-      {/* Offset for mobile navbar */}
-      <DataSource />
-      <Results studyProgrammes={studyProgrammes} />
-    </Box>
-  );
+  const idsFromQuiz: string[] = useMemo(() => {
+    return (rawResultIds ?? [])
+      .map((r) => (typeof r === "string" ? r : r?.studiengang_id))
+      .filter((id): id is string => typeof id === "string" && id.length > 0);
+  }, [rawResultIds]);
+  const ACTIVE_RESULTS_KEY = "activeQuizResults";
+  const [studyProgrammes, setStudyProgrammes] = useState<StudyProgramme[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [hasQuizResults, setHasQuizResults] = useState<boolean>(() => {
+    return location.state?.resultIds !== undefined;
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchStudyProgrammes = async () => {
+      if (authLoading) {
+        if (!isMounted) return;
+        setLoading(true);
+        return;
+      }
+
+      if (!isMounted) return;
+      setLoading(true);
+      setError(null);
+
+      try {
+        let idsToFetch: string[] = [];
+
+        const hasNav =
+          location.state?.idsFromLevel2 !== undefined ||
+          location.state?.resultIds !== undefined;
+
+        // Scenario 1: Fresh quiz completion - use IDs from navigation state
+        if (hasNav) {
+          idsToFetch = idsFromQuiz;
+          sessionStorage.setItem(ACTIVE_RESULTS_KEY, "1");
+        }
+        // Scenario 2: user logged in - fetch from DB
+        else if (user) {
+          const savedIds = await getQuizResults();
+          if (Array.isArray(savedIds)) idsToFetch = savedIds;
+
+          if (idsToFetch.length > 0) {
+            sessionStorage.setItem(ACTIVE_RESULTS_KEY, "1");
+          }
+        }
+        // Scenario 3: guest without saved IDs - load cached programmes
+        else {
+          const hasActiveFlag =
+            sessionStorage.getItem(ACTIVE_RESULTS_KEY) === "1";
+          if (!hasActiveFlag) {
+            setStudyProgrammes([]);
+            setHasQuizResults(false);
+            return;
+          }
+
+          const cached = await loadQuizResults();
+          if (!isMounted) return;
+
+          if (cached && cached.length > 0) {
+            setStudyProgrammes(cached);
+            setHasQuizResults(true);
+          } else {
+            setStudyProgrammes([]);
+            setHasQuizResults(false);
+            sessionStorage.removeItem(ACTIVE_RESULTS_KEY);
+          }
+          return;
+        }
+
+        if (idsToFetch.length === 0) {
+          sessionStorage.removeItem(ACTIVE_RESULTS_KEY);
+          setStudyProgrammes([]);
+          setHasQuizResults(false);
+          return;
+        }
+
+        // Fetch programmes
+        const results = await Promise.allSettled(
+          idsToFetch.map((id) => getStudyProgrammeById(id)),
+        );
+
+        const validResults: StudyProgramme[] = [];
+        results.forEach((r, i) => {
+          if (r.status === "fulfilled" && r.value) validResults.push(r.value);
+          else if (r.status === "rejected") {
+            console.error(
+              `Failed to load study programme ${idsToFetch[i]}:`,
+              r.reason,
+            );
+          }
+        });
+
+        // Persist to IndexedDB
+        try {
+          await saveQuizResults(validResults);
+        } catch (e) {
+          console.warn("Failed to cache results locally (IndexedDB):", e);
+        }
+
+        if (validResults.length === 0) {
+          setError("Fehler beim Laden der Studiengänge");
+          setHasQuizResults(true);
+          setStudyProgrammes([]);
+          return;
+        }
+
+        setStudyProgrammes(validResults);
+        setHasQuizResults(true);
+      } catch (err) {
+        console.error("Unexpected error in ResultsPage:", err);
+        if (!isMounted) return;
+        setError("Unerwarteter Fehler beim Laden der Ergebnisse");
+        setHasQuizResults(true);
+      } finally {
+        // eslint-disable-next-line no-unsafe-finally
+        if (!isMounted) return;
+        setLoading(false);
+      }
+    };
+
+    fetchStudyProgrammes();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [location.state, user?.id, authLoading]);
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      const active = sessionStorage.getItem(ACTIVE_RESULTS_KEY) === "1";
+      const hasResultsNow = studyProgrammes.length > 0;
+
+      if (!user && active && hasResultsNow) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [user, studyProgrammes.length]);
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        width: "100%",
-        overflow: "auto",
-      }}
-    >
-      {/* Conditional Rendering based on viewport size */}
-      {isDesktop ? (
-        // DESKTOP VIEW: Content is placed inside the structured layout
-        <DesktopLayout onMenuToggle={toggleSidebar}>
-          {MainContent}
-        </DesktopLayout>
+    <MainLayout>
+      {loading ? (
+        <Box sx={{ textAlign: "center", mt: 4 }}>Lädt...</Box>
+      ) : !hasQuizResults ? (
+        <NoResultsYet />
       ) : (
-        // MOBILE VIEW: Logo menu and navigation bar are rendered outside the main content flow
         <>
-          <LogoMenu fixed={true} />
-          <Navigationbar />
-          {MainContent}
+          <DataSource />
+          {error ? (
+            <Box sx={{ textAlign: "center", mt: 4, color: "error.main" }}>
+              {error}
+            </Box>
+          ) : (
+            <Results studyProgrammes={studyProgrammes} />
+          )}
         </>
       )}
-    </div>
+    </MainLayout>
   );
 };
 

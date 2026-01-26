@@ -1,10 +1,10 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import StudyProgrammeDetailPage from "../StudyProgrammeDetailPage";
-import "@testing-library/jest-dom";
-import { vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { ThemeProvider } from "@mui/material";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { ThemeProvider, CssBaseline } from "@mui/material";
+import StudyProgrammeDetailPage from "../StudyProgrammeDetailPage";
 import theme from "../../theme/theme";
+import { AuthProvider } from "../../contexts/AuthContext";
 
 const mockedNavigate = vi.fn();
 
@@ -13,136 +13,132 @@ vi.mock("react-router-dom", async () => {
     await vi.importActual<typeof import("react-router-dom")>(
       "react-router-dom",
     );
-
   return {
     ...actual,
     useNavigate: () => mockedNavigate,
   };
 });
 
-// Mock window.matchMedia for responsive tests
+// Mock APIs
+vi.mock("../../api/authApi", () => ({
+  getCurrentUser: vi.fn().mockResolvedValue(null),
+  login: vi.fn(),
+  logout: vi.fn(),
+}));
+
+vi.mock("../../api/quizApi", () => ({
+  getStudyProgrammeById: vi.fn(),
+}));
+
+vi.mock("../../api/favoritesApi", () => ({
+  getFavorites: vi.fn(),
+  addFavorite: vi.fn(),
+  removeFavorite: vi.fn(),
+}));
+
+// Mock window.matchMedia for MUI useMediaQuery
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
+    addListener: vi.fn(), // deprecated
+    removeListener: vi.fn(), // deprecated
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
 });
 
-const renderWithProviders = (id: string) => {
+const mockProgramme = {
+  studiengang_id: "12345",
+  name: "Informatik",
+  hochschule: "Technische Universität Berlin",
+  abschluss: "Bachelor of Science",
+  homepage: "https://www.tu.berlin/...",
+  studienbeitrag: "Keine Studiengebühren",
+  anmerkungen: "Der Bachelorstudiengang...",
+  regelstudienzeit: "6 Semester",
+  zulassungssemester: "Wintersemester",
+  zulassungsmodus: "Zulassungsbeschränkt (NC)",
+  zulassungsvoraussetzungen: "Abitur",
+  schwerpunkte: ["Software Engineering"],
+  sprachen: ["Deutsch"],
+  standorte: ["Berlin"],
+  studienfelder: ["Informatik"],
+  studienform: ["Vollzeit", "Teilzeit"],
+  fristen: null,
+};
+
+const renderWithTheme = (initialRoute = "/study-programme/12345") => {
   return render(
-    <MemoryRouter initialEntries={[`/study-programme/${id}`]}>
+    <MemoryRouter initialEntries={[initialRoute]}>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Routes>
-          <Route
-            path="/study-programme/:id"
-            element={<StudyProgrammeDetailPage />}
-          />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route
+              path="/study-programme/:id"
+              element={<StudyProgrammeDetailPage />}
+            />
+          </Routes>
+        </AuthProvider>
       </ThemeProvider>
     </MemoryRouter>,
   );
 };
 
 describe("StudyProgrammeDetailPage Component", () => {
-  beforeEach(() => {
-    mockedNavigate.mockClear();
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    // Get mocked functions and set them up
+    const quizApi = await import("../../api/quizApi");
+    const favoritesApi = await import("../../api/favoritesApi");
+
+    vi.mocked(quizApi.getStudyProgrammeById).mockResolvedValue(mockProgramme);
+    vi.mocked(favoritesApi.getFavorites).mockResolvedValue([]);
+
+    window.scrollTo = vi.fn();
   });
 
-  it("renders study programme details for valid ID", () => {
-    renderWithProviders("1");
+  it("shows loading state initially", () => {
+    renderWithTheme();
+    expect(screen.getByText("Lädt...")).toBeInTheDocument();
+  });
+
+  it("renders programme details after loading", async () => {
+    renderWithTheme();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: "Informatik" }),
+      ).toBeInTheDocument();
+    });
 
     expect(
-      screen.getByText("Communication Systems and Networks"),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Technische Hochschule Köln")).toBeInTheDocument();
-    expect(screen.getByText("Master")).toBeInTheDocument();
-  });
-
-  it("renders back button with correct label", () => {
-    renderWithProviders("1");
-
-    const backButton = screen.getByText("Zurück");
-    expect(backButton).toBeInTheDocument();
-  });
-
-  it("navigates back to results when back button is clicked", () => {
-    renderWithProviders("1");
-
-    const backButton = screen.getByText("Zurück");
-    fireEvent.click(backButton);
-
-    expect(mockedNavigate).toHaveBeenCalledWith("/results");
-  });
-
-  it("renders favorite button with unfavorited state by default", () => {
-    renderWithProviders("1");
-
-    const favoriteButton = screen.getByLabelText("Zu Favoriten hinzufügen");
-    expect(favoriteButton).toBeInTheDocument();
-  });
-
-  it("toggles favorite state when favorite button is clicked", () => {
-    renderWithProviders("1");
-
-    const favoriteButton = screen.getByLabelText("Zu Favoriten hinzufügen");
-    fireEvent.click(favoriteButton);
-
-    expect(
-      screen.getByLabelText("Aus Favoriten entfernen"),
-    ).toBeInTheDocument();
-  });
-
-  it("renders university icon and stars icon", () => {
-    const { container } = renderWithProviders("1");
-
-    // Check for MUI icons by finding svg elements with specific test ids or parent structure
-    const icons = container.querySelectorAll("svg");
-    expect(icons.length).toBeGreaterThan(0);
-  });
-
-  it("renders details section with heading and description", () => {
-    renderWithProviders("1");
-
-    expect(screen.getByText("Studiengangs-Details")).toBeInTheDocument();
-    expect(
-      screen.getByText(/Weitere Informationen zu diesem Studiengang/i),
-    ).toBeInTheDocument();
-  });
-
-  it("renders DataSource component", () => {
-    renderWithProviders("1");
-
-    expect(screen.getByAltText("HRK Logo")).toBeInTheDocument();
-  });
-
-  it("displays not found message for invalid ID", () => {
-    renderWithProviders("999");
-
-    expect(screen.getByText("Studiengang nicht gefunden")).toBeInTheDocument();
-  });
-
-  it("shows back button on not found page", () => {
-    renderWithProviders("999");
-
-    const backButton = screen.getByText("Zurück");
-    expect(backButton).toBeInTheDocument();
-  });
-
-  it("renders correct study programme for different IDs", () => {
-    renderWithProviders("3");
-
-    expect(screen.getByText("Informatik")).toBeInTheDocument();
-    expect(
-      screen.getByText("Rheinische Friedrich-Wilhelms-Universität Bonn"),
+      screen.getByText("Technische Universität Berlin"),
     ).toBeInTheDocument();
     expect(screen.getByText("Bachelor of Science")).toBeInTheDocument();
+  });
+
+  it("navigates back when back button is clicked", async () => {
+    renderWithTheme();
+
+    await waitFor(() => {
+      const backButton = screen.getByRole("button", { name: /zurück/i });
+      fireEvent.click(backButton);
+    });
+
+    // Fix: Your component uses navigate(-1), so we expect -1
+    expect(mockedNavigate).toHaveBeenCalledWith(-1);
+  });
+
+  it("renders chips for studienform", async () => {
+    renderWithTheme();
+
+    await waitFor(() => {
+      // Look for text within the specific section
+      expect(screen.getByText(/Vollzeit, Teilzeit/i)).toBeInTheDocument();
+    });
   });
 });

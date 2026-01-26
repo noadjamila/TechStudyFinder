@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -12,22 +12,73 @@ import { StudyProgramme } from "../../types/StudyProgramme.types";
 import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import StudyProgrammeCard from "./StudyProgrammeCard";
+import StudyProgrammeCard from "../cards/StudyProgrammeCard";
+import { useNavigate, useLocation } from "react-router-dom";
+import GreenCard from "../cards/GreenCardBaseNotQuiz";
+import PrimaryButton from "../buttons/PrimaryButton";
+import LoginReminderDialog, {
+  FAVORITES_LOGIN_MESSAGE,
+} from "../dialogs/LoginReminderDialog";
+import {
+  addFavorite,
+  removeFavorite,
+  getFavorites,
+} from "../../api/favoritesApi";
+import { useAuth } from "../../contexts/AuthContext";
+import { useApiClient } from "../../hooks/useApiClient";
 
 interface ResultsProps {
   studyProgrammes: StudyProgramme[];
 }
 
 /**
- * Results component displays filtered study programmes.
- * Receives study programmes as props from parent component.
+ * Results component displays filtered study programmes with interactive features.
+ *
+ * Receives study programmes as props from parent component and provides:
+ * - Filtering options by location and degree type
+ * - Favorite/unfavorite functionality (requires user authentication)
+ * - Login reminder dialog when attempting to favorite while not logged in
+ * - Automatic loading of user's favorites on component mount and navigation
  */
 const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
-  const [favorites, setFavorites] = useState<Set<number>>(new Set());
-  const [selectedUniversity, setSelectedUniversity] = useState<string>("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useAuth();
+  const { apiFetch } = useApiClient();
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [selectedDegree, setSelectedDegree] = useState<string>("");
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
 
-  const toggleFavorite = (programmeId: number) => {
+  // Load favorites from API on component mount and when location changes
+  useEffect(() => {
+    const loadFavorites = async () => {
+      try {
+        const favoriteIds = await getFavorites(apiFetch);
+        setFavorites(new Set(favoriteIds));
+      } catch (error) {
+        console.error("Failed to load favorites:", error);
+      }
+    };
+
+    loadFavorites();
+  }, [location]);
+
+  const handleQuizStart = () => {
+    navigate("/quiz");
+  };
+
+  const toggleFavorite = async (programmeId: string) => {
+    // Check if user is authenticated
+    if (!user) {
+      setShowLoginDialog(true);
+      return;
+    }
+
+    // Check current state before updating
+    const isFavorited = favorites.has(programmeId);
+
+    // Update local state immediately for UX
     setFavorites((prev) => {
       const newFavorites = new Set(prev);
       if (newFavorites.has(programmeId)) {
@@ -37,65 +88,91 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
       }
       return newFavorites;
     });
+
+    // Save/remove favorite in database
+    try {
+      if (isFavorited) {
+        // Remove from favorites
+        await removeFavorite(programmeId, apiFetch);
+      } else {
+        // Add to favorites
+        await addFavorite(programmeId, apiFetch);
+      }
+    } catch (error: any) {
+      // Handle 409 Conflict (already exists) by keeping it as favorited
+      if (error.message && error.message.includes("409")) {
+        console.debug("Favorite already exists, keeping as favorited");
+        setFavorites((prev) => {
+          const newFavorites = new Set(prev);
+          newFavorites.add(programmeId); // Keep it favorited
+          return newFavorites;
+        });
+      } else {
+        console.error("Error toggling favorite:", error);
+        // For other errors, revert the local state
+        setFavorites((prev) => {
+          const reverted = new Set(prev);
+          if (isFavorited) {
+            reverted.add(programmeId);
+          } else {
+            reverted.delete(programmeId);
+          }
+          return reverted;
+        });
+      }
+    }
   };
 
-  // Get unique universities and degrees for filter options
-  const universities = useMemo(() => {
-    const uniqueUniversities = [
-      ...new Set(studyProgrammes.map((p) => p.university)),
-    ];
-    return uniqueUniversities.sort();
+  // Get unique locations and degrees for filter options
+  const locations = useMemo(() => {
+    const allLocations = studyProgrammes.flatMap((p) => p.standorte || []);
+    const uniqueLocations = [...new Set(allLocations)];
+    return uniqueLocations.sort();
   }, [studyProgrammes]);
 
   const degrees = useMemo(() => {
-    const uniqueDegrees = [...new Set(studyProgrammes.map((p) => p.degree))];
+    const uniqueDegrees = [...new Set(studyProgrammes.map((p) => p.abschluss))];
     return uniqueDegrees.sort();
   }, [studyProgrammes]);
 
   // Filter programmes based on selected filters
   const filteredProgrammes = useMemo(() => {
     return studyProgrammes.filter((programme) => {
-      const matchesUniversity =
-        !selectedUniversity || programme.university === selectedUniversity;
+      const matchesLocation =
+        !selectedLocation ||
+        (programme.standorte && programme.standorte.includes(selectedLocation));
       const matchesDegree =
-        !selectedDegree || programme.degree === selectedDegree;
-      return matchesUniversity && matchesDegree;
+        !selectedDegree || programme.abschluss === selectedDegree;
+      return matchesLocation && matchesDegree;
     });
-  }, [studyProgrammes, selectedUniversity, selectedDegree]);
+  }, [studyProgrammes, selectedLocation, selectedDegree]);
 
   return (
     <Box
       sx={{
         maxWidth: 800,
         margin: { xs: "0 auto", sm: "0" },
-        padding: 3,
         paddingBottom: { xs: "120px", sm: 3 },
         minHeight: "100vh",
       }}
     >
-      <Typography
-        variant="h2"
-        component="h1"
-        gutterBottom
-        color="text.header"
-        sx={{
-          marginBottom: 3,
-          fontWeight: 700,
-          fontSize: "2.5rem", // Desktop: 40px
-          "@media (max-width:600px)": {
-            fontSize: "2rem", // Mobile: 32px
-          },
-        }}
-      >
-        Meine Ergebnisse
-      </Typography>
+      <Typography variant="h2">Meine Ergebnisse</Typography>
 
       {studyProgrammes.length === 0 ? (
-        <Box sx={{ padding: 2 }}>
-          <Typography variant="h6">Keine Studiengänge gefunden</Typography>
-          <Typography variant="body2">
-            Versuchen Sie, Ihre Quizantworten anzupassen
-          </Typography>
+        <Box sx={{ textAlign: "center", mt: 12 }}>
+          <GreenCard>
+            <Typography variant="subtitle1" sx={{ mb: 3, lineHeight: 1.3 }}>
+              Keine Studiengänge gefunden!
+              <br />
+              Versuche, deine Quizantworten anzupassen.
+            </Typography>
+
+            <PrimaryButton
+              label={"Quiz beginnen"}
+              onClick={handleQuizStart}
+              ariaText="Quiz beginnen"
+            />
+          </GreenCard>
         </Box>
       ) : (
         <>
@@ -117,12 +194,12 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
               }}
             >
               <Select
-                id="university-filter"
-                value={selectedUniversity}
-                onChange={(e) => setSelectedUniversity(e.target.value)}
+                id="location-filter"
+                value={selectedLocation}
+                onChange={(e) => setSelectedLocation(e.target.value)}
                 displayEmpty
                 IconComponent={ArrowDropDownIcon}
-                aria-label="Filter nach Universität oder Hochschule"
+                aria-label="Filter nach Standort"
                 MenuProps={{
                   PaperProps: {
                     sx: {
@@ -170,7 +247,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {selected || "Universität/Hochschule"}
+                      {selected || "Stadt"}
                     </Typography>
                   </Box>
                 )}
@@ -197,11 +274,11 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                       width: "100%",
                     }}
                   >
-                    Alle Universitäten/Hochschulen
+                    Alle Städte
                   </Box>
                 </MenuItem>
-                {universities.map((university) => (
-                  <MenuItem key={university} value={university}>
+                {locations.map((location) => (
+                  <MenuItem key={location} value={location}>
                     <Box
                       sx={{
                         overflow: "hidden",
@@ -210,7 +287,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         width: "100%",
                       }}
                     >
-                      {university}
+                      {location}
                     </Box>
                   </MenuItem>
                 ))}
@@ -331,17 +408,29 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
           </Stack>
 
           <Stack spacing={2}>
-            {filteredProgrammes.map((programme) => (
-              <StudyProgrammeCard
-                key={programme.id}
-                programme={programme}
-                isFavorite={favorites.has(programme.id)}
-                onToggleFavorite={toggleFavorite}
-              />
-            ))}
+            {filteredProgrammes.map((programme) => {
+              return (
+                <StudyProgrammeCard
+                  key={programme.studiengang_id}
+                  programme={programme}
+                  isFavorite={favorites.has(programme.studiengang_id)}
+                  onToggleFavorite={toggleFavorite}
+                />
+              );
+            })}
           </Stack>
         </>
       )}
+
+      {/* Login Required Dialog */}
+      <LoginReminderDialog
+        open={showLoginDialog}
+        onClose={() => setShowLoginDialog(false)}
+        onLoginClick={() =>
+          navigate("/login", { state: { redirectTo: location.pathname } })
+        }
+        message={FAVORITES_LOGIN_MESSAGE}
+      />
     </Box>
   );
 };

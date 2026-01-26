@@ -4,7 +4,7 @@
 
 | Endpoint                    | Description                                       |
 | --------------------------- | ------------------------------------------------- |
-| /home                       | Home Screen                                       |
+| /                           | Home Screen                                       |
 | /api/users/me               | Fetch authenticated user's profile information    |
 | /api/quiz/level/:levelId    | Fetch questions for a specific quiz level         |
 | /api/quiz/results/:resultId | Show results for a specific quiz attempt          |
@@ -20,6 +20,7 @@
 | /api/auth/register        | Register a new user                                           |
 | /api/auth/login           | User login                                                    |
 | /api/auth/logout          | User logout                                                   |
+| /api/auth/change-password | Change authenticated user's password                          |
 | /api/users/favorites      | Add a study programme to a user's list of favorites           |
 | /api/quiz/filter/progress | Filter quiz questions based on user progress after each level |
 
