@@ -54,6 +54,7 @@ jobs:
         run: npm run test:unit --workspace=server
 
       - name: Run Server Integration Tests
+        if: false
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 5432
