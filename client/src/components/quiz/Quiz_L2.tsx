@@ -8,7 +8,7 @@ import SecondaryButton from "../buttons/SecondaryButton";
 import theme from "../../theme/theme";
 import { Answer } from "../../types/QuizAnswer.types";
 import { QuizSession } from "../../types/QuizSession";
-import ErrorScreen from "../error-screen/ErrorScreen";
+import { ErrorScreen } from "../../pages/ErrorScreen";
 
 export interface QuizL2Props {
   session: QuizSession;

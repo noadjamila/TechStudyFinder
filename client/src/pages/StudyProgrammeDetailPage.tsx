@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -26,7 +26,13 @@ import DataSource from "../components/DataSource";
 import BackButton from "../components/buttons/BackButton";
 import DesktopLayout from "../layouts/DesktopLayout";
 import { getStudyProgrammeById } from "../api/quizApi";
+import { getFavorites, addFavorite, removeFavorite } from "../api/favoritesApi";
 import DeadlineDisplay from "../components/DeadlineDisplay";
+import { useAuth } from "../contexts/AuthContext";
+import LoginReminderDialog, {
+  FAVORITES_LOGIN_MESSAGE,
+} from "../components/dialogs/LoginReminderDialog";
+import { useApiClient } from "../hooks/useApiClient";
 
 /**
  * StudyProgrammeDetailPage displays detailed information about a single study programme.
@@ -35,10 +41,14 @@ import DeadlineDisplay from "../components/DeadlineDisplay";
 const StudyProgrammeDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useAuth();
+  const { apiFetch } = useApiClient();
   const [isFavorite, setIsFavorite] = useState(false);
   const [programme, setProgramme] = useState<StudyProgramme | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [showLoginReminder, setShowLoginReminder] = useState(false);
   const muiTheme = useTheme();
   const toggleSidebar = () => {};
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
@@ -46,6 +56,21 @@ const StudyProgrammeDetailPage: React.FC = () => {
   // Scroll to top when component mounts or id changes
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, [id]);
+
+  // Load favorite state from API
+  useEffect(() => {
+    const loadFavoriteState = async () => {
+      if (!id) return;
+      try {
+        const favoriteIds = await getFavorites(apiFetch);
+        setIsFavorite(favoriteIds.includes(id));
+      } catch (error) {
+        console.error("Failed to load favorites:", error);
+      }
+    };
+
+    loadFavoriteState();
   }, [id]);
 
   // Fetch study programme data
@@ -58,7 +83,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
 
       try {
         setLoading(true);
-        const data = await getStudyProgrammeById(id);
+        const data = await getStudyProgrammeById(id, apiFetch);
         setProgramme(data);
       } catch (err) {
         console.error("Error fetching study programme:", err);
@@ -71,8 +96,32 @@ const StudyProgrammeDetailPage: React.FC = () => {
     fetchProgramme();
   }, [id]);
 
-  const toggleFavorite = () => {
+  const toggleFavorite = async () => {
+    if (!id) return;
+
+    // Check if user is logged in
+    if (!user) {
+      setShowLoginReminder(true);
+      return;
+    }
+
+    const wasFavorited = isFavorite;
     setIsFavorite(!isFavorite);
+
+    try {
+      if (wasFavorited) {
+        await removeFavorite(id, apiFetch);
+      } else {
+        await addFavorite(id, apiFetch);
+      }
+    } catch (error: any) {
+      if (error.message && error.message.includes("409")) {
+        setIsFavorite(true);
+      } else {
+        console.error("Error toggling favorite:", error);
+        setIsFavorite(wasFavorited);
+      }
+    }
   };
 
   if (loading) {
@@ -122,7 +171,14 @@ const StudyProgrammeDetailPage: React.FC = () => {
         <Box sx={{ padding: 3 }}>
           <BackButton
             label="Zurück"
-            onClick={() => navigate("/results")}
+            onClick={() => {
+              const previousPage = (location.state as any)?.previousPage;
+              if (previousPage) {
+                navigate(previousPage);
+              } else {
+                navigate(-1);
+              }
+            }}
             sx={{
               marginBottom: 2,
             }}
@@ -194,7 +250,14 @@ const StudyProgrammeDetailPage: React.FC = () => {
       >
         <BackButton
           label="Zurück"
-          onClick={() => navigate("/results")}
+          onClick={() => {
+            const previousPage = (location.state as any)?.previousPage;
+            if (previousPage) {
+              navigate(previousPage);
+            } else {
+              navigate(-1);
+            }
+          }}
           sx={{
             marginBottom: { xs: 0, sm: 1.5 },
             height: { xs: "35px", sm: "45px" },
@@ -798,6 +861,21 @@ const StudyProgrammeDetailPage: React.FC = () => {
         // MOBILE VIEW
         MainContent
       )}
+
+      {/* Login reminder dialog for not logged in users trying to add favorites */}
+      <LoginReminderDialog
+        open={showLoginReminder}
+        onClose={() => setShowLoginReminder(false)}
+        message={FAVORITES_LOGIN_MESSAGE}
+        onLoginClick={() => {
+          const intendedDestination = location.pathname;
+          navigate("/login", {
+            state: {
+              redirectTo: intendedDestination,
+            },
+          });
+        }}
+      />
     </div>
   );
 };

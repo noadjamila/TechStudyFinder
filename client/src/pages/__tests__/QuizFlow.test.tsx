@@ -2,16 +2,10 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, test, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import QuizFlow from "../QuizFlow";
-import * as quizApi from "../../api/quizApi";
 import * as persist from "../../session/persistQuizSession";
 import { waitFor } from "@testing-library/react";
 
 const navigateMock = vi.fn();
-
-vi.spyOn(quizApi, "postFilterLevel").mockResolvedValue({
-  ids: [],
-});
-vi.spyOn(quizApi, "fetchQuestions").mockResolvedValue([]);
 
 vi.mock("react-router-dom", async () => {
   const actual =
@@ -21,6 +15,29 @@ vi.mock("react-router-dom", async () => {
   return {
     ...actual,
     useNavigate: () => navigateMock,
+  };
+});
+vi.mock("../../contexts/AuthContext", () => ({
+  useAuth: () => ({
+    user: { id: 1, username: "testuser" },
+    isLoading: false,
+    login: vi.fn(),
+    logout: vi.fn(),
+    setUser: vi.fn(),
+  }),
+}));
+
+vi.mock("../../api/quizApi", async () => {
+  const actual =
+    await vi.importActual<typeof import("../../api/quizApi")>(
+      "../../api/quizApi",
+    );
+
+  return {
+    ...actual,
+    postFilterLevel: vi.fn().mockResolvedValue({ ids: [] }),
+    fetchQuestions: vi.fn().mockResolvedValue([]),
+    saveQuizResults: vi.fn().mockResolvedValue(undefined),
   };
 });
 

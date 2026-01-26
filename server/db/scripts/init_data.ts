@@ -12,7 +12,14 @@ const ROOT_DIR = path.join(__dirname, "../..");
 const SCHEMA_DIR = path.join(ROOT_DIR, "db/schema");
 const CSV_DIR = path.join(ROOT_DIR, "db/data");
 
-const SCHEMA_FILES = ["institutions.sql", "degreeprogrammes.sql"];
+const SCHEMA_FILES = [
+  "users.sql",
+  "session.sql",
+  "institutions.sql",
+  "degreeprogrammes.sql",
+  "favourites.sql",
+  "user_quiz_results.sql",
+];
 
 const CSV_FILES = ["studiengebiete_riasec.csv", "studienfelder_riasec.csv"];
 const CSV_TABLE_MAP: Record<string, string> = {

@@ -8,9 +8,11 @@ import { createQuizSession } from "../session/createQuizSession";
 import { Answer } from "../types/QuizAnswer.types";
 import { calculateRiasecScores } from "../services/calculateRiasecScores";
 import { riasecScoresToApiPayload } from "../services/riasecPayload";
-import { postFilterLevel } from "../api/quizApi";
+import { postFilterLevel, saveQuizResults } from "../api/quizApi";
 import { fetchQuestions } from "../api/quizApi";
 import { loadLatestSession, saveSession } from "../session/persistQuizSession";
+import { useApiClient } from "../hooks/useApiClient";
+import { useAuth } from "../contexts/AuthContext";
 
 type Level = 1 | 2 | 3;
 
@@ -23,13 +25,14 @@ type Level = 1 | 2 | 3;
  */
 export default function QuizFlow(): JSX.Element | null {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { apiFetch } = useApiClient();
 
   const [session, setSession] = useState<QuizSession>(() =>
     createQuizSession(),
   );
   const [isHydrated, setIsHydrated] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_showResults, setShowResults] = useState(false);
+  const [_showResults, _setShowResults] = useState(false);
   const sessionRef = useRef(session);
 
   /**
@@ -190,11 +193,21 @@ export default function QuizFlow(): JSX.Element | null {
     const scores = calculateRiasecScores(answers);
     const payload = riasecScoresToApiPayload(scores);
 
-    const res = await postFilterLevel({
-      level: 2,
-      answers: payload,
-      studyProgrammeIds: level1IDS,
-    });
+    const res = await postFilterLevel(
+      {
+        level: 2,
+        answers: payload,
+        studyProgrammeIds: level1IDS,
+      },
+      apiFetch,
+    );
+    type ResultId = string | { studiengang_id: string };
+
+    const rawResultIds: ResultId[] = (res as any)?.ids ?? [];
+
+    const idsToSave = rawResultIds
+      .map((r) => (typeof r === "string" ? r : r?.studiengang_id))
+      .filter((id): id is string => typeof id === "string" && id.length > 0);
 
     setSession((prev) => ({
       ...prev,
@@ -204,6 +217,13 @@ export default function QuizFlow(): JSX.Element | null {
       showSuccessScreen: true,
       updatedAt: Date.now(),
     }));
+    if (user && idsToSave.length > 0) {
+      try {
+        await saveQuizResults(idsToSave);
+      } catch (e) {
+        console.error("Failed to save quiz results:", e);
+      }
+    }
   }
 
   if (session.showSuccessScreen) {
