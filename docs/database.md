@@ -50,7 +50,7 @@ Then load into target DB with `psql`.
 ## Avoiding “missing users” confusion
 
 The app reads DB settings from the **repo root** `.env` by default.
-If DataGrip shows “missing” users, confirm the DB and port:
+If DataGrip, PGAdmin or another tool shows “missing” users, confirm the DB and port:
 
 ```sql
 SELECT current_database(), inet_server_addr(), inet_server_port();
