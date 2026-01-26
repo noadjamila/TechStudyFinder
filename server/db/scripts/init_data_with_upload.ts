@@ -30,10 +30,12 @@ const CSV_TABLE_MAP: Record<string, string> = {
 };
 
 const CHECK_NULLS_FILE = path.join(SCHEMA_DIR, "check_nulls.sql");
-
 const MATERIALIZED_VIEW = "studiengang_riasec_mv";
 
-async function main() {
+export async function initializeDatabaseWithUpload(
+  institutionsXml?: string,
+  degreeprogrammesXml?: string,
+) {
   const client = new Client({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
@@ -45,11 +47,10 @@ async function main() {
   await client.connect();
 
   try {
-    console.debug("\nInitializing database with fresh data");
+    console.debug("\nInitializing database with uploaded data");
 
     await client.query("BEGIN");
     await client.query("SET search_path TO public;");
-    await client.query("SET datestyle TO 'ISO, DMY';");
 
     // Create schemas
     console.debug("\n Creating schemas");
@@ -66,10 +67,19 @@ async function main() {
       }
     }
 
-    // Import XML data
+    // Import XML data (entweder hochgeladen oder vom Standard-Pfad)
     console.debug("\n Importing XML data");
-    await importInstitutions(client);
-    await importDegreeProgrammes(client);
+    if (institutionsXml) {
+      await importInstitutions(client, institutionsXml);
+    } else {
+      await importInstitutions(client);
+    }
+
+    if (degreeprogrammesXml) {
+      await importDegreeProgrammes(client, degreeprogrammesXml);
+    } else {
+      await importDegreeProgrammes(client);
+    }
 
     // Import CSV data (RIASEC)
     console.debug("\n Importing CSV data");
@@ -94,12 +104,8 @@ async function main() {
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("\nERROR – ROLLBACK", err);
-    process.exit(1);
+    throw err;
   } finally {
     await client.end();
   }
 }
-
-main().catch((err) => {
-  console.error("Unexpected error:", err);
-});
