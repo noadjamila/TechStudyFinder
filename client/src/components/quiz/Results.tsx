@@ -224,7 +224,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
         </Box>
       ) : (
         <>
-          <Box sx={{ marginBottom: 3 }}>
+          <Box sx={{ marginBottom: 3, display: "flex", gap: 2 }}>
             <Button
               variant="outlined"
               startIcon={<FilterListIcon />}
@@ -236,6 +236,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                 textTransform: "none",
                 borderColor: theme.palette.primary.main,
                 color: theme.palette.text.primary,
+                fontSize: "16px",
                 "&:hover": {
                   borderColor: theme.palette.primary.main,
                   backgroundColor: `${theme.palette.primary.main}1A`,
@@ -244,6 +245,30 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
             >
               Filter
             </Button>
+
+            {(selectedLocation || selectedDegree || selectedUniversity) && (
+              <Button
+                variant="text"
+                onClick={() => {
+                  setSelectedLocation("");
+                  setSelectedDegree("");
+                  setSelectedUniversity("");
+                }}
+                sx={{
+                  borderRadius: "25px",
+                  paddingX: 3,
+                  paddingY: 1,
+                  textTransform: "none",
+                  color: theme.palette.text.primary,
+                  fontSize: "16px",
+                  "&:hover": {
+                    backgroundColor: `${theme.palette.primary.main}1A`,
+                  },
+                }}
+              >
+                Filter zurücksetzen
+              </Button>
+            )}
 
             <Popover
               open={isFilterOpen}
