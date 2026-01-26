@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import NavBar from "../NavBar";
+import { AuthProvider } from "../../../contexts/AuthContext";
 
 // Create a test theme with navigation palette
 const testTheme = createTheme({
@@ -17,7 +18,9 @@ const renderNavBar = (props = {}) => {
   return render(
     <ThemeProvider theme={testTheme}>
       <BrowserRouter>
-        <NavBar {...props} />
+        <AuthProvider>
+          <NavBar {...props} />
+        </AuthProvider>
       </BrowserRouter>
     </ThemeProvider>,
   );

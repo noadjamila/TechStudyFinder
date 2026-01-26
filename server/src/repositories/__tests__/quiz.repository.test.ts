@@ -2,6 +2,8 @@
 import {
   getFilteredResultsLevel1,
   getStudyProgrammeById,
+  saveUserQuizResults,
+  getUserQuizResults,
 } from "../quiz.repository";
 import { pool } from "../../../db";
 
@@ -217,5 +219,172 @@ describe("Quiz Repository - getStudyProgrammeById", () => {
       [specialId],
     );
     expect(result).toEqual(mockProgramme);
+  });
+});
+
+describe("Quiz Repository - saveUserQuizResults", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should insert new quiz results for user", async () => {
+    // Arrange
+    const userId = 1;
+    const resultIds = ["100", "101", "102"];
+    (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
+
+    // Act
+    await saveUserQuizResults(userId, resultIds);
+
+    // Assert
+    expect(pool.query).toHaveBeenCalledWith(
+      expect.stringContaining("INSERT INTO user_quiz_results"),
+      [userId, resultIds],
+    );
+    expect(pool.query).toHaveBeenCalledTimes(1);
+  });
+
+  it("should update existing quiz results for user (UPSERT)", async () => {
+    // Arrange
+    const userId = 1;
+    const resultIds = ["200", "201"];
+    (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
+
+    // Act
+    await saveUserQuizResults(userId, resultIds);
+
+    // Assert
+    const callArgs = (pool.query as jest.Mock).mock.calls[0];
+    expect(callArgs[0]).toContain("ON CONFLICT (user_id)");
+    expect(callArgs[0]).toContain("DO UPDATE SET result_ids");
+    expect(callArgs[1]).toEqual([userId, resultIds]);
+  });
+
+  it("should handle empty result IDs array", async () => {
+    // Arrange
+    const userId = 1;
+    const resultIds: string[] = [];
+    (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
+
+    // Act
+    await saveUserQuizResults(userId, resultIds);
+
+    // Assert
+    expect(pool.query).toHaveBeenCalledWith(expect.any(String), [
+      userId,
+      resultIds,
+    ]);
+  });
+
+  it("should propagate database errors", async () => {
+    // Arrange
+    const userId = 1;
+    const resultIds = ["100"];
+    const mockError = new Error("Database constraint violation");
+    (pool.query as jest.Mock).mockRejectedValue(mockError);
+
+    // Act & Assert
+    await expect(saveUserQuizResults(userId, resultIds)).rejects.toThrow(
+      "Database constraint violation",
+    );
+  });
+
+  it("should handle large arrays of result IDs", async () => {
+    // Arrange
+    const userId = 1;
+    const resultIds = Array.from({ length: 100 }, (_, i) => `id_${i}`);
+    (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
+
+    // Act
+    await saveUserQuizResults(userId, resultIds);
+
+    // Assert
+    expect(pool.query).toHaveBeenCalledWith(expect.any(String), [
+      userId,
+      resultIds,
+    ]);
+  });
+});
+
+describe("Quiz Repository - getUserQuizResults", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should retrieve quiz results for existing user", async () => {
+    // Arrange
+    const userId = 1;
+    const mockResults = ["100", "101", "102"];
+    (pool.query as jest.Mock).mockResolvedValue({
+      rows: [{ result_ids: mockResults }],
+    });
+
+    // Act
+    const result = await getUserQuizResults(userId);
+
+    // Assert
+    const callArgs = (pool.query as jest.Mock).mock.calls[0];
+    expect(callArgs[0]).toContain("SELECT result_ids FROM user_quiz_results");
+    expect(callArgs[0]).toContain("WHERE user_id = $1");
+    expect(callArgs[1]).toEqual([userId]);
+    expect(result).toEqual(mockResults);
+  });
+
+  it("should return null when user has no saved results", async () => {
+    // Arrange
+    const userId = 1;
+    (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
+
+    // Act
+    const result = await getUserQuizResults(userId);
+
+    // Assert
+    const callArgs = (pool.query as jest.Mock).mock.calls[0];
+    expect(callArgs[0]).toContain("SELECT result_ids FROM user_quiz_results");
+    expect(callArgs[0]).toContain("WHERE user_id = $1");
+    expect(callArgs[1]).toEqual([userId]);
+    expect(result).toBeNull();
+  });
+
+  it("should handle empty result IDs array from database", async () => {
+    // Arrange
+    const userId = 1;
+    (pool.query as jest.Mock).mockResolvedValue({
+      rows: [{ result_ids: [] }],
+    });
+
+    // Act
+    const result = await getUserQuizResults(userId);
+
+    // Assert
+    expect(result).toEqual([]);
+  });
+
+  it("should propagate database errors", async () => {
+    // Arrange
+    const userId = 1;
+    const mockError = new Error("Database connection timeout");
+    (pool.query as jest.Mock).mockRejectedValue(mockError);
+
+    // Act & Assert
+    await expect(getUserQuizResults(userId)).rejects.toThrow(
+      "Database connection timeout",
+    );
+  });
+
+  it("should handle different user IDs", async () => {
+    // Arrange
+    const userId = 999;
+    const mockResults = ["500", "501"];
+    (pool.query as jest.Mock).mockResolvedValue({
+      rows: [{ result_ids: mockResults }],
+    });
+
+    // Act
+    const result = await getUserQuizResults(userId);
+
+    // Assert
+    expect(pool.query).toHaveBeenCalledWith(expect.any(String), [userId]);
+    expect(result).toEqual(mockResults);
   });
 });

@@ -18,6 +18,7 @@
   },
   "include": [
     "./src/**/*",
+    "src/types/mui.d.ts",
     "vite.config.ts",
     "vitest.config.ts",
     "setupTests.tsx"

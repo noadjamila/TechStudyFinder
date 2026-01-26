@@ -4,6 +4,7 @@ import {
   login as apiLogin,
   logout as apiLogout,
 } from "../api/authApi";
+import { useApiClient } from "../hooks/useApiClient";
 
 /**
  * Represents the authenticated user.
@@ -56,11 +57,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { apiFetch } = useApiClient();
 
   useEffect(() => {
     let mounted = true;
     (async () => {
-      const current = await getCurrentUser();
+      const current = await getCurrentUser(apiFetch);
       if (mounted) {
         setUser(current);
         setIsLoading(false);
@@ -69,11 +71,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [apiFetch]);
 
   const login = async (username: string, password: string) => {
     try {
-      const res = await apiLogin(username, password);
+      const res = await apiLogin(username, password, apiFetch);
       if (res.user) {
         setUser(res.user);
         setIsLoading(false);
@@ -85,7 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const logout = async () => {
-    await apiLogout();
+    await apiLogout(apiFetch);
     setUser(null);
   };
 

@@ -6,6 +6,7 @@ import theme from "../../theme/theme";
 import { postFilterLevel } from "../../api/quizApi";
 import { Box, Stack } from "@mui/material";
 import { Answer } from "../../types/QuizAnswer.types";
+import { useApiClient } from "../../hooks/useApiClient";
 
 /**
  * Props for the Quiz_L1 component.
@@ -15,6 +16,7 @@ import { Answer } from "../../types/QuizAnswer.types";
  */
 export interface QuizL1Props {
   onAnswer: (answer: Answer) => void;
+  level1ids: (_ids: string[]) => void;
   onComplete: () => void;
 }
 
@@ -26,8 +28,13 @@ export interface QuizL1Props {
  * @param {QuizL1Props} props - The component props.
  * @returns {JSX.Element} The rendered Level 1 quiz component.
  */
-export default function Quiz_L1({ onAnswer, onComplete }: QuizL1Props) {
+export default function Quiz_L1({
+  onAnswer,
+  level1ids,
+  onComplete,
+}: QuizL1Props) {
   const [selected, setSelected] = useState<string | undefined>();
+  const { apiFetch } = useApiClient();
 
   const handleSelectAndNext = async (selectedType: string) => {
     setSelected(selectedType);
@@ -39,10 +46,14 @@ export default function Quiz_L1({ onAnswer, onComplete }: QuizL1Props) {
     });
 
     try {
-      await postFilterLevel({
-        level: 1,
-        answers: [{ studientyp: selectedType }],
-      });
+      const res = await postFilterLevel(
+        {
+          level: 1,
+          answers: [{ studientyp: selectedType }],
+        },
+        apiFetch,
+      );
+      level1ids(res.ids);
       onComplete();
     } catch (err) {
       console.error("Mistake while filtering", err);

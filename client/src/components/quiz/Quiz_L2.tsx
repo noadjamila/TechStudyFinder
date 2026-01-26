@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { JSX, useState } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
-import { RiasecType } from "../../types/RiasecTypes";
-import ErrorScreen from "../error-screen/ErrorScreen";
 import CardStack from "../cards/CardStackLevel2";
 import { Stack, Typography } from "@mui/material";
 import BaseCard from "../cards/QuizCardBase";
@@ -9,55 +7,53 @@ import PrimaryButton from "../buttons/PrimaryButton";
 import SecondaryButton from "../buttons/SecondaryButton";
 import theme from "../../theme/theme";
 import { Answer } from "../../types/QuizAnswer.types";
+import { QuizSession } from "../../types/QuizSession";
+import { ErrorScreen } from "../../pages/ErrorScreen";
 
 export interface QuizL2Props {
+  session: QuizSession;
   onAnswer: (answer: Answer) => void;
   onComplete: () => void;
   oneLevelBack: () => void;
+  onQuestionBack: () => void;
+  onQuestionNext: () => void;
 }
 
 /**
- * `Quiz_L2` is the component for the second level of the quiz.
- * It fetches level 2 questions, manages quiz state (current question,
- * user responses, and scoring), renders the corresponding
- * `QuizLayout` component and sends the RIASEC scores to the backend.
+ * Level 2 quiz flow component.
  *
- * @description
- * - Fetches level 2 questions from the backend on mount.
- * - Uses local state to track the current question index and score per RIASEC type.
- * - Increments or decrements scores depending on user selection ("yes", "no", or "skip").
- * - Displays the current quiz question.
- * - Sends the RIASEC scores to the backend when the quiz is completed.
+ * Renders a card-based question flow from session-provided questions.
+ * Tracks the current question index, handles forward/back navigation
+ * (including returning to the previous level), and emits answers and
+ * completion events to the parent.
  *
- * @returns {JSX.Element} A rendered quiz interface with progress tracking and scoring.
+ * @param {QuizL2Props} props Component callbacks for answering, completion, and back navigation.
+ * @returns {JSX.Element} The rendered quiz UI or a loading state while questions are missing.
  */
 const Quiz_L2: React.FC<QuizL2Props> = ({
+  session,
   onAnswer,
   onComplete,
   oneLevelBack,
-}) => {
-  const [questions, setQuestions] = useState<
-    { text: string; riasec_type: RiasecType }[]
-  >([]);
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [error, setError] = useState<{ title: string; message: string } | null>(
-    null,
-  );
+  onQuestionBack,
+  onQuestionNext,
+}: QuizL2Props): JSX.Element => {
+  const questions = session.level2Questions ?? [];
 
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
   const TOTAL_QUESTIONS = questions.length;
-  const currentQuestion = questions[currentIndex];
+  const currentQuestion = questions[session.currentQuestionIndex];
 
   /**
    * Handles the option to go back one Question.
    * Switches Levels if user is on the first Question.
    */
   const goBack = () => {
-    if (currentIndex === 0) {
+    if (session.currentQuestionIndex === 0) {
       oneLevelBack();
     } else {
-      setCurrentIndex((i) => Math.max(i - 1, 0));
+      onQuestionBack();
     }
   };
 
@@ -72,61 +68,22 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
     if (!currentQuestion || isTransitioning) return;
     setIsTransitioning(true);
     onAnswer({
-      questionId: `level2.question${currentIndex}.${currentQuestion.riasec_type}`,
+      questionId: `level2.question${session.currentQuestionIndex}.${currentQuestion.riasec_type}`,
       value: option,
       answeredAt: Date.now(),
     });
 
-    // Last question -> send scores to backend
+    // Last question: send scores to backend
     setTimeout(() => {
-      if (currentIndex === TOTAL_QUESTIONS - 1) {
+      if (session.currentQuestionIndex === TOTAL_QUESTIONS - 1) {
         onComplete();
       } else {
-        setCurrentIndex((i) => i + 1);
+        onQuestionNext();
       }
       setIsTransitioning(false);
     }, 300);
   };
-
-  /**
-   * Fetches level 2 questions from the backend API on component mount.
-   * Handles errors and updates the local state with the fetched questions.
-   */
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        const res = await fetch(`/api/quiz/level/${2}`);
-
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        const data = await res.json();
-
-        if (!data.questions || data.questions.length === 0) {
-          throw new Error("No questions found in the response.");
-        }
-
-        setQuestions(data.questions);
-      } catch (err) {
-        console.error(err);
-        setError({
-          title: "Fehler beim Laden der Fragen",
-          message:
-            "Die Fragen konnten nicht geladen werden. Bitte versuche es später erneut.",
-        });
-      }
-    };
-
-    fetchQuestions();
-  }, []);
-
-  // In case of an error, display the ErrorScreen component.
-  if (error != null) {
-    return <ErrorScreen title={error.title} message={error.message} />;
-  }
-
-  // While questions are still loading (but no error yet), show a simple loading state.
+  // While questions are still loading (but no error yet), show a simple loading state
   if (TOTAL_QUESTIONS === 0) {
     return (
       <QuizLayout currentIndex={0} questionsTotal={0}>
@@ -134,16 +91,27 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
       </QuizLayout>
     );
   }
+  if (!currentQuestion) {
+    return (
+      <ErrorScreen
+        title="Frage nicht gefunden"
+        message="Bitte lade die Seite neu."
+      />
+    );
+  }
 
   return (
     <div>
       <QuizLayout
-        currentIndex={currentIndex + 1}
+        currentIndex={session.currentQuestionIndex + 1}
         questionsTotal={TOTAL_QUESTIONS}
         _oneBack={goBack}
         _showBackButton={true}
       >
-        <CardStack currentIndex={currentIndex + 1} totalCards={TOTAL_QUESTIONS}>
+        <CardStack
+          currentIndex={session.currentQuestionIndex + 1}
+          totalCards={TOTAL_QUESTIONS}
+        >
           <BaseCard
             cardText={currentQuestion.text}
             sx={{

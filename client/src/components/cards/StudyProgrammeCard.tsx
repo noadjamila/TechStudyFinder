@@ -6,7 +6,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
 import { StudyProgramme } from "../../types/StudyProgramme.types";
 import theme from "../../theme/theme";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface StudyProgrammeCardProps {
   programme: StudyProgramme;
@@ -26,17 +26,22 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
   clickable = true,
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleCardClick = () => {
     if (clickable) {
-      navigate(`/study-programme/${programme.studiengang_id}`);
+      navigate(`/study-programme/${programme.studiengang_id}`, {
+        state: { previousPage: location.pathname },
+      });
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (clickable && (e.key === "Enter" || e.key === " ")) {
       e.preventDefault();
-      navigate(`/study-programme/${programme.studiengang_id}`);
+      navigate(`/study-programme/${programme.studiengang_id}`, {
+        state: { previousPage: location.pathname },
+      });
     }
   };
 
