@@ -16,7 +16,7 @@ At minimum, the app expects these to exist:
 - View: `studiengang_full_view`
 - Materialized view: `studiengang_riasec_mv`
 
-Schema files live in `server/db/schema/`. See `docs/database-schema.md` for details.
+Schema files live in `server/db/schema/`. See [Database Schema Documentation](docs/database-schema.md) for details.
 
 ## Initialize a fresh database
 
