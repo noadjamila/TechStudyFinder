@@ -3,6 +3,8 @@ import {
   filterLevel1,
   filterLevel2,
   getStudyProgrammeByIdService,
+  saveQuizResultsService,
+  getQuizResultsService,
 } from "../quiz.service";
 import * as quizRepository from "../../repositories/quiz.repository";
 
@@ -339,5 +341,111 @@ describe("Quiz Service - getStudyProgrammeByIdService", () => {
     // Assert
     // Verify the service is a pure pass-through to the repository
     expect(mockGetStudyProgramme).toHaveBeenCalledWith(testId);
+  });
+});
+
+describe("Quiz Service - saveQuizResultsService", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should call repository to save quiz results", async () => {
+    // Arrange
+    const userId = 1;
+    const resultIds = ["100", "101", "102"];
+    const mockSaveResults = jest
+      .spyOn(quizRepository, "saveUserQuizResults")
+      .mockResolvedValue(undefined);
+
+    // Act
+    await saveQuizResultsService(userId, resultIds);
+
+    // Assert
+    expect(mockSaveResults).toHaveBeenCalledWith(userId, resultIds);
+    expect(mockSaveResults).toHaveBeenCalledTimes(1);
+  });
+
+  it("should handle empty result IDs array", async () => {
+    // Arrange
+    const userId = 1;
+    const resultIds: string[] = [];
+    const mockSaveResults = jest
+      .spyOn(quizRepository, "saveUserQuizResults")
+      .mockResolvedValue(undefined);
+
+    // Act
+    await saveQuizResultsService(userId, resultIds);
+
+    // Assert
+    expect(mockSaveResults).toHaveBeenCalledWith(userId, resultIds);
+  });
+
+  it("should propagate repository errors", async () => {
+    // Arrange
+    const userId = 1;
+    const resultIds = ["100", "101"];
+    const mockError = new Error("Database connection failed");
+    const mockSaveResults = jest
+      .spyOn(quizRepository, "saveUserQuizResults")
+      .mockRejectedValue(mockError);
+
+    // Act & Assert
+    await expect(saveQuizResultsService(userId, resultIds)).rejects.toThrow(
+      "Database connection failed",
+    );
+    expect(mockSaveResults).toHaveBeenCalledWith(userId, resultIds);
+  });
+});
+
+describe("Quiz Service - getQuizResultsService", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should retrieve quiz results from repository", async () => {
+    // Arrange
+    const userId = 1;
+    const mockResults = ["100", "101", "102"];
+    const mockGetResults = jest
+      .spyOn(quizRepository, "getUserQuizResults")
+      .mockResolvedValue(mockResults);
+
+    // Act
+    const result = await getQuizResultsService(userId);
+
+    // Assert
+    expect(mockGetResults).toHaveBeenCalledWith(userId);
+    expect(mockGetResults).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(mockResults);
+  });
+
+  it("should return null when user has no saved results", async () => {
+    // Arrange
+    const userId = 1;
+    const mockGetResults = jest
+      .spyOn(quizRepository, "getUserQuizResults")
+      .mockResolvedValue(null);
+
+    // Act
+    const result = await getQuizResultsService(userId);
+
+    // Assert
+    expect(mockGetResults).toHaveBeenCalledWith(userId);
+    expect(result).toBeNull();
+  });
+
+  it("should propagate repository errors", async () => {
+    // Arrange
+    const userId = 1;
+    const mockError = new Error("Database query failed");
+    const mockGetResults = jest
+      .spyOn(quizRepository, "getUserQuizResults")
+      .mockRejectedValue(mockError);
+
+    // Act & Assert
+    await expect(getQuizResultsService(userId)).rejects.toThrow(
+      "Database query failed",
+    );
+    expect(mockGetResults).toHaveBeenCalledWith(userId);
   });
 });

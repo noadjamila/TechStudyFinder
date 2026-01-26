@@ -9,7 +9,7 @@ import * as favoritesService from "../services/favorites.service";
  */
 export async function addFavorite(req: Request, res: Response) {
   try {
-    const userId = (req.session as any).userId;
+    const userId = (req.session as any)?.user?.id;
     const { studiengangId } = req.body;
 
     // Validation
@@ -50,7 +50,7 @@ export async function addFavorite(req: Request, res: Response) {
  */
 export async function getFavorites(req: Request, res: Response) {
   try {
-    const userId = (req.session as any).userId;
+    const userId = (req.session as any)?.user?.id;
 
     // Validation
     if (!userId) {
@@ -79,7 +79,7 @@ export async function getFavorites(req: Request, res: Response) {
  */
 export async function removeFavorite(req: Request, res: Response) {
   try {
-    const userId = (req.session as any).userId;
+    const userId = (req.session as any)?.user?.id;
     const { programmeId } = req.params;
 
     // Validation

@@ -5,8 +5,10 @@ import {
   updatePasswordById,
   findUserForLogin,
 } from "../../repositories/auth.repository";
-
-jest.mock("bcrypt");
+jest.mock("bcrypt", () => ({
+  hash: jest.fn(async () => "hashed_password"),
+  compare: jest.fn(async () => true),
+}));
 jest.mock("../../repositories/auth.repository");
 
 describe("AuthService.changePassword", () => {

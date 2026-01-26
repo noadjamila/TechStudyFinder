@@ -2,14 +2,10 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, test, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import QuizFlow from "../QuizFlow";
-import * as quizApi from "../../api/quizApi";
+import * as persist from "../../session/persistQuizSession";
+import { waitFor } from "@testing-library/react";
 
 const navigateMock = vi.fn();
-
-vi.spyOn(quizApi, "postFilterLevel").mockResolvedValue({
-  ids: [],
-});
-vi.spyOn(quizApi, "fetchQuestions").mockResolvedValue([]);
 
 vi.mock("react-router-dom", async () => {
   const actual =
@@ -19,6 +15,29 @@ vi.mock("react-router-dom", async () => {
   return {
     ...actual,
     useNavigate: () => navigateMock,
+  };
+});
+vi.mock("../../contexts/AuthContext", () => ({
+  useAuth: () => ({
+    user: { id: 1, username: "testuser" },
+    isLoading: false,
+    login: vi.fn(),
+    logout: vi.fn(),
+    setUser: vi.fn(),
+  }),
+}));
+
+vi.mock("../../api/quizApi", async () => {
+  const actual =
+    await vi.importActual<typeof import("../../api/quizApi")>(
+      "../../api/quizApi",
+    );
+
+  return {
+    ...actual,
+    postFilterLevel: vi.fn().mockResolvedValue({ ids: [] }),
+    fetchQuestions: vi.fn().mockResolvedValue([]),
+    saveQuizResults: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -42,17 +61,17 @@ vi.mock("../../components/quiz/Quiz_L1", () => ({
   __esModule: true,
   default: ({
     onAnswer,
-    onComplete,
+    level1ids,
   }: {
     onAnswer: (answer: any) => void;
-    onComplete: () => void;
+    level1ids: (ids: string[]) => void;
   }) => (
     <div>
       <div>Mock Level 1</div>
       <button
         onClick={() => {
           onAnswer({ questionId: "l1", value: "yes", answeredAt: 1 });
-          onComplete();
+          level1ids(["id-1", "id-2"]);
         }}
       >
         go-to-l2
@@ -69,15 +88,15 @@ vi.mock("../../components/quiz/Quiz_L2", () => ({
     oneLevelBack,
   }: {
     onAnswer: (answer: any) => void;
-    onComplete: () => void;
+    onComplete: () => Promise<void> | void;
     oneLevelBack: () => void;
   }) => (
     <div>
       <div>Mock Level 2</div>
       <button
-        onClick={() => {
+        onClick={async () => {
           onAnswer({ questionId: "l2", value: "yes", answeredAt: 2 });
-          onComplete();
+          await onComplete();
         }}
       >
         go-to-l3
@@ -114,7 +133,7 @@ describe("QuizFlow", () => {
     expect(screen.getByText("Mock Level 1")).toBeInTheDocument();
   });
 
-  test("switches from level 1 to level 2 and shows SuccessScreen", () => {
+  test("switches from level 1 to level 2 and shows SuccessScreen", async () => {
     render(
       <MemoryRouter>
         <QuizFlow />
@@ -124,70 +143,11 @@ describe("QuizFlow", () => {
     fireEvent.click(screen.getByText("continue")); // L1 start
     fireEvent.click(screen.getByText("go-to-l2")); // finish L1
 
-    expect(screen.getByText("Mock Success Level 2")).toBeInTheDocument();
+    expect(await screen.findByText("Mock Success Level 2")).toBeInTheDocument();
   });
-  test("handleAnswer stores answer in session", () => {
-    render(
-      <MemoryRouter>
-        <QuizFlow />
-      </MemoryRouter>,
-    );
+  test("handleAnswer stores answer in session", async () => {
+    const saveSpy = vi.spyOn(persist, "saveSession");
 
-    // Start Level 1
-    fireEvent.click(screen.getByText("continue"));
-
-    // Klick triggert onAnswer({ questionId: "l1", ... })
-    fireEvent.click(screen.getByText("go-to-l2"));
-
-    // Danach Level-2-SuccessScreen sichtbar → Antwort muss gespeichert sein
-    fireEvent.click(screen.getByText("continue"));
-    fireEvent.click(screen.getByText("go-to-l3"));
-    fireEvent.click(screen.getByText("continue"));
-
-    expect(navigateMock).toHaveBeenCalledWith(
-      "/results",
-      expect.objectContaining({
-        state: {
-          answers: expect.objectContaining({
-            l1: {
-              questionId: "l1",
-              value: "yes",
-              answeredAt: 1,
-            },
-          }),
-        },
-      }),
-    );
-  });
-  test("handleAnswer updates updatedAt timestamp", () => {
-    const nowSpy = vi.spyOn(Date, "now").mockReturnValue(123456);
-
-    render(
-      <MemoryRouter>
-        <QuizFlow />
-      </MemoryRouter>,
-    );
-
-    fireEvent.click(screen.getByText("continue"));
-    fireEvent.click(screen.getByText("go-to-l2"));
-
-    fireEvent.click(screen.getByText("continue"));
-    fireEvent.click(screen.getByText("go-to-l3"));
-    fireEvent.click(screen.getByText("continue"));
-
-    expect(navigateMock).toHaveBeenCalledWith(
-      "/results",
-      expect.objectContaining({
-        state: {
-          answers: expect.any(Object),
-        },
-      }),
-    );
-
-    nowSpy.mockRestore();
-  });
-
-  test("navigates to /result after level 2", () => {
     render(
       <MemoryRouter>
         <QuizFlow />
@@ -195,18 +155,40 @@ describe("QuizFlow", () => {
     );
 
     fireEvent.click(screen.getByText("continue")); // L1
-    fireEvent.click(screen.getByText("go-to-l2")); // finish L1
+    fireEvent.click(screen.getByText("go-to-l2")); // answer L1
+
+    await waitFor(() => {
+      expect(saveSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          answers: {
+            l1: expect.objectContaining({
+              value: "yes",
+            }),
+          },
+        }),
+      );
+    });
+  });
+
+  test("navigates to /result after level 2", async () => {
+    render(
+      <MemoryRouter>
+        <QuizFlow />
+      </MemoryRouter>,
+    );
+
+    fireEvent.click(screen.getByText("continue")); // L1
+    fireEvent.click(screen.getByText("go-to-l2"));
+    await screen.findByText("Mock Success Level 2"); // finish L1
     fireEvent.click(screen.getByText("continue")); // show L2 success screen
-    fireEvent.click(screen.getByText("go-to-l3")); // finish L2
+    fireEvent.click(screen.getByText("go-to-l3"));
+    await screen.findByText("Mock Success Level 3"); // finish L2
     fireEvent.click(screen.getByText("continue"));
 
-    expect(navigateMock).toHaveBeenCalledWith("/results", {
-      state: {
-        answers: {
-          l1: { questionId: "l1", value: "yes", answeredAt: 1 },
-          l2: { questionId: "l2", value: "yes", answeredAt: 2 },
-        },
-      },
+    await waitFor(() => {
+      expect(navigateMock).toHaveBeenCalledWith("/results", {
+        state: { resultIds: [] },
+      });
     });
   });
 });

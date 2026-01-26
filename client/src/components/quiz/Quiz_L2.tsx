@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { JSX, useState } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
 import CardStack from "../cards/CardStackLevel2";
 import { Stack, Typography } from "@mui/material";
@@ -8,81 +8,42 @@ import SecondaryButton from "../buttons/SecondaryButton";
 import theme from "../../theme/theme";
 import { Answer } from "../../types/QuizAnswer.types";
 import { QuizSession } from "../../types/QuizSession";
-import { createQuizSession } from "../../session/createQuizSession";
-import { fetchQuestions } from "../../api/quizApi";
-import ErrorScreen from "../error-screen/ErrorScreen";
+import { ErrorScreen } from "../../pages/ErrorScreen";
 
 export interface QuizL2Props {
+  session: QuizSession;
   onAnswer: (answer: Answer) => void;
   onComplete: () => void;
   oneLevelBack: () => void;
+  onQuestionBack: () => void;
+  onQuestionNext: () => void;
 }
 
 /**
  * Level 2 quiz flow component.
  *
- * Fetches level 2 questions on mount, stores them in the session state,
- * and renders a card-based question flow. Tracks the current question index,
- * handles forward/back navigation (including returning to the previous level),
- * and emits answers and completion events to the parent.
+ * Renders a card-based question flow from session-provided questions.
+ * Tracks the current question index, handles forward/back navigation
+ * (including returning to the previous level), and emits answers and
+ * completion events to the parent.
  *
  * @param {QuizL2Props} props Component callbacks for answering, completion, and back navigation.
- * @returns {JSX.Element} The rendered quiz UI or a loading state while questions are fetched.
+ * @returns {JSX.Element} The rendered quiz UI or a loading state while questions are missing.
  */
 const Quiz_L2: React.FC<QuizL2Props> = ({
+  session,
   onAnswer,
   onComplete,
   oneLevelBack,
-}) => {
-  const [session, setSession] = useState<QuizSession>(() =>
-    createQuizSession(),
-  );
-
-  const [error, setError] = useState<{ title: string; message: string } | null>(
-    null,
-  );
+  onQuestionBack,
+  onQuestionNext,
+}: QuizL2Props): JSX.Element => {
   const questions = session.level2Questions ?? [];
-
-  useEffect(() => {
-    if (questions.length > 0) return;
-    let isMounted = true;
-
-    fetchQuestions()
-      .then((loadedQuestions) => {
-        if (!isMounted) return;
-        setSession((prev) => ({
-          ...prev,
-          level2Questions: loadedQuestions,
-          updatedAt: Date.now(),
-        }));
-      })
-      .catch((err) => {
-        console.error(err);
-        setError({
-          title: "Fehler beim Laden der Fragen",
-          message:
-            "Die Fragen konnten nicht geladen werden. Bitte versuche es später erneut.",
-        });
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [questions.length]);
 
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
   const TOTAL_QUESTIONS = questions.length;
   const currentQuestion = questions[session.currentQuestionIndex];
-
-  // Updates the index in the Session when going one question back
-  function goOneQuestionBack() {
-    setSession((prev) => ({
-      ...prev,
-      currentQuestionIndex: prev.currentQuestionIndex - 1,
-      updatedAt: Date.now(),
-    }));
-  }
 
   /**
    * Handles the option to go back one Question.
@@ -92,22 +53,9 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
     if (session.currentQuestionIndex === 0) {
       oneLevelBack();
     } else {
-      goOneQuestionBack();
+      onQuestionBack();
     }
   };
-
-  /**
-   * Updates the index in the Session when going to the next question
-   * by incrementing the currentQuestionIndex by 1.
-   * Also updates the updatedAt timestamp.
-   */
-  function goToNextQuestion() {
-    setSession((prev) => ({
-      ...prev,
-      currentQuestionIndex: prev.currentQuestionIndex + 1,
-      updatedAt: Date.now(),
-    }));
-  }
 
   /**
    * Handles the user’s answer selection for the current question.
@@ -130,21 +78,25 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
       if (session.currentQuestionIndex === TOTAL_QUESTIONS - 1) {
         onComplete();
       } else {
-        goToNextQuestion();
+        onQuestionNext();
       }
       setIsTransitioning(false);
     }, 300);
   };
-  // In case of an error, display the ErrorScreen component.
-  if (error != null) {
-    return <ErrorScreen title={error.title} message={error.message} />;
-  }
   // While questions are still loading (but no error yet), show a simple loading state
   if (TOTAL_QUESTIONS === 0) {
     return (
       <QuizLayout currentIndex={0} questionsTotal={0}>
         <div>Lädt...</div>
       </QuizLayout>
+    );
+  }
+  if (!currentQuestion) {
+    return (
+      <ErrorScreen
+        title="Frage nicht gefunden"
+        message="Bitte lade die Seite neu."
+      />
     );
   }
 

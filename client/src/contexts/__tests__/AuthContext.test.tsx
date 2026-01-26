@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 import { AuthProvider, useAuth } from "../AuthContext";
 import * as authApi from "../../api/authApi";
 
@@ -8,6 +9,10 @@ vi.mock("../../api/authApi", () => ({
   getCurrentUser: vi.fn(),
   login: vi.fn(),
   logout: vi.fn(),
+}));
+
+vi.mock("../../hooks/useApiClient", () => ({
+  useApiClient: () => ({ apiFetch: global.fetch }),
 }));
 
 const TestComponent = () => {
@@ -34,9 +39,11 @@ describe("AuthProvider", () => {
     });
 
     render(
-      <AuthProvider>
-        <TestComponent />
-      </AuthProvider>,
+      <MemoryRouter>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </MemoryRouter>,
     );
 
     await waitFor(() =>
@@ -51,9 +58,11 @@ describe("AuthProvider", () => {
     });
 
     render(
-      <AuthProvider>
-        <TestComponent />
-      </AuthProvider>,
+      <MemoryRouter>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </MemoryRouter>,
     );
 
     const userSim = userEvent.setup();
@@ -72,9 +81,11 @@ describe("AuthProvider", () => {
     vi.mocked(authApi.logout).mockResolvedValue(true);
 
     render(
-      <AuthProvider>
-        <TestComponent />
-      </AuthProvider>,
+      <MemoryRouter>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </MemoryRouter>,
     );
 
     await waitFor(() =>
