@@ -107,7 +107,8 @@ export default function AdminInstructions() {
           </AccordionSummary>
           <AccordionDetails>
             <Typography style={{ marginBottom: "16px" }}>
-              Jeder RIASEC-Typ wird auf einer Skala von{" "}
+              Die Ausprägung jedes RIASEC-Typs von einem Studienbereich, einer
+              Fachrichtung oder einem Studiengang wird auf einer Skala von{" "}
               <strong>1 (trifft nicht zu)</strong> bis{" "}
               <strong>5 (trifft vollständig zu)</strong> bewertet.
             </Typography>
