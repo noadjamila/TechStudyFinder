@@ -31,7 +31,8 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 - [Server Setup (Production)](docs/server-setup.md)
 - [License](LICENSE)
 - [Question Documentation](docs/questions.md)
-- [Database Schema](docs/database_schema.md)
+- [Database Schema](docs/database-schema.md)
+- [Database Operations](docs/database.md)
 
 ---
 
