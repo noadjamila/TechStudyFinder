@@ -141,24 +141,45 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
     }
   };
 
-  // Get unique locations and degrees for filter options
-  const locations = useMemo(() => {
-    const allLocations = studyProgrammes.flatMap((p) => p.standorte || []);
+  // Get available filter options based on current selections
+  const availableUniversities = useMemo(() => {
+    const filtered = studyProgrammes.filter((programme) => {
+      const matchesLocation =
+        !selectedLocation ||
+        (programme.standorte && programme.standorte.includes(selectedLocation));
+      const matchesDegree =
+        !selectedDegree || programme.abschluss === selectedDegree;
+      return matchesLocation && matchesDegree;
+    });
+    const uniqueUniversities = [...new Set(filtered.map((p) => p.hochschule))];
+    return uniqueUniversities.sort();
+  }, [studyProgrammes, selectedLocation, selectedDegree]);
+
+  const availableLocations = useMemo(() => {
+    const filtered = studyProgrammes.filter((programme) => {
+      const matchesUniversity =
+        !selectedUniversity || programme.hochschule === selectedUniversity;
+      const matchesDegree =
+        !selectedDegree || programme.abschluss === selectedDegree;
+      return matchesUniversity && matchesDegree;
+    });
+    const allLocations = filtered.flatMap((p) => p.standorte || []);
     const uniqueLocations = [...new Set(allLocations)];
     return uniqueLocations.sort();
-  }, [studyProgrammes]);
+  }, [studyProgrammes, selectedUniversity, selectedDegree]);
 
-  const degrees = useMemo(() => {
-    const uniqueDegrees = [...new Set(studyProgrammes.map((p) => p.abschluss))];
+  const availableDegrees = useMemo(() => {
+    const filtered = studyProgrammes.filter((programme) => {
+      const matchesLocation =
+        !selectedLocation ||
+        (programme.standorte && programme.standorte.includes(selectedLocation));
+      const matchesUniversity =
+        !selectedUniversity || programme.hochschule === selectedUniversity;
+      return matchesLocation && matchesUniversity;
+    });
+    const uniqueDegrees = [...new Set(filtered.map((p) => p.abschluss))];
     return uniqueDegrees.sort();
-  }, [studyProgrammes]);
-
-  const universities = useMemo(() => {
-    const uniqueUniversities = [
-      ...new Set(studyProgrammes.map((p) => p.hochschule)),
-    ];
-    return uniqueUniversities.sort();
-  }, [studyProgrammes]);
+  }, [studyProgrammes, selectedLocation, selectedUniversity]);
 
   // Filter programmes based on selected filters
   const filteredProgrammes = useMemo(() => {
@@ -339,7 +360,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         Alle Hochschulen
                       </Box>
                     </MenuItem>
-                    {universities.map((university) => (
+                    {availableUniversities.map((university) => (
                       <MenuItem key={university} value={university}>
                         {university}
                       </MenuItem>
@@ -438,7 +459,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         Alle Städte
                       </Box>
                     </MenuItem>
-                    {locations.map((location) => (
+                    {availableLocations.map((location) => (
                       <MenuItem key={location} value={location}>
                         <Box
                           sx={{
@@ -546,7 +567,7 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                         Alle Abschlüsse
                       </Box>
                     </MenuItem>
-                    {degrees.map((degree) => (
+                    {availableDegrees.map((degree) => (
                       <MenuItem key={degree} value={degree}>
                         <Box
                           sx={{
