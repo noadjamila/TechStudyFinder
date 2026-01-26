@@ -47,18 +47,6 @@ pg_dump -h 127.0.0.1 -p 5432 -U <user> -d <db> \
 
 Then load into target DB with `psql`.
 
-## Avoiding “missing users” confusion
-
-The app reads DB settings from the **repo root** `.env` by default.
-If DataGrip, PGAdmin or another tool shows “missing” users, confirm the DB and port:
-
-```sql
-SELECT current_database(), inet_server_addr(), inet_server_port();
-```
-
-Common pitfall: SSH tunnels mapping local 5434 → remote 5432.
-Use a different local port (e.g. `5544`) for tunnels to avoid collisions.
-
 ## Integration tests
 
 Integration tests **drop tables**. They must run against a test DB only.
