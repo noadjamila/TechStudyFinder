@@ -11,6 +11,7 @@ This document complements `docs/database-schema.md` with practical setup and han
 ## Required objects
 
 At minimum, the app expects these to exist:
+
 - Tables: `users`, `favoriten`, `fragen_level_zwei`, `studiengaenge`, …
 - View: `studiengang_full_view`
 - Materialized view: `studiengang_riasec_mv`
@@ -19,8 +20,8 @@ Schema files live in `server/db/schema/`. See `docs/database-schema.md` for deta
 
 ## Initialize a fresh database
 
-1) Ensure XML files are present in `server/db/xml/` (private data).
-2) Run the init script:
+1. Ensure XML files are present in `server/db/xml/` (private data).
+2. Run the init script:
 
 ```bash
 cd server
@@ -77,4 +78,3 @@ psql -h 127.0.0.1 -p 5434 -U <user> -d techstudyfinderdb_test \
 psql -h 127.0.0.1 -p 5434 -U <user> -d techstudyfinderdb_test \
   < server/db/schema/favourites.sql
 ```
-
