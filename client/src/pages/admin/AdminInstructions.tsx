@@ -75,10 +75,10 @@ export default function AdminInstructions() {
             <Typography>
               Das Mapping kombiniert manuelle und automatische Schritte. Die
               Zuordnung erfolgt primär über <strong>Studienbereiche</strong>, da
-              diese eine übergeordnete Ebene bilden und sich seltener ändern
-              als einzelne Studiengänge.
-              Zuordnung erfolgt primär über <strong>Studienbereiche</strong>, da
-              diese stabiler sind als einzelne Studiengänge.
+              diese eine übergeordnete Ebene bilden und sich seltener ändern als
+              einzelne Studiengänge. Zuordnung erfolgt primär über{" "}
+              <strong>Studienbereiche</strong>, da diese stabiler sind als
+              einzelne Studiengänge.
             </Typography>
 
             <Typography variant="subtitle1" gutterBottom mt={2}>
