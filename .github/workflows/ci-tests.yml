@@ -9,6 +9,20 @@ on:
 jobs:
   test_suite:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: techstudyfinderdb_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d techstudyfinderdb_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout Code
@@ -26,10 +40,26 @@ jobs:
       - name: Install Server Dependencies (Safe)
         run: npm ci --workspace=server --ignore-scripts
 
+      - name: Install PostgreSQL Client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Initialize Test Schema
+        env:
+          PGPASSWORD: postgres
+        run: |
+          psql -h 127.0.0.1 -U postgres -d techstudyfinderdb_test -f server/db/schema/users.sql
+          psql -h 127.0.0.1 -U postgres -d techstudyfinderdb_test -f server/db/schema/favourites.sql
+
       - name: Run Server Unit Tests
         run: npm run test:unit --workspace=server
 
       - name: Run Server Integration Tests
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_NAME: techstudyfinderdb_test
         run: npm run test:integration --workspace=server
 
       - name: Install Client Dependencies (Safe)
