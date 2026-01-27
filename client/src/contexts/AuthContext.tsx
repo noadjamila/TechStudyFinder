@@ -5,6 +5,11 @@ import {
   logout as apiLogout,
 } from "../api/authApi";
 import { useApiClient } from "../hooks/useApiClient";
+import {
+  clearQuizResults,
+  loadQuizResults,
+} from "../session/persistQuizSession";
+import { attachDeviceResults } from "../api/quizApi";
 
 /**
  * Represents the authenticated user.
@@ -79,6 +84,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (res.user) {
         setUser(res.user);
         setIsLoading(false);
+      }
+      const cached = await loadQuizResults();
+      if (cached && cached?.length > 0) {
+        const resultIds = cached
+          .map((p) => p?.studiengang_id)
+          .filter(
+            (id): id is string => typeof id === "string" && id.length > 0,
+          );
+
+        if (resultIds.length > 0) {
+          await attachDeviceResults(resultIds, apiFetch);
+          await clearQuizResults();
+        }
       }
     } catch (error) {
       setIsLoading(false);
