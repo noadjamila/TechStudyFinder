@@ -171,7 +171,7 @@ const ResultsPage: React.FC = () => {
   }, [user, studyProgrammes.length]);
 
   return (
-    <MainLayout>
+    <MainLayout hasResults={hasQuizResults}>
       {loading ? (
         <Box sx={{ textAlign: "center", mt: 4 }}>Lädt...</Box>
       ) : !hasQuizResults ? (

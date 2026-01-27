@@ -211,7 +211,7 @@ export default function QuizFlow(): JSX.Element | null {
 
     setSession((prev) => ({
       ...prev,
-      resultIds: res.ids,
+      resultIds: idsToSave,
       currentLevel: 3,
       currentQuestionIndex: 0,
       showSuccessScreen: true,

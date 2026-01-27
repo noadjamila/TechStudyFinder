@@ -35,7 +35,11 @@ interface MenuItemConfig {
   onClick?: () => void;
 }
 
-export default function DropMenu() {
+export default function DropMenu({
+  hasResults = false,
+}: {
+  hasResults?: boolean;
+}) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, isLoading } = useAuth();
@@ -64,7 +68,7 @@ export default function DropMenu() {
 
   const handleNavigate = (path: string) => {
     handleMenuClose();
-    if (location.pathname === "/results" && !user && !isLoading) {
+    if (location.pathname === "/results" && !user && !isLoading && hasResults) {
       setIsDialogOpen(true);
       setIntendedDestination(path);
     } else {

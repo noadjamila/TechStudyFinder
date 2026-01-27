@@ -14,6 +14,7 @@ import DropMenu from "../components/DropdownMenu";
 
 interface DesktopLayoutProps {
   children: ReactNode;
+  hasResults?: boolean;
   onMenuToggle: () => void;
 }
 
@@ -25,7 +26,10 @@ interface DesktopLayoutProps {
  * @param {DesktopLayoutProps} props - The component's props.
  * @returns {React.FC} The rendered Desktop Layout component.
  */
-const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
+const DesktopLayout: React.FC<DesktopLayoutProps> = ({
+  children,
+  hasResults = false,
+}) => {
   const theme = useTheme();
 
   return (
@@ -89,9 +93,9 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({ children }) => {
             marginLeft: "38px",
           }}
         >
-          <DropMenu />
+          <DropMenu hasResults={hasResults} />
         </div>
-        <NavBar isSidebarMode />
+        <NavBar isSidebarMode hasResults={hasResults} />
       </Box>
 
       {/* Main Content Wrapper (sets up space for the white box) */}
