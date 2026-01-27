@@ -52,7 +52,7 @@ export default function MainLayout({
       {/* Conditional Rendering based on viewport size */}
       {isDesktop ? (
         // DESKTOP VIEW: Content is placed inside the structured layout
-        <DesktopLayout onMenuToggle={toggleSidebar}>
+        <DesktopLayout onMenuToggle={toggleSidebar} hasResults={hasResults}>
           <div
             style={{
               padding: "30px",
