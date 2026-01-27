@@ -180,3 +180,20 @@ export async function fetchQuestions() {
     riasec_type: RiasecType;
   }[];
 }
+
+export async function attachDeviceResults(
+  resultIds: string[],
+  fetchFn: typeof fetch = fetch,
+) {
+  const res = await fetchFn("/api/quiz/attach-device-results", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ resultIds }),
+  });
+
+  if (!res.ok) throw new Error("Failed to attach device results to user");
+  return await res.json();
+}
