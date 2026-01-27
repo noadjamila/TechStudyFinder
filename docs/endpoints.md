@@ -15,14 +15,15 @@
 
 ## POST
 
-| Endpoint                  | Description                                                   |
-| ------------------------- | ------------------------------------------------------------- |
-| /api/auth/register        | Register a new user                                           |
-| /api/auth/login           | User login                                                    |
-| /api/auth/logout          | User logout                                                   |
-| /api/auth/change-password | Change authenticated user's password                          |
-| /api/users/favorites      | Add a study programme to a user's list of favorites           |
-| /api/quiz/filter/progress | Filter quiz questions based on user progress after each level |
+| Endpoint                        | Description                                                         |
+|---------------------------------|---------------------------------------------------------------------|
+| /api/auth/register              | Register a new user                                                 |
+| /api/auth/login                 | User login                                                          |
+| /api/auth/logout                | User logout                                                         |
+| /api/auth/change-password       | Change authenticated user's password                                |
+| /api/users/favorites            | Add a study programme to a user's list of favorites                 |
+| /api/quiz/filter/progress       | Filter quiz questions based on user progress after each level       |
+| /api/quiz/attach-device-results | Attach results from device session to user session after logging in |
 
 ## PUT
 
