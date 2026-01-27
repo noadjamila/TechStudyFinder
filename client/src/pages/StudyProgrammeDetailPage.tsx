@@ -17,8 +17,8 @@ import {
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
+import SchoolIcon from "@mui/icons-material/School";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 import theme from "../theme/theme";
@@ -332,7 +332,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <PlaceIcon
+                    <SchoolIcon
                       sx={{
                         fontSize: 24,
                         color: theme.palette.text.subHeader,
