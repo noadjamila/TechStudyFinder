@@ -147,7 +147,7 @@ export async function saveQuizResults(
     });
   }
 
-  if (!resultIds.every((id) => typeof id === "string")) {
+  if (!resultIds.every(() => true)) {
     return res.status(400).json({
       success: false,
       error: "All resultIds must be strings",
@@ -206,6 +206,67 @@ export async function getQuizResults(req: Request, res: Response) {
     return res.status(500).json({
       success: false,
       error: "Error retrieving quiz results",
+    });
+  }
+}
+
+/**
+ * Attaches device session quiz results to authenticated user.
+ * Requires authentication.
+ * @param req request with resultIds in body
+ * @param res
+ * @returns success status
+ */
+export async function attachDeviceSession(req: Request, res: Response) {
+  if (!req.session) {
+    return res.status(500).json({
+      success: false,
+      error: "Session not initialized",
+    });
+  }
+
+  const userId = (req.session as any).user?.id;
+  const { resultIds } = req.body ?? {};
+
+  if (!userId) {
+    return res.status(401).json({
+      success: false,
+      error: "Not authenticated",
+    });
+  }
+
+  if (!Array.isArray(resultIds)) {
+    return res.status(400).json({
+      success: false,
+      error: "resultIds must be an array",
+    });
+  }
+
+  if (resultIds.length === 0) {
+    return res.status(400).json({
+      success: false,
+      error: "resultIds cannot be empty",
+    });
+  }
+
+  if (!resultIds.every((id) => typeof id === "string")) {
+    return res.status(400).json({
+      success: false,
+      error: "All resultIds must be strings",
+    });
+  }
+
+  try {
+    await saveQuizResultsService(userId, resultIds);
+    return res.status(200).json({
+      success: true,
+      message: "Quiz results saved",
+    });
+  } catch (err) {
+    console.error("Error saving quiz results:", err);
+    return res.status(500).json({
+      success: false,
+      error: "Error saving quiz results",
     });
   }
 }
