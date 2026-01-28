@@ -4,10 +4,10 @@ import { ThemeProvider } from "@mui/material";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import ResultsPage from "../ResultsPage";
 import theme from "../../theme/theme";
-import * as persist from "../../session/persistQuizSession";
+import * as persist from "../../session/persistQuizResults";
 
 const mockedNavigate = vi.fn();
-vi.mock("../../session/persistQuizSession", () => {
+vi.mock("../../session/persistQuizResults", () => {
   let cache: any = null;
 
   return {
