@@ -166,7 +166,8 @@ export async function getQuizResults(): Promise<string[] | null> {
  * @throws {Error} Throws if the network request fails.
  */
 export async function fetchQuestions() {
-  const res = await fetch("/api/quiz/level/2");
+  const endpoint = `${API_BASE_URL}/quiz/level/2`;
+  const res = await fetch(endpoint);
 
   if (!res.ok) {
     throw new Error("Failed to load level 2 questions");
@@ -185,7 +186,8 @@ export async function attachDeviceResults(
   resultIds: string[],
   fetchFn: typeof fetch = fetch,
 ) {
-  const res = await fetchFn("/api/quiz/attach-device-results", {
+  const endpoint = `${API_BASE_URL}/quiz/attach-device-results`;
+  const res = await fetchFn(endpoint, {
     method: "POST",
     credentials: "include",
     headers: {
