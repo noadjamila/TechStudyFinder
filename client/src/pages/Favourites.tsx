@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, CircularProgress } from "@mui/material";
 import MainLayout from "../layouts/MainLayout";
-import DesktopLayout from "../layouts/DesktopLayout";
 import { useAuth } from "../contexts/AuthContext";
-import { useMediaQuery, useTheme } from "@mui/material";
 import FavouritesNotLoggedIn from "../components/favourites/FavouritesNotLoggedIn";
 import FavouritesEmpty from "../components/favourites/FavouritesEmpty";
 import FavouritesList from "../components/favourites/FavouritesList";
@@ -22,13 +20,6 @@ const Favourites: React.FC = () => {
   const { user, isLoading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [favorites, setFavorites] = useState<string[]>([]);
-  const [menuToggled, setMenuToggled] = useState(false);
-  const muiTheme = useTheme();
-  const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
-
-  const handleMenuToggle = () => {
-    setMenuToggled(!menuToggled);
-  };
 
   /**
    * Check user authentication status and favorites count on component mount
@@ -105,17 +96,7 @@ const Favourites: React.FC = () => {
     );
   }
 
-  const content = getContent();
-
-  // Desktop view
-  if (isDesktop) {
-    return (
-      <DesktopLayout onMenuToggle={handleMenuToggle}>{content}</DesktopLayout>
-    );
-  }
-
-  // Mobile view
-  return <MainLayout>{content}</MainLayout>;
+  return <MainLayout>{getContent()}</MainLayout>;
 };
 
 export default Favourites;
