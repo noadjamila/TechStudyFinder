@@ -3,18 +3,9 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../../../theme/theme";
-import { describe, test, beforeEach, expect, vi, Mock } from "vitest";
+import { describe, test, expect, vi } from "vitest";
 import Quiz_L2 from "../Quiz_L2";
-import { postFilterLevel, getQuizLevel } from "../../../api/quizApi";
-
-vi.useRealTimers();
-
-vi.mock("../../../api/quizApi", () => ({
-  postFilterLevel: vi.fn(),
-  getQuizLevel: vi.fn(),
-}));
-const mockedPostFilterLevel = postFilterLevel as unknown as Mock;
-const mockedGetQuizLevel = getQuizLevel as unknown as Mock;
+import type { QuizSession } from "../../../types/QuizSession";
 
 const renderWithProviders = (ui: React.ReactNode) =>
   render(
@@ -25,30 +16,45 @@ const renderWithProviders = (ui: React.ReactNode) =>
 
 describe("Quiz_L2", () => {
   const mockQuestions = [
-    { text: "Frage 1", riasec_type: "R" },
-    { text: "Frage 2", riasec_type: "I" },
+    { text: "Frage 1", riasec_type: "R", id: "q1" },
+    { text: "Frage 2", riasec_type: "I", id: "q2" },
   ];
 
-  beforeEach(() => {
-    vi.resetAllMocks();
-    mockedGetQuizLevel.mockResolvedValue({ questions: mockQuestions });
-  });
+  const baseSession: QuizSession = {
+    sessionId: "session-1",
+    currentLevel: 2,
+    currentQuestionIndex: 0,
+    answers: {},
+    level2Questions: mockQuestions,
+    startedAt: 1,
+    updatedAt: 1,
+  };
 
-  it("shows Loading before questions are loaded", () => {
+  test("shows loading when no questions are available", () => {
     renderWithProviders(
       <Quiz_L2
-        previousIds={["1"]}
-        onNextLevel={vi.fn()}
+        session={{ ...baseSession, level2Questions: [] }}
+        onAnswer={vi.fn()}
+        onComplete={vi.fn()}
         oneLevelBack={vi.fn()}
+        onQuestionBack={vi.fn()}
+        onQuestionNext={vi.fn()}
       />,
     );
 
     expect(screen.getByText("Lädt...")).toBeInTheDocument();
   });
 
-  test("should load questions from backend", async () => {
+  test("renders the current question text", async () => {
     renderWithProviders(
-      <Quiz_L2 previousIds={[]} onNextLevel={vi.fn()} oneLevelBack={vi.fn()} />,
+      <Quiz_L2
+        session={baseSession}
+        onAnswer={vi.fn()}
+        onComplete={vi.fn()}
+        oneLevelBack={vi.fn()}
+        onQuestionBack={vi.fn()}
+        onQuestionNext={vi.fn()}
+      />,
     );
 
     await waitFor(() => {
@@ -56,223 +62,162 @@ describe("Quiz_L2", () => {
     });
   });
 
-  test("answers 'yes' move to next question", async () => {
+  test("answers 'yes' call onAnswer and onQuestionNext", async () => {
+    const onAnswer = vi.fn();
+    const onQuestionNext = vi.fn();
+
     renderWithProviders(
       <Quiz_L2
-        previousIds={["1", "2"]}
-        onNextLevel={vi.fn()}
+        session={baseSession}
+        onAnswer={onAnswer}
+        onComplete={vi.fn()}
         oneLevelBack={vi.fn()}
+        onQuestionBack={vi.fn()}
+        onQuestionNext={onQuestionNext}
       />,
     );
-
-    await waitFor(() => {
-      expect(screen.getByText("Frage 1")).toBeInTheDocument();
-    });
 
     fireEvent.click(screen.getByText("Ja"));
 
+    expect(onAnswer).toHaveBeenCalledWith(
+      expect.objectContaining({
+        questionId: "level2.question0.R",
+        value: "yes",
+      }),
+    );
     await waitFor(() => {
-      expect(screen.getByText("Frage 2")).toBeInTheDocument();
+      expect(onQuestionNext).toHaveBeenCalledTimes(1);
     });
   });
 
-  test("answers 'no' move to next question", async () => {
+  test("answers 'no' call onAnswer and onQuestionNext", async () => {
+    const onAnswer = vi.fn();
+    const onQuestionNext = vi.fn();
+
     renderWithProviders(
       <Quiz_L2
-        previousIds={[]}
-        onNextLevel={() => {}}
-        oneLevelBack={() => {}}
+        session={baseSession}
+        onAnswer={onAnswer}
+        onComplete={vi.fn()}
+        oneLevelBack={vi.fn()}
+        onQuestionBack={vi.fn()}
+        onQuestionNext={onQuestionNext}
       />,
     );
-
-    await screen.findByText("Frage 1");
 
     fireEvent.click(screen.getByText("Nein"));
 
+    expect(onAnswer).toHaveBeenCalledWith(
+      expect.objectContaining({
+        questionId: "level2.question0.R",
+        value: "no",
+      }),
+    );
     await waitFor(() => {
-      expect(screen.getByText("Frage 2")).toBeInTheDocument();
+      expect(onQuestionNext).toHaveBeenCalledTimes(1);
     });
   });
 
-  test("answers 'skip' move to next question", async () => {
+  test("answers 'skip' call onAnswer and onQuestionNext", async () => {
+    const onAnswer = vi.fn();
+    const onQuestionNext = vi.fn();
+
     renderWithProviders(
       <Quiz_L2
-        previousIds={[]}
-        onNextLevel={() => {}}
-        oneLevelBack={() => {}}
+        session={baseSession}
+        onAnswer={onAnswer}
+        onComplete={vi.fn()}
+        oneLevelBack={vi.fn()}
+        onQuestionBack={vi.fn()}
+        onQuestionNext={onQuestionNext}
       />,
     );
-
-    await screen.findByText("Frage 1");
 
     fireEvent.click(screen.getByText("Überspringen"));
 
+    expect(onAnswer).toHaveBeenCalledWith(
+      expect.objectContaining({
+        questionId: "level2.question0.R",
+        value: "skip",
+      }),
+    );
     await waitFor(() => {
-      expect(screen.getByText("Frage 2")).toBeInTheDocument();
+      expect(onQuestionNext).toHaveBeenCalledTimes(1);
     });
   });
 
-  test("should show error screen when question loading fails", async () => {
-    mockedGetQuizLevel.mockRejectedValue(new Error("Failed to fetch"));
-
+  test("renders mascot image", () => {
     renderWithProviders(
       <Quiz_L2
-        previousIds={[]}
-        onNextLevel={() => {}}
+        session={baseSession}
+        onAnswer={vi.fn()}
+        onComplete={vi.fn()}
         oneLevelBack={() => {}}
+        onQuestionBack={vi.fn()}
+        onQuestionNext={vi.fn()}
       />,
     );
-
-    expect(
-      await screen.findByText(
-        "Die Fragen konnten nicht geladen werden. Bitte versuche es später erneut.",
-      ),
-    ).toBeInTheDocument();
-  });
-
-  test("should send correct payload with scores", async () => {
-    const onNextLevel = vi.fn();
-
-    mockedPostFilterLevel.mockResolvedValue({
-      ids: [{ studiengang_id: "id123" }],
-    });
-
-    renderWithProviders(
-      <Quiz_L2
-        previousIds={["id1"]}
-        onNextLevel={onNextLevel}
-        oneLevelBack={vi.fn()}
-      />,
-    );
-
-    await screen.findByText("Frage 1");
-    fireEvent.click(screen.getByText("Ja"));
-
-    await waitFor(() =>
-      expect(screen.getByText("Frage 2")).toBeInTheDocument(),
-    );
-    fireEvent.click(screen.getByText("Ja"));
-
-    await waitFor(() => {
-      expect(postFilterLevel).toHaveBeenCalledTimes(1);
-    });
-
-    const callArgs = mockedPostFilterLevel.mock.calls[0][0];
-    expect(callArgs.level).toBe(2);
-    expect(callArgs.studyProgrammeIds).toEqual(["id1"]);
-    expect(callArgs.answers).toHaveLength(6);
-  });
-
-  test("should show error screen when sending L2 results fails", async () => {
-    mockedPostFilterLevel.mockRejectedValue(new Error("Failed to send"));
-
-    renderWithProviders(
-      <Quiz_L2
-        previousIds={[]}
-        onNextLevel={() => {}}
-        oneLevelBack={() => {}}
-      />,
-    );
-
-    await screen.findByText("Frage 1");
-
-    fireEvent.click(screen.getByText("Ja"));
-    await waitFor(() =>
-      expect(screen.getByText("Frage 2")).toBeInTheDocument(),
-    );
-    fireEvent.click(screen.getByText("Ja"));
-
-    expect(await screen.findByText("Fehler beim Senden")).toBeInTheDocument();
-  });
-
-  test("renders mascot image", async () => {
-    renderWithProviders(
-      <Quiz_L2
-        previousIds={["1", "2"]}
-        onNextLevel={() => {}}
-        oneLevelBack={() => {}}
-      />,
-    );
-
-    await screen.findByText("Frage 1");
 
     const mascot = screen.getByAltText("Mascot");
     expect(mascot).toBeInTheDocument();
   });
 
-  test("calls oneLevelBack when currentIndex = 0", async () => {
+  test("calls oneLevelBack when currentIndex = 0", () => {
     const oneLevelBack = vi.fn();
 
     renderWithProviders(
       <Quiz_L2
-        previousIds={[]}
-        onNextLevel={() => {}}
+        session={baseSession}
+        onAnswer={vi.fn()}
+        onComplete={vi.fn()}
         oneLevelBack={oneLevelBack}
+        onQuestionBack={vi.fn()}
+        onQuestionNext={vi.fn()}
       />,
     );
-
-    await screen.findByText("Frage 1");
 
     fireEvent.click(screen.getByRole("button", { name: "Zurück" }));
 
     expect(oneLevelBack).toHaveBeenCalledTimes(1);
   });
 
-  test("goes back to previous question when currentIndex > 0", async () => {
+  test("calls onQuestionBack when currentIndex > 0", () => {
+    const onQuestionBack = vi.fn();
+
     renderWithProviders(
       <Quiz_L2
-        previousIds={[]}
-        onNextLevel={() => {}}
-        oneLevelBack={() => {}}
+        session={{ ...baseSession, currentQuestionIndex: 1 }}
+        onAnswer={vi.fn()}
+        onComplete={vi.fn()}
+        oneLevelBack={vi.fn()}
+        onQuestionBack={onQuestionBack}
+        onQuestionNext={vi.fn()}
       />,
     );
 
-    await screen.findByText("Frage 1");
-    fireEvent.click(screen.getByText("Ja"));
-    await screen.findByText("Frage 2");
-    fireEvent.click(screen.getByRole("button", { name: "Zurück" }));
-    await waitFor(() => {
-      expect(screen.getByText("Frage 1")).toBeInTheDocument();
-    });
+    fireEvent.click(screen.getByText("Zurück"));
+
+    expect(onQuestionBack).toHaveBeenCalledTimes(1);
   });
 
-  test("reverses score correctly when going back (yes → remove +1)", async () => {
-    mockedPostFilterLevel.mockResolvedValue({
-      ids: [{ studiengang_id: "id123" }],
-    });
+  test("calls onComplete on final question", async () => {
+    const onComplete = vi.fn();
 
     renderWithProviders(
       <Quiz_L2
-        previousIds={[]}
-        onNextLevel={vi.fn()}
-        oneLevelBack={() => {}}
+        session={{ ...baseSession, currentQuestionIndex: 1 }}
+        onAnswer={vi.fn()}
+        onComplete={onComplete}
+        oneLevelBack={vi.fn()}
+        onQuestionBack={vi.fn()}
+        onQuestionNext={vi.fn()}
       />,
     );
 
-    await screen.findByText("Frage 1");
-
-    // YES → +1 for type R
     fireEvent.click(screen.getByText("Ja"));
 
-    await screen.findByText("Frage 2");
-
-    // back → should remove +1 for type R
-    fireEvent.click(screen.getByRole("button", { name: "Zurück" }));
-
     await waitFor(() => {
-      expect(screen.getByText("Frage 1")).toBeInTheDocument();
-    });
-
-    // Answer again and complete quiz
-    fireEvent.click(screen.getByText("Ja"));
-    await waitFor(() => {
-      expect(screen.getByText("Frage 2")).toBeInTheDocument();
-    });
-    fireEvent.click(screen.getByText("Ja"));
-
-    // Verify that postFilterLevel was called with correct scores
-    await waitFor(() => {
-      expect(mockedPostFilterLevel).toHaveBeenCalled();
+      expect(onComplete).toHaveBeenCalledTimes(1);
     });
   });
 });

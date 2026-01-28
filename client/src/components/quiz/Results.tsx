@@ -6,12 +6,17 @@ import {
   Select,
   MenuItem,
   FormControl,
+  Button,
+  Popover,
+  Divider,
 } from "@mui/material";
 import theme from "../../theme/theme";
 import { StudyProgramme } from "../../types/StudyProgramme.types";
 import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import SchoolIcon from "@mui/icons-material/School";
 import StudyProgrammeCard from "../cards/StudyProgrammeCard";
 import { useNavigate, useLocation } from "react-router-dom";
 import GreenCard from "../cards/GreenCardBaseNotQuiz";
@@ -49,7 +54,20 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [selectedDegree, setSelectedDegree] = useState<string>("");
+  const [selectedUniversity, setSelectedUniversity] = useState<string>("");
   const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const [filterAnchorEl, setFilterAnchorEl] =
+    useState<HTMLButtonElement | null>(null);
+
+  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setFilterAnchorEl(event.currentTarget);
+  };
+
+  const handleFilterClose = () => {
+    setFilterAnchorEl(null);
+  };
+
+  const isFilterOpen = Boolean(filterAnchorEl);
 
   // Load favorites from API on component mount and when location changes
   useEffect(() => {
@@ -124,17 +142,45 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
     }
   };
 
-  // Get unique locations and degrees for filter options
-  const locations = useMemo(() => {
-    const allLocations = studyProgrammes.flatMap((p) => p.standorte || []);
+  // Get available filter options based on current selections
+  const availableUniversities = useMemo(() => {
+    const filtered = studyProgrammes.filter((programme) => {
+      const matchesLocation =
+        !selectedLocation ||
+        (programme.standorte && programme.standorte.includes(selectedLocation));
+      const matchesDegree =
+        !selectedDegree || programme.abschluss === selectedDegree;
+      return matchesLocation && matchesDegree;
+    });
+    const uniqueUniversities = [...new Set(filtered.map((p) => p.hochschule))];
+    return uniqueUniversities.sort();
+  }, [studyProgrammes, selectedLocation, selectedDegree]);
+
+  const availableLocations = useMemo(() => {
+    const filtered = studyProgrammes.filter((programme) => {
+      const matchesUniversity =
+        !selectedUniversity || programme.hochschule === selectedUniversity;
+      const matchesDegree =
+        !selectedDegree || programme.abschluss === selectedDegree;
+      return matchesUniversity && matchesDegree;
+    });
+    const allLocations = filtered.flatMap((p) => p.standorte || []);
     const uniqueLocations = [...new Set(allLocations)];
     return uniqueLocations.sort();
-  }, [studyProgrammes]);
+  }, [studyProgrammes, selectedUniversity, selectedDegree]);
 
-  const degrees = useMemo(() => {
-    const uniqueDegrees = [...new Set(studyProgrammes.map((p) => p.abschluss))];
+  const availableDegrees = useMemo(() => {
+    const filtered = studyProgrammes.filter((programme) => {
+      const matchesLocation =
+        !selectedLocation ||
+        (programme.standorte && programme.standorte.includes(selectedLocation));
+      const matchesUniversity =
+        !selectedUniversity || programme.hochschule === selectedUniversity;
+      return matchesLocation && matchesUniversity;
+    });
+    const uniqueDegrees = [...new Set(filtered.map((p) => p.abschluss))];
     return uniqueDegrees.sort();
-  }, [studyProgrammes]);
+  }, [studyProgrammes, selectedLocation, selectedUniversity]);
 
   // Filter programmes based on selected filters
   const filteredProgrammes = useMemo(() => {
@@ -144,9 +190,11 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
         (programme.standorte && programme.standorte.includes(selectedLocation));
       const matchesDegree =
         !selectedDegree || programme.abschluss === selectedDegree;
-      return matchesLocation && matchesDegree;
+      const matchesUniversity =
+        !selectedUniversity || programme.hochschule === selectedUniversity;
+      return matchesLocation && matchesDegree && matchesUniversity;
     });
-  }, [studyProgrammes, selectedLocation, selectedDegree]);
+  }, [studyProgrammes, selectedLocation, selectedDegree, selectedUniversity]);
 
   return (
     <Box
@@ -177,236 +225,393 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
         </Box>
       ) : (
         <>
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            spacing={2}
-            alignItems={{ xs: "stretch", sm: "center" }}
-            sx={{ marginBottom: 3, width: "100%" }}
-          >
-            <FormControl
+          <Box sx={{ marginBottom: 3, display: "flex", gap: 2 }}>
+            <Button
+              variant="outlined"
+              startIcon={<FilterListIcon />}
+              onClick={handleFilterClick}
               sx={{
-                minWidth: { xs: "100%", sm: 250 },
-                maxWidth: { xs: "100%", sm: 400 },
-                flex: { sm: 1 },
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "25px",
-                  backgroundColor: theme.palette.background.default,
+                borderRadius: "25px",
+                paddingX: 3,
+                paddingY: 1,
+                textTransform: "none",
+                borderColor: theme.palette.primary.main,
+                color: theme.palette.text.primary,
+                fontSize: "16px",
+                "&:hover": {
+                  borderColor: theme.palette.primary.main,
+                  backgroundColor: `${theme.palette.primary.main}1A`,
                 },
               }}
             >
-              <Select
-                id="location-filter"
-                value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
-                displayEmpty
-                IconComponent={ArrowDropDownIcon}
-                aria-label="Filter nach Standort"
-                MenuProps={{
-                  PaperProps: {
-                    sx: {
-                      backgroundColor: theme.palette.background.default,
-                      maxWidth: { xs: "calc(100vw - 32px)", sm: 400 },
-                      "& .MuiMenuItem-root": {
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        "&:hover": {
-                          backgroundColor: `${theme.palette.primary.main}33`,
-                        },
-                        "&.Mui-selected": {
-                          backgroundColor: `${theme.palette.primary.main}4D`,
-                          "&:hover": {
-                            backgroundColor: `${theme.palette.primary.main}66`,
-                          },
-                        },
-                      },
-                    },
-                  },
-                }}
-                renderValue={(selected) => (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                      minWidth: 0,
-                    }}
-                  >
-                    <PlaceIcon
-                      sx={{
-                        fontSize: 20,
-                        flexShrink: 0,
-                      }}
-                    />
-                    <Typography
-                      sx={{
-                        color: selected
-                          ? theme.palette.text.primary
-                          : theme.palette.text.skipButton,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {selected || "Stadt"}
-                    </Typography>
-                  </Box>
-                )}
-                sx={{
-                  borderRadius: "25px",
-                  "& .MuiSelect-select": {
-                    paddingTop: "10px",
-                    paddingBottom: "10px",
-                  },
-                  "& .MuiSelect-icon": {
-                    color: theme.palette.text.primary,
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: theme.palette.decorative.blue,
-                  },
-                }}
-              >
-                <MenuItem value="">
-                  <Box
-                    sx={{
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      width: "100%",
-                    }}
-                  >
-                    Alle Städte
-                  </Box>
-                </MenuItem>
-                {locations.map((location) => (
-                  <MenuItem key={location} value={location}>
-                    <Box
-                      sx={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        width: "100%",
-                      }}
-                    >
-                      {location}
-                    </Box>
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+              Filter
+            </Button>
 
-            <FormControl
-              sx={{
-                minWidth: { xs: "100%", sm: 250 },
-                maxWidth: { xs: "100%", sm: 400 },
-                flex: { sm: 1 },
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "25px",
-                  backgroundColor: theme.palette.background.default,
-                },
-              }}
-            >
-              <Select
-                id="degree-filter"
-                value={selectedDegree}
-                onChange={(e) => setSelectedDegree(e.target.value)}
-                displayEmpty
-                IconComponent={ArrowDropDownIcon}
-                aria-label="Filter nach Abschluss"
-                MenuProps={{
-                  PaperProps: {
-                    sx: {
-                      backgroundColor: theme.palette.background.default,
-                      maxWidth: { xs: "calc(100vw - 32px)", sm: 400 },
-                      "& .MuiMenuItem-root": {
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        "&:hover": {
-                          backgroundColor: `${theme.palette.primary.main}33`,
-                        },
-                        "&.Mui-selected": {
-                          backgroundColor: `${theme.palette.primary.main}4D`,
-                          "&:hover": {
-                            backgroundColor: `${theme.palette.primary.main}66`,
-                          },
-                        },
-                      },
-                    },
-                  },
+            {(selectedLocation || selectedDegree || selectedUniversity) && (
+              <Button
+                variant="text"
+                onClick={() => {
+                  setSelectedLocation("");
+                  setSelectedDegree("");
+                  setSelectedUniversity("");
                 }}
-                renderValue={(selected) => (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                      minWidth: 0,
-                    }}
-                  >
-                    <StarsIcon
-                      sx={{
-                        fontSize: 20,
-                        flexShrink: 0,
-                      }}
-                    />
-                    <Typography
-                      sx={{
-                        color: selected
-                          ? theme.palette.text.primary
-                          : theme.palette.text.skipButton,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {selected || "Abschluss"}
-                    </Typography>
-                  </Box>
-                )}
                 sx={{
                   borderRadius: "25px",
-                  "& .MuiSelect-select": {
-                    paddingTop: "10px",
-                    paddingBottom: "10px",
-                  },
-                  "& .MuiSelect-icon": {
-                    color: theme.palette.text.primary,
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: theme.palette.decorative.blue,
+                  paddingX: 3,
+                  paddingY: 1,
+                  textTransform: "none",
+                  color: theme.palette.text.primary,
+                  fontSize: "16px",
+                  "&:hover": {
+                    backgroundColor: `${theme.palette.primary.main}1A`,
                   },
                 }}
               >
-                <MenuItem value="">
-                  <Box
+                Filter zurücksetzen
+              </Button>
+            )}
+
+            <Popover
+              open={isFilterOpen}
+              anchorEl={filterAnchorEl}
+              onClose={handleFilterClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              sx={{
+                "& .MuiPopover-paper": {
+                  backgroundColor: theme.palette.background.default,
+                  borderRadius: "16px",
+                  padding: 2,
+                  minWidth: 300,
+                  maxWidth: { xs: "calc(100vw - 32px)", sm: 400 },
+                },
+              }}
+            >
+              <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
+                Filter Optionen
+              </Typography>
+
+              <Stack spacing={2}>
+                <FormControl fullWidth>
+                  <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                    Hochschule
+                  </Typography>
+                  <Select
+                    id="university-filter"
+                    value={selectedUniversity}
+                    onChange={(e) => setSelectedUniversity(e.target.value)}
+                    displayEmpty
+                    IconComponent={ArrowDropDownIcon}
+                    aria-label="Filter nach Hochschule"
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          backgroundColor: theme.palette.background.default,
+                          maxHeight: 300,
+                          "& .MuiMenuItem-root": {
+                            whiteSpace: "normal",
+                            wordWrap: "break-word",
+                            "&:hover": {
+                              backgroundColor: `${theme.palette.primary.main}33`,
+                            },
+                            "&.Mui-selected": {
+                              backgroundColor: `${theme.palette.primary.main}4D`,
+                              "&:hover": {
+                                backgroundColor: `${theme.palette.primary.main}66`,
+                              },
+                            },
+                          },
+                        },
+                      },
+                    }}
+                    renderValue={(selected) => (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          minWidth: 0,
+                        }}
+                      >
+                        <SchoolIcon
+                          sx={{
+                            fontSize: 20,
+                            flexShrink: 0,
+                          }}
+                        />
+                        <Typography
+                          sx={{
+                            color: selected
+                              ? theme.palette.text.primary
+                              : theme.palette.text.skipButton,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {selected || "Alle Hochschulen"}
+                        </Typography>
+                      </Box>
+                    )}
                     sx={{
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      width: "100%",
+                      borderRadius: "12px",
+                      backgroundColor: theme.palette.background.paper,
+                      "& .MuiSelect-select": {
+                        paddingTop: "10px",
+                        paddingBottom: "10px",
+                      },
+                      "& .MuiSelect-icon": {
+                        color: theme.palette.text.primary,
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: theme.palette.decorative.blue,
+                      },
                     }}
                   >
-                    Alle Abschlüsse
-                  </Box>
-                </MenuItem>
-                {degrees.map((degree) => (
-                  <MenuItem key={degree} value={degree}>
-                    <Box
-                      sx={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        width: "100%",
-                      }}
-                    >
-                      {degree}
-                    </Box>
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Stack>
+                    <MenuItem value="">
+                      <Box
+                        sx={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          width: "100%",
+                        }}
+                      >
+                        Alle Hochschulen
+                      </Box>
+                    </MenuItem>
+                    {availableUniversities.map((university) => (
+                      <MenuItem key={university} value={university}>
+                        {university}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <Divider />
+
+                <FormControl fullWidth>
+                  <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                    Stadt
+                  </Typography>
+                  <Select
+                    id="location-filter"
+                    value={selectedLocation}
+                    onChange={(e) => setSelectedLocation(e.target.value)}
+                    displayEmpty
+                    IconComponent={ArrowDropDownIcon}
+                    aria-label="Filter nach Standort"
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          backgroundColor: theme.palette.background.default,
+                          maxHeight: 300,
+                          "& .MuiMenuItem-root": {
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            "&:hover": {
+                              backgroundColor: `${theme.palette.primary.main}33`,
+                            },
+                            "&.Mui-selected": {
+                              backgroundColor: `${theme.palette.primary.main}4D`,
+                              "&:hover": {
+                                backgroundColor: `${theme.palette.primary.main}66`,
+                              },
+                            },
+                          },
+                        },
+                      },
+                    }}
+                    renderValue={(selected) => (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          minWidth: 0,
+                        }}
+                      >
+                        <PlaceIcon
+                          sx={{
+                            fontSize: 20,
+                            flexShrink: 0,
+                          }}
+                        />
+                        <Typography
+                          sx={{
+                            color: selected
+                              ? theme.palette.text.primary
+                              : theme.palette.text.skipButton,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {selected || "Alle Städte"}
+                        </Typography>
+                      </Box>
+                    )}
+                    sx={{
+                      borderRadius: "12px",
+                      backgroundColor: theme.palette.background.paper,
+                      "& .MuiSelect-select": {
+                        paddingTop: "10px",
+                        paddingBottom: "10px",
+                      },
+                      "& .MuiSelect-icon": {
+                        color: theme.palette.text.primary,
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: theme.palette.decorative.blue,
+                      },
+                    }}
+                  >
+                    <MenuItem value="">
+                      <Box
+                        sx={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          width: "100%",
+                        }}
+                      >
+                        Alle Städte
+                      </Box>
+                    </MenuItem>
+                    {availableLocations.map((location) => (
+                      <MenuItem key={location} value={location}>
+                        <Box
+                          sx={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            width: "100%",
+                          }}
+                        >
+                          {location}
+                        </Box>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <Divider />
+
+                <FormControl fullWidth>
+                  <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                    Abschluss
+                  </Typography>
+                  <Select
+                    id="degree-filter"
+                    value={selectedDegree}
+                    onChange={(e) => setSelectedDegree(e.target.value)}
+                    displayEmpty
+                    IconComponent={ArrowDropDownIcon}
+                    aria-label="Filter nach Abschluss"
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          backgroundColor: theme.palette.background.default,
+                          maxHeight: 300,
+                          "& .MuiMenuItem-root": {
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            "&:hover": {
+                              backgroundColor: `${theme.palette.primary.main}33`,
+                            },
+                            "&.Mui-selected": {
+                              backgroundColor: `${theme.palette.primary.main}4D`,
+                              "&:hover": {
+                                backgroundColor: `${theme.palette.primary.main}66`,
+                              },
+                            },
+                          },
+                        },
+                      },
+                    }}
+                    renderValue={(selected) => (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          minWidth: 0,
+                        }}
+                      >
+                        <StarsIcon
+                          sx={{
+                            fontSize: 20,
+                            flexShrink: 0,
+                          }}
+                        />
+                        <Typography
+                          sx={{
+                            color: selected
+                              ? theme.palette.text.primary
+                              : theme.palette.text.skipButton,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {selected || "Alle Abschlüsse"}
+                        </Typography>
+                      </Box>
+                    )}
+                    sx={{
+                      borderRadius: "12px",
+                      backgroundColor: theme.palette.background.paper,
+                      "& .MuiSelect-select": {
+                        paddingTop: "10px",
+                        paddingBottom: "10px",
+                      },
+                      "& .MuiSelect-icon": {
+                        color: theme.palette.text.primary,
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: theme.palette.decorative.blue,
+                      },
+                    }}
+                  >
+                    <MenuItem value="">
+                      <Box
+                        sx={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          width: "100%",
+                        }}
+                      >
+                        Alle Abschlüsse
+                      </Box>
+                    </MenuItem>
+                    {availableDegrees.map((degree) => (
+                      <MenuItem key={degree} value={degree}>
+                        <Box
+                          sx={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            width: "100%",
+                          }}
+                        >
+                          {degree}
+                        </Box>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Stack>
+            </Popover>
+          </Box>
 
           <Stack spacing={2}>
             {filteredProgrammes.map((programme) => {

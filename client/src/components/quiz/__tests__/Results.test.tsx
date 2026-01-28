@@ -173,6 +173,12 @@ describe("Results Component", () => {
   it("renders filter dropdowns with accessibility labels", () => {
     renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
 
+    // Click the filter button to open the popover
+    const filterButton = screen.getByRole("button", { name: /filter/i });
+    fireEvent.click(filterButton);
+
+    // Check for all three filter labels
+    expect(screen.getByLabelText("Filter nach Hochschule")).toBeInTheDocument();
     expect(screen.getByLabelText("Filter nach Standort")).toBeInTheDocument();
     expect(screen.getByLabelText("Filter nach Abschluss")).toBeInTheDocument();
   });

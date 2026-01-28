@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Box } from "@mui/material";
 import Results from "../components/quiz/Results";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 import MainLayout from "../layouts/MainLayout";
 import { useLocation } from "react-router-dom";
-import { getStudyProgrammeById, getQuizResults } from "../api/quizApi";
+import { getQuizResults, getStudyProgrammeById } from "../api/quizApi";
 import NoResultsYet from "../components/quiz/NoResultsYet";
+import {
+  loadQuizResults,
+  saveQuizResults,
+} from "../session/persistQuizSession";
 import { useAuth } from "../contexts/AuthContext";
 
 /**
@@ -16,107 +20,157 @@ import { useAuth } from "../contexts/AuthContext";
 const ResultsPage: React.FC = () => {
   const location = useLocation();
   const { user, isLoading: authLoading } = useAuth();
-  const idsFromQuiz = location.state?.idsFromLevel2 || [];
+  type ResultId = string | { studiengang_id: string };
 
+  const rawResultIds: ResultId[] =
+    location.state?.idsFromLevel2 ?? location.state?.resultIds ?? [];
+
+  const idsFromQuiz: string[] = useMemo(() => {
+    return (rawResultIds ?? [])
+      .map((r) => (typeof r === "string" ? r : r?.studiengang_id))
+      .filter((id): id is string => typeof id === "string" && id.length > 0);
+  }, [rawResultIds]);
+  const ACTIVE_RESULTS_KEY = "activeQuizResults";
   const [studyProgrammes, setStudyProgrammes] = useState<StudyProgramme[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [hasQuizResults, setHasQuizResults] = useState<boolean>(false);
+  const [hasQuizResults, setHasQuizResults] = useState<boolean>(() => {
+    return location.state?.resultIds !== undefined;
+  });
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchStudyProgrammes = async () => {
-      // Wait for authentication to complete before proceeding
       if (authLoading) {
-        setLoading(true); // Keep showing loading state while auth is processing
+        if (!isMounted) return;
+        setLoading(true);
         return;
       }
 
+      if (!isMounted) return;
       setLoading(true);
+      setError(null);
 
-      let idsToFetch: string[] = [];
+      try {
+        let idsToFetch: string[] = [];
 
-      // Scenario 1: Fresh quiz completion - use IDs from navigation state
-      if (location.state?.idsFromLevel2 !== undefined) {
-        idsToFetch = idsFromQuiz;
-      }
-      // Scenario 2: No navigation state but user is logged in - fetch from DB
-      else if (user) {
-        try {
+        const hasNav =
+          location.state?.idsFromLevel2 !== undefined ||
+          location.state?.resultIds !== undefined;
+
+        // Scenario 1: Fresh quiz completion - use IDs from navigation state
+        if (hasNav) {
+          idsToFetch = idsFromQuiz;
+          sessionStorage.setItem(ACTIVE_RESULTS_KEY, "1");
+        }
+        // Scenario 2: user logged in - fetch from DB
+        else if (user) {
           const savedIds = await getQuizResults();
-          if (savedIds) {
-            idsToFetch = savedIds;
+          if (Array.isArray(savedIds)) idsToFetch = savedIds;
+
+          if (idsToFetch.length > 0) {
+            sessionStorage.setItem(ACTIVE_RESULTS_KEY, "1");
           }
-        } catch (err) {
-          console.error("Failed to load saved quiz results:", err);
-          setError("Fehler beim Laden der gespeicherten Ergebnisse");
-          setHasQuizResults(true); // Set to true so error can be displayed
-          setLoading(false);
+        }
+        // Scenario 3: guest without saved IDs - load cached programmes
+        else {
+          const hasActiveFlag =
+            sessionStorage.getItem(ACTIVE_RESULTS_KEY) === "1";
+          if (!hasActiveFlag) {
+            setStudyProgrammes([]);
+            setHasQuizResults(false);
+            return;
+          }
+
+          const cached = await loadQuizResults();
+          if (!isMounted) return;
+
+          if (cached && cached.length > 0) {
+            setStudyProgrammes(cached);
+            setHasQuizResults(true);
+          } else {
+            setStudyProgrammes([]);
+            setHasQuizResults(false);
+            sessionStorage.removeItem(ACTIVE_RESULTS_KEY);
+          }
           return;
         }
-      }
 
-      // No IDs to fetch - show NoResultsYet
-      if (idsToFetch.length === 0) {
-        setStudyProgrammes([]);
-        setHasQuizResults(false);
-        setLoading(false);
-        return;
-      }
-
-      // Fetch study programmes for the IDs
-      const promises = idsToFetch.map((id: string) =>
-        getStudyProgrammeById(id),
-      );
-      const results = await Promise.allSettled(promises);
-
-      // Process results - filter successful ones and log failures
-      const validResults: StudyProgramme[] = [];
-      results.forEach((result, index) => {
-        if (result.status === "fulfilled" && result.value !== null) {
-          validResults.push(result.value);
-        } else if (result.status === "rejected") {
-          console.error(
-            `Failed to load study programme ${idsToFetch[index]}:`,
-            result.reason,
-          );
-        } else if (result.status === "fulfilled" && result.value === null) {
-          console.warn(`Study programme ${idsToFetch[index]} not found (404)`);
+        if (idsToFetch.length === 0) {
+          sessionStorage.removeItem(ACTIVE_RESULTS_KEY);
+          setStudyProgrammes([]);
+          setHasQuizResults(false);
+          return;
         }
-      });
 
-      // Only show error if ALL programmes failed to load
-      if (validResults.length === 0 && idsToFetch.length > 0) {
-        console.error("All study programmes failed to load");
-        setError("Fehler beim Laden der Studiengänge");
-        setHasQuizResults(true); // Set to true so error can be displayed
-      } else {
-        setHasQuizResults(validResults.length > 0);
+        // Fetch programmes
+        const results = await Promise.allSettled(
+          idsToFetch.map((id) => getStudyProgrammeById(id)),
+        );
+
+        const validResults: StudyProgramme[] = [];
+        results.forEach((r, i) => {
+          if (r.status === "fulfilled" && r.value) validResults.push(r.value);
+          else if (r.status === "rejected") {
+            console.error(
+              `Failed to load study programme ${idsToFetch[i]}:`,
+              r.reason,
+            );
+          }
+        });
+
+        // Persist to IndexedDB
+        try {
+          await saveQuizResults(validResults);
+        } catch (e) {
+          console.warn("Failed to cache results locally (IndexedDB):", e);
+        }
+
+        if (validResults.length === 0) {
+          setError("Fehler beim Laden der Studiengänge");
+          setHasQuizResults(true);
+          setStudyProgrammes([]);
+          return;
+        }
+
+        setStudyProgrammes(validResults);
+        setHasQuizResults(true);
+      } catch (err) {
+        console.error("Unexpected error in ResultsPage:", err);
+        if (!isMounted) return;
+        setError("Unerwarteter Fehler beim Laden der Ergebnisse");
+        setHasQuizResults(true);
+      } finally {
+        // eslint-disable-next-line no-unsafe-finally
+        if (!isMounted) return;
+        setLoading(false);
       }
-
-      setStudyProgrammes(validResults);
-      setLoading(false);
     };
 
     fetchStudyProgrammes();
-  }, [location.state, user?.id, authLoading]); // Re-run when navigation state, user, or auth loading state changes
 
-  // Show dialog when closing the browser/tab
+    return () => {
+      isMounted = false;
+    };
+  }, [location.state, user?.id, authLoading]);
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (!user && hasQuizResults) {
+      const active = sessionStorage.getItem(ACTIVE_RESULTS_KEY) === "1";
+      const hasResultsNow = studyProgrammes.length > 0;
+
+      if (!user && active && hasResultsNow) {
         e.preventDefault();
         e.returnValue = "";
       }
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [user, hasQuizResults]);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [user, studyProgrammes.length]);
 
   return (
-    <MainLayout>
+    <MainLayout hasResults={hasQuizResults}>
       {loading ? (
         <Box sx={{ textAlign: "center", mt: 4 }}>Lädt...</Box>
       ) : !hasQuizResults ? (

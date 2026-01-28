@@ -5,6 +5,7 @@ import DropMenu from "./DropdownMenu";
 
 interface LogoMenuProps {
   fixed?: boolean;
+  hasResults?: boolean;
 }
 
 /**
@@ -15,7 +16,10 @@ interface LogoMenuProps {
  * @param {boolean} fixed - Whether the AppBar should have fixed positioning. Defaults to false.
  * @returns {React.FC} The rendered App Bar component.
  */
-const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
+const LogoMenu: React.FC<LogoMenuProps> = ({
+  fixed = false,
+  hasResults = false,
+}) => {
   return (
     <AppBar
       position={fixed ? "fixed" : "static"}
@@ -41,7 +45,7 @@ const LogoMenu: React.FC<LogoMenuProps> = ({ fixed = false }) => {
             marginLeft: "25px",
           }}
         >
-          <DropMenu />
+          <DropMenu hasResults={hasResults} />
         </div>
 
         {/*Tech Study Finder Headline, centered*/}

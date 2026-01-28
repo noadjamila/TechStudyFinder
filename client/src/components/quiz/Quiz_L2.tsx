@@ -1,106 +1,59 @@
-import React, { useState, useEffect } from "react";
+import React, { JSX, useState } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
-import { RiasecType, initialScores } from "../../types/RiasecTypes";
-import { ErrorScreen } from "../../pages/ErrorScreen";
-import { useApiClient } from "../../hooks/useApiClient";
 import CardStack from "../cards/CardStackLevel2";
 import { Stack, Typography } from "@mui/material";
-import { postFilterLevel, getQuizLevel } from "../../api/quizApi";
 import BaseCard from "../cards/QuizCardBase";
 import PrimaryButton from "../buttons/PrimaryButton";
 import SecondaryButton from "../buttons/SecondaryButton";
 import theme from "../../theme/theme";
-import {
-  convertQuizResponses,
-  scoresToArray,
-} from "../../services/level2Service";
+import { Answer } from "../../types/QuizAnswer.types";
+import { QuizSession } from "../../types/QuizSession";
+import { ErrorScreen } from "../../pages/ErrorScreen";
 
 export interface QuizL2Props {
-  previousIds: string[];
-  onNextLevel: (ids: string[]) => void;
+  session: QuizSession;
+  onAnswer: (answer: Answer) => void;
+  onComplete: () => void;
   oneLevelBack: () => void;
+  onQuestionBack: () => void;
+  onQuestionNext: () => void;
 }
 
 /**
- * `Quiz_L2` is the component for the second level of the quiz.
- * It fetches level 2 questions, manages quiz state (current question,
- * user responses, and scoring), renders the corresponding
- * `QuizLayout` component and sends the RIASEC scores to the backend.
+ * Level 2 quiz flow component.
  *
- * @description
- * - Fetches level 2 questions from the backend on mount.
- * - Uses local state to track the current question index and score per RIASEC type.
- * - Increments or decrements scores depending on user selection ("yes", "no", or "skip").
- * - Displays the current quiz question.
- * - Sends the RIASEC scores to the backend when the quiz is completed.
+ * Renders a card-based question flow from session-provided questions.
+ * Tracks the current question index, handles forward/back navigation
+ * (including returning to the previous level), and emits answers and
+ * completion events to the parent.
  *
- * @returns {JSX.Element} A rendered quiz interface with progress tracking and scoring.
+ * @param {QuizL2Props} props Component callbacks for answering, completion, and back navigation.
+ * @returns {JSX.Element} The rendered quiz UI or a loading state while questions are missing.
  */
 const Quiz_L2: React.FC<QuizL2Props> = ({
-  previousIds,
-  onNextLevel,
+  session,
+  onAnswer,
+  onComplete,
   oneLevelBack,
-}) => {
-  const { apiFetch } = useApiClient();
-  const [questions, setQuestions] = useState<
-    { text: string; riasec_type: RiasecType }[]
-  >([]);
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [error, setError] = useState<{ title: string; message: string } | null>(
-    null,
-  );
+  onQuestionBack,
+  onQuestionNext,
+}: QuizL2Props): JSX.Element => {
+  const questions = session.level2Questions ?? [];
+
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
-  const [_scores, setScores] =
-    useState<Record<RiasecType, number>>(initialScores);
-
-  const [answers, setAnswers] = useState<Record<string, "yes" | "no" | "skip">>(
-    {},
-  );
-
-  const pointsMap: Record<string, number> = {
-    yes: 1,
-    no: -1,
-    skip: 0,
-  };
-
   const TOTAL_QUESTIONS = questions.length;
-  const currentQuestion = questions[currentIndex];
-
-  // Advances to the next question without exceeding the total count.
-  const next = () =>
-    setCurrentIndex((i) => Math.min(i + 1, TOTAL_QUESTIONS - 1));
+  const currentQuestion = questions[session.currentQuestionIndex];
 
   /**
-   * Handles  the option to go back one Question.
-   * Updates the scores based on the previous selcted answer.
+   * Handles the option to go back one Question.
    * Switches Levels if user is on the first Question.
    */
   const goBack = () => {
-    if (currentIndex == 0) {
+    if (session.currentQuestionIndex === 0) {
       oneLevelBack();
-    } else if (!isTransitioning) {
-      setIsTransitioning(true);
-      const previousAnswer = answers[currentIndex - 1];
-      if (!previousAnswer) {
-        setIsTransitioning(false);
-        return;
-      }
-      const lastQuestion = questions[currentIndex - 1];
-      const lastType = lastQuestion.riasec_type;
-
-      const points = pointsMap[previousAnswer];
-
-      setScores((prev) => {
-        const newScores = { ...prev, [lastType]: prev[lastType] - points };
-        return newScores;
-      });
-      setTimeout(() => {
-        if (currentIndex > 0) {
-          setCurrentIndex(currentIndex - 1);
-        }
-        setIsTransitioning(false);
-      }, 300);
+    } else {
+      onQuestionBack();
     }
   };
 
@@ -111,97 +64,26 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
    *
    * @param {"yes" | "no" | "skip"} option - The selected answer option.
    */
-  const handleSelect = (option: string) => {
+  const handleSelect = (option: "yes" | "no" | "skip") => {
     if (!currentQuestion || isTransitioning) return;
     setIsTransitioning(true);
-
-    const currentType = currentQuestion.riasec_type;
-
-    const points = pointsMap[option] ?? 0;
-    setAnswers((prev) => ({ ...prev, [currentIndex]: option }));
-
-    setScores((prev) => {
-      const newScores = { ...prev, [currentType]: prev[currentType] + points };
-
-      // Last question -> send scores to backend
-      if (currentIndex === TOTAL_QUESTIONS - 1) {
-        void sendData(newScores);
-      }
-      return newScores;
+    onAnswer({
+      questionId: `level2.question${session.currentQuestionIndex}.${currentQuestion.riasec_type}`,
+      value: option,
+      answeredAt: Date.now(),
     });
 
-    // Move to next question
+    // Last question: send scores to backend
     setTimeout(() => {
-      if (currentIndex < TOTAL_QUESTIONS) {
-        next();
+      if (session.currentQuestionIndex === TOTAL_QUESTIONS - 1) {
+        onComplete();
+      } else {
+        onQuestionNext();
       }
       setIsTransitioning(false);
     }, 300);
   };
-
-  /**
-   * Sends the scores to the backend server.
-   * @param scores The RIASEC scores to send.
-   */
-  const sendData = async (scores: Record<RiasecType, number>) => {
-    const transformedScores = convertQuizResponses(scores);
-    const scoresArray = scoresToArray(transformedScores);
-
-    try {
-      const response = await postFilterLevel(
-        {
-          level: 2,
-          answers: scoresArray,
-          studyProgrammeIds: previousIds,
-        },
-        apiFetch,
-      );
-
-      const idsArray = response.ids.map((item: any) => item.studiengang_id);
-      onNextLevel(idsArray);
-    } catch (err) {
-      console.error("Error sending the data: ", err);
-      setError({
-        title: "Fehler beim Senden",
-        message:
-          "Der Server konnte die Daten nicht verarbeiten. Bitte versuche es später erneut.",
-      });
-    }
-  };
-
-  /**
-   * Fetches level 2 questions from the backend API on component mount.
-   * Handles errors and updates the local state with the fetched questions.
-   */
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        const data = await getQuizLevel(2, apiFetch);
-
-        if (!data.questions || data.questions.length === 0) {
-          throw new Error("No questions found in the response.");
-        }
-
-        setQuestions(data.questions);
-      } catch (err) {
-        console.error(err);
-        setError({
-          title: "Fehler beim Laden der Fragen",
-          message:
-            "Die Fragen konnten nicht geladen werden. Bitte versuche es später erneut.",
-        });
-      }
-    };
-
-    fetchQuestions();
-  }, []);
-
-  // In case of an error, display the ErrorScreen component.
-  if (error != null) {
-    return <ErrorScreen title={error.title} message={error.message} />;
-  }
-
-  // While questions are still loading (but no error yet), show a simple loading state.
+  // While questions are still loading (but no error yet), show a simple loading state
   if (TOTAL_QUESTIONS === 0) {
     return (
       <QuizLayout currentIndex={0} questionsTotal={0}>
@@ -209,16 +91,27 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
       </QuizLayout>
     );
   }
+  if (!currentQuestion) {
+    return (
+      <ErrorScreen
+        title="Frage nicht gefunden"
+        message="Bitte lade die Seite neu."
+      />
+    );
+  }
 
   return (
     <div>
       <QuizLayout
-        currentIndex={currentIndex + 1}
+        currentIndex={session.currentQuestionIndex + 1}
         questionsTotal={TOTAL_QUESTIONS}
         _oneBack={goBack}
         _showBackButton={true}
       >
-        <CardStack currentIndex={currentIndex + 1} totalCards={TOTAL_QUESTIONS}>
+        <CardStack
+          currentIndex={session.currentQuestionIndex + 1}
+          totalCards={TOTAL_QUESTIONS}
+        >
           <BaseCard
             cardText={currentQuestion.text}
             sx={{

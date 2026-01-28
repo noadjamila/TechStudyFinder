@@ -4,50 +4,61 @@ import SecondaryButton from "../buttons/SecondaryButton";
 import BaseCard from "../cards/QuizCardBase";
 import theme from "../../theme/theme";
 import { postFilterLevel } from "../../api/quizApi";
-import { Box } from "@mui/material";
-import { Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
+import { Answer } from "../../types/QuizAnswer.types";
 import { useApiClient } from "../../hooks/useApiClient";
 
-/** Callback function executed upon successful completion of the level.
- * It receives an array of filtered IDs from the backend. */
+/**
+ * Props for the Quiz_L1 component.
+ * @interface QuizL1Props
+ * @param {function} onAnswer - Callback to record the user's answer.
+ * @param {function} onComplete - Callback to signal completion of level 1.
+ */
 export interface QuizL1Props {
-  onNextLevel: (_ids: string[]) => void;
+  onAnswer: (answer: Answer) => void;
+  level1ids: (_ids: string[]) => void;
+  onComplete: () => void;
 }
 
 /**
  * The Quiz_L1 component handles the first question of the quiz.
- * It manages the user's selection and calls the filtering API to get
- * the initial set of filtered IDs.
+ * It allows users to select their study type preference and
+ * proceeds to the next level upon selection.
  *
- * @param {QuizL1Props} { onNextLevel } The callback function to proceed to the next stage.
- * @returns {JSX.Element} The rendered Level 1 Quiz.
+ * @param {QuizL1Props} props - The component props.
+ * @returns {JSX.Element} The rendered Level 1 quiz component.
  */
-export default function Quiz_L1({ onNextLevel }: QuizL1Props) {
-  const { apiFetch } = useApiClient();
+export default function Quiz_L1({
+  onAnswer,
+  level1ids,
+  onComplete,
+}: QuizL1Props) {
   const [selected, setSelected] = useState<string | undefined>();
+  const { apiFetch } = useApiClient();
 
   const handleSelectAndNext = async (selectedType: string) => {
     setSelected(selectedType);
 
-    setTimeout(async () => {
-      try {
-        const answersPayload: [{ studientyp: string }] = [
-          { studientyp: selectedType },
-        ];
+    onAnswer({
+      questionId: "level1.studyType",
+      value: selectedType,
+      answeredAt: Date.now(),
+    });
 
-        const res = await postFilterLevel(
-          {
-            level: 1,
-            answers: answersPayload,
-          },
-          apiFetch,
-        );
-        onNextLevel(res.ids);
-      } catch (err) {
-        console.error("Mistake while filtering", err);
-        alert("Error appeared during loading. Please try again.");
-      }
-    }, 800);
+    try {
+      const res = await postFilterLevel(
+        {
+          level: 1,
+          answers: [{ studientyp: selectedType }],
+        },
+        apiFetch,
+      );
+      level1ids(res.ids);
+      onComplete();
+    } catch (err) {
+      console.error("Mistake while filtering", err);
+      alert("Error appeared during loading. Please try again.");
+    }
   };
 
   return (
