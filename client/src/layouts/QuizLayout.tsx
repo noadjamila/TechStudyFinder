@@ -5,6 +5,7 @@ import HomeButton from "../components/buttons/HomeButton";
 import { useNavigate } from "react-router-dom";
 import StyledDialog from "../components/dialogs/Dialog";
 import BackButton from "../components/buttons/BackButton";
+import { clearQuizSession } from "../session/persistQuizSession";
 
 /**
  * Props of {@link QuizLayout}.
@@ -46,6 +47,11 @@ const QuizLayout = ({
   const theme = useTheme();
   const [openDialog, setDialogOpen] = useState(false);
   const navigate = useNavigate();
+
+  function handleBackToHome() {
+    clearQuizSession().catch(console.error);
+    navigate("/");
+  }
 
   return (
     <>
@@ -116,10 +122,11 @@ const QuizLayout = ({
         open={openDialog}
         onClose={() => setDialogOpen(false)}
         title="Quiz beenden?"
-        text="Deine Antworten gehen verloren."
+        text="Möchtest du deinen Fortschritt speichern?"
         cancelLabel="NEIN"
         confirmLabel="JA"
         onConfirm={() => navigate("/")}
+        onCancel={handleBackToHome}
       />
     </>
   );
