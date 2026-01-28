@@ -48,7 +48,13 @@ const QuizLayout = ({
   const [openDialog, setDialogOpen] = useState(false);
   const navigate = useNavigate();
 
-  function handleBackToHome() {
+  /**
+   * Handles the scenario when user doesnt want to chang their progress by clearing the quiz session
+   * and navigating to the home page.
+   *
+   * @return {void} This method does not return a value.
+   */
+  function handleNoSaving() {
     clearQuizSession().catch(console.error);
     navigate("/");
   }
@@ -121,12 +127,12 @@ const QuizLayout = ({
       <StyledDialog
         open={openDialog}
         onClose={() => setDialogOpen(false)}
-        title="Quiz beenden?"
+        title="Fortschritt speichern?"
         text="Möchtest du deinen Fortschritt speichern?"
         cancelLabel="NEIN"
         confirmLabel="JA"
         onConfirm={() => navigate("/")}
-        onCancel={handleBackToHome}
+        onCancel={handleNoSaving}
       />
     </>
   );
