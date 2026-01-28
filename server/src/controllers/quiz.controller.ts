@@ -147,13 +147,6 @@ export async function saveQuizResults(
     });
   }
 
-  if (!resultIds.every(() => true)) {
-    return res.status(400).json({
-      success: false,
-      error: "All resultIds must be strings",
-    });
-  }
-
   try {
     await saveQuizResultsService(userId, resultIds);
     return res.status(200).json({
