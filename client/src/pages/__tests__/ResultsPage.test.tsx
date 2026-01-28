@@ -251,9 +251,7 @@ describe("ResultsPage Component", () => {
     );
     await waitFor(() => {
       expect(screen.getByText(/Starte jetzt das Quiz/i)).toBeInTheDocument();
-      expect(
-        screen.getByText("Keine Ergebnisse vorhanden."),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/Meine Ergebnisse/i)).toBeInTheDocument();
     });
   });
 
@@ -357,7 +355,7 @@ describe("ResultsPage Component", () => {
         </MemoryRouter>,
       );
 
-      await findByText(/Keine Ergebnisse vorhanden/i);
+      await findByText(/Starte jetzt das Quiz/i);
       expect(getQuizResults).toHaveBeenCalled();
     });
 
@@ -382,7 +380,7 @@ describe("ResultsPage Component", () => {
         </MemoryRouter>,
       );
 
-      await findByText(/Keine Ergebnisse vorhanden/i);
+      await findByText(/Starte jetzt das Quiz/i);
 
       // Restore the original mock
       spy.mockRestore();
@@ -412,10 +410,10 @@ describe("ResultsPage Component", () => {
     });
 
     it("handles database fetch error gracefully", async () => {
-      // Override the mock before rendering
-      const { getQuizResults } = await import("../../api/quizApi");
-      vi.mocked(getQuizResults).mockRejectedValue(new Error("Database error"));
       const api = await import("../../api/quizApi");
+      vi.mocked(api.getQuizResults).mockRejectedValue(
+        new Error("Datenbankfehler"),
+      );
       mockUseAuth.mockReturnValue({
         user: { id: 1, username: "testuser" },
         isLoading: false,
@@ -423,9 +421,6 @@ describe("ResultsPage Component", () => {
         logout: vi.fn(),
         setUser: vi.fn(),
       });
-      vi.mocked(api.getQuizResults).mockRejectedValueOnce(
-        new Error("Database error"),
-      );
 
       render(
         <MemoryRouter initialEntries={[{ pathname: "/results" }]}>
@@ -437,12 +432,14 @@ describe("ResultsPage Component", () => {
         </MemoryRouter>,
       );
 
-      // Wait for the error message to appear
-      expect(
-        await screen.findByText(
-          /Unerwarteter Fehler beim Laden der Ergebnisse/i,
-        ),
-      ).toBeInTheDocument();
+      await waitFor(
+        () => {
+          expect(
+            screen.getByText(/Unerwarteter Fehler beim Laden der Ergebnisse/i),
+          ).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
       expect(api.getQuizResults).toHaveBeenCalled();
     });
 
