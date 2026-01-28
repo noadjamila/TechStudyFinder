@@ -10,7 +10,7 @@ import NoResultsYet from "../components/quiz/NoResultsYet";
 import {
   loadQuizResults,
   saveQuizResults,
-} from "../session/persistQuizSession";
+} from "../session/persistQuizResults";
 import { useAuth } from "../contexts/AuthContext";
 
 /**
