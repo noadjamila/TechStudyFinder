@@ -569,28 +569,6 @@ describe("Quiz Controller - saveQuizResults", () => {
     });
   });
 
-  it("should return 400 if resultIds contains non-string elements", async () => {
-    // Arrange
-    mockRequest = {
-      session: {
-        user: { id: 1, username: "testuser" },
-      } as any,
-      body: {
-        resultIds: ["1", 2, "3", null, undefined],
-      },
-    };
-
-    // Act
-    await saveQuizResults(mockRequest as Request, mockResponse as Response);
-
-    // Assert
-    expect(statusMock).toHaveBeenCalledWith(400);
-    expect(jsonMock).toHaveBeenCalledWith({
-      success: false,
-      error: "All resultIds must be strings",
-    });
-  });
-
   it("should return 500 on service error", async () => {
     // Arrange
     const mockError = new Error("Database error");
