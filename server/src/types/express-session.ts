@@ -6,5 +6,9 @@ declare module "express-session" {
       id: number;
       username: string;
     };
+    admin?: {
+      id: number;
+      username: string;
+    };
   }
 }

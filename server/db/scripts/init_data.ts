@@ -18,6 +18,8 @@ const SCHEMA_FILES = [
   "institutions.sql",
   "degreeprogrammes.sql",
   "favourites.sql",
+  "degreeprogramme_view.sql",
+  "admin.sql",
   "user_quiz_results.sql",
 ];
 
@@ -47,6 +49,7 @@ async function main() {
 
     await client.query("BEGIN");
     await client.query("SET search_path TO public;");
+    await client.query("SET datestyle TO 'ISO, DMY';");
 
     // Create schemas
     console.debug("\n Creating schemas");

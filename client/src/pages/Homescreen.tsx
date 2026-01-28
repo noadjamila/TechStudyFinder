@@ -6,8 +6,10 @@ import GreenCard from "../components/cards/GreenCardBaseNotQuiz";
 import theme from "../theme/theme";
 import MainLayout from "../layouts/MainLayout";
 import PrimaryButton from "../components/buttons/PrimaryButton";
-import { useAuth } from "../contexts/AuthContext";
-import Dialog from "../components/dialogs/Dialog";
+import {
+  clearQuizResults,
+  clearQuizSession,
+} from "../session/persistQuizSession";
 
 /**
  * Homescreen component.
@@ -20,45 +22,25 @@ import Dialog from "../components/dialogs/Dialog";
 const Homescreen: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logout } = useAuth();
   const [showLogoutMessage, setShowLogoutMessage] = useState(false);
-  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
-  const [__isLoggingOut, setIsLoggingOut] = useState(false);
 
+  useEffect(() => {
+    return () => {
+      clearQuizSession().catch(console.error);
+    };
+  }, []);
+
+  useEffect(() => {
+    clearQuizResults().catch(console.error);
+  }, []);
   // Check for logout confirmation flag whenever the component mounts or location changes
   useEffect(() => {
     const confirmationFlag = sessionStorage.getItem("showLogoutConfirmation");
     if (confirmationFlag) {
-      setShowLogoutConfirmation(true);
+      setShowLogoutMessage(true);
       sessionStorage.removeItem("showLogoutConfirmation");
     }
   }, [location]);
-
-  /**
-   * Handles confirming the logout action
-   */
-  const handleConfirmLogout = async () => {
-    setIsLoggingOut(true);
-    setShowLogoutConfirmation(false);
-
-    try {
-      await logout();
-      setShowLogoutMessage(true);
-      // Refresh auth status in NavBar by triggering a re-check
-      window.dispatchEvent(new Event("auth-status-changed"));
-    } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
-      setIsLoggingOut(false);
-    }
-  };
-
-  /**
-   * Handles canceling the logout action
-   */
-  const handleCancelLogout = () => {
-    setShowLogoutConfirmation(false);
-  };
 
   /**
    * Handles the start of the quiz by navigating to the level success screen first.
@@ -153,16 +135,6 @@ const Homescreen: React.FC = () => {
           Du wurdest ausgeloggt.
         </Alert>
       </Snackbar>
-
-      <Dialog
-        open={showLogoutConfirmation}
-        onClose={() => handleCancelLogout()}
-        title="Möchtest du dich wirklich ausloggen?"
-        text=""
-        cancelLabel="NEIN"
-        confirmLabel="JA"
-        onConfirm={() => handleConfirmLogout()}
-      />
     </Box>
   );
 

@@ -16,6 +16,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import theme from "../theme/theme";
 import { useAuth } from "../contexts/AuthContext";
 import LoginReminderDialog from "./dialogs/LoginReminderDialog";
+import LogoutDialog from "../components/dialogs/Dialog";
 
 const MENU_ITEM_SX = {
   borderRadius: 999,
@@ -36,13 +37,18 @@ interface MenuItemConfig {
   onClick?: () => void;
 }
 
-export default function DropMenu() {
+export default function DropMenu({
+  hasResults = false,
+}: {
+  hasResults?: boolean;
+}) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const [intendedDestination, setIntendedDestination] = useState("");
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -56,8 +62,7 @@ export default function DropMenu() {
   const handleLoginLogout = () => {
     handleMenuClose();
     if (user) {
-      sessionStorage.setItem("showLogoutConfirmation", "true");
-      navigate("/");
+      setIsLogoutOpen(true);
     } else {
       navigate("/login");
     }
@@ -65,7 +70,7 @@ export default function DropMenu() {
 
   const handleNavigate = (path: string) => {
     handleMenuClose();
-    if (location.pathname === "/results" && !user && !isLoading) {
+    if (location.pathname === "/results" && !user && !isLoading && hasResults) {
       setIsDialogOpen(true);
       setIntendedDestination(path);
     } else {
@@ -81,6 +86,22 @@ export default function DropMenu() {
   const handleLoginClick = () => {
     setIsDialogOpen(false);
     navigate("/login", { state: { redirectTo: intendedDestination } });
+  };
+
+  const handleConfirmLogout = async () => {
+    setIsLogoutOpen(false);
+
+    try {
+      await logout();
+      sessionStorage.setItem("showLogoutConfirmation", "true");
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  const handleCancelLogout = () => {
+    setIsLogoutOpen(false);
   };
 
   const menuItems: MenuItemConfig[] = [
@@ -176,6 +197,16 @@ export default function DropMenu() {
         onClose={() => setIsDialogOpen(false)}
         onLoginClick={handleLoginClick}
         onProceedNavigation={handleProceedNavigation}
+      />
+
+      <LogoutDialog
+        open={isLogoutOpen}
+        onClose={() => handleCancelLogout()}
+        title="Möchtest du dich wirklich ausloggen?"
+        text=""
+        cancelLabel="NEIN"
+        confirmLabel="JA"
+        onConfirm={() => handleConfirmLogout()}
       />
     </>
   );

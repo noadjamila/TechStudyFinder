@@ -8,7 +8,10 @@ import {
 import { Request, Response } from "express";
 import { AuthService } from "../../services/auth.service";
 
-jest.mock("bcrypt");
+jest.mock("bcrypt", () => ({
+  hash: jest.fn(async () => "hashed_password"),
+  compare: jest.fn(async () => true),
+}));
 jest.mock("../../services/auth.service");
 
 let mockRequest: Partial<Request> & { session?: any; body?: any };

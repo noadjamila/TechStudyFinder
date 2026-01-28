@@ -14,16 +14,27 @@ vi.mock("../../../api/quizApi", () => ({
   postFilterLevel: vi.fn(),
 }));
 
-vi.spyOn(window, "alert").mockImplementation(() => {});
-
 describe("Quiz_L1", () => {
   afterEach(() => {
     vi.clearAllMocks();
     vi.clearAllTimers();
+    vi.restoreAllMocks();
+  });
+
+  beforeEach(() => {
+    vi.spyOn(window, "alert").mockImplementation(() => {});
   });
 
   test("renders question and options", () => {
-    renderWithTheme(<Quiz_L1 onNextLevel={vi.fn()} />);
+    renderWithTheme(
+      <Quiz_L1
+        onAnswer={vi.fn()}
+        onComplete={vi.fn()}
+        level1ids={function (_ids: string[]): void {
+          throw new Error("Function not implemented.");
+        }}
+      />,
+    );
 
     expect(screen.getByText("Möchtest du ...")).toBeInTheDocument();
     expect(
@@ -37,25 +48,53 @@ describe("Quiz_L1", () => {
     ).toBeInTheDocument();
   });
 
-  test("calls API and onNextLevel after selecting an option", async () => {
-    const mockNext = vi.fn();
+  test("calls API, onAnswer, and onComplete after selecting an option", async () => {
+    const mockOnAnswer = vi.fn();
+    const mockOnComplete = vi.fn();
+    const mockLevel1ids = vi.fn();
+
+    vi.spyOn(Date, "now").mockReturnValue(1700000000000);
     (postFilterLevel as Mock).mockResolvedValue({ ids: [1, 2, 3] });
 
-    renderWithTheme(<Quiz_L1 onNextLevel={mockNext} />);
+    renderWithTheme(
+      <Quiz_L1
+        onAnswer={mockOnAnswer}
+        onComplete={mockOnComplete}
+        level1ids={mockLevel1ids} // ✅ nicht mehr throwen
+      />,
+    );
 
     fireEvent.click(screen.getByText(/ein Studium beginnen\?/i));
 
     await waitFor(() => {
-      expect(postFilterLevel).toHaveBeenCalled(); // statt CalledTimes(1)
+      expect(postFilterLevel).toHaveBeenCalled();
     });
 
-    expect(mockNext).toHaveBeenCalledWith([1, 2, 3]);
+    expect(mockLevel1ids).toHaveBeenCalledWith([1, 2, 3]); // ✅ optional, aber sinnvoll
+
+    expect(mockOnAnswer).toHaveBeenCalledWith({
+      questionId: "level1.studyType",
+      value: "undergraduate",
+      answeredAt: 1700000000000,
+    });
+
+    await waitFor(() => {
+      expect(mockOnComplete).toHaveBeenCalled();
+    });
   });
 
   test("shows alert on API error", async () => {
     (postFilterLevel as Mock).mockRejectedValue(new Error("fail"));
 
-    renderWithTheme(<Quiz_L1 onNextLevel={vi.fn()} />);
+    renderWithTheme(
+      <Quiz_L1
+        onAnswer={vi.fn()}
+        onComplete={vi.fn()}
+        level1ids={function (_ids: string[]): void {
+          throw new Error("Function not implemented.");
+        }}
+      />,
+    );
 
     fireEvent.click(screen.getByText(/ein Studium beginnen\?/i));
 
