@@ -85,8 +85,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setUser(res.user);
         setIsLoading(false);
       }
-      const cached = await loadQuizResults();
-      if (cached && cached?.length > 0) {
+      let cached: Awaited<ReturnType<typeof loadQuizResults>> = null;
+      try {
+        cached = await loadQuizResults();
+      } catch (error) {
+        if (!(error instanceof Error)) throw error;
+        if (!error.message.includes("IndexedDB is not supported")) {
+          throw error;
+        }
+      }
+
+      if (cached && cached.length > 0) {
         const resultIds = cached
           .map((p) => p?.studiengang_id)
           .filter(
