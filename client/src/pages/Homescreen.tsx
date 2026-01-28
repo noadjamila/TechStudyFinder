@@ -6,10 +6,7 @@ import GreenCard from "../components/cards/GreenCardBaseNotQuiz";
 import theme from "../theme/theme";
 import MainLayout from "../layouts/MainLayout";
 import PrimaryButton from "../components/buttons/PrimaryButton";
-import {
-  clearQuizResults,
-  clearQuizSession,
-} from "../session/persistQuizSession";
+import { clearQuizResults } from "../session/persistQuizResults";
 
 /**
  * Homescreen component.
@@ -23,12 +20,6 @@ const Homescreen: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showLogoutMessage, setShowLogoutMessage] = useState(false);
-
-  useEffect(() => {
-    return () => {
-      clearQuizSession().catch(console.error);
-    };
-  }, []);
 
   useEffect(() => {
     clearQuizResults().catch(console.error);

@@ -1,6 +1,6 @@
 import { QuizSession } from "../types/QuizSession";
 import { openDB as indexedDbOpen } from "idb";
-import { StudyProgramme } from "../types/StudyProgramme.types";
+//import { StudyProgramme } from "../types/StudyProgramme.types";
 
 const DB_NAME = "studyfinder-quiz-session";
 const DB_VERSION = 1;
@@ -52,28 +52,12 @@ export async function loadLatestSession(): Promise<QuizSession | null> {
   return session ?? null;
 }
 
+/**
+ * Clears all data related to the quiz session from the specified database store.
+ *
+ * @return {Promise<void>} A promise that resolves when the quiz session data has been successfully cleared.
+ */
 export async function clearQuizSession(): Promise<void> {
-  const db = await openDb();
-  const tx = db.transaction(STORE_NAME, "readwrite");
-  await tx.store.clear();
-  await tx.done;
-}
-
-export async function saveQuizResults(
-  results: StudyProgramme[],
-): Promise<void> {
-  const db = await openDb();
-  const tx = db.transaction(STORE_NAME, "readwrite");
-  await tx.store.put(results, "latest");
-  await tx.done;
-}
-
-export async function loadQuizResults(): Promise<StudyProgramme[] | null> {
-  const db = await openDb();
-  return (await db.get(STORE_NAME, "latest")) ?? null;
-}
-
-export async function clearQuizResults(): Promise<void> {
   const db = await openDb();
   const tx = db.transaction(STORE_NAME, "readwrite");
   await tx.store.clear();
