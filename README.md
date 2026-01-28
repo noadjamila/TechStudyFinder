@@ -2,7 +2,7 @@
 
 **TechStudyFinder** is a progressive web application designed to help young people discover Informatics study programs that align with their **interests, hobbies, and personality**.
 
-Many young people, especially **FLINTA** (women, lesbian, inter, non-binary, trans, and agender individuals), never consider studying Informatics because they assume it’s only about programming or math. This project aims to change that by showing how diverse and creative IT can be and how it connects to things people already care about.
+Many young people, especially **FINTA** (women, lesbian, inter, non-binary, trans, and agender individuals), never consider studying Informatics because they assume it’s only about programming or math. This project aims to change that by showing how diverse and creative IT can be and how it connects to things people already care about.
 
 **Disclaimer:**
 This application is not intended to provide professional career or psychological advice. It’s meant for general informational purposes only and shouldn’t replace guidance from qualified professionals.
@@ -120,7 +120,7 @@ The configuration is located in `.github/dependabot.yml`.
 ## Purpose
 
 - Make Informatics more **approachable and inclusive**.
-- Encourage **FLINTA youth** to see themselves in IT fields.
+- Encourage **FINTA youth** to see themselves in IT fields.
 - Combine **technology, psychology, and design** to support informed, confident study choices.
 
 ---

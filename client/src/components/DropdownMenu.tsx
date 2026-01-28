@@ -12,6 +12,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import FolderIcon from "@mui/icons-material/Folder";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import theme from "../theme/theme";
 import { useAuth } from "../contexts/AuthContext";
 import LoginReminderDialog from "./dialogs/LoginReminderDialog";
@@ -109,6 +110,15 @@ export default function DropMenu({
       icon: <LogoutIcon fontSize="small" />,
       onClick: handleLoginLogout,
     },
+    ...(!user
+      ? [
+          {
+            label: "Registrieren",
+            icon: <PersonAddIcon fontSize="small" />,
+            onClick: () => handleNavigate("/register"),
+          },
+        ]
+      : []),
     ...(user
       ? [
           {

@@ -6,6 +6,7 @@ import { getStudyProgrammeById } from "../../api/quizApi";
 import { removeFavorite } from "../../api/favoritesApi";
 import FavouritesEmpty from "./FavouritesEmpty";
 import { useApiClient } from "../../hooks/useApiClient";
+import DataSource from "../DataSource";
 
 interface FavouritesListProps {
   favorites: string[]; // Array of study programme IDs
@@ -147,13 +148,13 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ favorites }) => {
   return (
     <Box
       sx={{
-        maxWidth: 800,
-        margin: { xs: "0 auto", sm: "0" },
-        paddingBottom: { xs: "120px", sm: 3 },
+        maxWidth: 650,
+        margin: "0 auto",
         opacity: isFading ? 0 : 1,
         transition: "opacity 1800ms ease-in-out",
       }}
     >
+      <DataSource />
       <Typography variant="h2" sx={{ marginBottom: 3 }}>
         Meine Favoriten
       </Typography>

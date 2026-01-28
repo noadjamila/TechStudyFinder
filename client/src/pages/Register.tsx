@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Box, Alert, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import PrimaryButton from "../components/buttons/PrimaryButton";
@@ -154,6 +154,12 @@ export default function Register() {
     }
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter" && !loading) {
+      handleRegister();
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -162,16 +168,7 @@ export default function Register() {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        padding: theme.spacing(2),
-        pt: { xs: 8, sm: 12, md: 16, lg: 18 },
-        p: "30px",
-        pb: 4,
-        "@media (max-width: 375px)": {
-          pt: 6,
-          pb: 2,
-          pl: 2,
-          pr: 2,
-        },
+        padding: "30px",
       }}
     >
       <Box
@@ -195,6 +192,7 @@ export default function Register() {
           label="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          onKeyPress={handleKeyPress}
           disabled={loading}
           helperText={
             !validateUsername(username).valid
@@ -208,6 +206,7 @@ export default function Register() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyPress={handleKeyPress}
           disabled={loading}
           helperText={
             !validatePassword(password).valid
@@ -221,6 +220,7 @@ export default function Register() {
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
+          onKeyPress={handleKeyPress}
           disabled={loading}
           sx={{ mb: 3 }}
         />
@@ -228,7 +228,7 @@ export default function Register() {
         <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
           <BackButton
             label="Zurück"
-            onClick={() => navigate("/")}
+            onClick={() => navigate(-1)}
             disabled={loading}
           />
           <PrimaryButton
