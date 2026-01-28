@@ -5,7 +5,6 @@ import { useAuth } from "../contexts/AuthContext";
 import FavouritesNotLoggedIn from "../components/favourites/FavouritesNotLoggedIn";
 import FavouritesEmpty from "../components/favourites/FavouritesEmpty";
 import FavouritesList from "../components/favourites/FavouritesList";
-import theme from "../theme/theme";
 
 /**
  * Favourites page component.
@@ -79,24 +78,17 @@ const Favourites: React.FC = () => {
     return <FavouritesList favorites={favorites} />;
   };
 
-  // Show loading spinner while checking auth status
-  if (isLoading || authLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-          bgcolor: theme.palette.background.default,
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  return <MainLayout>{getContent()}</MainLayout>;
+  return (
+    <MainLayout>
+      {isLoading ? (
+        <Box sx={{ textAlign: "center", mt: 4 }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <div>{getContent()}</div>
+      )}
+    </MainLayout>
+  );
 };
 
 export default Favourites;

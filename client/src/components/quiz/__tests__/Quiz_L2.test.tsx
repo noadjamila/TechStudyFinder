@@ -6,6 +6,7 @@ import theme from "../../../theme/theme";
 import { describe, test, expect, vi } from "vitest";
 import Quiz_L2 from "../Quiz_L2";
 import type { QuizSession } from "../../../types/QuizSession";
+import { RiasecType } from "../../../types/RiasecTypes";
 
 const renderWithProviders = (ui: React.ReactNode) =>
   render(
@@ -16,8 +17,8 @@ const renderWithProviders = (ui: React.ReactNode) =>
 
 describe("Quiz_L2", () => {
   const mockQuestions = [
-    { text: "Frage 1", riasec_type: "R", id: "q1" },
-    { text: "Frage 2", riasec_type: "I", id: "q2" },
+    { text: "Frage 1", riasec_type: "R" as RiasecType, id: "q1" },
+    { text: "Frage 2", riasec_type: "I" as RiasecType, id: "q2" },
   ];
 
   const baseSession: QuizSession = {
@@ -42,7 +43,7 @@ describe("Quiz_L2", () => {
       />,
     );
 
-    expect(screen.getByText("Lädt...")).toBeInTheDocument();
+    expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
   });
 
   test("renders the current question text", async () => {

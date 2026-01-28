@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { ReactNode } from "react";
 import { useAdminAuth } from "../../contexts/AdminAuthContext";
+import { CircularProgress } from "@mui/material";
 
 export default function AdminProtectedRoute({
   children,
@@ -10,7 +11,7 @@ export default function AdminProtectedRoute({
   const { admin, isLoading } = useAdminAuth();
 
   if (isLoading) {
-    return <div>Lädt...</div>;
+    return <CircularProgress />;
   }
 
   if (!admin) {

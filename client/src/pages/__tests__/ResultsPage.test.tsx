@@ -123,7 +123,7 @@ beforeEach(async () => {
 
 const renderWithTheme = (
   component: React.ReactElement,
-  entry: { pathname: string; state?: any } = {
+  entry: { pathname: string; state?: any; isLoading?: boolean } = {
     pathname: "/results",
     state: { resultIds: ["1", "2"] },
   },
@@ -154,9 +154,10 @@ describe("ResultsPage Component", () => {
     renderWithTheme(<ResultsPage />, {
       pathname: "/results",
       state: { resultIds: ["1"] },
+      isLoading: true,
     });
 
-    expect(await screen.findByText(/lädt/i)).toBeInTheDocument();
+    expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
   });
 
   it("fetches and displays study programmes from navigation state", async () => {
@@ -398,18 +399,14 @@ describe("ResultsPage Component", () => {
         setUser: vi.fn(),
       });
 
-      const { findByText } = render(
-        <MemoryRouter initialEntries={[{ pathname: "/results" }]}>
-          <ThemeProvider theme={theme}>
-            <Routes>
-              <Route path="/results" element={<ResultsPage />} />
-            </Routes>
-          </ThemeProvider>
-        </MemoryRouter>,
-      );
+      renderWithTheme(<ResultsPage />, {
+        pathname: "/results",
+        state: { resultIds: ["1"] },
+        isLoading: true,
+      });
 
       // Should show loading state
-      await findByText(/Lädt.../i);
+      expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
 
       expect(api.getQuizResults).not.toHaveBeenCalled();
     });

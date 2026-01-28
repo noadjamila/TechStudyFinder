@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import Results from "../components/quiz/Results";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 import MainLayout from "../layouts/MainLayout";
@@ -172,7 +172,9 @@ const ResultsPage: React.FC = () => {
   return (
     <MainLayout hasResults={hasQuizResults}>
       {loading ? (
-        <Box sx={{ textAlign: "center", mt: 4 }}>Lädt...</Box>
+        <Box sx={{ textAlign: "center", mt: 4 }}>
+          <CircularProgress data-testid="loading-spinner" />
+        </Box>
       ) : !hasQuizResults ? (
         <NoResultsYet />
       ) : error ? (
