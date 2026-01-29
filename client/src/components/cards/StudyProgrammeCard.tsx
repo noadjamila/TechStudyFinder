@@ -2,8 +2,8 @@ import React from "react";
 import { Card, CardContent, Typography, Box, IconButton } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
+import SchoolIcon from "@mui/icons-material/School";
 import { StudyProgramme } from "../../types/StudyProgramme.types";
 import theme from "../../theme/theme";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -80,10 +80,10 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "flex-start",
-            gap: 2,
+            gap: 1,
           }}
         >
-          <Box sx={{ flex: 1 }}>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography
               variant="h6"
               component="h3"
@@ -92,6 +92,8 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
                 marginBottom: 1,
                 color: theme.palette.text.primary,
                 fontSize: { xs: "1rem", sm: "1.25rem" },
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
               }}
             >
               {programme.name}
@@ -113,7 +115,7 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
                   justifyContent: "center",
                 }}
               >
-                <PlaceIcon
+                <SchoolIcon
                   sx={{
                     fontSize: 20,
                   }}
@@ -170,7 +172,11 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
                   ? "Aus Favoriten entfernen"
                   : "Zu Favoriten hinzufügen"
               }
-              sx={{ ml: 1, padding: { xs: 0.5, sm: 1 } }}
+              sx={{
+                padding: { xs: 0.5, sm: 1 },
+                flexShrink: 0,
+                ml: 0,
+              }}
             >
               {isFavorite ? (
                 <FavoriteIcon

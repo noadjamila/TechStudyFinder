@@ -49,6 +49,9 @@ RUN npm ci --omit=dev --workspace=server
 # Copy build artifacts
 COPY --from=builder /app/server/dist ./server/dist
 COPY --from=builder /app/client/dist ./client/dist
+# Copy database files
+COPY --from=builder /app/server/db ./server/db
+COPY --from=builder /app/server/db ./server/dist/db
 
 # Fix ownership
 RUN chown -R appuser:appgroup /app

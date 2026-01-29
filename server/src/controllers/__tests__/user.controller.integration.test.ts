@@ -3,9 +3,16 @@ import { pool } from "../../../db";
 import { app } from "../../../index";
 
 describe("Users Registration Endpoint - Integration Tests", () => {
+  const dbName = process.env.DB_NAME ?? "";
+  const isTestDb = dbName.toLowerCase().includes("test");
   let dbAvailable = true;
 
   beforeAll(async () => {
+    if (!isTestDb) {
+      throw new Error(
+        `Refusing to run integration tests on non-test DB: ${dbName || "(empty)"}`,
+      );
+    }
     try {
       await pool.query("SELECT 1");
     } catch {

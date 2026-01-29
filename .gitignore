@@ -37,6 +37,7 @@ client/yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+/server/.env.test
 
 # ======================
 # OS / IDE / Misc
@@ -57,4 +58,3 @@ Thumbs.db       # Windows
 /server/dist/
 /client/dist/
 .DS_Store
-

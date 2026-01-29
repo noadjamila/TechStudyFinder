@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Alert, Typography } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import PrimaryButton from "../components/buttons/PrimaryButton";
@@ -9,6 +9,9 @@ import theme from "../theme/theme";
 import BottomHills from "../components/login-register/BottomHills";
 import LoginResultDialog from "../components/dialogs/LoginResultDialog";
 import { useAuth } from "../contexts/AuthContext";
+import { loadLatestSession } from "../session/persistQuizSession";
+import { QuizSession } from "../types/QuizSession";
+import { saveQuizResults } from "../api/quizApi";
 
 /**
  * Login page component.
@@ -27,6 +30,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showResultDialog, setShowResultDialog] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
+  const [results, setResults] = useState<string[]>([]);
 
   const handleLogin = async () => {
     setError(null);
@@ -47,6 +51,16 @@ export default function Login() {
       // Show success popup
       setLoginSuccess(true);
       setShowResultDialog(true);
+
+      if (results.length > 0) {
+        try {
+          console.log(results);
+          let resultIds = results as string[];
+          await saveQuizResults(resultIds);
+        } catch (e) {
+          console.error("Failed to save quiz results:", e);
+        }
+      }
     } catch {
       // On error, show inline error message and clear both fields
       setError("Login fehlgeschlagen - bitte versuche es erneut!");
@@ -54,6 +68,12 @@ export default function Login() {
       setPassword("");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter" && !loading) {
+      handleLogin();
     }
   };
 
@@ -65,6 +85,27 @@ export default function Login() {
       navigate(redirectTo);
     }
   };
+
+  useEffect(() => {
+    let isMounted = true;
+
+    (async () => {
+      try {
+        const session = (await loadLatestSession()) as QuizSession;
+        if (!isMounted) return;
+
+        if (session.resultIds) {
+          setResults(session.resultIds);
+        }
+      } catch (error) {
+        console.error("Failed to load persisted quiz session:", error);
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <Box
@@ -98,6 +139,7 @@ export default function Login() {
           label="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          onKeyPress={handleKeyPress}
           disabled={loading}
         />
 
@@ -106,6 +148,7 @@ export default function Login() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyPress={handleKeyPress}
           disabled={loading}
           sx={{ mb: 3 }}
         />
@@ -133,11 +176,11 @@ export default function Login() {
               component="span"
               variant="body2"
               sx={{
-                color: theme.palette.decorative.blue,
                 cursor: "pointer",
                 fontWeight: "bold",
+                textDecoration: "underline",
                 "&:hover": {
-                  textDecoration: "underline",
+                  color: theme.palette.detailspage.link,
                 },
               }}
               onClick={() => navigate("/register")}

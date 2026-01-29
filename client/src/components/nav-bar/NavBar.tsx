@@ -23,6 +23,7 @@ import { useAuth } from "../../contexts/AuthContext";
  */
 interface NavBarProps {
   isSidebarMode?: boolean;
+  hasResults?: boolean;
 }
 /**
  * NavBar component.
@@ -32,7 +33,10 @@ interface NavBarProps {
  * @param {NavBarProps} props - The component's props.
  * @returns {React.FC} The rendered navigation component.
  */
-const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
+const NavBar: React.FC<NavBarProps> = ({
+  isSidebarMode = false,
+  hasResults = false,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
@@ -72,7 +76,8 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
     if (
       location.pathname === "/settings" ||
       location.pathname === "/login" ||
-      location.pathname === "/register"
+      location.pathname === "/register" ||
+      location.pathname === "/impressum"
     ) {
       return -1;
     }
@@ -93,7 +98,7 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
    * @param {string} path - The route path to navigate to.
    */
   const handleNavigation = (newValue: number, path: string) => {
-    if (location.pathname === "/results" && !user && !isLoading) {
+    if (location.pathname === "/results" && !user && !isLoading && hasResults) {
       setIsDialogOpen(true);
       setIntendedDestination(path);
     } else {
@@ -211,6 +216,9 @@ const NavBar: React.FC<NavBarProps> = ({ isSidebarMode = false }) => {
                   minWidth: "auto",
                   padding: "6px 20px",
                   color: theme.palette.text.secondary,
+                  "@media (max-width: 320px)": {
+                    padding: "6px 12px",
+                  },
                 },
                 "& .Mui-selected": {
                   color: "#999",

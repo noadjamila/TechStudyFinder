@@ -5,6 +5,7 @@ module.exports = {
   testEnvironment: "node",
   roots: ["<rootDir>/src"],
   testMatch: ["**/__tests__/**/*.test.ts", "**/?(*.)+(spec|test).ts"],
+  testPathIgnorePatterns: ["/node_modules/", "\\.integration\\.test\\.ts$"],
   transformIgnorePatterns: ["/node_modules/"],
   moduleFileExtensions: ["ts", "js", "json", "node"],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
@@ -19,4 +20,5 @@ module.exports = {
   clearMocks: true,
   coverageDirectory: "coverage",
   verbose: true,
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
 };

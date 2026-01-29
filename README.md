@@ -2,7 +2,7 @@
 
 **TechStudyFinder** is a progressive web application designed to help young people discover Informatics study programs that align with their **interests, hobbies, and personality**.
 
-Many young people, especially **FLINTA** (women, lesbian, inter, non-binary, trans, and agender individuals), never consider studying Informatics because they assume it’s only about programming or math. This project aims to change that by showing how diverse and creative IT can be and how it connects to things people already care about.
+Many young people, especially **FINTA** (women, lesbian, inter, non-binary, trans, and agender individuals), never consider studying Informatics because they assume it’s only about programming or math. This project aims to change that by showing how diverse and creative IT can be and how it connects to things people already care about.
 
 **Disclaimer:**
 This application is not intended to provide professional career or psychological advice. It’s meant for general informational purposes only and shouldn’t replace guidance from qualified professionals.
@@ -31,7 +31,8 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 - [Server Setup (Production)](docs/server-setup.md)
 - [License](LICENSE)
 - [Question Documentation](docs/questions.md)
-- [Database Schema](docs/database_schema.md)
+- [Database Schema](docs/database-schema.md)
+- [Database Operations](docs/database.md)
 
 ---
 
@@ -85,6 +86,8 @@ After completing these steps, the database will be fully initialized and ready f
 
 **To update the data**, simply replace the XML files with new ones and run the `init_data.ts` script again. The table values will be overwritten with the new ones and the RIASEC values will be added again. If there are new areas of study in the data, you will receive a warning via the terminal that the table contains NULL values. You will then have to add the RIASEC values manually. See [here](docs/riasec-mapping.md) for an explanation of how to determine the RIASEC types.
 
+For more details, refer to the [Database Operations Guide](docs/database.md).
+
 ## Tech Stack
 
 **Frontend**: React (Progressive Web App)
@@ -117,7 +120,7 @@ The configuration is located in `.github/dependabot.yml`.
 ## Purpose
 
 - Make Informatics more **approachable and inclusive**.
-- Encourage **FLINTA youth** to see themselves in IT fields.
+- Encourage **FINTA youth** to see themselves in IT fields.
 - Combine **technology, psychology, and design** to support informed, confident study choices.
 
 ---

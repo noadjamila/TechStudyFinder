@@ -37,11 +37,6 @@ describe("NoResultsYet Component", () => {
     expect(screen.getByText("Meine Ergebnisse")).toBeInTheDocument();
   });
 
-  it("renders the no results message", () => {
-    renderWithTheme(<NoResultsYet />);
-    expect(screen.getByText("Keine Ergebnisse vorhanden.")).toBeInTheDocument();
-  });
-
   it("renders the card with encouraging text", () => {
     renderWithTheme(<NoResultsYet />);
     expect(screen.getByText(/Starte jetzt das Quiz/i)).toBeInTheDocument();

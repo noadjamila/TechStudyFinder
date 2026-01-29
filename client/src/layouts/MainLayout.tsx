@@ -14,8 +14,10 @@ import React from "react";
  */
 export default function MainLayout({
   children,
+  hasResults = false,
 }: {
   children: React.ReactNode;
+  hasResults?: boolean;
 }) {
   const muiTheme = useTheme();
   const toggleSidebar = () => {};
@@ -32,9 +34,9 @@ export default function MainLayout({
       {children}
     </Box>
   ) : (
-    <Box sx={{ pt: "50px" }}>
+    <Box sx={{ pt: "50px", pb: "110px" }}>
       {" "}
-      {/* Offset for mobile navbar */}
+      {/* Offset for mobile header and bottom navbar */}
       {children}
     </Box>
   );
@@ -50,7 +52,7 @@ export default function MainLayout({
       {/* Conditional Rendering based on viewport size */}
       {isDesktop ? (
         // DESKTOP VIEW: Content is placed inside the structured layout
-        <DesktopLayout onMenuToggle={toggleSidebar}>
+        <DesktopLayout onMenuToggle={toggleSidebar} hasResults={hasResults}>
           <div
             style={{
               padding: "30px",
@@ -65,8 +67,8 @@ export default function MainLayout({
       ) : (
         // MOBILE VIEW: Logo menu and navigation bar are rendered outside the main content flow
         <>
-          <Header fixed={true} />
-          <Navigationbar />
+          <Header fixed={true} hasResults={hasResults} />
+          <Navigationbar hasResults={hasResults} />
 
           <div
             style={{

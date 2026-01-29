@@ -6,25 +6,24 @@ import {
   IconButton,
   Card,
   CardContent,
-  useMediaQuery,
-  useTheme,
   Accordion,
   AccordionSummary,
   AccordionDetails,
   Chip,
   Stack,
   Link,
+  CircularProgress,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
+import SchoolIcon from "@mui/icons-material/School";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 import theme from "../theme/theme";
 import DataSource from "../components/DataSource";
 import BackButton from "../components/buttons/BackButton";
-import DesktopLayout from "../layouts/DesktopLayout";
+import MainLayout from "../layouts/MainLayout";
 import { getStudyProgrammeById } from "../api/quizApi";
 import { getFavorites, addFavorite, removeFavorite } from "../api/favoritesApi";
 import DeadlineDisplay from "../components/DeadlineDisplay";
@@ -32,6 +31,7 @@ import { useAuth } from "../contexts/AuthContext";
 import LoginReminderDialog, {
   FAVORITES_LOGIN_MESSAGE,
 } from "../components/dialogs/LoginReminderDialog";
+import { useApiClient } from "../hooks/useApiClient";
 
 /**
  * StudyProgrammeDetailPage displays detailed information about a single study programme.
@@ -42,14 +42,12 @@ const StudyProgrammeDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const { apiFetch } = useApiClient();
   const [isFavorite, setIsFavorite] = useState(false);
   const [programme, setProgramme] = useState<StudyProgramme | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [showLoginReminder, setShowLoginReminder] = useState(false);
-  const muiTheme = useTheme();
-  const toggleSidebar = () => {};
-  const isDesktop = useMediaQuery(muiTheme.breakpoints.up("sm"));
 
   // Scroll to top when component mounts or id changes
   useEffect(() => {
@@ -61,7 +59,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
     const loadFavoriteState = async () => {
       if (!id) return;
       try {
-        const favoriteIds = await getFavorites();
+        const favoriteIds = await getFavorites(apiFetch);
         setIsFavorite(favoriteIds.includes(id));
       } catch (error) {
         console.error("Failed to load favorites:", error);
@@ -81,7 +79,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
 
       try {
         setLoading(true);
-        const data = await getStudyProgrammeById(id);
+        const data = await getStudyProgrammeById(id, apiFetch);
         setProgramme(data);
       } catch (err) {
         console.error("Error fetching study programme:", err);
@@ -108,9 +106,9 @@ const StudyProgrammeDetailPage: React.FC = () => {
 
     try {
       if (wasFavorited) {
-        await removeFavorite(id);
+        await removeFavorite(id, apiFetch);
       } else {
-        await addFavorite(id);
+        await addFavorite(id, apiFetch);
       }
     } catch (error: any) {
       if (error.message && error.message.includes("409")) {
@@ -123,49 +121,18 @@ const StudyProgrammeDetailPage: React.FC = () => {
   };
 
   if (loading) {
-    const loadingContent = (
-      <Box sx={{ textAlign: "center", mt: 4 }}>
-        <Typography>Lädt...</Typography>
-      </Box>
-    );
-
-    const LoadingContent = isDesktop ? (
-      <Box
-        sx={{
-          width: "100%",
-          maxWidth: 800,
-          margin: "0 auto",
-          pt: 3,
-        }}
-      >
-        {loadingContent}
-      </Box>
-    ) : (
-      loadingContent
-    );
-
     return (
-      <div
-        style={{
-          minHeight: "100vh",
-          width: "100%",
-          overflow: "auto",
-        }}
-      >
-        {isDesktop ? (
-          <DesktopLayout onMenuToggle={toggleSidebar}>
-            {LoadingContent}
-          </DesktopLayout>
-        ) : (
-          LoadingContent
-        )}
-      </div>
+      <MainLayout>
+        <Box sx={{ textAlign: "center", mt: 4 }}>
+          <CircularProgress aria-label="loading" />
+        </Box>
+      </MainLayout>
     );
   }
 
   if (error || !programme) {
-    const notFoundContent = (
-      <>
+    return (
+      <MainLayout>
         <Box sx={{ padding: 3 }}>
           <BackButton
             label="Zurück"
@@ -190,39 +157,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
             {error || "Studiengang nicht gefunden"}
           </Typography>
         </Box>
-      </>
-    );
-
-    const NotFoundContent = isDesktop ? (
-      <Box
-        sx={{
-          width: "100%",
-          maxWidth: 800,
-          margin: "0 auto",
-        }}
-      >
-        {notFoundContent}
-      </Box>
-    ) : (
-      notFoundContent
-    );
-
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          width: "100%",
-          overflow: "auto",
-        }}
-      >
-        {isDesktop ? (
-          <DesktopLayout onMenuToggle={toggleSidebar}>
-            {NotFoundContent}
-          </DesktopLayout>
-        ) : (
-          NotFoundContent
-        )}
-      </div>
+      </MainLayout>
     );
   }
 
@@ -330,7 +265,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <PlaceIcon
+                    <SchoolIcon
                       sx={{
                         fontSize: 24,
                         color: theme.palette.text.subHeader,
@@ -825,40 +760,9 @@ const StudyProgrammeDetailPage: React.FC = () => {
     </Box>
   );
 
-  // Wrap content differently for desktop vs mobile
-  const MainContent = isDesktop ? (
-    <Box
-      sx={{
-        width: "100%",
-        maxWidth: 800,
-        margin: "0 auto",
-        pt: 3,
-      }}
-    >
-      {pageContent}
-    </Box>
-  ) : (
-    <>{pageContent}</>
-  );
-
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        width: "100%",
-        overflow: "auto",
-      }}
-    >
-      {/* Conditional Rendering based on viewport size */}
-      {isDesktop ? (
-        // DESKTOP VIEW: Content is placed inside the structured layout
-        <DesktopLayout onMenuToggle={toggleSidebar}>
-          {MainContent}
-        </DesktopLayout>
-      ) : (
-        // MOBILE VIEW
-        MainContent
-      )}
+    <MainLayout>
+      {pageContent}
 
       {/* Login reminder dialog for not logged in users trying to add favorites */}
       <LoginReminderDialog
@@ -874,7 +778,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
           });
         }}
       />
-    </div>
+    </MainLayout>
   );
 };
 

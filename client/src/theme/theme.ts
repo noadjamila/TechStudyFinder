@@ -1,5 +1,7 @@
 import { createTheme } from "@mui/material/styles";
 
+const defaultTheme = createTheme();
+
 const theme = createTheme({
   palette: {
     mode: "light",
@@ -29,7 +31,8 @@ const theme = createTheme({
       green: "#E7F9CE", // card backgrounds
       blue: "#D8E7FF",
       yellow: "#FFF8AD",
-      blueDark: "#A6B8D5", // primary button hover
+      blueDark: "#93BAF9", // primary button hover
+      greenDark: "#D7F7AB", // card hover
     },
 
     // Feature-specific
@@ -85,6 +88,14 @@ const theme = createTheme({
       fontSize: "20px",
       fontFamily: "Fira Sans, sans-serif",
       fontWeight: "normal",
+    },
+    errorScreenTitle: {
+      ...defaultTheme.typography.h1,
+      fontFamily: '"Lexend Deca", Fira Sans, sans-serif',
+      marginBottom: "2000px",
+      fontWeight: 700,
+      lineHeight: 1.167, // MUI h1 default
+      letterSpacing: "-0.01562em",
     },
   },
   components: {

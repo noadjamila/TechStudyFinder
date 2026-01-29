@@ -1,30 +1,38 @@
-export async function getCurrentUser() {
-  const res = await fetch("/api/auth/me", { credentials: "include" });
+export async function getCurrentUser(fetchFn: typeof fetch = fetch) {
+  const res = await fetchFn("/api/auth/me", { credentials: "include" });
   if (!res.ok) return null;
   return await res.json();
 }
 
-export async function login(username: string, password: string) {
-  const res = await fetch("/api/auth/login", {
+export async function login(
+  username: string,
+  password: string,
+  fetchFn: typeof fetch = fetch,
+) {
+  const res = await fetchFn("/api/auth/login", {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password }),
   });
-  if (!res.ok) throw new Error("Login failed");
+  if (!res.ok) throw new Error("Login fehlgeschlagen");
   return await res.json();
 }
 
-export async function logout() {
-  const res = await fetch("/api/auth/logout", {
+export async function logout(fetchFn: typeof fetch = fetch) {
+  const res = await fetchFn("/api/auth/logout", {
     method: "POST",
     credentials: "include",
   });
   return res.ok;
 }
 
-export async function changePassword(password: string, newPassword: string) {
-  const res = await fetch("/api/auth/change-password", {
+export async function changePassword(
+  password: string,
+  newPassword: string,
+  fetchFn: typeof fetch = fetch,
+) {
+  const res = await fetchFn("/api/auth/change-password", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -43,8 +51,8 @@ export async function changePassword(password: string, newPassword: string) {
   return true;
 }
 
-export async function deleteUser() {
-  const res = await fetch("/api/auth/me", {
+export async function deleteUser(fetchFn: typeof fetch = fetch) {
+  const res = await fetchFn("/api/auth/me", {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
