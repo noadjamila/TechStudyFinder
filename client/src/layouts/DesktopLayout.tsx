@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, useTheme, Typography } from "@mui/material";
 import NavBar from "../../src/components/nav-bar/NavBar";
 import DropMenu from "../components/DropdownMenu";
@@ -31,6 +32,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({
   hasResults = false,
 }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     // Background Container: Fills the entire viewport with the grey background color
@@ -62,6 +64,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({
             flexDirection: "column",
             justifyContent: "center",
           }}
+          onClick={() => navigate("/")}
         >
           <Typography variant="h3">Tech Study Finder</Typography>
           <Typography variant="caption">Deine Reise zum Studiengang</Typography>

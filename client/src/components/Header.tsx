@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 import theme from "../theme/theme";
 import DropMenu from "./DropdownMenu";
@@ -20,6 +21,8 @@ const LogoMenu: React.FC<LogoMenuProps> = ({
   fixed = false,
   hasResults = false,
 }) => {
+  const navigate = useNavigate();
+
   return (
     <AppBar
       position={fixed ? "fixed" : "static"}
@@ -50,6 +53,7 @@ const LogoMenu: React.FC<LogoMenuProps> = ({
 
         {/*Tech Study Finder Headline, centered*/}
         <Typography
+          onClick={() => navigate("/")}
           variant="h5"
           sx={{
             fontWeight: "bold",
@@ -59,6 +63,7 @@ const LogoMenu: React.FC<LogoMenuProps> = ({
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            cursor: "pointer",
           }}
         >
           Tech Study Finder
