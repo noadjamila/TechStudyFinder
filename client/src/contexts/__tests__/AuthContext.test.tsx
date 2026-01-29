@@ -4,11 +4,22 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import { AuthProvider, useAuth } from "../AuthContext";
 import * as authApi from "../../api/authApi";
+import * as quizApi from "../../api/quizApi";
+import * as persistQuizSession from "../../session/persistQuizSession";
 
 vi.mock("../../api/authApi", () => ({
   getCurrentUser: vi.fn(),
   login: vi.fn(),
   logout: vi.fn(),
+}));
+
+vi.mock("../../api/quizApi", () => ({
+  attachDeviceResults: vi.fn(),
+}));
+
+vi.mock("../../session/persistQuizSession", () => ({
+  loadQuizResults: vi.fn(),
+  clearQuizResults: vi.fn(),
 }));
 
 vi.mock("../../hooks/useApiClient", () => ({
@@ -30,6 +41,9 @@ const TestComponent = () => {
 describe("AuthProvider", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(persistQuizSession.loadQuizResults).mockResolvedValue(null);
+    vi.mocked(persistQuizSession.clearQuizResults).mockResolvedValue();
+    vi.mocked(quizApi.attachDeviceResults).mockResolvedValue({});
   });
 
   it("loads current user on mount", async () => {
@@ -71,6 +85,64 @@ describe("AuthProvider", () => {
     await waitFor(() =>
       expect(screen.getByTestId("user")).toHaveTextContent("test"),
     );
+  });
+
+  it("attaches cached quiz results and clears them after login", async () => {
+    vi.mocked(authApi.getCurrentUser).mockResolvedValue(null);
+    vi.mocked(authApi.login).mockResolvedValue({
+      user: { id: 2, username: "test" },
+    });
+    vi.mocked(persistQuizSession.loadQuizResults).mockResolvedValue([
+      { studiengang_id: "a1" },
+      { studiengang_id: "b2" },
+    ]);
+
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </MemoryRouter>,
+    );
+
+    const userSim = userEvent.setup();
+    await userSim.click(screen.getByText("login"));
+
+    await waitFor(() =>
+      expect(screen.getByTestId("user")).toHaveTextContent("test"),
+    );
+
+    expect(quizApi.attachDeviceResults).toHaveBeenCalledWith(
+      ["a1", "b2"],
+      global.fetch,
+    );
+    expect(persistQuizSession.clearQuizResults).toHaveBeenCalled();
+  });
+
+  it("logs in successfully when no cached quiz results exist", async () => {
+    vi.mocked(authApi.getCurrentUser).mockResolvedValue(null);
+    vi.mocked(authApi.login).mockResolvedValue({
+      user: { id: 2, username: "test" },
+    });
+    vi.mocked(persistQuizSession.loadQuizResults).mockResolvedValue([]);
+
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </MemoryRouter>,
+    );
+
+    const userSim = userEvent.setup();
+    await userSim.click(screen.getByText("login"));
+
+    await waitFor(() =>
+      expect(screen.getByTestId("user")).toHaveTextContent("test"),
+    );
+
+    expect(quizApi.attachDeviceResults).not.toHaveBeenCalled();
+    expect(persistQuizSession.clearQuizResults).not.toHaveBeenCalled();
   });
 
   it("logout clears user", async () => {

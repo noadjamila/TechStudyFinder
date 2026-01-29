@@ -1,12 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { saveQuizResults, getQuizResults } from "../quizApi";
+import {
+  saveQuizResults,
+  getQuizResults,
+  attachDeviceResults,
+} from "../quizApi";
 
 describe("quizApi", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
 
-  /* ---------------- saveQuizResults ---------------- */
   describe("saveQuizResults", () => {
     it("sends POST request with resultIds", async () => {
       const mockFetch = vi.fn(() =>
@@ -65,7 +68,6 @@ describe("quizApi", () => {
     });
   });
 
-  /* ---------------- getQuizResults ---------------- */
   describe("getQuizResults", () => {
     it("returns resultIds when user has saved results", async () => {
       const mockIds = ["111", "222", "333"];
@@ -132,6 +134,50 @@ describe("quizApi", () => {
           method: "GET",
           credentials: "include",
         }),
+      );
+    });
+  });
+
+  describe("attachDeviceResults", () => {
+    it("sends POST request with resultIds and credentials", async () => {
+      const mockFetch = vi.fn<typeof fetch>().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ attached: true }),
+      } as Response);
+
+      const testIds = ["a1", "b2"];
+      await attachDeviceResults(testIds, mockFetch);
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        "/api/quiz/attach-device-results",
+        expect.objectContaining({
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ resultIds: testIds }),
+        }),
+      );
+    });
+
+    it("returns parsed response data on success", async () => {
+      const payload = { attached: true, count: 2 };
+      const mockFetch = vi.fn<typeof fetch>().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(payload),
+      } as Response);
+
+      await expect(attachDeviceResults(["x", "y"], mockFetch)).resolves.toEqual(
+        payload,
+      );
+    });
+
+    it("throws error when response is not ok", async () => {
+      const mockFetch = vi.fn<typeof fetch>().mockResolvedValue({
+        ok: false,
+      } as Response);
+
+      await expect(attachDeviceResults(["x"], mockFetch)).rejects.toThrow(
+        "Failed to attach device results to user",
       );
     });
   });

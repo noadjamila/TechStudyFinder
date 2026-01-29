@@ -5,6 +5,7 @@ import {
   getStudyProgrammeById,
   saveQuizResults,
   getQuizResults,
+  attachDeviceSession,
 } from "../controllers/quiz.controller";
 
 const router = express.Router();
@@ -18,5 +19,7 @@ router.get("/study-programme/:id", getStudyProgrammeById);
 router.post("/results", saveQuizResults);
 
 router.get("/results", getQuizResults);
+
+router.post("/attach-device-results", attachDeviceSession);
 
 export default router;
