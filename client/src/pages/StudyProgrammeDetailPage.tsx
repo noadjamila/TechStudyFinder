@@ -126,7 +126,12 @@ const StudyProgrammeDetailPage: React.FC = () => {
           <BackButton
             label="Zurück"
             onClick={() => {
-              navigate("/results");
+              const previousPage = (location.state as any)?.previousPage;
+              if (previousPage === "/favorites") {
+                navigate("/favorites");
+              } else {
+                navigate("/results");
+              }
             }}
             sx={{
               marginBottom: 2,
@@ -168,7 +173,12 @@ const StudyProgrammeDetailPage: React.FC = () => {
         <BackButton
           label="Zurück"
           onClick={() => {
-            navigate("/results");
+            const previousPage = (location.state as any)?.previousPage;
+            if (previousPage === "/favorites") {
+              navigate("/favorites");
+            } else {
+              navigate("/results");
+            }
           }}
           sx={{
             marginBottom: { xs: 0, sm: 1.5 },
