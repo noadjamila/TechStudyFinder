@@ -103,7 +103,7 @@ describe("StudyProgrammeDetailPage Component", () => {
 
   it("shows loading state initially", () => {
     renderWithTheme();
-    expect(screen.getByRole("progressbar")).toBeInTheDocument();
+    expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
   });
 
   it("renders programme details after loading", async () => {
@@ -129,8 +129,7 @@ describe("StudyProgrammeDetailPage Component", () => {
       fireEvent.click(backButton);
     });
 
-    // Fix: Your component uses navigate(-1), so we expect -1
-    expect(mockedNavigate).toHaveBeenCalledWith(-1);
+    expect(mockedNavigate).toHaveBeenCalledWith("/results");
   });
 
   it("renders chips for studienform", async () => {
