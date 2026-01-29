@@ -188,6 +188,23 @@ export default function Login() {
               Registrieren
             </Typography>
           </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            <Typography
+              component="span"
+              variant="body2"
+              sx={{
+                color: theme.palette.detailspage.link,
+                cursor: "pointer",
+                textDecoration: "underline",
+                "&:hover": {
+                  opacity: 0.8,
+                },
+              }}
+              onClick={() => navigate("/datenschutz")}
+            >
+              Datenschutz
+            </Typography>
+          </Typography>
         </Box>
       </Box>
       <BottomHills />

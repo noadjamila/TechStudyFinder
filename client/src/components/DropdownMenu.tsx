@@ -136,7 +136,7 @@ export default function DropMenu({
     {
       label: "Datenschutz",
       icon: <FolderIcon fontSize="small" />,
-      onClick: handleMenuClose,
+      onClick: () => handleNavigate("/datenschutz"),
     },
   ];
 
