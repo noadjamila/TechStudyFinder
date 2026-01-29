@@ -119,9 +119,19 @@ const StudyProgrammeDetailPage: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <Box sx={{ textAlign: "center", mt: 4 }}>
+        <CircularProgress data-testid="loading-spinner" />
+      </Box>
+    );
+  }
+
   if (error || !programme) {
     return (
-      <div>
+      <Box
+        sx={{ padding: { md: "60px" }, maxWidth: "1000px", margin: "0 auto" }}
+      >
         <Box sx={{ padding: 3 }}>
           <BackButton
             label="Zurück"
@@ -146,7 +156,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
             {error || "Studiengang nicht gefunden"}
           </Typography>
         </Box>
-      </div>
+      </Box>
     );
   }
 
@@ -751,13 +761,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
 
   return (
     <Box sx={{ padding: { md: "60px" }, maxWidth: "1000px", margin: "0 auto" }}>
-      {loading ? (
-        <Box sx={{ textAlign: "center", mt: 4 }}>
-          <CircularProgress aria-label="loading" />
-        </Box>
-      ) : (
-        <div>{pageContent}</div>
-      )}
+      {pageContent}
 
       {/* Login reminder dialog for not logged in users trying to add favorites */}
       <LoginReminderDialog
