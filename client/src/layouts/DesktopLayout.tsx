@@ -1,8 +1,10 @@
-import React, { ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { ReactNode, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Box, useTheme, Typography } from "@mui/material";
 import NavBar from "../../src/components/nav-bar/NavBar";
 import DropMenu from "../components/DropdownMenu";
+import LoginReminderDialog from "../components/dialogs/LoginReminderDialog";
+import { useAuth } from "../contexts/AuthContext";
 
 /**
  * Props for the DesktopLayout component.
@@ -33,6 +35,22 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user, isLoading } = useAuth();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleHomeNavigation = () => {
+    if (location.pathname === "/results" && !user && !isLoading && hasResults) {
+      setIsDialogOpen(true);
+    } else {
+      navigate("/");
+    }
+  };
+
+  const handleProceedNavigation = () => {
+    setIsDialogOpen(false);
+    navigate("/");
+  };
 
   return (
     // Background Container: Fills the entire viewport with the grey background color
@@ -63,8 +81,9 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
+            cursor: "pointer",
           }}
-          onClick={() => navigate("/")}
+          onClick={handleHomeNavigation}
         >
           <Typography variant="h3">Tech Study Finder</Typography>
           <Typography variant="caption">Deine Reise zum Studiengang</Typography>
@@ -138,6 +157,17 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({
           {children}
         </Box>
       </Box>
+
+      <LoginReminderDialog
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onLoginClick={() =>
+          navigate("/login", {
+            state: { redirectTo: "/" },
+          })
+        }
+        onProceedNavigation={handleProceedNavigation}
+      />
     </Box>
   );
 };
