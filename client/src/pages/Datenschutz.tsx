@@ -10,7 +10,13 @@ export default function Datenschutz() {
           <Typography
             variant="h2"
             component="h1"
-            sx={{ mb: 2, fontSize: { xs: "1.75rem", sm: "2.5rem" } }}
+            sx={{
+              mb: 2,
+              fontSize: { xs: "1.75rem", sm: "1.75rem" },
+              "@media (max-width: 375px)": {
+                fontSize: "1.5rem",
+              },
+            }}
           >
             Datenschutzerklärung
           </Typography>
@@ -27,7 +33,10 @@ export default function Datenschutz() {
           </Typography>
 
           {/* Verantwortliche Stelle - Placeholder */}
-          <Typography variant="h3" sx={{ mb: 2, mt: 4 }}>
+          <Typography
+            variant="h3"
+            sx={{ mb: 2, mt: 4, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             1. Verantwortliche Stelle
           </Typography>
 
@@ -56,7 +65,10 @@ export default function Datenschutz() {
           </Typography>
 
           {/* Erhobene Daten */}
-          <Typography variant="h3" sx={{ mb: 2, mt: 4 }}>
+          <Typography
+            variant="h3"
+            sx={{ mb: 2, mt: 4, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             2. Welche Daten werden erhoben?
           </Typography>
 
@@ -164,7 +176,10 @@ export default function Datenschutz() {
           </Typography>
 
           {/* Session Cookie */}
-          <Typography variant="h3" sx={{ mb: 2, mt: 4 }}>
+          <Typography
+            variant="h3"
+            sx={{ mb: 2, mt: 4, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             3. Session-Cookie
           </Typography>
 
@@ -184,7 +199,10 @@ export default function Datenschutz() {
           </Typography>
 
           {/* Weitergabe an Dritte */}
-          <Typography variant="h3" sx={{ mb: 2, mt: 4 }}>
+          <Typography
+            variant="h3"
+            sx={{ mb: 2, mt: 4, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             4. Weitergabe von Daten an Dritte
           </Typography>
 
@@ -195,7 +213,10 @@ export default function Datenschutz() {
           </Typography>
 
           {/* Speicherdauer */}
-          <Typography variant="h3" sx={{ mb: 2, mt: 4 }}>
+          <Typography
+            variant="h3"
+            sx={{ mb: 2, mt: 4, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             5. Speicherdauer
           </Typography>
 
@@ -223,7 +244,10 @@ export default function Datenschutz() {
           </Box>
 
           {/* Ihre Rechte */}
-          <Typography variant="h3" sx={{ mb: 2, mt: 4 }}>
+          <Typography
+            variant="h3"
+            sx={{ mb: 2, mt: 4, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             6. Ihre Rechte
           </Typography>
 
@@ -288,7 +312,10 @@ export default function Datenschutz() {
           </Typography>
 
           {/* Datensicherheit */}
-          <Typography variant="h3" sx={{ mb: 2, mt: 4 }}>
+          <Typography
+            variant="h3"
+            sx={{ mb: 2, mt: 4, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             7. Datensicherheit
           </Typography>
 
@@ -323,7 +350,10 @@ export default function Datenschutz() {
           </Box>
 
           {/* Studiengangs-Daten */}
-          <Typography variant="h3" sx={{ mb: 2, mt: 4 }}>
+          <Typography
+            variant="h3"
+            sx={{ mb: 2, mt: 4, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             8. Studiengangs-Informationen
           </Typography>
 
@@ -340,7 +370,10 @@ export default function Datenschutz() {
           </Typography>
 
           {/* Änderungen */}
-          <Typography variant="h3" sx={{ mb: 2, mt: 4 }}>
+          <Typography
+            variant="h3"
+            sx={{ mb: 2, mt: 4, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             9. Änderungen dieser Datenschutzerklärung
           </Typography>
 
@@ -354,7 +387,10 @@ export default function Datenschutz() {
           </Typography>
 
           {/* Kontakt */}
-          <Typography variant="h3" sx={{ mb: 2, mt: 4 }}>
+          <Typography
+            variant="h3"
+            sx={{ mb: 2, mt: 4, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+          >
             10. Kontakt
           </Typography>
 
