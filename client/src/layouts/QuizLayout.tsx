@@ -49,7 +49,7 @@ const QuizLayout = ({
   const navigate = useNavigate();
 
   /**
-   * Handles the scenario when user doesnt want to chang their progress by clearing the quiz session
+   * Handles the scenario when the user doesn't want to save their progress by clearing the quiz session
    * and navigating to the home page.
    *
    * @return {void} This method does not return a value.
