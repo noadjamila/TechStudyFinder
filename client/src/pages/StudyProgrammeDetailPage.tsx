@@ -12,6 +12,7 @@ import {
   Chip,
   Stack,
   Link,
+  CircularProgress,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -123,7 +124,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
     return (
       <MainLayout>
         <Box sx={{ textAlign: "center", mt: 4 }}>
-          <Typography>Lädt...</Typography>
+          <CircularProgress aria-label="loading" />
         </Box>
       </MainLayout>
     );

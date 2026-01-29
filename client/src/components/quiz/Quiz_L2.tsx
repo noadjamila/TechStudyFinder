@@ -1,7 +1,7 @@
 import React, { JSX, useState } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
 import CardStack from "../cards/CardStackLevel2";
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, CircularProgress } from "@mui/material";
 import BaseCard from "../cards/QuizCardBase";
 import PrimaryButton from "../buttons/PrimaryButton";
 import SecondaryButton from "../buttons/SecondaryButton";
@@ -87,7 +87,7 @@ const Quiz_L2: React.FC<QuizL2Props> = ({
   if (TOTAL_QUESTIONS === 0) {
     return (
       <QuizLayout currentIndex={0} questionsTotal={0}>
-        <div>Lädt...</div>
+        <CircularProgress data-testid="loading-spinner" />
       </QuizLayout>
     );
   }
