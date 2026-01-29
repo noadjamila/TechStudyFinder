@@ -5,6 +5,7 @@ import { useAuth } from "../contexts/AuthContext";
 import FavouritesNotLoggedIn from "../components/favourites/FavouritesNotLoggedIn";
 import FavouritesEmpty from "../components/favourites/FavouritesEmpty";
 import FavouritesList from "../components/favourites/FavouritesList";
+import { clearQuizResults } from "../session/persistQuizResults";
 
 /**
  * Favourites page component.
@@ -19,6 +20,10 @@ const Favourites: React.FC = () => {
   const { user, isLoading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [favorites, setFavorites] = useState<string[]>([]);
+
+  useEffect(() => {
+    clearQuizResults().catch(console.error);
+  }, []);
 
   /**
    * Check user authentication status and favorites count on component mount

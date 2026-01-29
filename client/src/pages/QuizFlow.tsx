@@ -10,7 +10,11 @@ import { calculateRiasecScores } from "../services/calculateRiasecScores";
 import { riasecScoresToApiPayload } from "../services/riasecPayload";
 import { postFilterLevel, saveQuizResults } from "../api/quizApi";
 import { fetchQuestions } from "../api/quizApi";
-import { loadLatestSession, saveSession } from "../session/persistQuizSession";
+import {
+  clearQuizSession,
+  loadLatestSession,
+  saveSession,
+} from "../session/persistQuizSession";
 import { useApiClient } from "../hooks/useApiClient";
 import { useAuth } from "../contexts/AuthContext";
 import { CircularProgress } from "@mui/material";
@@ -239,6 +243,7 @@ export default function QuizFlow(): JSX.Element | null {
           }));
 
           if (sessionRef.current.currentLevel === 3) {
+            clearQuizSession().catch(console.error);
             navigate("/results", {
               state: { resultIds: sessionRef.current.resultIds },
             });
