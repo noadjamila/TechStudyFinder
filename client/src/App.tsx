@@ -16,6 +16,7 @@ import AdminEdit from "./pages/admin/AdminEdit";
 import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 import { ErrorScreen } from "./pages/ErrorScreen";
 import Impressum from "./pages/Impressum";
+import Datenschutz from "./pages/Datenschutz";
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
       <Route path="/results" element={<ResultsPage />} />
       <Route path="/favorites" element={<Favourites />} />
       <Route path="/impressum" element={<Impressum />} />
+      <Route path="/datenschutz" element={<Datenschutz />} />
       <Route
         path="/settings"
         element={

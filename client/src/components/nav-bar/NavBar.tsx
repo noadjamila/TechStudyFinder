@@ -60,7 +60,8 @@ const NavBar: React.FC<NavBarProps> = ({
       location.pathname === "/settings" ||
       location.pathname === "/login" ||
       location.pathname === "/register" ||
-      location.pathname === "/impressum"
+      location.pathname === "/impressum" ||
+      location.pathname === "/datenschutz"
     ) {
       return -1;
     }
