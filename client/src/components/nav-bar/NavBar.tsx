@@ -76,7 +76,8 @@ const NavBar: React.FC<NavBarProps> = ({
     if (
       location.pathname === "/settings" ||
       location.pathname === "/login" ||
-      location.pathname === "/register"
+      location.pathname === "/register" ||
+      location.pathname === "/impressum"
     ) {
       return -1;
     }
@@ -215,6 +216,9 @@ const NavBar: React.FC<NavBarProps> = ({
                   minWidth: "auto",
                   padding: "6px 20px",
                   color: theme.palette.text.secondary,
+                  "@media (max-width: 320px)": {
+                    padding: "6px 12px",
+                  },
                 },
                 "& .Mui-selected": {
                   color: "#999",

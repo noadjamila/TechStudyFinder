@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Alert, Typography } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import PrimaryButton from "../components/buttons/PrimaryButton";
@@ -71,6 +71,12 @@ export default function Login() {
     }
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter" && !loading) {
+      handleLogin();
+    }
+  };
+
   const handleResultDialogClose = () => {
     setShowResultDialog(false);
     if (loginSuccess) {
@@ -133,6 +139,7 @@ export default function Login() {
           label="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          onKeyPress={handleKeyPress}
           disabled={loading}
         />
 
@@ -141,6 +148,7 @@ export default function Login() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyPress={handleKeyPress}
           disabled={loading}
           sx={{ mb: 3 }}
         />

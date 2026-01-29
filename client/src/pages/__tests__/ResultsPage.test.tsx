@@ -123,7 +123,7 @@ beforeEach(async () => {
 
 const renderWithTheme = (
   component: React.ReactElement,
-  entry: { pathname: string; state?: any } = {
+  entry: { pathname: string; state?: any; isLoading?: boolean } = {
     pathname: "/results",
     state: { resultIds: ["1", "2"] },
   },
@@ -154,9 +154,10 @@ describe("ResultsPage Component", () => {
     renderWithTheme(<ResultsPage />, {
       pathname: "/results",
       state: { resultIds: ["1"] },
+      isLoading: true,
     });
 
-    expect(await screen.findByText(/lädt/i)).toBeInTheDocument();
+    expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
   });
 
   it("fetches and displays study programmes from navigation state", async () => {
@@ -250,9 +251,7 @@ describe("ResultsPage Component", () => {
     );
     await waitFor(() => {
       expect(screen.getByText(/Starte jetzt das Quiz/i)).toBeInTheDocument();
-      expect(
-        screen.getByText("Keine Ergebnisse vorhanden."),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/Meine Ergebnisse/i)).toBeInTheDocument();
     });
   });
 
@@ -356,7 +355,7 @@ describe("ResultsPage Component", () => {
         </MemoryRouter>,
       );
 
-      await findByText(/Keine Ergebnisse vorhanden/i);
+      await findByText(/Starte jetzt das Quiz/i);
       expect(getQuizResults).toHaveBeenCalled();
     });
 
@@ -381,7 +380,7 @@ describe("ResultsPage Component", () => {
         </MemoryRouter>,
       );
 
-      await findByText(/Keine Ergebnisse vorhanden/i);
+      await findByText(/Starte jetzt das Quiz/i);
 
       // Restore the original mock
       spy.mockRestore();
@@ -398,27 +397,23 @@ describe("ResultsPage Component", () => {
         setUser: vi.fn(),
       });
 
-      const { findByText } = render(
-        <MemoryRouter initialEntries={[{ pathname: "/results" }]}>
-          <ThemeProvider theme={theme}>
-            <Routes>
-              <Route path="/results" element={<ResultsPage />} />
-            </Routes>
-          </ThemeProvider>
-        </MemoryRouter>,
-      );
+      renderWithTheme(<ResultsPage />, {
+        pathname: "/results",
+        state: { resultIds: ["1"] },
+        isLoading: true,
+      });
 
       // Should show loading state
-      await findByText(/Lädt.../i);
+      expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
 
       expect(api.getQuizResults).not.toHaveBeenCalled();
     });
 
     it("handles database fetch error gracefully", async () => {
-      // Override the mock before rendering
-      const { getQuizResults } = await import("../../api/quizApi");
-      vi.mocked(getQuizResults).mockRejectedValue(new Error("Database error"));
       const api = await import("../../api/quizApi");
+      vi.mocked(api.getQuizResults).mockRejectedValue(
+        new Error("Datenbankfehler"),
+      );
       mockUseAuth.mockReturnValue({
         user: { id: 1, username: "testuser" },
         isLoading: false,
@@ -426,9 +421,6 @@ describe("ResultsPage Component", () => {
         logout: vi.fn(),
         setUser: vi.fn(),
       });
-      vi.mocked(api.getQuizResults).mockRejectedValueOnce(
-        new Error("Database error"),
-      );
 
       render(
         <MemoryRouter initialEntries={[{ pathname: "/results" }]}>
@@ -440,12 +432,14 @@ describe("ResultsPage Component", () => {
         </MemoryRouter>,
       );
 
-      // Wait for the error message to appear
-      expect(
-        await screen.findByText(
-          /Unerwarteter Fehler beim Laden der Ergebnisse/i,
-        ),
-      ).toBeInTheDocument();
+      await waitFor(
+        () => {
+          expect(
+            screen.getByText(/Unerwarteter Fehler beim Laden der Ergebnisse/i),
+          ).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
       expect(api.getQuizResults).toHaveBeenCalled();
     });
 

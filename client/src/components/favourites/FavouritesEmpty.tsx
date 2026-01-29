@@ -24,43 +24,57 @@ const FavouritesEmpty: React.FC = () => {
 
   return (
     <Box
-      className="page-content-wrapper"
       sx={{
-        overflow: "visible",
-        maxWidth: "100%",
-        mx: "auto",
-        px: { xs: 1, sm: 0 },
         textAlign: "center",
-        mt: { xs: -10, sm: 40, md: 32 },
-        minHeight: { xs: "100vh", sm: "auto" },
-        position: "relative",
-        color: theme.palette.text.primary,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: { xs: "center", sm: "flex-start" },
+        mt: { xs: 4, sm: 8 },
       }}
     >
-      <GreenCard>
-        <Typography
-          variant="subtitle1"
-          sx={{
-            color: theme.palette.text.subHeader,
-            mb: 3,
-          }}
-        >
-          {cardTitle}
-        </Typography>
+      <Typography
+        variant="h2"
+        component="h1"
+        gutterBottom
+        color="text.header"
+        sx={{
+          marginBottom: 3,
+          fontWeight: 700,
+          fontSize: "2.5rem",
+          "@media (max-width:600px)": {
+            fontSize: "2rem",
+          },
+        }}
+      >
+        Meine Favoriten
+      </Typography>
 
-        <Button
-          label="Quiz beginnen"
-          variant="contained"
-          color="primary"
-          onClick={handleQuizStart}
-        >
-          Quiz beginnen
-        </Button>
-      </GreenCard>
+      <Box
+        className="page-content-wrapper"
+        sx={{
+          overflow: "visible",
+          maxWidth: "100%",
+          textAlign: "center",
+          mt: { xs: -22, sm: 20, md: 15 },
+          minHeight: { xs: "100vh", sm: "auto" },
+          position: "relative",
+          color: theme.palette.text.primary,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: { xs: "center", sm: "flex-start" },
+        }}
+      >
+        <GreenCard>
+          <Typography variant="subtitle1" sx={{ mb: 3, lineHeight: 1.3 }}>
+            {cardTitle}
+          </Typography>
+
+          <Button
+            label="Quiz beginnen"
+            variant="contained"
+            color="primary"
+            onClick={handleQuizStart}
+          />
+        </GreenCard>
+      </Box>
     </Box>
   );
 };

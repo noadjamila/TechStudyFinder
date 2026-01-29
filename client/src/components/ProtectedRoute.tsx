@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { ReactNode } from "react";
+import { CircularProgress } from "@mui/material";
 
 /**
  * Protected route component that requires authentication.
@@ -13,7 +14,7 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div>Lädt...</div>;
+    return <CircularProgress />;
   }
 
   if (!user) {

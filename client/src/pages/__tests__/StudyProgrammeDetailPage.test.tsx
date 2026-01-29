@@ -103,7 +103,7 @@ describe("StudyProgrammeDetailPage Component", () => {
 
   it("shows loading state initially", () => {
     renderWithTheme();
-    expect(screen.getByText("Lädt...")).toBeInTheDocument();
+    expect(screen.getByRole("progressbar")).toBeInTheDocument();
   });
 
   it("renders programme details after loading", async () => {

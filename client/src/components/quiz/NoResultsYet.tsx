@@ -19,9 +19,6 @@ const NoResultsYet: React.FC = () => {
   return (
     <Box
       sx={{
-        maxWidth: 800,
-        margin: "0 auto",
-        padding: 3,
         textAlign: "center",
         mt: { xs: 4, sm: 8 },
       }}
@@ -43,17 +40,22 @@ const NoResultsYet: React.FC = () => {
         Meine Ergebnisse
       </Typography>
 
-      <Typography
-        variant="body1"
+      <Box
+        className="page-content-wrapper"
         sx={{
-          mb: 5,
+          overflow: "visible",
+          maxWidth: "100%",
+          textAlign: "center",
+          mt: { xs: -20, sm: 20, md: 15 },
+          minHeight: { xs: "100vh", sm: "auto" },
+          position: "relative",
           color: theme.palette.text.primary,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: { xs: "center", sm: "flex-start" },
         }}
       >
-        Keine Ergebnisse vorhanden.
-      </Typography>
-
-      <Box sx={{ textAlign: "center", mt: 12 }}>
         <GreenCard>
           <Typography variant="subtitle1" sx={{ mb: 3, lineHeight: 1.3 }}>
             Starte jetzt das Quiz, um deine personalisierten Empfehlungen zu

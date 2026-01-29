@@ -17,6 +17,7 @@ import {
 } from "../session/persistQuizSession";
 import { useApiClient } from "../hooks/useApiClient";
 import { useAuth } from "../contexts/AuthContext";
+import { CircularProgress } from "@mui/material";
 
 type Level = 1 | 2 | 3;
 
@@ -264,7 +265,7 @@ export default function QuizFlow(): JSX.Element | null {
 
   if (session.currentLevel === 2) {
     if (!session.level2Questions) {
-      return <div>Lädt Fragen…</div>;
+      return <CircularProgress />;
     }
     return (
       <Quiz_L2

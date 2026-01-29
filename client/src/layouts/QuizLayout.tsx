@@ -67,10 +67,17 @@ const QuizLayout = ({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          mt: 2,
           boxSizing: "border-box",
           margin: "0 auto",
-          padding: "30px",
+          px: "30px",
+          pt: {
+            xs: 0,
+            sm: "30px",
+          },
+          "@media (max-width: 375px)": {
+            pt: 0,
+          },
+          pb: "30px",
           maxWidth: 480,
         }}
       >
