@@ -7,6 +7,11 @@ import theme from "../theme/theme";
 import MainLayout from "../layouts/MainLayout";
 import PrimaryButton from "../components/buttons/PrimaryButton";
 import { clearQuizResults } from "../session/persistQuizResults";
+import StyledDialog from "../components/dialogs/Dialog";
+import {
+  loadLatestSession,
+  clearQuizSession,
+} from "../session/persistQuizSession";
 
 /**
  * Homescreen component.
@@ -33,11 +38,51 @@ const Homescreen: React.FC = () => {
     }
   }, [location]);
 
+  const [openDialog, setDialogOpen] = useState(false);
+
   /**
-   * Handles the start of the quiz by navigating to the level success screen first.
+   * Initiates the quiz flow by checking for an existing session.
+   *
+   * It checks if there is a previously saved quiz session
+   * by calling the `loadLatestSession` function. If a session is found, it opens a
+   * dialog window to prompt the user. If no session exists, it redirects the user
+   * to the quiz page. In case of an error during session checking, it logs the error
+   * and navigates to the quiz page regardless.
+   *
+   * @function
+   * @async
+   *
+   * @throws Will log an error to the console if retrieving the session fails.
    */
-  const handleQuizStart = () => {
+  const handleQuizStart = async () => {
+    try {
+      const existingSession = await loadLatestSession();
+
+      if (existingSession) {
+        setDialogOpen(true);
+        return;
+      }
+      navigate("/quiz");
+    } catch (e) {
+      console.error(e);
+      navigate("/quiz");
+    }
+  };
+
+  const handleResume = () => {
+    setDialogOpen(false);
     navigate("/quiz");
+  };
+
+  const handleStartNew = async () => {
+    try {
+      await clearQuizSession();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setDialogOpen(false);
+      navigate("/quiz");
+    }
   };
 
   // --- Static Content Definitions ---
@@ -115,6 +160,16 @@ const Homescreen: React.FC = () => {
           ariaText="Quiz beginnen"
         />
       </GreenCard>
+      <StyledDialog
+        open={openDialog}
+        onClose={() => setDialogOpen(false)}
+        title="Quiz starten"
+        text="Möchtest du dein gespeichertes Quiz fortsetzen oder ein neues Quiz starten?"
+        cancelLabel="NEU STARTEN"
+        confirmLabel="FORTSETZEN"
+        onConfirm={handleResume}
+        onCancel={handleStartNew}
+      />
 
       <Snackbar
         open={showLogoutMessage}
