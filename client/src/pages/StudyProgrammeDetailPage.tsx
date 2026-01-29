@@ -23,7 +23,6 @@ import { StudyProgramme } from "../types/StudyProgramme.types";
 import theme from "../theme/theme";
 import DataSource from "../components/DataSource";
 import BackButton from "../components/buttons/BackButton";
-import MainLayout from "../layouts/MainLayout";
 import { getStudyProgrammeById } from "../api/quizApi";
 import { getFavorites, addFavorite, removeFavorite } from "../api/favoritesApi";
 import DeadlineDisplay from "../components/DeadlineDisplay";
@@ -120,29 +119,14 @@ const StudyProgrammeDetailPage: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <MainLayout>
-        <Box sx={{ textAlign: "center", mt: 4 }}>
-          <CircularProgress aria-label="loading" />
-        </Box>
-      </MainLayout>
-    );
-  }
-
   if (error || !programme) {
     return (
-      <MainLayout>
+      <div>
         <Box sx={{ padding: 3 }}>
           <BackButton
             label="Zurück"
             onClick={() => {
-              const previousPage = (location.state as any)?.previousPage;
-              if (previousPage) {
-                navigate(previousPage);
-              } else {
-                navigate(-1);
-              }
+              navigate("/results");
             }}
             sx={{
               marginBottom: 2,
@@ -157,7 +141,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
             {error || "Studiengang nicht gefunden"}
           </Typography>
         </Box>
-      </MainLayout>
+      </div>
     );
   }
 
@@ -184,12 +168,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
         <BackButton
           label="Zurück"
           onClick={() => {
-            const previousPage = (location.state as any)?.previousPage;
-            if (previousPage) {
-              navigate(previousPage);
-            } else {
-              navigate(-1);
-            }
+            navigate("/results");
           }}
           sx={{
             marginBottom: { xs: 0, sm: 1.5 },
@@ -761,8 +740,14 @@ const StudyProgrammeDetailPage: React.FC = () => {
   );
 
   return (
-    <MainLayout>
-      {pageContent}
+    <Box sx={{ padding: { md: "60px" }, maxWidth: "1000px", margin: "0 auto" }}>
+      {loading ? (
+        <Box sx={{ textAlign: "center", mt: 4 }}>
+          <CircularProgress aria-label="loading" />
+        </Box>
+      ) : (
+        <div>{pageContent}</div>
+      )}
 
       {/* Login reminder dialog for not logged in users trying to add favorites */}
       <LoginReminderDialog
@@ -778,7 +763,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
           });
         }}
       />
-    </MainLayout>
+    </Box>
   );
 };
 
