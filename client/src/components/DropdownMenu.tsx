@@ -157,23 +157,25 @@ export default function DropMenu({
           onClick={handleMenuClick}
           aria-label="Open menu"
           sx={{
-            color: { xs: "#FFFFFF", sm: theme.palette.text.secondary },
-            backgroundColor: {
-              xs: theme.palette.secondary.light,
-              sm: "transparent",
-            },
-            borderRadius: { xs: "50%", sm: 0 },
-            width: { xs: 44, sm: "auto" },
-            height: { xs: 44, sm: "auto" },
+            color: theme.palette.text.secondary,
+            borderRadius: "50%",
+            width: { xs: 50, sm: "auto" },
+            height: { xs: 50, sm: "auto" },
             "&:hover": {
-              backgroundColor: {
-                xs: theme.palette.secondary.main,
-                sm: "transparent",
-              },
+              backgroundColor: theme.palette.secondary.main,
+              color: "#FFFFFF",
             },
           }}
         >
-          <MenuIcon fontSize="medium" />
+          <MenuIcon
+            sx={{
+              fontSize: {
+                xs: 36, // mobil
+                sm: 32,
+                md: 24, // große Bildschirme → kleiner
+              },
+            }}
+          />
         </IconButton>
       </Box>
 

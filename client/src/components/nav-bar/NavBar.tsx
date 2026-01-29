@@ -55,23 +55,6 @@ const NavBar: React.FC<NavBarProps> = ({
     // Check for exact match first
     const index = navItems.findIndex((item) => item.path === location.pathname);
     if (index !== -1) return index;
-    // Check if we're on a study programme detail page
-    if (location.pathname.startsWith("/study-programme/")) {
-      // If we came from a specific page (previousPage in state), highlight that page
-      const previousPage = (location.state as any)?.previousPage;
-      if (previousPage) {
-        const previousIndex = navItems.findIndex(
-          (item) => item.path === previousPage,
-        );
-        if (previousIndex !== -1) return previousIndex;
-      }
-      // Fallback to highlighting "Ergebnisse" if no previousPage is set
-      return navItems.findIndex((item) => item.path === "/results");
-    }
-    // Check if we're on favorites-empty page - should highlight "Favoriten"
-    if (location.pathname === "/favorites-empty") {
-      return navItems.findIndex((item) => item.path === "/favorites");
-    }
     // If we're on settings or other non-nav routes, don't highlight anything
     if (
       location.pathname === "/settings" ||

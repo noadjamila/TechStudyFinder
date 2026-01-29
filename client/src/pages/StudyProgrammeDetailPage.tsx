@@ -23,7 +23,6 @@ import { StudyProgramme } from "../types/StudyProgramme.types";
 import theme from "../theme/theme";
 import DataSource from "../components/DataSource";
 import BackButton from "../components/buttons/BackButton";
-import MainLayout from "../layouts/MainLayout";
 import { getStudyProgrammeById } from "../api/quizApi";
 import { getFavorites, addFavorite, removeFavorite } from "../api/favoritesApi";
 import DeadlineDisplay from "../components/DeadlineDisplay";
@@ -122,26 +121,26 @@ const StudyProgrammeDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <MainLayout>
-        <Box sx={{ textAlign: "center", mt: 4 }}>
-          <CircularProgress aria-label="loading" />
-        </Box>
-      </MainLayout>
+      <Box sx={{ textAlign: "center", mt: 4 }}>
+        <CircularProgress data-testid="loading-spinner" />
+      </Box>
     );
   }
 
   if (error || !programme) {
     return (
-      <MainLayout>
+      <Box
+        sx={{ padding: { md: "60px" }, maxWidth: "1000px", margin: "0 auto" }}
+      >
         <Box sx={{ padding: 3 }}>
           <BackButton
             label="Zurück"
             onClick={() => {
               const previousPage = (location.state as any)?.previousPage;
-              if (previousPage) {
-                navigate(previousPage);
+              if (previousPage === "/favorites") {
+                navigate("/favorites");
               } else {
-                navigate(-1);
+                navigate("/results");
               }
             }}
             sx={{
@@ -157,7 +156,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
             {error || "Studiengang nicht gefunden"}
           </Typography>
         </Box>
-      </MainLayout>
+      </Box>
     );
   }
 
@@ -185,10 +184,10 @@ const StudyProgrammeDetailPage: React.FC = () => {
           label="Zurück"
           onClick={() => {
             const previousPage = (location.state as any)?.previousPage;
-            if (previousPage) {
-              navigate(previousPage);
+            if (previousPage === "/favorites") {
+              navigate("/favorites");
             } else {
-              navigate(-1);
+              navigate("/results");
             }
           }}
           sx={{
@@ -761,7 +760,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
   );
 
   return (
-    <MainLayout>
+    <Box sx={{ padding: { md: "60px" }, maxWidth: "1000px", margin: "0 auto" }}>
       {pageContent}
 
       {/* Login reminder dialog for not logged in users trying to add favorites */}
@@ -778,7 +777,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
           });
         }}
       />
-    </MainLayout>
+    </Box>
   );
 };
 

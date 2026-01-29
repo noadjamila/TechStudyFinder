@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 import theme from "../theme/theme";
 import DropMenu from "./DropdownMenu";
+import LoginReminderDialog from "./dialogs/LoginReminderDialog";
+import { useAuth } from "../contexts/AuthContext";
 
 interface LogoMenuProps {
   fixed?: boolean;
@@ -20,6 +23,24 @@ const LogoMenu: React.FC<LogoMenuProps> = ({
   fixed = false,
   hasResults = false,
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user, isLoading } = useAuth();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleHomeNavigation = () => {
+    if (location.pathname === "/results" && !user && !isLoading && hasResults) {
+      setIsDialogOpen(true);
+    } else {
+      navigate("/");
+    }
+  };
+
+  const handleProceedNavigation = () => {
+    setIsDialogOpen(false);
+    navigate("/");
+  };
+
   return (
     <AppBar
       position={fixed ? "fixed" : "static"}
@@ -50,6 +71,7 @@ const LogoMenu: React.FC<LogoMenuProps> = ({
 
         {/*Tech Study Finder Headline, centered*/}
         <Typography
+          onClick={handleHomeNavigation}
           variant="h5"
           sx={{
             fontWeight: "bold",
@@ -59,6 +81,7 @@ const LogoMenu: React.FC<LogoMenuProps> = ({
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            cursor: "pointer",
           }}
         >
           Tech Study Finder
@@ -84,6 +107,17 @@ const LogoMenu: React.FC<LogoMenuProps> = ({
           />
         </Box>
       </Toolbar>
+
+      <LoginReminderDialog
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onLoginClick={() =>
+          navigate("/login", {
+            state: { redirectTo: "/" },
+          })
+        }
+        onProceedNavigation={handleProceedNavigation}
+      />
     </AppBar>
   );
 };
