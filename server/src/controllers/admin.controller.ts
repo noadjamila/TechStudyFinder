@@ -228,7 +228,7 @@ export async function login(req: Request, res: Response) {
  * @returns Json with { id: number, username: string } or 401 HTTP response
  */
 export async function getAdmin(req: Request, res: Response) {
-  if (!req.session.admin) {
+  if (!req.session || !req.session.admin) {
     return res.status(401).json({ error: "Nicht authentifiziert!" });
   }
 
