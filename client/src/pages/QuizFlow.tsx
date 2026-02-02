@@ -18,6 +18,7 @@ import {
 import { useApiClient } from "../hooks/useApiClient";
 import { useAuth } from "../contexts/AuthContext";
 import { CircularProgress } from "@mui/material";
+import { convertQuizResponses } from "../services/level2Service";
 
 type Level = 1 | 2 | 3;
 
@@ -196,7 +197,8 @@ export default function QuizFlow(): JSX.Element | null {
   async function completeLevel2() {
     const { answers, level1IDS } = sessionRef.current;
     const scores = calculateRiasecScores(answers);
-    const payload = riasecScoresToApiPayload(scores);
+    const convertedScores = convertQuizResponses(scores);
+    const payload = riasecScoresToApiPayload(convertedScores);
 
     const res = await postFilterLevel(
       {
