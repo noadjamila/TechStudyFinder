@@ -9,9 +9,9 @@ import theme from "../theme/theme";
 import BottomHills from "../components/login-register/BottomHills";
 import LoginResultDialog from "../components/dialogs/LoginResultDialog";
 import { useAuth } from "../contexts/AuthContext";
-import { loadLatestSession } from "../session/persistQuizSession";
-import { QuizSession } from "../types/QuizSession";
+import { loadQuizResults } from "../session/persistQuizResults";
 import { saveQuizResults } from "../api/quizApi";
+import { StudyProgramme } from "../types/StudyProgramme.types";
 
 /**
  * Login page component.
@@ -91,11 +91,12 @@ export default function Login() {
 
     (async () => {
       try {
-        const session = (await loadLatestSession()) as QuizSession;
+        const results = (await loadQuizResults()) as StudyProgramme[];
         if (!isMounted) return;
 
-        if (session.resultIds) {
-          setResults(session.resultIds);
+        if (results.length > 0) {
+          let resultIds = results.map((item) => item.studiengang_id);
+          setResults(resultIds);
         }
       } catch (error) {
         console.error("Failed to load persisted quiz session:", error);
