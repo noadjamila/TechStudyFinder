@@ -43,7 +43,7 @@
     "@types/express": "^5.0.5",
     "@types/express-session": "^1.18.2",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.10.1",
+    "@types/node": "^25.2.0",
     "@types/pg": "^8.15.6",
     "@types/pg-copy-streams": "^1.2.5",
     "@types/supertest": "^6.0.3",
