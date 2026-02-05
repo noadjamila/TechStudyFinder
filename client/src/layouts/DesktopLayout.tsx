@@ -83,7 +83,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({
             fontWeight: 600,
             letterSpacing: 0.6,
             textTransform: "uppercase",
-            fontSize: "1.2rem",
+            fontSize: "1rem",
           }}
         >
           Prototyp
