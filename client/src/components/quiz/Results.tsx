@@ -40,7 +40,7 @@ interface ResultsProps {
  * Results component displays filtered study programmes with interactive features.
  *
  * Receives study programmes as props from parent component and provides:
- * - Filtering options by location and degree type
+ * - Filtering options by university and degree type
  * - Favorite/unfavorite functionality (requires user authentication)
  * - Login reminder dialog when attempting to favorite while not logged in
  * - Automatic loading of user's favorites on component mount and navigation
