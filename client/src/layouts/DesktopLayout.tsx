@@ -63,39 +63,58 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({
         bgcolor: theme.palette.background.paper,
       }}
     >
-      {/* Header + Logo in the top right corner */}
+      {/* Header row (temporary prototype disclaimer left, title/logo right) */}
       <Box
         sx={{
           position: "absolute",
           top: 24,
+          left: theme.spacing(13),
           right: 32,
           display: "flex",
           alignItems: "center",
-          gap: 2,
+          justifyContent: "space-between",
         }}
       >
-        {/* Title and Subtitle of the Header */}
-        <Box
+        {/* Temporary prototype disclaimer */}
+        <Typography
+          variant="caption"
           sx={{
-            textAlign: "right",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            cursor: "pointer",
+            color: theme.palette.error.main,
+            fontWeight: 600,
+            letterSpacing: 0.6,
+            textTransform: "uppercase",
+            fontSize: "1.2rem",
           }}
-          onClick={handleHomeNavigation}
         >
-          <Typography variant="h3">Tech Study Finder</Typography>
-          <Typography variant="caption">Deine Reise zum Studiengang</Typography>
-        </Box>
+          Prototyp
+        </Typography>
 
-        {/* Logo Image */}
-        <Box
-          component="img"
-          src="/logo.png"
-          alt="Logo"
-          sx={{ width: 55, height: 55 }}
-        />
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          {/* Title and Subtitle of the Header */}
+          <Box
+            sx={{
+              textAlign: "right",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+            onClick={handleHomeNavigation}
+          >
+            <Typography variant="h3">Tech Study Finder</Typography>
+            <Typography variant="caption">
+              Deine Reise zum Studiengang
+            </Typography>
+          </Box>
+
+          {/* Logo Image */}
+          <Box
+            component="img"
+            src="/logo.png"
+            alt="Logo"
+            sx={{ width: 55, height: 55 }}
+          />
+        </Box>
       </Box>
 
       {/* Navigation Items (vertically centered on the left edge) */}
