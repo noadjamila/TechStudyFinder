@@ -12,6 +12,7 @@ import {
   loadLatestSession,
   clearQuizSession,
 } from "../session/persistQuizSession";
+import { useAuth } from "../contexts/AuthContext";
 
 /**
  * Homescreen component.
@@ -24,6 +25,7 @@ import {
 const Homescreen: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const [showLogoutMessage, setShowLogoutMessage] = useState(false);
 
   useEffect(() => {
@@ -87,8 +89,10 @@ const Homescreen: React.FC = () => {
 
   // --- Static Content Definitions ---
   const mainTitle = "Finde dein Studium";
-  const subTitle = "Du weißt nicht, was du studieren möchtest?";
-  const infoText1 = "Kein Problem!";
+  const subTitle = user
+    ? `Hallo ${user.username}!`
+    : "Du weißt nicht, was du studieren möchtest?";
+  const infoText1 = user ? "Bist du noch auf der Suche?" : "Kein Problem!";
   const infoText2 =
     "Tech Study Finder unterstützt dich dabei, Studiengänge zu finden, die zu deinen persönlichen Interessen passen.";
   const cardQuestion = "Bist du bereit, dich auf die Reise zu begeben?";
