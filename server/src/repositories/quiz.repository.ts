@@ -86,24 +86,23 @@ export async function getFilteredResultsLevel1(
  * @param studyProgrammeIds list of study programme IDs to filter from
  * @param userScores the riasec scores of the user
  * @param minSimilarity minimum similarity threshold to consider a study programme
- * @returns 20 best matching study programme IDs
+ * @returns 40 best matching study programmes and their duplicates
  */
 export async function getFilteredResultsLevel2(
   studyProgrammeIds: number[] | undefined,
   userScores: RiasecScores,
-  minSimilarity: number = 0.6,
+  minSimilarity: number = 0.9,
 ): Promise<number[]> {
   if (!studyProgrammeIds || studyProgrammeIds.length === 0) {
     console.debug("No studyProgrammeIds provided, returning empty array.");
     return [];
   }
 
-  const LIMIT = 20;
+  const LIMIT = 40;
 
   console.debug("User RIASEC Scores:", userScores);
   console.debug("Study programme IDs:", studyProgrammeIds);
   console.debug("Min similarity threshold:", minSimilarity);
-  console.debug("Query limit:", LIMIT);
 
   const query = `
     WITH user_vector AS (
@@ -118,8 +117,7 @@ export async function getFilteredResultsLevel2(
     scored_studiengaenge AS (
       SELECT
         s.studiengang_id,
-
-        -- Cosine Similarity
+        s.studiengang_name,
         (
           (s.r_score * u.r +
           s.i_score * u.i +
@@ -148,18 +146,37 @@ export async function getFilteredResultsLevel2(
             )
           )
         ) AS similarity
-
       FROM studiengang_riasec_mv s
       CROSS JOIN user_vector u
       WHERE s.studiengang_id = ANY($1::text[])
-    )
+    ),
 
-    SELECT
-      studiengang_id
-    FROM scored_studiengaenge
-    WHERE similarity >= $8
-    ORDER BY similarity DESC
-    LIMIT $9;
+  ranked_by_name AS (
+      SELECT *,
+            ROW_NUMBER() OVER (PARTITION BY studiengang_name ORDER BY similarity DESC) AS rn
+      FROM scored_studiengaenge
+      WHERE similarity >= $8
+  ),
+
+  top_30_unique AS (
+      SELECT *
+      FROM ranked_by_name
+      WHERE rn = 1
+      ORDER BY similarity DESC
+      LIMIT $9
+  )
+
+  SELECT
+      r.studiengang_id,
+      r.studiengang_name,
+      r.similarity,
+      (r.rn = 1) AS is_unique
+  FROM ranked_by_name r
+  JOIN top_30_unique t
+    ON r.studiengang_name = t.studiengang_name
+  ORDER BY
+      t.similarity DESC,
+      r.similarity DESC;
   `;
 
   const result = await pool.query(query, [
