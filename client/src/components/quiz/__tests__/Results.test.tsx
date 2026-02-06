@@ -138,7 +138,9 @@ describe("Results Component", () => {
   });
 
   it("renders the title", () => {
-    renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
+    renderWithTheme(
+      <Results studyProgrammes={mockStudyProgrammes} isFreshResults={true} />,
+    );
     expect(screen.getByText("Meine Ergebnisse")).toBeInTheDocument();
   });
 

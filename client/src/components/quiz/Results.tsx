@@ -34,6 +34,7 @@ import { useApiClient } from "../../hooks/useApiClient";
 
 interface ResultsProps {
   studyProgrammes: StudyProgramme[];
+  isFreshResults?: boolean;
 }
 
 /**
@@ -45,7 +46,10 @@ interface ResultsProps {
  * - Login reminder dialog when attempting to favorite while not logged in
  * - Automatic loading of user's favorites on component mount and navigation
  */
-const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
+const Results: React.FC<ResultsProps> = ({
+  studyProgrammes,
+  isFreshResults = false,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -181,7 +185,9 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
       }}
     >
       <DataSource />
-      <Typography variant="h2">Meine Ergebnisse</Typography>
+      <Typography variant="h2">
+        {isFreshResults ? "Meine Ergebnisse" : "Meine letzten Ergebnisse"}
+      </Typography>
 
       {studyProgrammes.length === 0 ? (
         <Box sx={{ textAlign: "center", mt: 12 }}>
