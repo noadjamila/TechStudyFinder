@@ -13,6 +13,7 @@ import {
   clearQuizSession,
 } from "../session/persistQuizSession";
 import { useAuth } from "../contexts/AuthContext";
+import { GreetingBubble } from "../components/GreetingBubble";
 
 /**
  * Homescreen component.
@@ -118,13 +119,18 @@ const Homescreen: React.FC = () => {
       {/* Main Title */}
       <Typography variant="h2">{mainTitle}</Typography>
 
-      {/* Subtitle */}
-      <Typography
-        variant="body1"
-        sx={{ fontWeight: "normal", lineHeight: 1.3, mb: 0 }}
-      >
-        {subTitle}
-      </Typography>
+      {/* Greeting Bubble - only shown when user is logged in */}
+      {user && <GreetingBubble username={user.username} />}
+
+      {/* Subtitle - only shown when user is NOT logged in */}
+      {!user && (
+        <Typography
+          variant="body1"
+          sx={{ fontWeight: "normal", lineHeight: 1.3, mb: 0 }}
+        >
+          {subTitle}
+        </Typography>
+      )}
 
       {/* Info Texts */}
       <Box sx={{ maxWidth: 500, mx: "auto", mb: { xs: 10, sm: 8, md: 2 } }}>
@@ -153,7 +159,7 @@ const Homescreen: React.FC = () => {
       </Box>
 
       {/* Card */}
-      <GreenCard>
+      <GreenCard hideMascot={user ? true : false}>
         <Typography variant="subtitle1" sx={{ mb: 3, lineHeight: 1.3 }}>
           {cardQuestion}
         </Typography>
