@@ -172,3 +172,31 @@ Quiz results are intentionally stored separately from the quiz session so they c
 - `saveQuizResults(results)`
 - `loadQuizResults()`
 - `clearQuizResults()`
+
+---
+ ## Debugging Guide - How to see the session in your browser
+### Chrome and Safari
+Quiz Session:
+- Open DevTools > Application > IndexedDB
+- Database: studyfinder-quiz-session
+- Store: sessions
+- Key: latest-session
+
+Quiz Results:
+- Open DevTools > Application > IndexedDB
+- Database: quiz-results-db
+- Store: results
+- Key: latest-results
+
+### Firefox
+- Open DevTools > Web-Storage > IndexedDB
+- Database: studyfinder-quiz-session
+- Store: sessions
+- Key: latest-session
+
+Quiz Results:
+- Open DevTools > Web-Storage > IndexedDB
+- Database: quiz-results-db
+- Store: results
+- Key: latest-results
+
