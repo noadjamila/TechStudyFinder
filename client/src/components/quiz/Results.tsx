@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import theme from "../../theme/theme";
 import { StudyProgramme } from "../../types/StudyProgramme.types";
-import PlaceIcon from "@mui/icons-material/Place";
 import StarsIcon from "@mui/icons-material/Stars";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -41,7 +40,7 @@ interface ResultsProps {
  * Results component displays filtered study programmes with interactive features.
  *
  * Receives study programmes as props from parent component and provides:
- * - Filtering options by location and degree type
+ * - Filtering options by university and degree type
  * - Favorite/unfavorite functionality (requires user authentication)
  * - Login reminder dialog when attempting to favorite while not logged in
  * - Automatic loading of user's favorites on component mount and navigation
@@ -52,7 +51,6 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   const { user } = useAuth();
   const { apiFetch } = useApiClient();
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [selectedDegree, setSelectedDegree] = useState<string>("");
   const [selectedUniversity, setSelectedUniversity] = useState<string>("");
   const [showLoginDialog, setShowLoginDialog] = useState(false);
@@ -145,56 +143,34 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
   // Get available filter options based on current selections
   const availableUniversities = useMemo(() => {
     const filtered = studyProgrammes.filter((programme) => {
-      const matchesLocation =
-        !selectedLocation ||
-        (programme.standorte && programme.standorte.includes(selectedLocation));
       const matchesDegree =
         !selectedDegree || programme.abschluss === selectedDegree;
-      return matchesLocation && matchesDegree;
+      return matchesDegree;
     });
     const uniqueUniversities = [...new Set(filtered.map((p) => p.hochschule))];
     return uniqueUniversities.sort();
-  }, [studyProgrammes, selectedLocation, selectedDegree]);
-
-  const availableLocations = useMemo(() => {
-    const filtered = studyProgrammes.filter((programme) => {
-      const matchesUniversity =
-        !selectedUniversity || programme.hochschule === selectedUniversity;
-      const matchesDegree =
-        !selectedDegree || programme.abschluss === selectedDegree;
-      return matchesUniversity && matchesDegree;
-    });
-    const allLocations = filtered.flatMap((p) => p.standorte || []);
-    const uniqueLocations = [...new Set(allLocations)];
-    return uniqueLocations.sort();
-  }, [studyProgrammes, selectedUniversity, selectedDegree]);
+  }, [studyProgrammes, selectedDegree]);
 
   const availableDegrees = useMemo(() => {
     const filtered = studyProgrammes.filter((programme) => {
-      const matchesLocation =
-        !selectedLocation ||
-        (programme.standorte && programme.standorte.includes(selectedLocation));
       const matchesUniversity =
         !selectedUniversity || programme.hochschule === selectedUniversity;
-      return matchesLocation && matchesUniversity;
+      return matchesUniversity;
     });
     const uniqueDegrees = [...new Set(filtered.map((p) => p.abschluss))];
     return uniqueDegrees.sort();
-  }, [studyProgrammes, selectedLocation, selectedUniversity]);
+  }, [studyProgrammes, selectedUniversity]);
 
   // Filter programmes based on selected filters
   const filteredProgrammes = useMemo(() => {
     return studyProgrammes.filter((programme) => {
-      const matchesLocation =
-        !selectedLocation ||
-        (programme.standorte && programme.standorte.includes(selectedLocation));
       const matchesDegree =
         !selectedDegree || programme.abschluss === selectedDegree;
       const matchesUniversity =
         !selectedUniversity || programme.hochschule === selectedUniversity;
-      return matchesLocation && matchesDegree && matchesUniversity;
+      return matchesDegree && matchesUniversity;
     });
-  }, [studyProgrammes, selectedLocation, selectedDegree, selectedUniversity]);
+  }, [studyProgrammes, selectedDegree, selectedUniversity]);
 
   return (
     <Box
@@ -247,11 +223,10 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
               Filter
             </Button>
 
-            {(selectedLocation || selectedDegree || selectedUniversity) && (
+            {(selectedDegree || selectedUniversity) && (
               <Button
                 variant="text"
                 onClick={() => {
-                  setSelectedLocation("");
                   setSelectedDegree("");
                   setSelectedUniversity("");
                 }}
@@ -389,114 +364,6 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
                     {availableUniversities.map((university) => (
                       <MenuItem key={university} value={university}>
                         {university}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-
-                <Divider />
-
-                <FormControl fullWidth>
-                  <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                    Stadt
-                  </Typography>
-                  <Select
-                    id="location-filter"
-                    value={selectedLocation}
-                    onChange={(e) => setSelectedLocation(e.target.value)}
-                    displayEmpty
-                    IconComponent={ArrowDropDownIcon}
-                    aria-label="Filter nach Standort"
-                    MenuProps={{
-                      PaperProps: {
-                        sx: {
-                          backgroundColor: theme.palette.background.default,
-                          maxHeight: 300,
-                          "& .MuiMenuItem-root": {
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            "&:hover": {
-                              backgroundColor: `${theme.palette.primary.main}33`,
-                            },
-                            "&.Mui-selected": {
-                              backgroundColor: `${theme.palette.primary.main}4D`,
-                              "&:hover": {
-                                backgroundColor: `${theme.palette.primary.main}66`,
-                              },
-                            },
-                          },
-                        },
-                      },
-                    }}
-                    renderValue={(selected) => (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                          minWidth: 0,
-                        }}
-                      >
-                        <PlaceIcon
-                          sx={{
-                            fontSize: 20,
-                            flexShrink: 0,
-                          }}
-                        />
-                        <Typography
-                          sx={{
-                            color: selected
-                              ? theme.palette.text.primary
-                              : theme.palette.text.skipButton,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {selected || "Alle Städte"}
-                        </Typography>
-                      </Box>
-                    )}
-                    sx={{
-                      borderRadius: "12px",
-                      backgroundColor: theme.palette.background.paper,
-                      "& .MuiSelect-select": {
-                        paddingTop: "10px",
-                        paddingBottom: "10px",
-                      },
-                      "& .MuiSelect-icon": {
-                        color: theme.palette.text.primary,
-                      },
-                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        borderColor: theme.palette.decorative.blue,
-                      },
-                    }}
-                  >
-                    <MenuItem value="">
-                      <Box
-                        sx={{
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                          width: "100%",
-                        }}
-                      >
-                        Alle Städte
-                      </Box>
-                    </MenuItem>
-                    {availableLocations.map((location) => (
-                      <MenuItem key={location} value={location}>
-                        <Box
-                          sx={{
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            width: "100%",
-                          }}
-                        >
-                          {location}
-                        </Box>
                       </MenuItem>
                     ))}
                   </Select>

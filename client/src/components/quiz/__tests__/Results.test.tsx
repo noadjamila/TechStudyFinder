@@ -177,9 +177,8 @@ describe("Results Component", () => {
     const filterButton = screen.getByRole("button", { name: /filter/i });
     fireEvent.click(filterButton);
 
-    // Check for all three filter labels
+    // Check for filter labels
     expect(screen.getByLabelText("Filter nach Hochschule")).toBeInTheDocument();
-    expect(screen.getByLabelText("Filter nach Standort")).toBeInTheDocument();
     expect(screen.getByLabelText("Filter nach Abschluss")).toBeInTheDocument();
   });
 
