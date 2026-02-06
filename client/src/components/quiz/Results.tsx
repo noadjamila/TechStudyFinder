@@ -18,6 +18,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SchoolIcon from "@mui/icons-material/School";
 import StudyProgrammeCard from "../cards/StudyProgrammeCard";
+import CollapsibleStudyProgrammeCard from "../cards/CollapsibleStudyProgrammeCard";
 import { useNavigate, useLocation } from "react-router-dom";
 import GreenCard from "../cards/GreenCardBaseNotQuiz";
 import PrimaryButton from "../buttons/PrimaryButton";
@@ -195,6 +196,32 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
       return matchesLocation && matchesDegree && matchesUniversity;
     });
   }, [studyProgrammes, selectedLocation, selectedDegree, selectedUniversity]);
+
+  // Group programmes by name and limit to 20 items total
+  const groupedProgrammes = useMemo(() => {
+    const groups: Map<string, StudyProgramme[]> = new Map();
+
+    // Group by programme name
+    filteredProgrammes.forEach((programme) => {
+      const name = programme.name;
+      if (!groups.has(name)) {
+        groups.set(name, []);
+      }
+      groups.get(name)!.push(programme);
+    });
+
+    // Convert to array, maintaining insertion order
+    const groupArray = Array.from(groups.entries()).map(([name, items]) => ({
+      name,
+      programmes: items,
+    }));
+
+    // Limit to 20 total items (each group or individual programme = 1 item)
+    const MAX_ITEMS = 20;
+    const limitedGroups = groupArray.slice(0, MAX_ITEMS);
+
+    return limitedGroups;
+  }, [filteredProgrammes]);
 
   return (
     <Box
@@ -614,12 +641,34 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
           </Box>
 
           <Stack spacing={2}>
-            {filteredProgrammes.map((programme) => {
+            {groupedProgrammes.map((group) => {
+              // Create a Map of favorites for this group
+              const isFavoritesMap = new Map(
+                group.programmes.map((p) => [
+                  p.studiengang_id,
+                  favorites.has(p.studiengang_id),
+                ]),
+              );
+
+              // If only one programme in the group, render as normal card
+              if (group.programmes.length === 1) {
+                const programme = group.programmes[0];
+                return (
+                  <StudyProgrammeCard
+                    key={programme.studiengang_id}
+                    programme={programme}
+                    isFavorite={favorites.has(programme.studiengang_id)}
+                    onToggleFavorite={toggleFavorite}
+                  />
+                );
+              }
+
+              // If multiple programmes with same name, render as collapsible
               return (
-                <StudyProgrammeCard
-                  key={programme.studiengang_id}
-                  programme={programme}
-                  isFavorite={favorites.has(programme.studiengang_id)}
+                <CollapsibleStudyProgrammeCard
+                  key={`group-${group.name}`}
+                  programmes={group.programmes}
+                  isFavorites={isFavoritesMap}
                   onToggleFavorite={toggleFavorite}
                 />
               );
