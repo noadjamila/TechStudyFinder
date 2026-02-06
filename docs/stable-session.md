@@ -78,7 +78,7 @@ export function createQuizSession(): QuizSession {
 **File:** `persistQuizSession.ts`
 
 | Property      | Value                      |
-| ------------- | -------------------------- |
+|---------------|----------------------------|
 | Database Name | `studyfinder-quiz-session` |
 | Version       | `1`                        |
 | Object Store  | `sessions`                 |
@@ -160,11 +160,11 @@ await clearQuizSession();
 ## Quiz Results Persistence (Separate Storage)
 File: `persistQuizResults.ts`
 
-| Property     | Value             |
-| ------------ | ----------------- |
-| Database     | `quiz-results-db` |
-| Object Store | `results`         |
-| Key          | `"latest-results"`        |
+| Property     | Value              |
+|--------------|--------------------|
+| Database     | `quiz-results-db`  |
+| Object Store | `results`          |
+| Key          | `"latest-results"` |
 
 Quiz results are intentionally stored separately from the quiz session so they can survive session resets.
 
