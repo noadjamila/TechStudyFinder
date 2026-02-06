@@ -36,16 +36,7 @@ PGOPTIONS='-c datestyle=ISO,DMY' npx ts-node db/scripts/init_data.ts
 
 ## Level 2 questions
 
-The quiz loads from `fragen_level_zwei`. If missing, import it from a known-good DB:
-
-```bash
-pg_dump -h 127.0.0.1 -p 5432 -U <user> -d <db> \
-  -t fragen_level_zwei --schema-only > fragen_level_zwei_schema.sql
-pg_dump -h 127.0.0.1 -p 5432 -U <user> -d <db> \
-  -t fragen_level_zwei --data-only --column-inserts > fragen_level_zwei_data.sql
-```
-
-Then load into target DB with `psql`.
+The quiz loads from `fragen_level_zwei`. The init script imports it from `server/db/data/fragen_level_zwei.csv` (comma-delimited, no header).
 
 ## Integration tests
 
