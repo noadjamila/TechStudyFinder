@@ -26,6 +26,5 @@ export type QuizSession = {
   startedAt: number;
   updatedAt: number;
 
-  // TODO for (PR 6)
   userId?: string;
 };
