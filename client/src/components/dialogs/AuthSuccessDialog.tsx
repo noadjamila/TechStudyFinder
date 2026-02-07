@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 
 interface LoginResultDialogProps {
   open: boolean;
-  success: boolean;
-  onClose: () => void;
+  state: "login" | "register";
   autoCloseDuration?: number;
+  onClose: () => void;
 }
 
 /**
@@ -19,9 +19,9 @@ interface LoginResultDialogProps {
  */
 export default function LoginResultDialog({
   open,
-  success,
-  onClose,
+  state,
   autoCloseDuration = 800,
+  onClose,
 }: LoginResultDialogProps) {
   const [isOpen, setIsOpen] = useState(open);
 
@@ -41,10 +41,10 @@ export default function LoginResultDialog({
       onClose={handleClose}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
     >
-      <Alert severity={success ? "success" : "error"} sx={{ width: "100%" }}>
-        {success
-          ? "Login erfolgreich"
-          : "Username oder Passwort falsch - Bitte versuche es erneut"}
+      <Alert severity="success" sx={{ width: "100%" }}>
+        {state === "login"
+          ? "Login erfolgreich!"
+          : "Registrierung erfolgreich!"}
       </Alert>
     </Snackbar>
   );

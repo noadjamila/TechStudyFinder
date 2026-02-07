@@ -40,7 +40,10 @@ export async function register(req: Request, res: Response) {
 
   try {
     const user = await registerUser(username, password);
-    return res.status(201).json({ user });
+    req.session.user = { id: user.id, username: user.username };
+    return res
+      .status(200)
+      .json({ message: "Registration successful", user: req.session.user });
   } catch (error: unknown) {
     console.error("[register] Registration error:", error);
 
