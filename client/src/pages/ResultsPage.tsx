@@ -20,22 +20,35 @@ import { useAuth } from "../contexts/AuthContext";
 const ResultsPage: React.FC = () => {
   const location = useLocation();
   const { user, isLoading: authLoading } = useAuth();
-  type ResultId = string | { studiengang_id: string };
+  type ResultId = string | { studiengang_id: string; similarity?: number };
 
-  const rawResultIds: ResultId[] =
-    location.state?.idsFromLevel2 ?? location.state?.resultIds ?? [];
+  const rawResults: ResultId[] = location.state?.results ?? [];
 
   const idsFromQuiz: string[] = useMemo(() => {
-    return (rawResultIds ?? [])
+    return (rawResults ?? [])
       .map((r) => (typeof r === "string" ? r : r?.studiengang_id))
       .filter((id): id is string => typeof id === "string" && id.length > 0);
-  }, [rawResultIds]);
+  }, [rawResults]);
+
+  const similarityMap: Map<string, number> = useMemo(() => {
+    const map = new Map<string, number>();
+    (rawResults ?? []).forEach((r) => {
+      if (
+        typeof r === "object" &&
+        r?.studiengang_id &&
+        typeof (r as any)?.similarity === "number"
+      ) {
+        map.set(r.studiengang_id, (r as any).similarity);
+      }
+    });
+    return map;
+  }, [rawResults]);
   const ACTIVE_RESULTS_KEY = "activeQuizResults";
   const [studyProgrammes, setStudyProgrammes] = useState<StudyProgramme[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [hasQuizResults, setHasQuizResults] = useState<boolean>(() => {
-    return location.state?.resultIds !== undefined;
+    return location.state?.results !== undefined;
   });
 
   useEffect(() => {
@@ -56,7 +69,7 @@ const ResultsPage: React.FC = () => {
         let idsToFetch: string[] = [];
 
         const hasNav =
-          location.state?.idsFromLevel2 !== undefined ||
+          location.state?.results !== undefined ||
           location.state?.resultIds !== undefined;
 
         // Scenario 1: Fresh quiz completion - use IDs from navigation state
@@ -111,8 +124,15 @@ const ResultsPage: React.FC = () => {
 
         const validResults: StudyProgramme[] = [];
         results.forEach((r, i) => {
-          if (r.status === "fulfilled" && r.value) validResults.push(r.value);
-          else if (r.status === "rejected") {
+          if (r.status === "fulfilled" && r.value) {
+            const programme = r.value;
+            // Attach similarity score if available
+            const enrichedProgramme: StudyProgramme = {
+              ...programme,
+              similarity: similarityMap.get(programme.studiengang_id) ?? null,
+            };
+            validResults.push(enrichedProgramme);
+          } else if (r.status === "rejected") {
             console.error(
               `Failed to load study programme ${idsToFetch[i]}:`,
               r.reason,

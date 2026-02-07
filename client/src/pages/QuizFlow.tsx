@@ -219,6 +219,7 @@ export default function QuizFlow(): JSX.Element | null {
     setSession((prev) => ({
       ...prev,
       resultIds: idsToSave,
+      idsFromLevel2: rawResultIds,
       currentLevel: 3,
       currentQuestionIndex: 0,
       showSuccessScreen: true,
@@ -247,7 +248,7 @@ export default function QuizFlow(): JSX.Element | null {
           if (sessionRef.current.currentLevel === 3) {
             clearQuizSession().catch(console.error);
             navigate("/results", {
-              state: { resultIds: sessionRef.current.resultIds },
+              state: { results: (sessionRef.current as any).idsFromLevel2 },
             });
           }
         }}
