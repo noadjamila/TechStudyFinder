@@ -6,13 +6,9 @@
   "documentNamespace": "http://spdx.org/spdxdocs/tech-study-finder-0.0.0-***",
   "creationInfo": {
     "created": "2026-02-07T14:18:36.291Z",
-    "creators": [
-      "Tool: npm/cli-11.7.0"
-    ]
+    "creators": ["Tool: npm/cli-11.7.0"]
   },
-  "documentDescribes": [
-    "SPDXRef-Package-tech-study-finder-0.0.0"
-  ],
+  "documentDescribes": ["SPDXRef-Package-tech-study-finder-0.0.0"],
   "packages": [
     {
       "name": "tech-study-finder",
