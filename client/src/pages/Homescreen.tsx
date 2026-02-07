@@ -107,7 +107,7 @@ const Homescreen: React.FC = () => {
         overflow: "visible",
         maxWidth: "100%",
         mx: "auto",
-        mt: { xs: 1, sm: 15, md: 9 },
+        mt: { xs: 4, sm: 15, md: 8 },
         position: "relative",
         color: theme.palette.text.primary,
         textAlign: "center",
