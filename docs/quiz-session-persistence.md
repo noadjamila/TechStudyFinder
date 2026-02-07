@@ -228,6 +228,7 @@ Quiz Results:
 ### Firefox
 
 Quiz Session:
+
 - Open DevTools > Web-Storage > IndexedDB
 - Database: studyfinder-quiz-session
 - Store: sessions
