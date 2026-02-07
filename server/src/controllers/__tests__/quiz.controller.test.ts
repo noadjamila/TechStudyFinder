@@ -587,7 +587,7 @@ describe("Quiz Controller - saveQuizResults", () => {
     expect(statusMock).toHaveBeenCalledWith(400);
     expect(jsonMock).toHaveBeenCalledWith({
       success: false,
-      error: "All resultIds must be strings",
+      error: "All resultIds must be strings or objects with studiengang_id",
     });
   });
 
@@ -640,9 +640,11 @@ describe("Quiz Controller - getQuizResults", () => {
 
   it("should return quiz results for authenticated user", async () => {
     // Arrange
-    jest
-      .spyOn(quizService, "getQuizResultsService")
-      .mockResolvedValue(["1", "2", "3"]);
+    jest.spyOn(quizService, "getQuizResultsService").mockResolvedValue([
+      { studiengang_id: "1", similarity: 0.95 },
+      { studiengang_id: "2", similarity: 0.92 },
+      { studiengang_id: "3", similarity: 0.89 },
+    ]);
 
     mockRequest = {
       session: {
@@ -658,7 +660,11 @@ describe("Quiz Controller - getQuizResults", () => {
     expect(statusMock).toHaveBeenCalledWith(200);
     expect(jsonMock).toHaveBeenCalledWith({
       success: true,
-      resultIds: ["1", "2", "3"],
+      resultIds: [
+        { studiengang_id: "1", similarity: 0.95 },
+        { studiengang_id: "2", similarity: 0.92 },
+        { studiengang_id: "3", similarity: 0.89 },
+      ],
     });
   });
 

@@ -144,10 +144,23 @@ export async function saveQuizResults(
     });
   }
 
-  if (!resultIds.every((id) => typeof id === "string")) {
+  // Validate that each result is either a string or an object with studiengang_id
+  const isValid = resultIds.every((id: any) => {
+    if (typeof id === "string") return true;
+    if (
+      typeof id === "object" &&
+      id !== null &&
+      typeof id.studiengang_id === "string"
+    ) {
+      return true;
+    }
+    return false;
+  });
+
+  if (!isValid) {
     return res.status(400).json({
       success: false,
-      error: "All resultIds must be strings",
+      error: "All resultIds must be strings or objects with studiengang_id",
     });
   }
 

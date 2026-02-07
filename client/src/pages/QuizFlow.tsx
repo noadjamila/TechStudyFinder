@@ -208,7 +208,7 @@ export default function QuizFlow(): JSX.Element | null {
       },
       apiFetch,
     );
-    type ResultId = string | { studiengang_id: string };
+    type ResultId = string | { studiengang_id: string; similarity?: number };
 
     const rawResultIds: ResultId[] = (res as any)?.ids ?? [];
 
@@ -227,7 +227,13 @@ export default function QuizFlow(): JSX.Element | null {
     }));
     if (user && idsToSave.length > 0) {
       try {
-        await saveQuizResults(idsToSave);
+        // Filter out is_unique flag before saving, only keep studiengang_id and similarity
+        const resultsToSave = rawResultIds.map((r) =>
+          typeof r === "string"
+            ? r
+            : { studiengang_id: r.studiengang_id, similarity: r.similarity },
+        );
+        await saveQuizResults(resultsToSave);
       } catch (e) {
         console.error("Failed to save quiz results:", e);
       }

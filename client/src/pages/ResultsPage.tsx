@@ -30,19 +30,6 @@ const ResultsPage: React.FC = () => {
       .filter((id): id is string => typeof id === "string" && id.length > 0);
   }, [rawResults]);
 
-  const similarityMap: Map<string, number> = useMemo(() => {
-    const map = new Map<string, number>();
-    (rawResults ?? []).forEach((r) => {
-      if (
-        typeof r === "object" &&
-        r?.studiengang_id &&
-        typeof (r as any)?.similarity === "number"
-      ) {
-        map.set(r.studiengang_id, (r as any).similarity);
-      }
-    });
-    return map;
-  }, [rawResults]);
   const ACTIVE_RESULTS_KEY = "activeQuizResults";
   const [studyProgrammes, setStudyProgrammes] = useState<StudyProgramme[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -67,20 +54,29 @@ const ResultsPage: React.FC = () => {
 
       try {
         let idsToFetch: string[] = [];
+        let resultsWithSimilarity: typeof rawResults = [];
 
         const hasNav =
           location.state?.results !== undefined ||
           location.state?.resultIds !== undefined;
 
-        // Scenario 1: Fresh quiz completion - use IDs from navigation state
+        // Scenario 1: Fresh quiz completion - use results from navigation state
         if (hasNav) {
           idsToFetch = idsFromQuiz;
+          resultsWithSimilarity = rawResults;
           sessionStorage.setItem(ACTIVE_RESULTS_KEY, "1");
         }
         // Scenario 2: user logged in - fetch from DB
         else if (user) {
-          const savedIds = await getQuizResults();
-          if (Array.isArray(savedIds)) idsToFetch = savedIds;
+          const savedResults = await getQuizResults();
+          if (Array.isArray(savedResults)) {
+            idsToFetch = savedResults
+              .map((r) => (typeof r === "string" ? r : r?.studiengang_id))
+              .filter(
+                (id): id is string => typeof id === "string" && id.length > 0,
+              );
+            resultsWithSimilarity = savedResults;
+          }
 
           if (idsToFetch.length > 0) {
             sessionStorage.setItem(ACTIVE_RESULTS_KEY, "1");
@@ -117,6 +113,18 @@ const ResultsPage: React.FC = () => {
           return;
         }
 
+        // Build similarity map from results
+        const similarityMapLocal = new Map<string, number>();
+        resultsWithSimilarity.forEach((r) => {
+          if (
+            typeof r === "object" &&
+            r?.studiengang_id &&
+            typeof (r as any)?.similarity === "number"
+          ) {
+            similarityMapLocal.set(r.studiengang_id, (r as any).similarity);
+          }
+        });
+
         // Fetch programmes
         const results = await Promise.allSettled(
           idsToFetch.map((id) => getStudyProgrammeById(id)),
@@ -129,7 +137,8 @@ const ResultsPage: React.FC = () => {
             // Attach similarity score if available
             const enrichedProgramme: StudyProgramme = {
               ...programme,
-              similarity: similarityMap.get(programme.studiengang_id) ?? null,
+              similarity:
+                similarityMapLocal.get(programme.studiengang_id) ?? null,
             };
             validResults.push(enrichedProgramme);
           } else if (r.status === "rejected") {
