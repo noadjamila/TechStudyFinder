@@ -42,7 +42,7 @@ const FavouritesNotLoggedIn: React.FC = () => {
           },
         }}
       >
-        Meine Favoriten
+        Deine Favoriten
       </Typography>
 
       <Box

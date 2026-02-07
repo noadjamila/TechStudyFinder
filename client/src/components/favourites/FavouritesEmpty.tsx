@@ -43,7 +43,7 @@ const FavouritesEmpty: React.FC = () => {
           },
         }}
       >
-        Meine Favoriten
+        Deine Favoriten
       </Typography>
 
       <Box

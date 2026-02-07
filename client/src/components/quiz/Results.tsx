@@ -186,7 +186,7 @@ const Results: React.FC<ResultsProps> = ({
     >
       <DataSource />
       <Typography variant="h2">
-        {isFreshResults ? "Meine Ergebnisse" : "Meine letzten Ergebnisse"}
+        {isFreshResults ? "Deine Ergebnisse" : "Deine letzten Ergebnisse"}
       </Typography>
 
       {studyProgrammes.length === 0 ? (
