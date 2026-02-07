@@ -1,12 +1,12 @@
-# Stable Session (IndexedDB)
+# Quiz Session Persistence (IndexedDB)
 
 ## Purpose
 
-The Stable Quiz Session ensures that a
+The saved Quiz Session ensures that a
 user’s quiz progress (answers, levels, fetched questions, and UI state)
 persists across page reloads, tab closures, and browser restarts.
 
-The full QuizSession state is stored in IndexedDB and automatically restored when the application starts
+The full QuizSession state is stored in IndexedDB and automatically restored when the application starts.
 
 ---
 
@@ -20,7 +20,7 @@ The full QuizSession state is stored in IndexedDB and automatically restored whe
 
 ---
 
-## Data Model: `Quizsession`
+## Data Model: `QuizSession`
 
 ```
 export type QuizSession = {
@@ -59,7 +59,7 @@ userId?: string;
 
 ---
 
-## Data Model: `createQuizsession`
+## Data Model: `createQuizSession`
 
 ```
 export function createQuizSession(): QuizSession {
@@ -85,7 +85,7 @@ export function createQuizSession(): QuizSession {
 
 ---
 
-## IndexedDb Design (Quizsession)
+## IndexedDb Design (QuizSession)
 
 **File:** `persistQuizSession.ts`
 
@@ -132,7 +132,7 @@ const session = await loadLatestSession();
 ### Returns:
 
 - QuizSession → session is restored
-- null → a new session is created via createQuizSession()
+- null → a new session is created via `createQuizSession()`
 
 ---
 
@@ -156,34 +156,34 @@ await clearQuizSession();
 ### App Startup (Hydration)
 
 1. Session provider mounts
-2. loadLatestSession() is called
-3. If a session exists → setSession(loaded)
-4. Otherwise → setSession(createQuizSession())
+2. `loadLatestSession()` is called
+3. If a session exists → `setSession(loaded)`
+4. Otherwise → `setSession(createQuizSession())`
 
 ### Selecting an Answer
 
 1. User selects an option
-2. handleAnswer(answer) is executed
-3. sessionRef.current and React state are updated
-4. setSession(next) saves the change to the session
+2. `handleAnswer(answer)` is executed
+3. `sessionRef.current` and React state are updated
+4. `setSession(next)` saves the change to the session
 
 ### Level Completion
 
-1. currentLevel is incremented
-2. currentQuestionIndex is reset
-3. showSuccessScreen is updated
+1. `currentLevel` is incremented
+2. `currentQuestionIndex` is reset
+3. `showSuccessScreen` is updated
 4. Session is persisted
 
 ### Quiz Cancellation
 
 1. User exits the quiz and chooses not to save the quiz progress
-2. clearQuizSession() is called
+2. `clearQuizSession()` is called
 
 ### Quiz Restart
 
 1. User exits the quiz and chooses to save the quiz progress
 2. When clicking "Quiz starten" user chooses to restart the quiz.
-3. clearQuizSession() is called
+3. `clearQuizSession()` is called
 
 ---
 
@@ -227,6 +227,7 @@ Quiz Results:
 
 ### Firefox
 
+Quiz Session:
 - Open DevTools > Web-Storage > IndexedDB
 - Database: studyfinder-quiz-session
 - Store: sessions
