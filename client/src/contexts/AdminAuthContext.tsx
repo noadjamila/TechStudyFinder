@@ -32,9 +32,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({
         const res = await fetch("/api/admin/me", { credentials: "include" });
         if (res.ok) {
           const data = await res.json();
-          console.debug("Fetched admin:", data); // 🔍 Prüfen
           if (mounted) {
-            // falls Backend { admin: {...} } liefert:
             setAdmin(data);
             setIsLoading(false);
           }

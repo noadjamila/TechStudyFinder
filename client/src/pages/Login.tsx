@@ -54,7 +54,6 @@ export default function Login() {
 
       if (results.length > 0) {
         try {
-          console.log(results);
           let resultIds = results as string[];
           await saveQuizResults(resultIds);
         } catch (e) {

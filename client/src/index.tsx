@@ -32,10 +32,6 @@ ReactDOM.createRoot(rootElement).render(
 
 // Register Vite PWA Service Worker
 registerSW({
-  onNeedRefresh() {
-    console.debug("New content available; please refresh.");
-  },
-  onOfflineReady() {
-    console.debug("App ready to work offline.");
-  },
+  onNeedRefresh() {},
+  onOfflineReady() {},
 });

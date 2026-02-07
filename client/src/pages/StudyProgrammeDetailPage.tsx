@@ -57,16 +57,26 @@ const StudyProgrammeDetailPage: React.FC = () => {
   useEffect(() => {
     const loadFavoriteState = async () => {
       if (!id) return;
+      if (!user) {
+        setIsFavorite(false);
+        return;
+      }
+
       try {
         const favoriteIds = await getFavorites(apiFetch);
         setIsFavorite(favoriteIds.includes(id));
-      } catch (error) {
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        if (message.includes("401") || message.includes("403")) {
+          setIsFavorite(false);
+          return;
+        }
         console.error("Failed to load favorites:", error);
       }
     };
 
     loadFavoriteState();
-  }, [id]);
+  }, [id, user, apiFetch]);
 
   // Fetch study programme data
   useEffect(() => {
@@ -109,8 +119,9 @@ const StudyProgrammeDetailPage: React.FC = () => {
       } else {
         await addFavorite(id, apiFetch);
       }
-    } catch (error: any) {
-      if (error.message && error.message.includes("409")) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (message.includes("409")) {
         setIsFavorite(true);
       } else {
         console.error("Error toggling favorite:", error);

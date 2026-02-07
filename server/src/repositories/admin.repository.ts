@@ -124,7 +124,6 @@ export async function updateRiasecData(
   }
 
   if (setClauses.length === 0) {
-    console.log("Keine RIASEC-Werte zum Aktualisieren");
     return;
   }
 
