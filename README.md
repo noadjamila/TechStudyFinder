@@ -33,6 +33,7 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 - [Question Documentation](docs/questions.md)
 - [Database Schema](docs/database-schema.md)
 - [Database Operations](docs/database.md)
+- [Quiz Session Persistence](docs/quiz-session-persistence.md)
 
 ---
 
