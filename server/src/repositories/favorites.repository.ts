@@ -17,16 +17,8 @@ export async function addFavorite(
     RETURNING id, user_id, studiengang_id;
   `;
 
-  try {
-    const result = await pool.query(query, [userId, studiengangId]);
-    return result.rows[0];
-  } catch (err: any) {
-    console.error(
-      `[DB ERROR] Failed to add favorite for user ${userId} and studiengang ${studiengangId}:`,
-      err.message,
-    );
-    throw err;
-  }
+  const result = await pool.query(query, [userId, studiengangId]);
+  return result.rows[0];
 }
 
 /**
@@ -45,16 +37,8 @@ export async function removeFavorite(
     WHERE user_id = $1 AND studiengang_id = $2;
   `;
 
-  try {
-    const result = await pool.query(query, [userId, studiengangId]);
-    return result.rowCount || 0;
-  } catch (err: any) {
-    console.error(
-      `[DB ERROR] Failed to remove favorite for user ${userId} and studiengang ${studiengangId}:`,
-      err.message,
-    );
-    throw err;
-  }
+  const result = await pool.query(query, [userId, studiengangId]);
+  return result.rowCount || 0;
 }
 
 /**
@@ -70,14 +54,6 @@ export async function getUserFavorites(userId: number): Promise<string[]> {
     ORDER BY id DESC;
   `;
 
-  try {
-    const result = await pool.query(query, [userId]);
-    return result.rows.map((row: any) => row.studiengang_id);
-  } catch (err: any) {
-    console.error(
-      `[DB ERROR] Failed to retrieve favorites for user ${userId}:`,
-      err.message,
-    );
-    throw err;
-  }
+  const result = await pool.query(query, [userId]);
+  return result.rows.map((row: any) => row.studiengang_id);
 }

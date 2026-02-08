@@ -30,7 +30,7 @@ const Homescreen: React.FC = () => {
   const [showLogoutMessage, setShowLogoutMessage] = useState(false);
 
   useEffect(() => {
-    clearQuizResults().catch(console.error);
+    clearQuizResults().catch(() => undefined);
   }, []);
   // Check for logout confirmation flag whenever the component mounts or location changes
   useEffect(() => {
@@ -66,8 +66,7 @@ const Homescreen: React.FC = () => {
         return;
       }
       navigate("/quiz");
-    } catch (e) {
-      console.error(e);
+    } catch {
       navigate("/quiz");
     }
   };

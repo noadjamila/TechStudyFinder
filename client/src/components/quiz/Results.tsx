@@ -1,14 +1,14 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
-  Typography,
-  Stack,
-  Select,
-  MenuItem,
-  FormControl,
   Button,
-  Popover,
   Divider,
+  FormControl,
+  MenuItem,
+  Popover,
+  Select,
+  Stack,
+  Typography,
 } from "@mui/material";
 import theme from "../../theme/theme";
 import { StudyProgramme } from "../../types/StudyProgramme.types";
@@ -17,7 +17,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SchoolIcon from "@mui/icons-material/School";
 import StudyProgrammeCard from "../cards/StudyProgrammeCard";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import GreenCard from "../cards/GreenCardBaseNotQuiz";
 import PrimaryButton from "../buttons/PrimaryButton";
 import DataSource from "../DataSource";
@@ -26,8 +26,8 @@ import LoginReminderDialog, {
 } from "../dialogs/LoginReminderDialog";
 import {
   addFavorite,
-  removeFavorite,
   getFavorites,
+  removeFavorite,
 } from "../../api/favoritesApi";
 import { useAuth } from "../../contexts/AuthContext";
 import { useApiClient } from "../../hooks/useApiClient";
@@ -74,16 +74,27 @@ const Results: React.FC<ResultsProps> = ({
   // Load favorites from API on component mount and when location changes
   useEffect(() => {
     const loadFavorites = async () => {
+      if (!user) {
+        setFavorites(new Set());
+        return;
+      }
+
       try {
         const favoriteIds = await getFavorites(apiFetch);
         setFavorites(new Set(favoriteIds));
       } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        if (message.includes("401") || message.includes("403")) {
+          setFavorites(new Set());
+          return;
+        }
+
         console.error("Failed to load favorites:", error);
       }
     };
 
     loadFavorites();
-  }, [location]);
+  }, [location, user, apiFetch]);
 
   const handleQuizStart = () => {
     navigate("/quiz");
@@ -113,16 +124,14 @@ const Results: React.FC<ResultsProps> = ({
     // Save/remove favorite in database
     try {
       if (isFavorited) {
-        // Remove from favorites
         await removeFavorite(programmeId, apiFetch);
       } else {
-        // Add to favorites
         await addFavorite(programmeId, apiFetch);
       }
-    } catch (error: any) {
-      // Handle 409 Conflict (already exists) by keeping it as favorited
-      if (error.message && error.message.includes("409")) {
-        console.debug("Favorite already exists, keeping as favorited");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      // Handle 409 Conflict (already exists) by keeping it as favorite
+      if (message.includes("409")) {
         setFavorites((prev) => {
           const newFavorites = new Set(prev);
           newFavorites.add(programmeId); // Keep it favorited
@@ -147,9 +156,7 @@ const Results: React.FC<ResultsProps> = ({
   // Get available filter options based on current selections
   const availableUniversities = useMemo(() => {
     const filtered = studyProgrammes.filter((programme) => {
-      const matchesDegree =
-        !selectedDegree || programme.abschluss === selectedDegree;
-      return matchesDegree;
+      return !selectedDegree || programme.abschluss === selectedDegree;
     });
     const uniqueUniversities = [...new Set(filtered.map((p) => p.hochschule))];
     return uniqueUniversities.sort();
@@ -157,9 +164,7 @@ const Results: React.FC<ResultsProps> = ({
 
   const availableDegrees = useMemo(() => {
     const filtered = studyProgrammes.filter((programme) => {
-      const matchesUniversity =
-        !selectedUniversity || programme.hochschule === selectedUniversity;
-      return matchesUniversity;
+      return !selectedUniversity || programme.hochschule === selectedUniversity;
     });
     const uniqueDegrees = [...new Set(filtered.map((p) => p.abschluss))];
     return uniqueDegrees.sort();

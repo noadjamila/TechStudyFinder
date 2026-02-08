@@ -12,11 +12,7 @@ export async function addFavorite(
   studiengangId: string,
 ): Promise<{ id: number; user_id: number; studiengang_id: string }> {
   try {
-    const result = await favoritesRepository.addFavorite(userId, studiengangId);
-    console.debug(
-      `[FAVORITES] Added studiengang ${studiengangId} to favorites for user ${userId}`,
-    );
-    return result;
+    return await favoritesRepository.addFavorite(userId, studiengangId);
   } catch (err) {
     console.error("[SERVICE ERROR] Failed to add favorite:", err);
     throw err;
@@ -35,14 +31,7 @@ export async function removeFavorite(
   studiengangId: string,
 ): Promise<number> {
   try {
-    const deleted = await favoritesRepository.removeFavorite(
-      userId,
-      studiengangId,
-    );
-    console.debug(
-      `[FAVORITES] Removed studiengang ${studiengangId} from favorites for user ${userId}`,
-    );
-    return deleted;
+    return await favoritesRepository.removeFavorite(userId, studiengangId);
   } catch (err) {
     console.error("[SERVICE ERROR] Failed to remove favorite:", err);
     throw err;
