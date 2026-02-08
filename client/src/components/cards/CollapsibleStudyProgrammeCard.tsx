@@ -151,8 +151,9 @@ const CollapsibleStudyProgrammeCard: React.FC<
                   fontSize: { xs: "0.75rem", sm: "0.875rem" },
                 }}
               >
-                {programmeCount} {programmeCount === 1 ? "Angebot" : "Angebote"}{" "}
-                • {uniqueUniversities}{" "}
+                {programmeCount}{" "}
+                {programmeCount === 1 ? "Studiengang" : "Studiengänge"} •{" "}
+                {uniqueUniversities}{" "}
                 {uniqueUniversities === 1 ? "Hochschule" : "Hochschulen"}
               </Typography>
             </Box>
