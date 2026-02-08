@@ -35,9 +35,13 @@ export function getPhone(field: any): string | null {
 }
 
 /**
- *
- * @param field
- * @returns
+ * Batch insert rows into a PostgreSQL table with optional conflict handling.
+ * @param client
+ * @param table
+ * @param columns
+ * @param rows
+ * @param conflict
+ * @param batchSize
  */
 export async function batchInsert(
   client: Client,
