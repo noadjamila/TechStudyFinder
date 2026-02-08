@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import React, { JSX, useState } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
 import CardStack from "../cards/CardStackLevel2";
