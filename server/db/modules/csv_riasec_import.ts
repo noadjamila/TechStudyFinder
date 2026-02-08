@@ -34,6 +34,8 @@ async function copyCsvIntoTable(
  * Imports a CSV file in one of the RIASEC tables using a staging table.
  * @param tableName Name of the target table ('studiengebiete' or 'studienfelder')
  * @param csvPath Path to the CSV file
+ * @param client PostgreSQL client instance
+ * @throws Error if the tableName is unexpected or if any database operation fails
  */
 export async function importRiasecCsv(
   tableName: string,
