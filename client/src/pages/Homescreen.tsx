@@ -107,7 +107,7 @@ const Homescreen: React.FC = () => {
         overflow: "visible",
         maxWidth: "100%",
         mx: "auto",
-        mt: { xs: 1, sm: 15, md: 9 },
+        mt: { xs: 4, sm: 8, md: 8 },
         position: "relative",
         color: theme.palette.text.primary,
         textAlign: "center",
@@ -117,7 +117,15 @@ const Homescreen: React.FC = () => {
       }}
     >
       {/* Main Title */}
-      <Typography variant="h2">{mainTitle}</Typography>
+      <Typography
+        variant="h2"
+        sx={{
+          width: "100%",
+          fontSize: { xs: "2rem", sm: "2.5rem", md: "2.5rem" },
+        }}
+      >
+        {mainTitle}
+      </Typography>
 
       {/* Greeting Bubble - only shown when user is logged in */}
       {user && <GreetingBubble username={user.username} />}

@@ -37,7 +37,7 @@ const NoResultsYet: React.FC = () => {
           },
         }}
       >
-        Meine Ergebnisse
+        Deine Ergebnisse
       </Typography>
 
       <Box
