@@ -2,6 +2,7 @@ import React from "react";
 import { Card, CardContent, Typography, Box, IconButton } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import StarsIcon from "@mui/icons-material/Stars";
 import SchoolIcon from "@mui/icons-material/School";
 import { StudyProgramme } from "../../types/StudyProgramme.types";
@@ -182,7 +183,7 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
                       justifyContent: "center",
                     }}
                   >
-                    <StarsIcon
+                    <AutoAwesomeIcon
                       sx={{
                         fontSize: 18,
                         color: theme.palette.success.main,

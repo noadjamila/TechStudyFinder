@@ -125,7 +125,7 @@ const renderWithTheme = (
   component: React.ReactElement,
   entry: { pathname: string; state?: any; isLoading?: boolean } = {
     pathname: "/results",
-    state: { resultIds: ["1", "2"] },
+    state: { results: ["1", "2"] },
   },
 ) => {
   return render(
@@ -153,7 +153,7 @@ describe("ResultsPage Component", () => {
 
     renderWithTheme(<ResultsPage />, {
       pathname: "/results",
-      state: { resultIds: ["1"] },
+      state: { results: ["1"] },
       isLoading: true,
     });
 
@@ -163,7 +163,7 @@ describe("ResultsPage Component", () => {
   it("fetches and displays study programmes from navigation state", async () => {
     renderWithTheme(<ResultsPage />, {
       pathname: "/results",
-      state: { resultIds: ["1", "2"] },
+      state: { results: ["1", "2"] },
     });
 
     expect(await screen.findByText("Test Programme 1")).toBeInTheDocument();
@@ -314,7 +314,11 @@ describe("ResultsPage Component", () => {
       // Override the mocks before rendering
       const { getQuizResults, getStudyProgrammeById } =
         await import("../../api/quizApi");
-      vi.mocked(getQuizResults).mockResolvedValue(["100", "101", "102"]);
+      vi.mocked(getQuizResults).mockResolvedValue([
+        { studiengang_id: "100", similarity: 0.95 },
+        { studiengang_id: "101", similarity: 0.88 },
+        { studiengang_id: "102", similarity: 0.76 },
+      ]);
       vi.mocked(getStudyProgrammeById).mockImplementation((id: string) =>
         Promise.resolve({
           studiengang_id: id,
@@ -399,7 +403,7 @@ describe("ResultsPage Component", () => {
 
       renderWithTheme(<ResultsPage />, {
         pathname: "/results",
-        state: { resultIds: ["1"] },
+        state: { results: ["1"] },
         isLoading: true,
       });
 
@@ -446,7 +450,10 @@ describe("ResultsPage Component", () => {
     it("prioritizes navigation state over database results", async () => {
       // Override the mocks before rendering
       const api = await import("../../api/quizApi");
-      vi.mocked(api.getQuizResults).mockResolvedValue(["100", "101"]);
+      vi.mocked(api.getQuizResults).mockResolvedValue([
+        { studiengang_id: "100", similarity: 0.92 },
+        { studiengang_id: "101", similarity: 0.85 },
+      ]);
       vi.mocked(api.getStudyProgrammeById).mockImplementation(
         async (id: string) =>
           ({
@@ -460,7 +467,7 @@ describe("ResultsPage Component", () => {
       render(
         <MemoryRouter
           initialEntries={[
-            { pathname: "/results", state: { idsFromLevel2: ["1", "2"] } },
+            { pathname: "/results", state: { results: ["1", "2"] } },
           ]}
         >
           <ThemeProvider theme={theme}>
