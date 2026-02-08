@@ -83,12 +83,6 @@ const Results: React.FC<ResultsProps> = ({
         const favoriteIds = await getFavorites(apiFetch);
         setFavorites(new Set(favoriteIds));
       } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        if (message.includes("401") || message.includes("403")) {
-          setFavorites(new Set());
-          return;
-        }
-
         console.error("Failed to load favorites:", error);
       }
     };

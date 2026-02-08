@@ -57,20 +57,11 @@ const StudyProgrammeDetailPage: React.FC = () => {
   useEffect(() => {
     const loadFavoriteState = async () => {
       if (!id) return;
-      if (!user) {
-        setIsFavorite(false);
-        return;
-      }
 
       try {
         const favoriteIds = await getFavorites(apiFetch);
         setIsFavorite(favoriteIds.includes(id));
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : String(error);
-        if (message.includes("401") || message.includes("403")) {
-          setIsFavorite(false);
-          return;
-        }
         console.error("Failed to load favorites:", error);
       }
     };
