@@ -67,6 +67,14 @@ const CollapsibleStudyProgrammeCard: React.FC<
   const uniqueUniversities = [...new Set(programmes.map((p) => p.hochschule))]
     .length;
 
+  // Calculate similarity range
+  const similarities = programmes
+    .map((p) => p.similarity)
+    .filter((s): s is number => s !== undefined && s !== null);
+  const hasSimilarities = similarities.length > 0;
+  const minSimilarity = hasSimilarities ? Math.min(...similarities) : null;
+  const maxSimilarity = hasSimilarities ? Math.max(...similarities) : null;
+
   return (
     <Card
       sx={{
@@ -103,12 +111,25 @@ const CollapsibleStudyProgrammeCard: React.FC<
             sx={{
               display: "flex",
               justifyContent: "space-between",
-              alignItems: "flex-start",
-              gap: 1,
+              alignItems: { xs: "flex-start", sm: "center" },
               width: "100%",
+              flexDirection: { xs: "column", sm: "row" },
+              "@media (min-width: 376px)": {
+                flexDirection: "row",
+                alignItems: "center",
+              },
             }}
           >
-            <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Box
+              sx={{
+                flex: 1,
+                minWidth: 0,
+                width: { xs: "100%", sm: "auto" },
+                "@media (min-width: 376px)": {
+                  width: "auto",
+                },
+              }}
+            >
               <Typography
                 variant="h6"
                 component="h3"
@@ -135,22 +156,60 @@ const CollapsibleStudyProgrammeCard: React.FC<
                 {uniqueUniversities === 1 ? "Hochschule" : "Hochschulen"}
               </Typography>
             </Box>
-            {onToggleFavorite && isAnyFavorite && (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  flexShrink: 0,
-                }}
-              >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                marginTop: { xs: 1, sm: 0 },
+                justifyContent: { xs: "flex-start", sm: "flex-end" },
+                "@media (min-width: 376px)": {
+                  marginTop: 0,
+                  justifyContent: "flex-end",
+                },
+              }}
+            >
+              {hasSimilarities &&
+                minSimilarity !== null &&
+                maxSimilarity !== null && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 0.5,
+                      flexShrink: 0,
+                    }}
+                  >
+                    <AutoAwesomeIcon
+                      sx={{
+                        fontSize: 18,
+                        color: theme.palette.success.main,
+                      }}
+                    />
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: theme.palette.success.main,
+                        fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                        fontWeight: 500,
+                      }}
+                    >
+                      {minSimilarity === maxSimilarity
+                        ? `${Math.round(maxSimilarity * 100)}%`
+                        : `${Math.round(minSimilarity * 100)}-${Math.round(maxSimilarity * 100)}%`}
+                    </Typography>
+                  </Box>
+                )}
+              {onToggleFavorite && isAnyFavorite && (
                 <FavoriteIcon
                   sx={{
                     color: theme.palette.secondary.main,
                     fontSize: { xs: 20, sm: 24 },
+                    flexShrink: 0,
                   }}
                 />
-              </Box>
-            )}
+              )}
+            </Box>
           </Box>
         </AccordionSummary>
 
