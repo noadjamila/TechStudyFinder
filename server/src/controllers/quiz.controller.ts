@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import {
   filterLevel1,
   filterLevel2,
-  filterLevel3,
   getQuestionsLevel2Service,
   getStudyProgrammeByIdService,
   saveQuizResultsService,
@@ -30,8 +29,6 @@ export async function filterLevel(
       result = await filterLevel1(answers);
     } else if (level === 2) {
       result = await filterLevel2(studyProgrammeIds, answers);
-    } else if (level === 3) {
-      result = await filterLevel3(studyProgrammeIds, answers);
     }
 
     return res.status(200).json({
