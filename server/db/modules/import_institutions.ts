@@ -40,7 +40,6 @@ export async function importInstitutions(client: Client, xmlData?: string) {
   if (institutions.length === 0) {
     throw new Error("No institutions found!");
   }
-  console.debug(`✅ ${institutions.length} institutions found.`);
 
   const hochschultypRows: any[][] = [];
   const traegerschaftRows: any[][] = [];
@@ -62,9 +61,9 @@ export async function importInstitutions(client: Client, xmlData?: string) {
     const foundation_year = inst.foundation_year
       ? parseInt(inst.foundation_year)
       : null;
-    const award_phd = inst.award_phd?.possible === "true" ? true : false;
-    const award_habil = inst.award_habil?.possible === "true" ? true : false;
-    const clinic = inst.clinic?.possible === "true" ? true : false;
+    const award_phd = inst.award_phd?.possible === "true";
+    const award_habil = inst.award_habil?.possible === "true";
+    const clinic = inst.clinic?.possible === "true";
     const student_statistic = JSON.stringify(inst.student_statistic || {});
 
     // institution_type

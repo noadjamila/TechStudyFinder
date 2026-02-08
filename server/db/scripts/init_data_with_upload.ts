@@ -47,13 +47,10 @@ export async function initializeDatabaseWithUpload(
   await client.connect();
 
   try {
-    console.debug("\nInitializing database with uploaded data");
-
     await client.query("BEGIN");
     await client.query("SET search_path TO public;");
 
     // Create schemas
-    console.debug("\n Creating schemas");
     for (const file of SCHEMA_FILES) {
       const filePath = path.join(SCHEMA_DIR, file);
       const sql = fs.readFileSync(filePath, "utf8");
@@ -68,7 +65,6 @@ export async function initializeDatabaseWithUpload(
     }
 
     // Import XML data (entweder hochgeladen oder vom Standard-Pfad)
-    console.debug("\n Importing XML data");
     if (institutionsXml) {
       await importInstitutions(client, institutionsXml);
     } else {
@@ -82,28 +78,22 @@ export async function initializeDatabaseWithUpload(
     }
 
     // Import CSV data (RIASEC)
-    console.debug("\n Importing CSV data");
     for (const file of CSV_FILES) {
       const tableName = CSV_TABLE_MAP[file];
       if (!tableName) throw new Error(`No table mapping for ${file}`);
-      console.debug(`  - Importing ${file} → table ${tableName}`);
       await importRiasecCsv(tableName, path.join(CSV_DIR, file), client);
     }
 
     // NULL-Checks on studiengebiete
-    console.debug('\n Checking "studiengebiete" for NULL values');
     const sql = fs.readFileSync(CHECK_NULLS_FILE, "utf8");
     await client.query(sql);
 
     // Refresh materialized view
-    console.debug("\n Refreshing materialized view");
     await client.query(`REFRESH MATERIALIZED VIEW ${MATERIALIZED_VIEW};`);
 
     await client.query("COMMIT");
-    console.debug("DONE – Database fully initialized");
   } catch (err) {
     await client.query("ROLLBACK");
-    console.error("\nERROR – ROLLBACK", err);
     throw err;
   } finally {
     await client.end();
