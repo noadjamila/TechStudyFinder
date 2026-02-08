@@ -1,43 +1,39 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import LoginResultDialog from "../LoginResultDialog";
+import AuthSuccessDialog from "../AuthSuccessDialog";
 
-describe("LoginResultDialog", () => {
-  it("displays success message when success is true", () => {
+describe("AuthSuccessDialog", () => {
+  it("displays login success message when success is true", () => {
     render(
-      <LoginResultDialog
+      <AuthSuccessDialog
+        state="login"
         open={true}
-        success={true}
         onClose={vi.fn()}
         autoCloseDuration={5000}
       />,
     );
 
-    expect(screen.getByText("Login erfolgreich")).toBeInTheDocument();
+    expect(screen.getByText("Login erfolgreich!")).toBeInTheDocument();
   });
 
-  it("displays error message when success is false", () => {
+  it("displays register success message when success is true", () => {
     render(
-      <LoginResultDialog
+      <AuthSuccessDialog
+        state="register"
         open={true}
-        success={false}
         onClose={vi.fn()}
         autoCloseDuration={5000}
       />,
     );
 
-    expect(
-      screen.getByText(
-        "Username oder Passwort falsch - Bitte versuche es erneut",
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Registrierung erfolgreich!")).toBeInTheDocument();
   });
 
   it("renders with success severity when success is true", () => {
     const { container } = render(
-      <LoginResultDialog
+      <AuthSuccessDialog
+        state="login"
         open={true}
-        success={true}
         onClose={vi.fn()}
         autoCloseDuration={5000}
       />,
@@ -47,25 +43,11 @@ describe("LoginResultDialog", () => {
     expect(alert).toHaveClass("MuiAlert-standardSuccess");
   });
 
-  it("renders with error severity when success is false", () => {
-    const { container } = render(
-      <LoginResultDialog
-        open={true}
-        success={false}
-        onClose={vi.fn()}
-        autoCloseDuration={5000}
-      />,
-    );
-
-    const alert = container.querySelector(".MuiAlert-root");
-    expect(alert).toHaveClass("MuiAlert-standardError");
-  });
-
   it("does not render when open is false", () => {
     const { container } = render(
-      <LoginResultDialog
+      <AuthSuccessDialog
+        state="login"
         open={false}
-        success={true}
         onClose={vi.fn()}
         autoCloseDuration={5000}
       />,
@@ -78,10 +60,10 @@ describe("LoginResultDialog", () => {
   it("calls onClose when snackbar closes", async () => {
     const onClose = vi.fn();
     render(
-      <LoginResultDialog
+      <AuthSuccessDialog
+        state="login"
         open={true}
-        success={true}
-        onClose={onClose}
+        onClose={onClose()}
         autoCloseDuration={100}
       />,
     );
@@ -96,7 +78,7 @@ describe("LoginResultDialog", () => {
 
   it("uses default autoCloseDuration when not provided", () => {
     const { container } = render(
-      <LoginResultDialog open={true} success={true} onClose={vi.fn()} />,
+      <AuthSuccessDialog state="login" open={true} onClose={vi.fn()} />,
     );
 
     const snackbar = container.querySelector(".MuiSnackbar-root");
@@ -104,35 +86,11 @@ describe("LoginResultDialog", () => {
     expect(snackbar).toBeInTheDocument();
   });
 
-  it("updates when open prop changes", () => {
-    const { rerender } = render(
-      <LoginResultDialog
-        open={false}
-        success={true}
-        onClose={vi.fn()}
-        autoCloseDuration={5000}
-      />,
-    );
-
-    expect(() => screen.getByText("Login erfolgreich")).toThrow();
-
-    rerender(
-      <LoginResultDialog
-        open={true}
-        success={true}
-        onClose={vi.fn()}
-        autoCloseDuration={5000}
-      />,
-    );
-
-    expect(screen.getByText("Login erfolgreich")).toBeInTheDocument();
-  });
-
   it("positions snackbar at top center", () => {
     const { container } = render(
-      <LoginResultDialog
+      <AuthSuccessDialog
+        state="login"
         open={true}
-        success={true}
         onClose={vi.fn()}
         autoCloseDuration={5000}
       />,

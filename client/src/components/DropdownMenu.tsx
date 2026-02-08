@@ -12,7 +12,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import FolderIcon from "@mui/icons-material/Folder";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import theme from "../theme/theme";
 import { useAuth } from "../contexts/AuthContext";
 import LoginReminderDialog from "./dialogs/LoginReminderDialog";
@@ -64,7 +63,7 @@ export default function DropMenu({
     if (user) {
       setIsLogoutOpen(true);
     } else {
-      navigate("/login");
+      navigate("/login-register");
     }
   };
 
@@ -85,7 +84,7 @@ export default function DropMenu({
 
   const handleLoginClick = () => {
     setIsDialogOpen(false);
-    navigate("/login", { state: { redirectTo: intendedDestination } });
+    navigate("/login-register", { state: { redirectTo: intendedDestination } });
   };
 
   const handleConfirmLogout = async () => {
@@ -106,19 +105,10 @@ export default function DropMenu({
 
   const menuItems: MenuItemConfig[] = [
     {
-      label: user ? "Ausloggen" : "Einloggen",
+      label: user ? "Ausloggen" : "Einloggen/Registrieren",
       icon: <LogoutIcon fontSize="small" />,
       onClick: handleLoginLogout,
     },
-    ...(!user
-      ? [
-          {
-            label: "Registrieren",
-            icon: <PersonAddIcon fontSize="small" />,
-            onClick: () => handleNavigate("/register"),
-          },
-        ]
-      : []),
     ...(user
       ? [
           {
