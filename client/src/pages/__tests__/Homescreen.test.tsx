@@ -15,6 +15,7 @@ import { ReactElement } from "react";
 import { AuthProvider } from "../../contexts/AuthContext";
 
 const mockedNavigate = vi.fn();
+const clearQuizResultsMock = vi.fn();
 
 vi.mock("react-router-dom", async () => {
   const actual =
@@ -35,7 +36,7 @@ vi.mock("../../api/authApi", () => ({
 }));
 
 vi.mock("../../session/persistQuizResults", () => ({
-  clearQuizResults: vi.fn().mockResolvedValue(undefined),
+  clearQuizResults: (...args: unknown[]) => clearQuizResultsMock(...args),
 }));
 
 const loadLatestSessionMock = vi.fn();
@@ -61,6 +62,7 @@ describe("Homescreen Component", () => {
   beforeEach(() => {
     mockedNavigate.mockClear();
     vi.clearAllMocks();
+    clearQuizResultsMock.mockResolvedValue(undefined);
     loadLatestSessionMock.mockResolvedValue(null);
     clearQuizSessionMock.mockResolvedValue(undefined);
   });
@@ -155,6 +157,39 @@ describe("Homescreen Component", () => {
     await waitFor(() => {
       expect(clearQuizSessionMock).toHaveBeenCalledTimes(1);
       expect(mockedNavigate).toHaveBeenCalledWith("/quiz");
+    });
+  });
+
+  it("does not log clearQuizResults error when IndexedDB is not supported", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    clearQuizResultsMock.mockRejectedValueOnce(
+      new Error("IndexedDB is not supported in this environment."),
+    );
+
+    renderWithProviders(<Homescreen />);
+
+    await waitFor(() => {
+      expect(clearQuizResultsMock).toHaveBeenCalledTimes(1);
+    });
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+  });
+
+  it("logs unexpected clearQuizResults errors", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    const unexpectedError = new Error("quota exceeded");
+    clearQuizResultsMock.mockRejectedValueOnce(unexpectedError);
+
+    renderWithProviders(<Homescreen />);
+
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Failed to clear quiz results:",
+        unexpectedError,
+      );
     });
   });
 });

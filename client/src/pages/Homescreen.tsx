@@ -13,6 +13,15 @@ import {
   clearQuizSession,
 } from "../session/persistQuizSession";
 
+const INDEXED_DB_NOT_SUPPORTED_ERROR =
+  "IndexedDB is not supported in this environment.";
+
+function isIndexedDbNotSupportedError(error: unknown): boolean {
+  return (
+    error instanceof Error && error.message === INDEXED_DB_NOT_SUPPORTED_ERROR
+  );
+}
+
 /**
  * Homescreen component.
  * Renders the landing page of the application, presenting key information
@@ -27,7 +36,12 @@ const Homescreen: React.FC = () => {
   const [showLogoutMessage, setShowLogoutMessage] = useState(false);
 
   useEffect(() => {
-    clearQuizResults().catch(() => undefined);
+    clearQuizResults().catch((error) => {
+      if (isIndexedDbNotSupportedError(error)) {
+        return;
+      }
+      console.error("Failed to clear quiz results:", error);
+    });
   }, []);
   // Check for logout confirmation flag whenever the component mounts or location changes
   useEffect(() => {
@@ -51,8 +65,6 @@ const Homescreen: React.FC = () => {
    *
    * @function
    * @async
-   *
-   * @throws Will log an error to the console if retrieving the session fails.
    */
   const handleQuizStart = async () => {
     try {
@@ -63,7 +75,8 @@ const Homescreen: React.FC = () => {
         return;
       }
       navigate("/quiz");
-    } catch {
+    } catch (e) {
+      console.error(e);
       navigate("/quiz");
     }
   };
