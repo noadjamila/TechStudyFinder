@@ -24,20 +24,25 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 
 ## Documentation
 
-- [API Endpoint Documentation](docs/endpoints.md)
+### Getting started
 - [Contributing Guidelines](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
-- [Continuous Integration](docs/continuous-integration.md)
-- [Continuous Deployment](docs/continuous-deployment.md)
-- [Server Setup (Production)](docs/server-setup.md)
 - [License](LICENSE.md)
+- [Security Policy](SECURITY.md)
+- [Third-party Notices](THIRD_PARTY_NOTICES.md)
+
+### API & Backend
+- [API Endpoint Documentation](docs/endpoints.md)
 - [Question Documentation](docs/questions.md)
 - [RIASEC Mapping](docs/riasec-mapping.md)
 - [Database Schema](docs/database-schema.md)
 - [Database Operations](docs/database.md)
 - [Quiz Session Persistence](docs/quiz-session-persistence.md)
-- [Security Policy](SECURITY.md)
-- [Third-party Notices](THIRD_PARTY_NOTICES.md)
+
+### DevOps & Infrastructure
+- [Continuous Integration](docs/continuous-integration.md)
+- [Continuous Deployment](docs/continuous-deployment.md)
+- [Server Setup (Production)](docs/server-setup.md)
 
 ---
 
