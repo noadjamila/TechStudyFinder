@@ -75,7 +75,6 @@ export default function App() {
           </AdminProtectedRoute>
         }
       />
-      <Route path="/error" element={<ErrorScreen />} />
       <Route
         path="*"
         element={

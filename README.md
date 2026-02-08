@@ -33,6 +33,7 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 - [Question Documentation](docs/questions.md)
 - [Database Schema](docs/database-schema.md)
 - [Database Operations](docs/database.md)
+- [Quiz Session Persistence](docs/quiz-session-persistence.md)
 
 ---
 
@@ -73,8 +74,9 @@ To set up and populate the database, follow these steps:
    Ensure your `.env` file contains the correct database connection details (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`).
 
 2. **Store the XML files** with the data under `server/db/xml`.
+3. **Store the Level 2 questions CSV** under `server/db/data/fragen_level_zwei.csv`.
 
-3. **Initialize the database**
+4. **Initialize the database**
    Run the following command to create all necessary tables and populate them with your XML and RIASEC data:
 
 ```bash

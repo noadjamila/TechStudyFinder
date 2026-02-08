@@ -173,7 +173,7 @@ export default function QuizFlow(): JSX.Element | null {
   }, []);
 
   /**
-   * Saves the current Session if no other question has already been saved
+   * Saves the current Session if no other Session has already been saved
    */
   useEffect(() => {
     if (!isHydrated) return;

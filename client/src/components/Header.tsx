@@ -70,22 +70,40 @@ const LogoMenu: React.FC<LogoMenuProps> = ({
         </div>
 
         {/*Tech Study Finder Headline, centered*/}
-        <Typography
-          onClick={handleHomeNavigation}
-          variant="h5"
+        <Box
           sx={{
-            fontWeight: "bold",
-            color: theme.palette.text.primary,
-            whiteSpace: "nowrap",
             flexGrow: 1,
             display: "flex",
-            justifyContent: "center",
+            flexDirection: "column",
             alignItems: "center",
-            cursor: "pointer",
           }}
         >
-          Tech Study Finder
-        </Typography>
+          <Typography
+            onClick={handleHomeNavigation}
+            variant="h5"
+            sx={{
+              fontWeight: "bold",
+              color: theme.palette.text.primary,
+              whiteSpace: "nowrap",
+              cursor: "pointer",
+              lineHeight: 1.2,
+            }}
+          >
+            Tech Study Finder
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{
+              color: theme.palette.error.main,
+              fontWeight: 600,
+              letterSpacing: 0.6,
+              textTransform: "uppercase",
+              mt: 0.6,
+            }}
+          >
+            Prototyp
+          </Typography>
+        </Box>
 
         {/* Logo (Right-aligned) */}
         <Box

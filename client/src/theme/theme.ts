@@ -99,6 +99,15 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          msUserSelect: "none",
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {

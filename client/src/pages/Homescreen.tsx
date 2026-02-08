@@ -12,6 +12,8 @@ import {
   loadLatestSession,
   clearQuizSession,
 } from "../session/persistQuizSession";
+import { useAuth } from "../contexts/AuthContext";
+import { GreetingBubble } from "../components/GreetingBubble";
 
 /**
  * Homescreen component.
@@ -24,6 +26,7 @@ import {
 const Homescreen: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const [showLogoutMessage, setShowLogoutMessage] = useState(false);
 
   useEffect(() => {
@@ -87,8 +90,10 @@ const Homescreen: React.FC = () => {
 
   // --- Static Content Definitions ---
   const mainTitle = "Finde dein Studium";
-  const subTitle = "Du weißt nicht, was du studieren möchtest?";
-  const infoText1 = "Kein Problem!";
+  const subTitle = user
+    ? `Hallo ${user.username}!`
+    : "Du weißt nicht, was du studieren möchtest?";
+  const infoText1 = user ? "Bist du noch auf der Suche?" : "Kein Problem!";
   const infoText2 =
     "Tech Study Finder unterstützt dich dabei, Studiengänge zu finden, die zu deinen persönlichen Interessen passen.";
   const cardQuestion = "Bist du bereit, dich auf die Reise zu begeben?";
@@ -114,13 +119,18 @@ const Homescreen: React.FC = () => {
       {/* Main Title */}
       <Typography variant="h2">{mainTitle}</Typography>
 
-      {/* Subtitle */}
-      <Typography
-        variant="body1"
-        sx={{ fontWeight: "normal", lineHeight: 1.3, mb: 0 }}
-      >
-        {subTitle}
-      </Typography>
+      {/* Greeting Bubble - only shown when user is logged in */}
+      {user && <GreetingBubble username={user.username} />}
+
+      {/* Subtitle - only shown when user is NOT logged in */}
+      {!user && (
+        <Typography
+          variant="body1"
+          sx={{ fontWeight: "normal", lineHeight: 1.3, mb: 0 }}
+        >
+          {subTitle}
+        </Typography>
+      )}
 
       {/* Info Texts */}
       <Box sx={{ maxWidth: 500, mx: "auto", mb: { xs: 10, sm: 8, md: 2 } }}>
@@ -149,7 +159,7 @@ const Homescreen: React.FC = () => {
       </Box>
 
       {/* Card */}
-      <GreenCard>
+      <GreenCard hideMascot={user ? true : false}>
         <Typography variant="subtitle1" sx={{ mb: 3, lineHeight: 1.3 }}>
           {cardQuestion}
         </Typography>
