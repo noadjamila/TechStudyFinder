@@ -11,6 +11,7 @@ export interface StudyProgramme {
   name: string;
   hochschule: string;
   abschluss: string;
+  similarity?: number | null;
   homepage?: string | null;
   studienbeitrag?: string | null;
   beitrag_kommentar?: string | null;

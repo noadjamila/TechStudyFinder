@@ -405,7 +405,11 @@ describe("Quiz Service - getQuizResultsService", () => {
   it("should retrieve quiz results from repository", async () => {
     // Arrange
     const userId = 1;
-    const mockResults = ["100", "101", "102"];
+    const mockResults = [
+      { studiengang_id: "100", similarity: 0.95 },
+      { studiengang_id: "101", similarity: 0.92 },
+      { studiengang_id: "102", similarity: 0.89 },
+    ];
     const mockGetResults = jest
       .spyOn(quizRepository, "getUserQuizResults")
       .mockResolvedValue(mockResults);

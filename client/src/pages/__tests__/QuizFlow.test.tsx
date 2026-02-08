@@ -187,7 +187,7 @@ describe("QuizFlow", () => {
 
     await waitFor(() => {
       expect(navigateMock).toHaveBeenCalledWith("/results", {
-        state: { resultIds: [] },
+        state: { results: [] },
       });
     });
   });
