@@ -1,8 +1,4 @@
-import {
-  QuizFilterPayload,
-  FilterResponse,
-  QuizLevelResponse,
-} from "../types/QuizApi.types";
+import { QuizFilterPayload, FilterResponse } from "../types/QuizApi.types";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 import { RiasecType } from "../types/RiasecTypes";
 
@@ -39,40 +35,6 @@ export async function postFilterLevel(
   } catch (err) {
     console.error("[postFilterLevel] Error during API call:", err);
     throw new Error("Could not connect to the backend or process data.");
-  }
-}
-
-/**
- * Fetches quiz questions for a specific level from the backend.
- *
- * @param {number} level The quiz level (1, 2, etc.).
- * @param fetchFn Optional custom fetch function (for error handling)
- * @returns {Promise<QuizLevelResponse>} A promise resolving to questions for the level.
- * @throws {Error} Throws if the network request fails or no questions are found.
- */
-export async function getQuizLevel(
-  level: number,
-  fetchFn: typeof fetch = fetch,
-): Promise<QuizLevelResponse> {
-  const endpoint = `${API_BASE_URL}/quiz/level/${level}`;
-
-  try {
-    const res = await fetchFn(endpoint);
-
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-
-    const data = await res.json();
-
-    if (!data.questions || data.questions.length === 0) {
-      throw new Error("No questions found in the response.");
-    }
-
-    return data;
-  } catch (err) {
-    console.error("[getQuizLevel] Error during API call:", err);
-    throw new Error("Could not fetch quiz questions from the backend.");
   }
 }
 
