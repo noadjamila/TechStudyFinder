@@ -25,6 +25,7 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 ## Documentation
 
 ### Getting started
+
 - [Contributing Guidelines](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [License](LICENSE.md)
@@ -32,6 +33,7 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 - [Third-party Notices](THIRD_PARTY_NOTICES.md)
 
 ### API & Backend
+
 - [API Endpoint Documentation](docs/endpoints.md)
 - [Question Documentation](docs/questions.md)
 - [RIASEC Mapping](docs/riasec-mapping.md)
@@ -40,6 +42,7 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 - [Quiz Session Persistence](docs/quiz-session-persistence.md)
 
 ### DevOps & Infrastructure
+
 - [Continuous Integration](docs/continuous-integration.md)
 - [Continuous Deployment](docs/continuous-deployment.md)
 - [Server Setup (Production)](docs/server-setup.md)
