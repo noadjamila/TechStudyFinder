@@ -13,6 +13,7 @@ import {
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import StarsIcon from "@mui/icons-material/Stars";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import SchoolIcon from "@mui/icons-material/School";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { StudyProgramme } from "../../types/StudyProgramme.types";
@@ -233,6 +234,7 @@ const CollapsibleStudyProgrammeCard: React.FC<
                             display: "flex",
                             alignItems: "center",
                             gap: 0.5,
+                            marginBottom: 0.5,
                           }}
                         >
                           <Box
@@ -260,6 +262,45 @@ const CollapsibleStudyProgrammeCard: React.FC<
                             {programme.abschluss}
                           </Typography>
                         </Box>
+
+                        {/* Similarity Score */}
+                        {programme.similarity !== undefined &&
+                          programme.similarity !== null && (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 0.5,
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  width: 18,
+                                  height: 18,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <AutoAwesomeIcon
+                                  sx={{
+                                    fontSize: 16,
+                                    color: theme.palette.success.main,
+                                  }}
+                                />
+                              </Box>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  color: theme.palette.success.main,
+                                  fontSize: { xs: "0.8rem", sm: "0.9rem" },
+                                  fontWeight: 500,
+                                }}
+                              >
+                                Match: {Math.round(programme.similarity * 100)}%
+                              </Typography>
+                            </Box>
+                          )}
                       </Box>
                       {onToggleFavorite && (
                         <IconButton
