@@ -1,8 +1,8 @@
 import { initializeDatabaseWithUpload } from "../../db/scripts/init_data_with_upload";
 import {
+  findAdminForLogin,
   getRiasecData,
   updateRiasecData,
-  findAdminForLogin,
 } from "../repositories/admin.repository";
 import { RiasecUpdate } from "../types/riasecScores";
 
@@ -45,8 +45,7 @@ export async function processUploadFiles({
  */
 export async function handleGetRiasecData() {
   try {
-    const riasecData = await getRiasecData();
-    return riasecData;
+    return await getRiasecData();
   } catch (error) {
     console.error("Fehler beim Abrufen der RIASEC-Daten:", error);
     throw error;
