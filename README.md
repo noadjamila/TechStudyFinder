@@ -34,6 +34,7 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 - [Database Schema](docs/database-schema.md)
 - [Database Operations](docs/database.md)
 - [SBOM Generation](docs/sbom.md)
+- [Quiz Session Persistence](docs/quiz-session-persistence.md)
 
 ---
 

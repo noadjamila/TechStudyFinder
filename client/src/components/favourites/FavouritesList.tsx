@@ -156,7 +156,7 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ favorites }) => {
     >
       <DataSource />
       <Typography variant="h2" sx={{ marginBottom: 3 }}>
-        Meine Favoriten
+        Deine Favoriten
       </Typography>
 
       {/* Display favorite programmes as cards */}

@@ -12,7 +12,7 @@ export default function Datenschutz() {
             component="h1"
             sx={{
               mb: 2,
-              fontSize: { xs: "1.75rem", sm: "1.75rem" },
+              fontSize: { xs: "1.75rem", sm: "1.75rem", md: "2.5rem" },
               "@media (max-width: 375px)": {
                 fontSize: "1.5rem",
               },
