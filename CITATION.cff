@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+title: TechStudyFinder
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Paula Sophie
+    family-names: Isbrecht
+    email: Paula.Isbrecht@student.htw-berlin.de
+  - given-names: Noa Djamila
+    family-names: Sauter
+    email: noa.sauter@student.htw-berlin.de
+  - given-names: Damaris
+    family-names: Liedtke
+    email: damaris.liedtke@student.htw-berlin.de
+  - given-names: Merlind
+    family-names: Pohl
+    email: merlind.pohl@student.htw-berlin.de
+  - given-names: Johanna
+    family-names: Lange
+    email: johanna.lange@student.htw-berlin.de
+repository-code: 'https://github.com/noadjamila/TechStudyFinder'
+url: 'https://studyfinder.f4.htw-berlin.de/'
+abstract: >-
+  TechStudyFinder is a progressive web application designed
+  to help young people discover Informatics study programs
+  that align with their interests, hobbies, and personality.
+keywords:
+  - interest test
+  - computer science
+  - finta
+  - study programs
+license: MIT
+version: '1.0'
+date-released: '2026-02-12'
