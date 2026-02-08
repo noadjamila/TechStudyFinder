@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { Typography, Box, alpha, Alert } from "@mui/material";
 import theme from "../../theme/theme";
 import { useState } from "react";

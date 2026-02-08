@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import Homescreen from "./pages/Homescreen";
 import { Routes, Route } from "react-router-dom";
 import QuizFlow from "./pages/QuizFlow";

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { Container, Typography, Box, Link } from "@mui/material";
 import MainLayout from "../layouts/MainLayout";
 import theme from "../theme/theme";

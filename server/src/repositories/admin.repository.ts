@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { pool } from "../../db";
 import { RiasecData, RiasecUpdate } from "../types/riasecScores";
 import bcrypt from "bcrypt";
