@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import React from "react";

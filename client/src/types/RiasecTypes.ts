@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 /**
  * Enumeration representing the six RIASEC personality types
  * used in the Holland occupational interest model.

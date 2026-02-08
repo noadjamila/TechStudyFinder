@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { useState } from "react";
 import { Box, Alert, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";

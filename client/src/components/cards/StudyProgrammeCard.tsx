@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import React from "react";
 import { Card, CardContent, Typography, Box, IconButton } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";

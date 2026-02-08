@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import bcrypt from "bcrypt";
 import { createUser, findByUsername } from "../repositories/users.repository";
 import { PublicUser } from "../types/user";

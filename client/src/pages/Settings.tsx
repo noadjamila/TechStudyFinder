@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { Box, Alert, Typography } from "@mui/material";
 import MainLayout from "../layouts/MainLayout";
 import PrimaryButton from "../components/buttons/PrimaryButton";

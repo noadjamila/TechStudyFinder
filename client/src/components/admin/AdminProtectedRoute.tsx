@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { Navigate } from "react-router-dom";
 import { ReactNode } from "react";
 import { useAdminAuth } from "../../contexts/AdminAuthContext";

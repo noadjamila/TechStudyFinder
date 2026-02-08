@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import React, { useState, useEffect, useMemo } from "react";
 import { Box, CircularProgress } from "@mui/material";
 import Results from "../components/quiz/Results";

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 /**
  * Adds a study programme to the user's favorites
  * @param studiengangId The ID of the study programme to add

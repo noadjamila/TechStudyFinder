@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { Client } from "pg";
 import fs from "fs";
 import { from as copyFrom } from "pg-copy-streams";

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import fs from "fs";
 import { parseStringPromise } from "xml2js";
 import { Client } from "pg";

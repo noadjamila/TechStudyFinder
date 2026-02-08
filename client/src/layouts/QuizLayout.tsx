@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import React, { useState } from "react";
 import Progressbar from "../components/quiz/Progressbar";
 import { Box, useTheme } from "@mui/material";

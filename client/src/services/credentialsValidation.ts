@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 /**
  * Validates the password based on security requirements
  * Password must be 8-72 characters with at least one letter, number, and special character

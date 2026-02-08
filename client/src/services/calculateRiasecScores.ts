@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { AnswerMap } from "../types/QuizAnswer.types";
 import { initialScores, RiasecType } from "../types/RiasecTypes";
 

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { useState } from "react";
 import QuizLayout from "../../layouts/QuizLayout";
 import SecondaryButton from "../buttons/SecondaryButton";

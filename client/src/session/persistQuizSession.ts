@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { QuizSession } from "../types/QuizSession";
 import { openDB as indexedDbOpen } from "idb";
 //import { StudyProgramme } from "../types/StudyProgramme.types";
