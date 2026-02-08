@@ -37,6 +37,7 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 - [Database Operations](docs/database.md)
 - [Quiz Session Persistence](docs/quiz-session-persistence.md)
 - [Security Policy](SECURITY.md)
+- [Third-party Notices](THIRD_PARTY_NOTICES.md)
 
 ---
 
@@ -161,3 +162,9 @@ Special thanks to Gesellschaft für Informatik e.V. (GI) for collaboration and f
 ## License
 
 This project is currently under the MIT license. For more details, see the [LICENSE](LICENSE.md) file.
+
+---
+
+## Third-party Libraries
+
+For a list of third-party libraries used in this project, please refer to the [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES.md) file.
