@@ -1,8 +1,9 @@
 # TechStudyFinder
 
-**TechStudyFinder** is a progressive web application designed to help young people discover Informatics study programs that align with their **interests, hobbies, and personality**.
+**TechStudyFinder** is a progressive web application designed to help young people discover Informatics study programs that align with their **interests, val
+ues, and preferences**.
 
-Many young people, especially **FINTA** (women, lesbian, inter, non-binary, trans, and agender individuals), never consider studying Informatics because they assume it’s only about programming or math. This project aims to change that by showing how diverse and creative IT can be and how it connects to things people already care about.
+Many young people, especially **FINTA** (women, lesbian, inter, non-binary, trans, and agender individuals), never consider studying Informatics because they assume it’s only about programming or mathematics. This project aims to change that by showing how diverse and creative IT can be and how it connects to things people already care about.
 
 **Disclaimer:**
 This application is not intended to provide professional career or psychological advice. It’s meant for general informational purposes only and shouldn’t replace guidance from qualified professionals.
@@ -29,11 +30,13 @@ It’s meant to **inspire** and **guide**, not test technical skills. Both bache
 - [Continuous Integration](docs/continuous-integration.md)
 - [Continuous Deployment](docs/continuous-deployment.md)
 - [Server Setup (Production)](docs/server-setup.md)
-- [License](LICENSE)
+- [License](LICENSE.md)
 - [Question Documentation](docs/questions.md)
+- [RIASEC Mapping](docs/riasec-mapping.md)
 - [Database Schema](docs/database-schema.md)
 - [Database Operations](docs/database.md)
 - [Quiz Session Persistence](docs/quiz-session-persistence.md)
+- [Security Policy](SECURITY.md)
 
 ---
 
@@ -52,17 +55,21 @@ Run the application locally with the following steps:
    ```
 3. **Install dependencies**
    ```bash
-   # Install root dependencies (concurrently, husky, etc.)
    npm install
-   # Install backend dependencies (Express, ts-node, etc.)
-   npm install --workspace server
-   # Install frontend dependencies (React, etc.)
-   npm install --workspace client
    ```
-4. **Start the frontend and backend**
+4. **Create your local environment file**
+   ```bash
+   cp .env.example .env
+   ```
+   Local development `.env` must include at least:
+   `SESSION_SECRET`, `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`.
+   `GITHUB_WEBHOOK_SECRET` is optional in local development.
+   For production/server `.env` values, use [Server Setup (Production)](docs/server-setup.md).
+5. **Start the frontend and backend**
    ```bash
    npm run dev
    ```
+   Frontend runs on `http://localhost:3000`, backend on `http://127.0.0.1:5001`.
 
 ---
 
@@ -70,8 +77,8 @@ Run the application locally with the following steps:
 
 To set up and populate the database, follow these steps:
 
-1. **Configure your environment variables**
-   Ensure your `.env` file contains the correct database connection details (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`).
+1. **Configure local database environment variables**
+   Ensure your local `.env` contains correct DB connection details (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`).
 
 2. **Store the XML files** with the data under `server/db/xml`.
 3. **Store the Level 2 questions CSV** under `server/db/data/fragen_level_zwei.csv`.
@@ -90,6 +97,19 @@ After completing these steps, the database will be fully initialized and ready f
 
 For more details, refer to the [Database Operations Guide](docs/database.md).
 
+---
+
+## Important Commands
+
+- `npm run dev`: Start frontend and backend in development mode.
+- `npm run build`: Build server and client for production.
+- `npm run test`: Run client and server tests.
+- `npm run test:integration`: Run server integration tests.
+- `npm run lint`: Run ESLint checks.
+- `npm run format`: Format code with Prettier.
+
+---
+
 ## Tech Stack
 
 **Frontend**: React (Progressive Web App)
@@ -97,10 +117,7 @@ For further documentation, see the [client README](client/README.md).
 
 **Backend**: Node.js (REST API)
 
-**Matching Logic**: To be defined (algorithm for mapping interests to programs)
-
-> The project is currently in the **concept and prototyping phase**.
-> The final architecture and algorithm will be determined as the system evolves.
+**Matching Logic**: Quiz answers are mapped to RIASEC dimensions and matched against programme-level RIASEC scores derived from study field mappings. For details, see [RIASEC Mapping](docs/riasec-mapping.md).
 
 ---
 
@@ -129,13 +146,13 @@ The configuration is located in `.github/dependabot.yml`.
 
 ## Contributing
 
-Contributions, ideas, and feedback are very welcome. Make sure to look at the Contributing Guidelines first!
+Contributions, ideas, and feedback are very welcome. Make sure to look at the [Contributing Guidelines first](CONTRIBUTING.md)!
 
 ---
 
 ## Contributors
 
-A team of students at HTW Berlin.
+The contributors are team of students at HTW Berlin.
 
 Special thanks to Gesellschaft für Informatik e.V. (GI) for collaboration and feedback.
 
@@ -143,4 +160,4 @@ Special thanks to Gesellschaft für Informatik e.V. (GI) for collaboration and f
 
 ## License
 
-This project is currently under the MIT license.
+This project is currently under the MIT license. For more details, see the [LICENSE](LICENSE.md) file.
