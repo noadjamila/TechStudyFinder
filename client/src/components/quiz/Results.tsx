@@ -16,7 +16,6 @@ import StarsIcon from "@mui/icons-material/Stars";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SchoolIcon from "@mui/icons-material/School";
-import StudyProgrammeCard from "../cards/StudyProgrammeCard";
 import CollapsibleStudyProgrammeCard from "../cards/CollapsibleStudyProgrammeCard";
 import { useNavigate, useLocation } from "react-router-dom";
 import GreenCard from "../cards/GreenCardBaseNotQuiz";
@@ -523,20 +522,6 @@ const Results: React.FC<ResultsProps> = ({
                 ]),
               );
 
-              // If only one programme in the group, render as normal card
-              if (group.programmes.length === 1) {
-                const programme = group.programmes[0];
-                return (
-                  <StudyProgrammeCard
-                    key={programme.studiengang_id}
-                    programme={programme}
-                    isFavorite={favorites.has(programme.studiengang_id)}
-                    onToggleFavorite={toggleFavorite}
-                  />
-                );
-              }
-
-              // If multiple programmes with same name, render as collapsible
               return (
                 <CollapsibleStudyProgrammeCard
                   key={`group-${group.name}`}

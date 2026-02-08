@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { ThemeProvider } from "@mui/material";
 import { MemoryRouter } from "react-router-dom";
 import Results from "../Results";
@@ -219,52 +219,92 @@ describe("Results Component", () => {
     expect(svgs.length).toBeGreaterThan(0);
   });
 
-  it("navigates to study programme detail page when card is clicked", () => {
+  it("navigates to study programme detail page when card is clicked", async () => {
     renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
 
-    const firstCard = screen.getByRole("button", {
-      name: /Details anzeigen für Computer Science/i,
+    // Expand the accordion
+    const accordionButton = screen
+      .getByText("Computer Science")
+      .closest("button");
+    fireEvent.click(accordionButton!);
+
+    // Wait for and click the inner card
+    await waitFor(() => {
+      const innerCard = screen.getByRole("button", {
+        name: /Details anzeigen für Computer Science an Technical University Munich/i,
+      });
+      fireEvent.click(innerCard);
     });
-    fireEvent.click(firstCard);
 
     expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
       state: { previousPage: expect.any(String) },
     });
   });
 
-  it("navigates to correct detail page when different cards are clicked", () => {
+  it("navigates to correct detail page when different cards are clicked", async () => {
     renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
 
-    const dataCard = screen.getByRole("button", {
-      name: /Details anzeigen für Data Science/i,
+    // Expand the Data Science accordion
+    const accordionButton = screen.getByText("Data Science").closest("button");
+    fireEvent.click(accordionButton!);
+
+    // Wait for and click the inner card
+    await waitFor(() => {
+      const dataCard = screen.getByRole("button", {
+        name: /Details anzeigen für Data Science an/i,
+      });
+      fireEvent.click(dataCard);
     });
-    fireEvent.click(dataCard);
 
     expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/2", {
       state: { previousPage: expect.any(String) },
     });
   });
 
-  it("makes cards keyboard accessible with Enter key", () => {
+  it("makes cards keyboard accessible with Enter key", async () => {
     renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
 
-    const firstCard = screen.getByRole("button", {
-      name: /Details anzeigen für Computer Science/i,
+    // Expand the accordion
+    const accordionButton = screen
+      .getByText("Computer Science")
+      .closest("button");
+    fireEvent.click(accordionButton!);
+
+    // Wait for and use keyboard on the inner card
+    await waitFor(() => {
+      const innerCard = screen.getByRole("button", {
+        name: /Details anzeigen für Computer Science an Technical University Munich/i,
+      });
+      fireEvent.keyDown(innerCard, { key: "Enter" });
     });
-    fireEvent.keyDown(firstCard, { key: "Enter" });
 
     expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
       state: { previousPage: expect.any(String) },
     });
   });
 
-  it("makes cards keyboard accessible with Space key", () => {
+  it("makes cards keyboard accessible with Space key", async () => {
     renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
 
-    const firstCard = screen.getByRole("button", {
-      name: /Details anzeigen für Computer Science/i,
+    // Find the accordion for Computer Science
+    const accordionButton = screen
+      .getByText("Computer Science")
+      .closest("button");
+    expect(accordionButton).toBeInTheDocument();
+
+    // Expand the accordion first
+    fireEvent.click(accordionButton!);
+
+    // Wait for the inner card to appear
+    await waitFor(() => {
+      const innerCard = screen.getByRole("button", {
+        name: /Details anzeigen für Computer Science an Technical University Munich/i,
+      });
+      expect(innerCard).toBeInTheDocument();
+
+      // Press space on the inner card
+      fireEvent.keyDown(innerCard, { key: " " });
     });
-    fireEvent.keyDown(firstCard, { key: " " });
 
     expect(mockedNavigate).toHaveBeenCalledWith("/study-programme/1", {
       state: { previousPage: expect.any(String) },
