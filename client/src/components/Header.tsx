@@ -135,7 +135,7 @@ const LogoMenu: React.FC<LogoMenuProps> = ({
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         onLoginClick={() =>
-          navigate("/login", {
+          navigate("/login-register", {
             state: { redirectTo: "/" },
           })
         }

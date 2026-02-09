@@ -63,7 +63,7 @@ const NavBar: React.FC<NavBarProps> = ({
     // If we're on settings or other non-nav routes, don't highlight anything
     if (
       location.pathname === "/settings" ||
-      location.pathname === "/login" ||
+      location.pathname === "/login-register" ||
       location.pathname === "/register" ||
       location.pathname === "/impressum" ||
       location.pathname === "/datenschutz"
@@ -270,7 +270,7 @@ const NavBar: React.FC<NavBarProps> = ({
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         onLoginClick={() =>
-          navigate("/login", {
+          navigate("/login-register", {
             state: { redirectTo: intendedDestination },
           })
         }

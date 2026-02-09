@@ -52,7 +52,7 @@ describe("FavouritesNotLoggedIn Component", () => {
     const loginButton = screen.getByRole("button", { name: /Login/i });
     fireEvent.click(loginButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/login", {
+    expect(mockNavigate).toHaveBeenCalledWith("/login-register", {
       state: { redirectTo: "/favorites" },
     });
   });
