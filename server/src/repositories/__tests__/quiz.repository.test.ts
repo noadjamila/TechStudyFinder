@@ -337,7 +337,12 @@ describe("Quiz Repository - getUserQuizResults", () => {
     expect(callArgs[0]).toContain("SELECT result_ids FROM user_quiz_results");
     expect(callArgs[0]).toContain("WHERE user_id = $1");
     expect(callArgs[1]).toEqual([userId]);
-    expect(result).toEqual(mockResults);
+    // Should convert old string[] format to new object[] format
+    expect(result).toEqual([
+      { studiengang_id: "100" },
+      { studiengang_id: "101" },
+      { studiengang_id: "102" },
+    ]);
   });
 
   it("should return null when user has no saved results", async () => {
@@ -395,6 +400,10 @@ describe("Quiz Repository - getUserQuizResults", () => {
 
     // Assert
     expect(pool.query).toHaveBeenCalledWith(expect.any(String), [userId]);
-    expect(result).toEqual(mockResults);
+    // Should convert old string[] format to new object[] format
+    expect(result).toEqual([
+      { studiengang_id: "500" },
+      { studiengang_id: "501" },
+    ]);
   });
 });

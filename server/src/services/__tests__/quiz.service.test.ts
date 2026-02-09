@@ -109,10 +109,29 @@ describe("Quiz Service - filterLevel2", () => {
 
   it("should aggregate RIASEC scores and call repository", async () => {
     // Arrange
-    const mockIds = [1, 2, 3, 4, 5];
+    const mockResults = [
+      {
+        studiengang_id: "1",
+        name: "Programme 1",
+        similarity: 0.95,
+        is_unique: true,
+      },
+      {
+        studiengang_id: "2",
+        name: "Programme 2",
+        similarity: 0.92,
+        is_unique: true,
+      },
+      {
+        studiengang_id: "3",
+        name: "Programme 3",
+        similarity: 0.9,
+        is_unique: false,
+      },
+    ];
     const mockGetFilteredResults = jest
       .spyOn(quizRepository, "getFilteredResultsLevel2")
-      .mockResolvedValue(mockIds);
+      .mockResolvedValue(mockResults);
 
     const answers = [
       { type: "R", score: 3 },
@@ -137,7 +156,7 @@ describe("Quiz Service - filterLevel2", () => {
       E: 1,
       C: 0,
     });
-    expect(result).toEqual(mockIds);
+    expect(result).toEqual(mockResults);
   });
 
   it("should handle undefined studyProgrammeIds", async () => {
