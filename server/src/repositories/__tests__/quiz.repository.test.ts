@@ -239,7 +239,7 @@ describe("Quiz Repository - saveUserQuizResults", () => {
     // Assert
     expect(pool.query).toHaveBeenCalledWith(
       expect.stringContaining("INSERT INTO user_quiz_results"),
-      [userId, resultIds],
+      [userId, JSON.stringify(resultIds)],
     );
     expect(pool.query).toHaveBeenCalledTimes(1);
   });
@@ -257,7 +257,7 @@ describe("Quiz Repository - saveUserQuizResults", () => {
     const callArgs = (pool.query as jest.Mock).mock.calls[0];
     expect(callArgs[0]).toContain("ON CONFLICT (user_id)");
     expect(callArgs[0]).toContain("DO UPDATE SET result_ids");
-    expect(callArgs[1]).toEqual([userId, resultIds]);
+    expect(callArgs[1]).toEqual([userId, JSON.stringify(resultIds)]);
   });
 
   it("should handle empty result IDs array", async () => {
@@ -272,7 +272,7 @@ describe("Quiz Repository - saveUserQuizResults", () => {
     // Assert
     expect(pool.query).toHaveBeenCalledWith(expect.any(String), [
       userId,
-      resultIds,
+      JSON.stringify(resultIds),
     ]);
   });
 
@@ -301,7 +301,7 @@ describe("Quiz Repository - saveUserQuizResults", () => {
     // Assert
     expect(pool.query).toHaveBeenCalledWith(expect.any(String), [
       userId,
-      resultIds,
+      JSON.stringify(resultIds),
     ]);
   });
 });
