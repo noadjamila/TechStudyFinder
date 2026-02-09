@@ -20,8 +20,6 @@ export async function saveUserQuizResults(
     DO UPDATE SET result_ids = $2, updated_at = NOW()
   `;
 
-  console.log("Saving user quiz results:", userId, results);
-
   await pool.query(query, [userId, JSON.stringify(results)]);
 }
 
