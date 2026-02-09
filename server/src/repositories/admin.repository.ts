@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { pool } from "../../db";
 import { RiasecData, RiasecUpdate } from "../types/riasecScores";
 import bcrypt from "bcrypt";
@@ -124,7 +129,6 @@ export async function updateRiasecData(
   }
 
   if (setClauses.length === 0) {
-    console.log("Keine RIASEC-Werte zum Aktualisieren");
     return;
   }
 

@@ -34,7 +34,7 @@ describe("NoResultsYet Component", () => {
 
   it("renders the main heading", () => {
     renderWithTheme(<NoResultsYet />);
-    expect(screen.getByText("Meine Ergebnisse")).toBeInTheDocument();
+    expect(screen.getByText("Deine Ergebnisse")).toBeInTheDocument();
   });
 
   it("renders the card with encouraging text", () => {

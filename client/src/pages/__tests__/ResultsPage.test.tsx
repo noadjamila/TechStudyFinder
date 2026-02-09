@@ -34,7 +34,7 @@ vi.mock("../../components/quiz/Results", () => ({
   __esModule: true,
   default: ({ studyProgrammes }: any) => (
     <div>
-      <h1>Meine Ergebnisse</h1>
+      <h1>Deine Ergebnisse</h1>
       {studyProgrammes.map((p: any) => (
         <div key={p.studiengang_id}>{p.name}</div>
       ))}
@@ -142,7 +142,7 @@ const renderWithTheme = (
 describe("ResultsPage Component", () => {
   it("renders the page title", async () => {
     renderWithTheme(<ResultsPage />);
-    expect(await screen.findByText("Meine Ergebnisse")).toBeInTheDocument();
+    expect(await screen.findByText("Deine Ergebnisse")).toBeInTheDocument();
   });
 
   test("shows loading state initially", async () => {
@@ -251,7 +251,7 @@ describe("ResultsPage Component", () => {
     );
     await waitFor(() => {
       expect(screen.getByText(/Starte jetzt das Quiz/i)).toBeInTheDocument();
-      expect(screen.getByText(/Meine Ergebnisse/i)).toBeInTheDocument();
+      expect(screen.getByText(/Deine Ergebnisse/i)).toBeInTheDocument();
     });
   });
 

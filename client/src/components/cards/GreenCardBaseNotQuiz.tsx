@@ -1,9 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import React from "react";
 import { Box, BoxProps } from "@mui/material";
 import theme from "../../theme/theme";
 
 interface GreenCardProps extends BoxProps {
   children: React.ReactNode;
+  hideMascot?: boolean;
 }
 
 /**
@@ -14,7 +20,11 @@ interface GreenCardProps extends BoxProps {
  * @param {GreenCardProps} props - The component's props.
  * @returns {React.FC} The rendered GreenCard component.
  */
-const GreenCard: React.FC<GreenCardProps> = ({ children, ...props }) => {
+const GreenCard: React.FC<GreenCardProps> = ({
+  children,
+  hideMascot,
+  ...props
+}) => {
   const cardStyles = {
     width: "100%",
     maxWidth: {
@@ -33,21 +43,24 @@ const GreenCard: React.FC<GreenCardProps> = ({ children, ...props }) => {
     alignItems: "center",
     justifyContent: "center",
     position: "relative" as const,
+    mt: hideMascot ? { xs: -4, md: -6 } : 0,
   };
 
   return (
     <Box sx={{ ...cardStyles, ...props.sx }} {...props}>
-      <Box
-        component="img"
-        src="/mascot_standing_blue.svg"
-        alt="Maskottchen"
-        sx={{
-          position: "absolute",
-          width: 40,
-          top: -60,
-          right: { xs: 40, md: 20 },
-        }}
-      />
+      {!hideMascot && (
+        <Box
+          component="img"
+          src="/mascot_standing_blue.svg"
+          alt="Maskottchen"
+          sx={{
+            position: "absolute",
+            width: 40,
+            top: -60,
+            right: { xs: 40, md: 20 },
+          }}
+        />
+      )}
       {children}
     </Box>
   );

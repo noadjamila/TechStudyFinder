@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";

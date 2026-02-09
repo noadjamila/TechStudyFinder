@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import DesktopLayout from "./DesktopLayout";
 import Header from "../components/Header";
 import Navigationbar from "../components/nav-bar/NavBar";

@@ -138,8 +138,10 @@ describe("Results Component", () => {
   });
 
   it("renders the title", () => {
-    renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
-    expect(screen.getByText("Meine Ergebnisse")).toBeInTheDocument();
+    renderWithTheme(
+      <Results studyProgrammes={mockStudyProgrammes} isFreshResults={true} />,
+    );
+    expect(screen.getByText("Deine Ergebnisse")).toBeInTheDocument();
   });
 
   it("displays all study programmes when no filters are applied", () => {

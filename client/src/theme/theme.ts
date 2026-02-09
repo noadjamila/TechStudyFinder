@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { createTheme } from "@mui/material/styles";
 
 const defaultTheme = createTheme();
@@ -99,6 +104,15 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          msUserSelect: "none",
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {
