@@ -20,7 +20,7 @@ export async function saveUserQuizResults(
     DO UPDATE SET result_ids = $2, updated_at = NOW()
   `;
 
-  await pool.query(query, [userId, resultIds]);
+  await pool.query(query, [userId, JSON.stringify(resultIds)]);
 }
 
 /**

@@ -28,9 +28,8 @@ export default function LoginxRegister() {
   const handleSuccess = async () => {
     setShowSuccessDialog(true);
 
-    if (results.length > 0) {
+    if (Array.isArray(results) && results.length > 0) {
       try {
-        console.log(results);
         let resultIds = results as string[];
         await saveQuizResults(resultIds);
       } catch (e) {
@@ -44,12 +43,14 @@ export default function LoginxRegister() {
 
     (async () => {
       try {
-        const results = (await loadQuizResults()) as StudyProgramme[];
+        const results = ((await loadQuizResults()) as StudyProgramme[]) ?? [];
         if (!isMounted) return;
 
         if (results.length > 0) {
           let resultIds = results.map((item) => item.studiengang_id);
           setResults(resultIds);
+        } else {
+          setResults([]);
         }
       } catch (error) {
         console.error("Failed to load persisted quiz session:", error);

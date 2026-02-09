@@ -500,7 +500,9 @@ const Results: React.FC<ResultsProps> = ({ studyProgrammes }) => {
         open={showLoginDialog}
         onClose={() => setShowLoginDialog(false)}
         onLoginClick={() =>
-          navigate("/login", { state: { redirectTo: location.pathname } })
+          navigate("/login-register", {
+            state: { redirectTo: location.pathname },
+          })
         }
         message={FAVORITES_LOGIN_MESSAGE}
       />
