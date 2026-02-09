@@ -52,6 +52,11 @@ export async function getUserQuizResults(
 
   // Handle both old format (string[]) and new format (object[])
   if (Array.isArray(resultIds)) {
+    // If it's an array of strings (old format), convert to new format
+    if (resultIds.length > 0 && typeof resultIds[0] === "string") {
+      return resultIds.map((id: string) => ({ studiengang_id: id }));
+    }
+    // Already in new format
     return resultIds;
   }
 

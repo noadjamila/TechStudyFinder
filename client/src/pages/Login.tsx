@@ -35,7 +35,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showResultDialog, setShowResultDialog] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
-  const [results, setResults] = useState<string[]>([]);
+  const [results, setResults] = useState<StudyProgramme[]>([]);
 
   const handleLogin = async () => {
     setError(null);
@@ -59,7 +59,10 @@ export default function Login() {
 
       if (results.length > 0) {
         try {
-          let resultIds = results as string[];
+          const resultIds = results.map((programme) => ({
+            studiengang_id: programme.studiengang_id,
+            similarity: programme.similarity ?? undefined,
+          }));
           await saveQuizResults(resultIds);
         } catch (e) {
           console.error("Failed to save quiz results:", e);
@@ -95,12 +98,11 @@ export default function Login() {
 
     (async () => {
       try {
-        const results = (await loadQuizResults()) as StudyProgramme[];
+        const loadedResults = await loadQuizResults();
         if (!isMounted) return;
 
-        if (results.length > 0) {
-          let resultIds = results.map((item) => item.studiengang_id);
-          setResults(resultIds);
+        if (loadedResults && loadedResults.length > 0) {
+          setResults(loadedResults);
         }
       } catch (error) {
         console.error("Failed to load persisted quiz session:", error);
