@@ -197,7 +197,7 @@ const CollapsibleStudyProgrammeCard: React.FC<
                     >
                       {minSimilarity === maxSimilarity
                         ? `${Math.round(maxSimilarity * 100)}%`
-                        : `${Math.round(minSimilarity * 100)}-${Math.round(maxSimilarity * 100)}%`}
+                        : `${Math.round(maxSimilarity * 100)}-${Math.round(minSimilarity * 100)}%`}
                     </Typography>
                   </Box>
                 )}
