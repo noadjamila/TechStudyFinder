@@ -1,4 +1,8 @@
-//import { openDB } from "idb";
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { StudyProgramme } from "../types/StudyProgramme.types";
 import { openDB as indexedDbOpen } from "idb";
 
@@ -38,7 +42,7 @@ export async function saveQuizResults(
 ): Promise<void> {
   const db = await openDb();
   const tx = db.transaction(STORE_NAME, "readwrite");
-  await tx.store.put(results, "latest");
+  await tx.store.put(results, "latest-results");
   await tx.done;
 }
 
@@ -49,7 +53,7 @@ export async function saveQuizResults(
  */
 export async function loadQuizResults(): Promise<StudyProgramme[] | null> {
   const db = await openDb();
-  return (await db.get(STORE_NAME, "latest")) ?? null;
+  return (await db.get(STORE_NAME, "latest-results")) ?? null;
 }
 
 /**

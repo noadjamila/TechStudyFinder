@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import bcrypt from "bcrypt";
 import { createUser, findByUsername } from "../repositories/users.repository";
 import { PublicUser } from "../types/user";
@@ -26,10 +31,6 @@ export function validateUsername(username: string): {
   valid: boolean;
   message?: string;
 } {
-  if (typeof username !== "string") {
-    return { valid: false, message: "Username muss ein Text sein." };
-  }
-
   if (username.length < 5) {
     return {
       valid: false,

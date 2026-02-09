@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import React, { useState, useEffect } from "react";
 import { Box, Alert, Typography } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -54,7 +59,6 @@ export default function Login() {
 
       if (results.length > 0) {
         try {
-          console.log(results);
           let resultIds = results as string[];
           await saveQuizResults(resultIds);
         } catch (e) {
@@ -140,7 +144,7 @@ export default function Login() {
           label="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
           disabled={loading}
         />
 
@@ -149,7 +153,7 @@ export default function Login() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
           disabled={loading}
           sx={{ mb: 3 }}
         />

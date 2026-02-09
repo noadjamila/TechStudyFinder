@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import React from "react";
 import { useState, useEffect } from "react";
 import { Box, Typography, Snackbar, Alert } from "@mui/material";
@@ -12,6 +17,8 @@ import {
   loadLatestSession,
   clearQuizSession,
 } from "../session/persistQuizSession";
+import { useAuth } from "../contexts/AuthContext";
+import { GreetingBubble } from "../components/GreetingBubble";
 
 /**
  * Homescreen component.
@@ -24,6 +31,7 @@ import {
 const Homescreen: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const [showLogoutMessage, setShowLogoutMessage] = useState(false);
 
   useEffect(() => {
@@ -51,8 +59,6 @@ const Homescreen: React.FC = () => {
    *
    * @function
    * @async
-   *
-   * @throws Will log an error to the console if retrieving the session fails.
    */
   const handleQuizStart = async () => {
     try {
@@ -87,8 +93,10 @@ const Homescreen: React.FC = () => {
 
   // --- Static Content Definitions ---
   const mainTitle = "Finde dein Studium";
-  const subTitle = "Du weißt nicht, was du studieren möchtest?";
-  const infoText1 = "Kein Problem!";
+  const subTitle = user
+    ? `Hallo ${user.username}!`
+    : "Du weißt nicht, was du studieren möchtest?";
+  const infoText1 = user ? "Bist du noch auf der Suche?" : "Kein Problem!";
   const infoText2 =
     "Tech Study Finder unterstützt dich dabei, Studiengänge zu finden, die zu deinen persönlichen Interessen passen.";
   const cardQuestion = "Bist du bereit, dich auf die Reise zu begeben?";
@@ -102,7 +110,7 @@ const Homescreen: React.FC = () => {
         overflow: "visible",
         maxWidth: "100%",
         mx: "auto",
-        mt: { xs: 1, sm: 15, md: 9 },
+        mt: { xs: 4, sm: 8, md: 8 },
         position: "relative",
         color: theme.palette.text.primary,
         textAlign: "center",
@@ -112,15 +120,28 @@ const Homescreen: React.FC = () => {
       }}
     >
       {/* Main Title */}
-      <Typography variant="h2">{mainTitle}</Typography>
-
-      {/* Subtitle */}
       <Typography
-        variant="body1"
-        sx={{ fontWeight: "normal", lineHeight: 1.3, mb: 0 }}
+        variant="h2"
+        sx={{
+          width: "100%",
+          fontSize: { xs: "2rem", sm: "2.5rem", md: "2.5rem" },
+        }}
       >
-        {subTitle}
+        {mainTitle}
       </Typography>
+
+      {/* Greeting Bubble - only shown when user is logged in */}
+      {user && <GreetingBubble username={user.username} />}
+
+      {/* Subtitle - only shown when user is NOT logged in */}
+      {!user && (
+        <Typography
+          variant="body1"
+          sx={{ fontWeight: "normal", lineHeight: 1.3, mb: 0 }}
+        >
+          {subTitle}
+        </Typography>
+      )}
 
       {/* Info Texts */}
       <Box sx={{ maxWidth: 500, mx: "auto", mb: { xs: 10, sm: 8, md: 2 } }}>
@@ -149,7 +170,7 @@ const Homescreen: React.FC = () => {
       </Box>
 
       {/* Card */}
-      <GreenCard>
+      <GreenCard hideMascot={!!user}>
         <Typography variant="subtitle1" sx={{ mb: 3, lineHeight: 1.3 }}>
           {cardQuestion}
         </Typography>

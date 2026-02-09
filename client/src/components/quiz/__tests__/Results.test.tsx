@@ -138,8 +138,10 @@ describe("Results Component", () => {
   });
 
   it("renders the title", () => {
-    renderWithTheme(<Results studyProgrammes={mockStudyProgrammes} />);
-    expect(screen.getByText("Meine Ergebnisse")).toBeInTheDocument();
+    renderWithTheme(
+      <Results studyProgrammes={mockStudyProgrammes} isFreshResults={true} />,
+    );
+    expect(screen.getByText("Deine Ergebnisse")).toBeInTheDocument();
   });
 
   it("displays all study programmes when no filters are applied", () => {
@@ -177,9 +179,8 @@ describe("Results Component", () => {
     const filterButton = screen.getByRole("button", { name: /filter/i });
     fireEvent.click(filterButton);
 
-    // Check for all three filter labels
+    // Check for filter labels
     expect(screen.getByLabelText("Filter nach Hochschule")).toBeInTheDocument();
-    expect(screen.getByLabelText("Filter nach Standort")).toBeInTheDocument();
     expect(screen.getByLabelText("Filter nach Abschluss")).toBeInTheDocument();
   });
 

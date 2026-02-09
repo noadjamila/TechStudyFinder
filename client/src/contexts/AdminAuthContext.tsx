@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -32,9 +37,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({
         const res = await fetch("/api/admin/me", { credentials: "include" });
         if (res.ok) {
           const data = await res.json();
-          console.debug("Fetched admin:", data); // 🔍 Prüfen
           if (mounted) {
-            // falls Backend { admin: {...} } liefert:
             setAdmin(data);
             setIsLoading(false);
           }

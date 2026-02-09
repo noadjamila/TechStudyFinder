@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 //creates and exports a reusable PostgreSQL connection pool
 // using the pg library and environment variables loaded via dotenv
 //manages the db queries, so the connection must not be established again

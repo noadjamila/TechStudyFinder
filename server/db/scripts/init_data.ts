@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import path from "path";
 import fs from "fs";
 import dotenv from "dotenv";
@@ -5,6 +10,7 @@ import { Client } from "pg";
 import { importInstitutions } from "../modules/import_institutions";
 import { importDegreeProgrammes } from "../modules/import_degreeprogrammes";
 import { importRiasecCsv } from "../modules/csv_riasec_import";
+import { importFragenLevelZweiCsv } from "../modules/csv_fragen_level_zwei_import";
 
 dotenv.config();
 
@@ -21,6 +27,7 @@ const SCHEMA_FILES = [
   "degreeprogramme_view.sql",
   "admin.sql",
   "user_quiz_results.sql",
+  "fragen_level_zwei.sql",
 ];
 
 const CSV_FILES = ["studiengebiete_riasec.csv", "studienfelder_riasec.csv"];
@@ -28,6 +35,7 @@ const CSV_TABLE_MAP: Record<string, string> = {
   "studiengebiete_riasec.csv": "studiengebiete",
   "studienfelder_riasec.csv": "studienfelder",
 };
+const FRAGEN_LEVEL_ZWEI_FILE = "fragen_level_zwei.csv";
 
 const CHECK_NULLS_FILE = path.join(SCHEMA_DIR, "check_nulls.sql");
 
@@ -79,6 +87,13 @@ async function main() {
       console.debug(`  - Importing ${file} → table ${tableName}`);
       await importRiasecCsv(tableName, path.join(CSV_DIR, file), client);
     }
+
+    // Import Fragen Level 2
+    console.debug("\n Importing Fragen Level 2");
+    await importFragenLevelZweiCsv(
+      path.join(CSV_DIR, FRAGEN_LEVEL_ZWEI_FILE),
+      client,
+    );
 
     // NULL-Checks on studiengebiete
     console.debug('\n Checking "studiengebiete" for NULL values');

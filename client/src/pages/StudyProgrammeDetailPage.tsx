@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
@@ -548,14 +553,25 @@ const StudyProgrammeDetailPage: React.FC = () => {
                     </Box>
                   )}
                   {programme.zulassungsmodus && (
-                    <Box sx={{ mb: 1.5 }}>
-                      <Typography
-                        component="span"
-                        sx={{ fontWeight: 600, mr: 1 }}
-                      >
+                    <Box
+                      sx={{
+                        mb: 1.5,
+                        display: "flex",
+                        flexWrap: "wrap",
+                        columnGap: 0.5,
+                      }}
+                    >
+                      <Typography component="span" sx={{ fontWeight: 600 }}>
                         Zulassungsmodus:
                       </Typography>
-                      <Typography component="span">
+                      <Typography
+                        component="span"
+                        sx={{
+                          overflowWrap: "anywhere",
+                          wordBreak: "break-word",
+                          minWidth: 0,
+                        }}
+                      >
                         {programme.zulassungsmodus}
                       </Typography>
                     </Box>

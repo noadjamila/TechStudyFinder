@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import React, { useState, useEffect, useMemo } from "react";
 import { Box, CircularProgress } from "@mui/material";
 import Results from "../components/quiz/Results";
@@ -37,6 +42,7 @@ const ResultsPage: React.FC = () => {
   const [hasQuizResults, setHasQuizResults] = useState<boolean>(() => {
     return location.state?.resultIds !== undefined;
   });
+  const isFreshResults = location.state?.resultIds !== undefined;
 
   useEffect(() => {
     let isMounted = true;
@@ -182,7 +188,10 @@ const ResultsPage: React.FC = () => {
           {error}
         </Box>
       ) : (
-        <Results studyProgrammes={studyProgrammes} />
+        <Results
+          studyProgrammes={studyProgrammes}
+          isFreshResults={isFreshResults}
+        />
       )}
     </MainLayout>
   );
