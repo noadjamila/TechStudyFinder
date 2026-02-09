@@ -99,7 +99,14 @@ export async function getFilteredResultsLevel2(
   studyProgrammeIds: number[] | undefined,
   userScores: RiasecScores,
   minSimilarity: number = 0.9,
-): Promise<number[]> {
+): Promise<
+  Array<{
+    studiengang_id: string;
+    name: string;
+    similarity: number;
+    is_unique: boolean;
+  }>
+> {
   if (!studyProgrammeIds || studyProgrammeIds.length === 0) {
     console.debug("No studyProgrammeIds provided, returning empty array.");
     return [];
@@ -165,7 +172,7 @@ export async function getFilteredResultsLevel2(
       WHERE similarity >= $8
   ),
 
-  top_30_unique AS (
+  top_40_unique AS (
       SELECT *
       FROM ranked_by_name
       WHERE rn = 1
@@ -179,7 +186,7 @@ export async function getFilteredResultsLevel2(
       r.similarity,
       (r.rn = 1) AS is_unique
   FROM ranked_by_name r
-  JOIN top_30_unique t
+  JOIN top_40_unique t
     ON r.studiengang_name = t.studiengang_name
   ORDER BY
       t.similarity DESC,
