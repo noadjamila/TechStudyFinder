@@ -30,7 +30,7 @@ _Kreativer Ausdruck durch Kunst, Musik, Sprache, Gestaltung_
 **S – Social**  
 _Helfen, lehren, beraten, soziale Interaktion, Empathie_
 
-- Würdest du gerne andere zu unterrichten?
+- Würdest du gerne andere unterrichten?
 - Hast du Interesse daran, die persönliche Entwicklung anderer Menschen zu fördern?
 - Interessiert es dich, einen Workshop oder Kurs zu leiten?
 - Würdest du gerne andere Menschen motivieren und in ihren Aufgaben unterstützen?
@@ -50,7 +50,7 @@ _Führen, überzeugen, verkaufen, organisieren, unternehmerisch handeln_
 **C – Conventional**  
 _Strukturierte, bürokratische, organisatorische Tätigkeiten mit klaren Vorgaben_
 
-- Legt du Wert darauf, deine Woche zu strukturieren und genau zu planen?
+- Legst du Wert darauf, deine Woche genau zu strukturieren und zu planen?
 - Würdest du gerne Kunden und Kundinnen bei Fragen und Problemen unterstützen?
 - Interessiert es dich, Verantwortung dafür zu übernehmen, dass Gehälter richtig und termingerecht ausgezahlt werden?
 - Interessiert es dich, ein Archiv oder eine Datenbank aufzubauen?
