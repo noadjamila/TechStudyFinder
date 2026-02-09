@@ -144,7 +144,7 @@ export default function Login() {
           label="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
           disabled={loading}
         />
 
@@ -153,7 +153,7 @@ export default function Login() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
           disabled={loading}
           sx={{ mb: 3 }}
         />

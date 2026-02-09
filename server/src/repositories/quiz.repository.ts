@@ -74,13 +74,8 @@ export async function getFilteredResultsLevel1(
     params.push(studientyp);
   }
 
-  console.debug(`[DB DEBUG] Executing Query: ${query}`);
-  console.debug(`[DB DEBUG] Parameters: ${params.join(", ")}`);
-
   // send query to database, return study programme ids
   const result = await pool.query(query, params);
-
-  console.debug(`[DB DEBUG] Rows found: ${result.rows.length}`);
 
   return result.rows.map((row: any) => row.id);
 }
@@ -104,11 +99,6 @@ export async function getFilteredResultsLevel2(
   }
 
   const LIMIT = 20;
-
-  console.debug("User RIASEC Scores:", userScores);
-  console.debug("Study programme IDs:", studyProgrammeIds);
-  console.debug("Min similarity threshold:", minSimilarity);
-  console.debug("Query limit:", LIMIT);
 
   const query = `
     WITH user_vector AS (
@@ -178,9 +168,6 @@ export async function getFilteredResultsLevel2(
     minSimilarity, // $8
     LIMIT, // $9
   ]);
-
-  console.debug("Query returned", result.rows.length, "rows");
-  console.debug("Results:", result.rows);
 
   return result.rows;
 }
