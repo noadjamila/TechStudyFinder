@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { initializeDatabaseWithUpload } from "../../db/scripts/init_data_with_upload";
 import {
   findAdminForLogin,

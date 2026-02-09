@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { QuizFilterPayload, FilterResponse } from "../types/QuizApi.types";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 import { RiasecType } from "../types/RiasecTypes";
