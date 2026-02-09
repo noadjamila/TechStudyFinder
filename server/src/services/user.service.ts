@@ -31,10 +31,6 @@ export function validateUsername(username: string): {
   valid: boolean;
   message?: string;
 } {
-  if (typeof username !== "string") {
-    return { valid: false, message: "Username muss ein Text sein." };
-  }
-
   if (username.length < 5) {
     return {
       valid: false,

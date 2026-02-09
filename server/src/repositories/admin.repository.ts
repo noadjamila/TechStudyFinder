@@ -146,7 +146,7 @@ export async function updateRiasecData(
 /**
  * Finds a admin by adminname and password for login.
  * Uses constant time password comparison to prevent timing attacks.
- * @param username
+ * @param adminname
  * @param password
  * @returns The admin object with id and adminname if credentials are valid, otherwise null.
  */
