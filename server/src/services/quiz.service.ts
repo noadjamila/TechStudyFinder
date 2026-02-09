@@ -84,13 +84,6 @@ export async function filterLevel2(
   return await getFilteredResultsLevel2(_studyProgrammeIds, userScores);
 }
 
-export async function filterLevel3(
-  _studyProgrammeIds: number[] | undefined,
-  _answers: any[],
-) {
-  // Implement level 3 filtering logic here
-}
-
 /**
  * Retrieves all level 2 questions.
  *

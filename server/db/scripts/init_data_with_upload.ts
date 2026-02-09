@@ -18,14 +18,9 @@ const SCHEMA_DIR = path.join(ROOT_DIR, "db/schema");
 const CSV_DIR = path.join(ROOT_DIR, "db/data");
 
 const SCHEMA_FILES = [
-  "users.sql",
-  "session.sql",
   "institutions.sql",
   "degreeprogrammes.sql",
-  "favourites.sql",
   "degreeprogramme_view.sql",
-  "admin.sql",
-  "user_quiz_results.sql",
 ];
 
 const CSV_FILES = ["studiengebiete_riasec.csv", "studienfelder_riasec.csv"];
