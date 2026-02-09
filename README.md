@@ -2,7 +2,7 @@
 
 **TechStudyFinder** is a progressive web application designed to help young people discover Informatics study programs that align with their **interests, values, and preferences**.
 
-Many young people, especially **FINTA** (women, lesbian, inter, non-binary, trans, and agender individuals), never consider studying Informatics because they assume it’s only about programming or mathematics. This project aims to change that by showing how diverse and creative IT can be and how it connects to things people already care about.
+Many young people, especially **FINTA** (women, inter, non-binary, trans, and agender individuals), never consider studying Informatics because they assume it’s only about programming or mathematics. This project aims to change that by showing how diverse and creative IT can be and how it connects to things people already care about.
 
 **Disclaimer:**
 This application is not intended to provide professional career or psychological advice. It’s meant for general informational purposes only and shouldn’t replace guidance from qualified professionals.
