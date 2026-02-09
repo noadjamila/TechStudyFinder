@@ -485,7 +485,11 @@ describe("Quiz Controller - saveQuizResults", () => {
         user: { id: 1, username: "testuser" },
       } as any,
       body: {
-        resultIds: ["1", "2", "3"],
+        resultIds: [
+          { studiengang_id: "1", similarity: 0.9 },
+          { studiengang_id: "2", similarity: 0.8 },
+          { studiengang_id: "3" },
+        ],
       },
     };
 
@@ -494,9 +498,9 @@ describe("Quiz Controller - saveQuizResults", () => {
 
     // Assert
     expect(quizService.saveQuizResultsService).toHaveBeenCalledWith(1, [
-      "1",
-      "2",
-      "3",
+      { studiengang_id: "1", similarity: 0.9 },
+      { studiengang_id: "2", similarity: 0.8 },
+      { studiengang_id: "3" },
     ]);
     expect(statusMock).toHaveBeenCalledWith(200);
     expect(jsonMock).toHaveBeenCalledWith({
@@ -510,7 +514,7 @@ describe("Quiz Controller - saveQuizResults", () => {
     mockRequest = {
       session: {} as any,
       body: {
-        resultIds: ["1", "2", "3"],
+        resultIds: [{ studiengang_id: "1" }],
       },
     };
 
@@ -569,14 +573,14 @@ describe("Quiz Controller - saveQuizResults", () => {
     });
   });
 
-  it("should return 400 if resultIds contains non-string elements", async () => {
+  it("should return 400 if resultIds contains invalid elements", async () => {
     // Arrange
     mockRequest = {
       session: {
         user: { id: 1, username: "testuser" },
       } as any,
       body: {
-        resultIds: ["1", 2, "3", null, undefined],
+        resultIds: [{ studiengang_id: "1" }, 2, { studiengang_id: "3" }, null],
       },
     };
 
@@ -587,7 +591,7 @@ describe("Quiz Controller - saveQuizResults", () => {
     expect(statusMock).toHaveBeenCalledWith(400);
     expect(jsonMock).toHaveBeenCalledWith({
       success: false,
-      error: "All resultIds must be strings or objects with studiengang_id",
+      error: expect.stringContaining("resultIds"),
     });
   });
 
@@ -604,11 +608,12 @@ describe("Quiz Controller - saveQuizResults", () => {
         user: { id: 1, username: "testuser" },
       } as any,
       body: {
-        resultIds: ["1", "2", "3"],
+        resultIds: [{ studiengang_id: "1" }, { studiengang_id: "2" }],
       },
     };
 
     // Act
+    await saveQuizResults(mockRequest as Request, mockResponse as Response);
     await saveQuizResults(mockRequest as Request, mockResponse as Response);
 
     // Assert

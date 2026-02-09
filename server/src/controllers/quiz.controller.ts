@@ -116,7 +116,13 @@ export async function getStudyProgrammeById(req: Request, res: Response) {
  * @returns success status
  */
 export async function saveQuizResults(
-  req: Request<{}, {}, { resultIds: string[] }>,
+  req: Request<
+    {},
+    {},
+    {
+      resultIds: Array<{ studiengang_id: string; similarity?: number }>;
+    }
+  >,
   res: Response,
 ) {
   const userId = (req.session as any).user?.id;
@@ -144,24 +150,20 @@ export async function saveQuizResults(
     });
   }
 
-  // Validate that each result is either a string or an object with studiengang_id
-  const isValid = resultIds.every((id: any) => {
-    if (typeof id === "string") return true;
-    if (
-      typeof id === "object" &&
-      id !== null &&
-      typeof id.studiengang_id === "string"
-    ) {
-      return true;
+  // Validate that all elements are objects with studiengang_id
+  for (const item of resultIds) {
+    if (typeof item !== "object" || item === null) {
+      return res.status(400).json({
+        success: false,
+        error: "All resultIds must be objects with studiengang_id",
+      });
     }
-    return false;
-  });
-
-  if (!isValid) {
-    return res.status(400).json({
-      success: false,
-      error: "All resultIds must be strings or objects with studiengang_id",
-    });
+    if (typeof item.studiengang_id !== "string" || !item.studiengang_id) {
+      return res.status(400).json({
+        success: false,
+        error: "Each result must have a non-empty studiengang_id",
+      });
+    }
   }
 
   try {

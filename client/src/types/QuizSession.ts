@@ -12,6 +12,7 @@ export type QuizSession = {
 
   level1IDS?: string[];
   resultIds?: string[];
+  idsFromLevel2?: Array<{ studiengang_id: string; similarity?: number }>;
 
   showSuccessScreen?: boolean;
 

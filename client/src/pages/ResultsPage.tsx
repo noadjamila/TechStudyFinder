@@ -57,12 +57,8 @@ const ResultsPage: React.FC = () => {
         let idsToFetch: string[] = [];
         let resultsWithSimilarity: typeof rawResults = [];
 
-        const hasNav =
-          location.state?.results !== undefined ||
-          location.state?.resultIds !== undefined;
-
         // Scenario 1: Fresh quiz completion - use results from navigation state
-        if (hasNav) {
+        if (location.state?.results !== undefined) {
           idsToFetch = idsFromQuiz;
           resultsWithSimilarity = rawResults;
           sessionStorage.setItem(ACTIVE_RESULTS_KEY, "1");

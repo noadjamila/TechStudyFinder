@@ -208,13 +208,15 @@ export default function QuizFlow(): JSX.Element | null {
       },
       apiFetch,
     );
-    type ResultId = string | { studiengang_id: string; similarity?: number };
 
-    const rawResultIds: ResultId[] = (res as any)?.ids ?? [];
+    const rawResultIds: Array<{
+      studiengang_id: string;
+      similarity?: number;
+    }> = (res as any)?.ids ?? [];
 
     const idsToSave = rawResultIds
-      .map((r) => (typeof r === "string" ? r : r?.studiengang_id))
-      .filter((id): id is string => typeof id === "string" && id.length > 0);
+      .map((r) => r.studiengang_id)
+      .filter((id) => id && id.length > 0);
 
     setSession((prev) => ({
       ...prev,
@@ -225,14 +227,13 @@ export default function QuizFlow(): JSX.Element | null {
       showSuccessScreen: true,
       updatedAt: Date.now(),
     }));
-    if (user && idsToSave.length > 0) {
+    if (user && rawResultIds.length > 0) {
       try {
         // Filter out is_unique flag before saving, only keep studiengang_id and similarity
-        const resultsToSave = rawResultIds.map((r) =>
-          typeof r === "string"
-            ? r
-            : { studiengang_id: r.studiengang_id, similarity: r.similarity },
-        );
+        const resultsToSave = rawResultIds.map((r) => ({
+          studiengang_id: r.studiengang_id,
+          similarity: r.similarity,
+        }));
         await saveQuizResults(resultsToSave);
       } catch (e) {
         console.error("Failed to save quiz results:", e);
@@ -254,7 +255,7 @@ export default function QuizFlow(): JSX.Element | null {
           if (sessionRef.current.currentLevel === 3) {
             clearQuizSession().catch(console.error);
             navigate("/results", {
-              state: { results: (sessionRef.current as any).idsFromLevel2 },
+              state: { results: sessionRef.current.idsFromLevel2 },
             });
           }
         }}
