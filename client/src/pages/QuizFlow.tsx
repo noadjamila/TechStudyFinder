@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { useState, useEffect, useRef, JSX } from "react";
 import { useNavigate } from "react-router-dom";
 import Quiz_L1 from "../components/quiz/Quiz_L1";

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import React from "react";
 import { useState, useEffect } from "react";
 import { Box, Typography, Snackbar, Alert } from "@mui/material";
@@ -54,8 +59,6 @@ const Homescreen: React.FC = () => {
    *
    * @function
    * @async
-   *
-   * @throws Will log an error to the console if retrieving the session fails.
    */
   const handleQuizStart = async () => {
     try {
@@ -107,7 +110,7 @@ const Homescreen: React.FC = () => {
         overflow: "visible",
         maxWidth: "100%",
         mx: "auto",
-        mt: { xs: 1, sm: 15, md: 9 },
+        mt: { xs: 4, sm: 8, md: 8 },
         position: "relative",
         color: theme.palette.text.primary,
         textAlign: "center",
@@ -117,7 +120,15 @@ const Homescreen: React.FC = () => {
       }}
     >
       {/* Main Title */}
-      <Typography variant="h2">{mainTitle}</Typography>
+      <Typography
+        variant="h2"
+        sx={{
+          width: "100%",
+          fontSize: { xs: "2rem", sm: "2.5rem", md: "2.5rem" },
+        }}
+      >
+        {mainTitle}
+      </Typography>
 
       {/* Greeting Bubble - only shown when user is logged in */}
       {user && <GreetingBubble username={user.username} />}
@@ -159,7 +170,7 @@ const Homescreen: React.FC = () => {
       </Box>
 
       {/* Card */}
-      <GreenCard hideMascot={user ? true : false}>
+      <GreenCard hideMascot={!!user}>
         <Typography variant="subtitle1" sx={{ mb: 3, lineHeight: 1.3 }}>
           {cardQuestion}
         </Typography>

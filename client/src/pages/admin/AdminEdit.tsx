@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import {
   Accordion,
   AccordionSummary,
@@ -72,7 +77,6 @@ export default function AdminEdit() {
       }
 
       const data = await res.json();
-      console.log("RIASEC Data:", data);
 
       setRiasecData({
         studiengebiete: data.studiengebiete || [],

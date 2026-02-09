@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import React, { useState, useMemo, useEffect } from "react";
 import {
   Box,
@@ -212,7 +217,7 @@ const Results: React.FC<ResultsProps> = ({
     >
       <DataSource />
       <Typography variant="h2">
-        {isFreshResults ? "Meine Ergebnisse" : "Meine letzten Ergebnisse"}
+        {isFreshResults ? "Deine Ergebnisse" : "Deine letzten Ergebnisse"}
       </Typography>
 
       {studyProgrammes.length === 0 ? (

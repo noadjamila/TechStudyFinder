@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 import { navigateTo500Error } from "../utils/errorHandler";

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { pool } from "../../db";
 import { RiasecScores } from "../types/riasecScores";
 import { StudyProgramme } from "../types/studyProgramme";
@@ -76,13 +81,8 @@ export async function getFilteredResultsLevel1(
     params.push(studientyp);
   }
 
-  console.debug(`[DB DEBUG] Executing Query: ${query}`);
-  console.debug(`[DB DEBUG] Parameters: ${params.join(", ")}`);
-
   // send query to database, return study programme ids
   const result = await pool.query(query, params);
-
-  console.debug(`[DB DEBUG] Rows found: ${result.rows.length}`);
 
   return result.rows.map((row: any) => row.id);
 }
@@ -204,9 +204,6 @@ export async function getFilteredResultsLevel2(
     minSimilarity, // $8
     LIMIT, // $9
   ]);
-
-  console.debug("Query returned", result.rows.length, "rows");
-  console.debug("Results:", result.rows);
 
   return result.rows;
 }

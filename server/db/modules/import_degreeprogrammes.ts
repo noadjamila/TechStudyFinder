@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import fs from "fs";
 import { parseStringPromise } from "xml2js";
 import { Client } from "pg";
@@ -73,13 +78,11 @@ export async function importDegreeProgrammes(client: Client, xmlData?: string) {
     const homepage = programme.homepage || null;
     const fee_amount = getTextDe(programme.fee?.name);
     const fee_comment = getTextDe(programme.fee?.comment?.name);
-    const accredited =
-      programme.accreditation?.accredited === "true" ? true : false;
+    const accredited = programme.accreditation?.accredited === "true";
     const comment = getTextDe(programme.comment?.name);
     const internal_degree = getTextDe(programme.internalDegree?.name);
     const master_type = getTextDe(programme.master_type?.name);
-    const teachingdegrees =
-      programme.teachingdegrees?.possible === "true" ? true : false;
+    const teaching_degrees = programme.teachingdegrees?.possible === "true";
     const duration = getTextDe(programme.duration?.name);
     const target_group = getTextDe(programme.target_group?.name);
     const admission_term = getTextDe(programme.admission_term?.name);
@@ -100,7 +103,7 @@ export async function importDegreeProgrammes(client: Client, xmlData?: string) {
       comment,
       internal_degree,
       master_type,
-      teachingdegrees,
+      teaching_degrees,
       duration,
       target_group,
       admission_term,
