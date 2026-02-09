@@ -119,10 +119,6 @@ export async function getFilteredResultsLevel2(
 
   const LIMIT = 40;
 
-  console.debug("User RIASEC Scores:", userScores);
-  console.debug("Study programme IDs:", studyProgrammeIds);
-  console.debug("Min similarity threshold:", minSimilarity);
-
   const query = `
     WITH user_vector AS (
       SELECT
