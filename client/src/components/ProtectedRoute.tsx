@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Tech Study Finder Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { ReactNode } from "react";
