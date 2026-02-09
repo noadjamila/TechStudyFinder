@@ -41,8 +41,8 @@ describe("LoginxRegister", () => {
   beforeEach(() => {
     navigateMock.mockClear();
     (persistQuiz.loadQuizResults as any).mockResolvedValue([
-      { studiengang_id: "123" },
-      { studiengang_id: "456" },
+      { studiengang_id: "123", similarity: "0,98" },
+      { studiengang_id: "456", similarity: "0,98" },
     ]);
     (quizApi.saveQuizResults as any).mockResolvedValue(undefined);
   });
@@ -93,7 +93,10 @@ describe("LoginxRegister", () => {
 
     // Warten, bis saveQuizResults aufgerufen wird
     await waitFor(() => {
-      expect(quizApi.saveQuizResults).toHaveBeenCalledWith(["123", "456"]);
+      expect(quizApi.saveQuizResults).toHaveBeenCalledWith([
+        { similarity: "0,98", studiengang_id: "123" },
+        { similarity: "0,98", studiengang_id: "456" },
+      ]);
     });
 
     // Dialog sollte sichtbar sein
