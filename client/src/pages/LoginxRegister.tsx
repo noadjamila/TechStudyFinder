@@ -27,7 +27,9 @@ export default function LoginxRegister() {
   const navigate = useNavigate();
   const location = useLocation();
   const [state, setState] = useState<"login" | "register">("login");
-  const [results, setResults] = useState<string[]>([]);
+  const [results, setResults] = useState<
+    { studiengang_id: string; similarity?: number }[]
+  >([]);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   const handleSuccess = async () => {
@@ -35,8 +37,7 @@ export default function LoginxRegister() {
 
     if (Array.isArray(results) && results.length > 0) {
       try {
-        let resultIds = results as string[];
-        await saveQuizResults(resultIds);
+        await saveQuizResults(results);
       } catch (e) {
         console.error("Failed to save quiz results:", e);
       }
@@ -52,8 +53,12 @@ export default function LoginxRegister() {
         if (!isMounted) return;
 
         if (results.length > 0) {
-          let resultIds = results.map((item) => item.studiengang_id);
-          setResults(resultIds);
+          const mappedResults = results.map((item) => ({
+            studiengang_id: item.studiengang_id,
+            similarity: item.similarity ?? undefined,
+          }));
+
+          setResults(mappedResults);
         } else {
           setResults([]);
         }

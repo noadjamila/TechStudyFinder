@@ -7,6 +7,7 @@ import React from "react";
 import { Card, CardContent, Typography, Box, IconButton } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import StarsIcon from "@mui/icons-material/Stars";
 import SchoolIcon from "@mui/icons-material/School";
 import { StudyProgramme } from "../../types/StudyProgramme.types";
@@ -168,6 +169,44 @@ const StudyProgrammeCard: React.FC<StudyProgrammeCardProps> = ({
                 {programme.abschluss}
               </Typography>
             </Box>
+            {programme.similarity !== undefined &&
+              programme.similarity !== null && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.5,
+                    marginTop: 1,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 20,
+                      height: 20,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <AutoAwesomeIcon
+                      sx={{
+                        fontSize: 18,
+                        color: theme.palette.success.main,
+                      }}
+                    />
+                  </Box>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: theme.palette.success.main,
+                      fontSize: { xs: "0.875rem", sm: "1rem" },
+                      fontWeight: 500,
+                    }}
+                  >
+                    Match: {Math.round(programme.similarity * 100)}%
+                  </Typography>
+                </Box>
+              )}
           </Box>
           {onToggleFavorite && (
             <IconButton

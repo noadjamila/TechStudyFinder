@@ -230,16 +230,20 @@ describe("Quiz Repository - saveUserQuizResults", () => {
   it("should insert new quiz results for user", async () => {
     // Arrange
     const userId = 1;
-    const resultIds = ["100", "101", "102"];
+    const results = [
+      { studiengang_id: "100", similarity: 0.95 },
+      { studiengang_id: "101", similarity: 0.92 },
+      { studiengang_id: "102", similarity: 0.89 },
+    ];
     (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
 
     // Act
-    await saveUserQuizResults(userId, resultIds);
+    await saveUserQuizResults(userId, results);
 
     // Assert
     expect(pool.query).toHaveBeenCalledWith(
       expect.stringContaining("INSERT INTO user_quiz_results"),
-      [userId, JSON.stringify(resultIds)],
+      [userId, JSON.stringify(results)],
     );
     expect(pool.query).toHaveBeenCalledTimes(1);
   });
@@ -247,44 +251,47 @@ describe("Quiz Repository - saveUserQuizResults", () => {
   it("should update existing quiz results for user (UPSERT)", async () => {
     // Arrange
     const userId = 1;
-    const resultIds = ["200", "201"];
+    const results = [
+      { studiengang_id: "200", similarity: 0.98 },
+      { studiengang_id: "201", similarity: 0.91 },
+    ];
     (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
 
     // Act
-    await saveUserQuizResults(userId, resultIds);
+    await saveUserQuizResults(userId, results);
 
     // Assert
     const callArgs = (pool.query as jest.Mock).mock.calls[0];
     expect(callArgs[0]).toContain("ON CONFLICT (user_id)");
     expect(callArgs[0]).toContain("DO UPDATE SET result_ids");
-    expect(callArgs[1]).toEqual([userId, JSON.stringify(resultIds)]);
+    expect(callArgs[1]).toEqual([userId, JSON.stringify(results)]);
   });
 
   it("should handle empty result IDs array", async () => {
     // Arrange
     const userId = 1;
-    const resultIds: string[] = [];
+    const results: any[] = [];
     (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
 
     // Act
-    await saveUserQuizResults(userId, resultIds);
+    await saveUserQuizResults(userId, results);
 
     // Assert
     expect(pool.query).toHaveBeenCalledWith(expect.any(String), [
       userId,
-      JSON.stringify(resultIds),
+      JSON.stringify(results),
     ]);
   });
 
   it("should propagate database errors", async () => {
     // Arrange
     const userId = 1;
-    const resultIds = ["100"];
+    const results = [{ studiengang_id: "100", similarity: 0.95 }];
     const mockError = new Error("Database constraint violation");
     (pool.query as jest.Mock).mockRejectedValue(mockError);
 
     // Act & Assert
-    await expect(saveUserQuizResults(userId, resultIds)).rejects.toThrow(
+    await expect(saveUserQuizResults(userId, results)).rejects.toThrow(
       "Database constraint violation",
     );
   });
@@ -292,16 +299,19 @@ describe("Quiz Repository - saveUserQuizResults", () => {
   it("should handle large arrays of result IDs", async () => {
     // Arrange
     const userId = 1;
-    const resultIds = Array.from({ length: 100 }, (_, i) => `id_${i}`);
+    const results = Array.from({ length: 100 }, (_, i) => ({
+      studiengang_id: `id_${i}`,
+      similarity: 0.9 + i * 0.0001,
+    }));
     (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
 
     // Act
-    await saveUserQuizResults(userId, resultIds);
+    await saveUserQuizResults(userId, results);
 
     // Assert
     expect(pool.query).toHaveBeenCalledWith(expect.any(String), [
       userId,
-      JSON.stringify(resultIds),
+      JSON.stringify(results),
     ]);
   });
 });
@@ -327,7 +337,12 @@ describe("Quiz Repository - getUserQuizResults", () => {
     expect(callArgs[0]).toContain("SELECT result_ids FROM user_quiz_results");
     expect(callArgs[0]).toContain("WHERE user_id = $1");
     expect(callArgs[1]).toEqual([userId]);
-    expect(result).toEqual(mockResults);
+    // Should convert old string[] format to new object[] format
+    expect(result).toEqual([
+      { studiengang_id: "100" },
+      { studiengang_id: "101" },
+      { studiengang_id: "102" },
+    ]);
   });
 
   it("should return null when user has no saved results", async () => {
@@ -385,6 +400,10 @@ describe("Quiz Repository - getUserQuizResults", () => {
 
     // Assert
     expect(pool.query).toHaveBeenCalledWith(expect.any(String), [userId]);
-    expect(result).toEqual(mockResults);
+    // Should convert old string[] format to new object[] format
+    expect(result).toEqual([
+      { studiengang_id: "500" },
+      { studiengang_id: "501" },
+    ]);
   });
 });

@@ -76,11 +76,13 @@ export async function getStudyProgrammeById(
 /**
  * Saves quiz results for the authenticated user.
  *
- * @param {string[]} resultIds Array of study programme IDs.
+ * @param {Array} results Array of result objects with studiengang_id and optional similarity.
  * @returns {Promise<void>} A promise that resolves when results are saved.
  * @throws {Error} Throws if the network request fails or user is not authenticated.
  */
-export async function saveQuizResults(resultIds: string[]): Promise<void> {
+export async function saveQuizResults(
+  results: Array<string | { studiengang_id: string; similarity?: number }>,
+): Promise<void> {
   const endpoint = `${API_BASE_URL}/quiz/results`;
 
   const res = await fetch(endpoint, {
@@ -89,7 +91,7 @@ export async function saveQuizResults(resultIds: string[]): Promise<void> {
       "Content-Type": "application/json",
     },
     credentials: "include", // Include session cookie
-    body: JSON.stringify({ resultIds }),
+    body: JSON.stringify({ resultIds: results }),
   });
 
   if (!res.ok) {
@@ -101,10 +103,13 @@ export async function saveQuizResults(resultIds: string[]): Promise<void> {
 /**
  * Retrieves saved quiz results for the authenticated user.
  *
- * @returns {Promise<string[] | null>} Array of study programme IDs or null if no results found.
+ * @returns {Promise<Array | null>} Array of result objects with studiengang_id and optional similarity, or null if no results found.
  * @throws {Error} Throws if the network request fails or user is not authenticated.
  */
-export async function getQuizResults(): Promise<string[] | null> {
+export async function getQuizResults(): Promise<Array<{
+  studiengang_id: string;
+  similarity?: number;
+}> | null> {
   const endpoint = `${API_BASE_URL}/quiz/results`;
 
   const res = await fetch(endpoint, {
