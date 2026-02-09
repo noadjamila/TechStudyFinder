@@ -77,7 +77,6 @@ export default function AdminEdit() {
       }
 
       const data = await res.json();
-      console.log("RIASEC Data:", data);
 
       setRiasecData({
         studiengebiete: data.studiengebiete || [],
