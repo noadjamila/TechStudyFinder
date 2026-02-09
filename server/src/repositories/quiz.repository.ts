@@ -12,11 +12,11 @@ import { StudyProgramme } from "../types/studyProgramme";
  * Uses UPSERT to handle both new and existing results.
  *
  * @param userId the user's ID
- * @param resultIds array of study programme IDs in order
+ * @param results array of result objects with studiengang_id and optional similarity
  */
 export async function saveUserQuizResults(
   userId: number,
-  resultIds: string[],
+  results: Array<string | { studiengang_id: string; similarity?: number }>,
 ): Promise<void> {
   const query = `
     INSERT INTO user_quiz_results (user_id, result_ids, updated_at)
@@ -25,18 +25,18 @@ export async function saveUserQuizResults(
     DO UPDATE SET result_ids = $2, updated_at = NOW()
   `;
 
-  await pool.query(query, [userId, resultIds]);
+  await pool.query(query, [userId, JSON.stringify(results)]);
 }
 
 /**
  * Retrieves user quiz results from the database.
  *
  * @param userId the user's ID
- * @returns array of study programme IDs or null if no results found
+ * @returns array of result objects with studiengang_id and optional similarity, or null if no results found
  */
 export async function getUserQuizResults(
   userId: number,
-): Promise<string[] | null> {
+): Promise<Array<{ studiengang_id: string; similarity?: number }> | null> {
   const query = `
     SELECT result_ids FROM user_quiz_results
     WHERE user_id = $1
@@ -48,7 +48,19 @@ export async function getUserQuizResults(
     return null;
   }
 
-  return result.rows[0].result_ids;
+  const resultIds = result.rows[0].result_ids;
+
+  // Handle both old format (string[]) and new format (object[])
+  if (Array.isArray(resultIds)) {
+    // If it's an array of strings (old format), convert to new format
+    if (resultIds.length > 0 && typeof resultIds[0] === "string") {
+      return resultIds.map((id: string) => ({ studiengang_id: id }));
+    }
+    // Already in new format
+    return resultIds;
+  }
+
+  return null;
 }
 
 /**
@@ -92,7 +104,14 @@ export async function getFilteredResultsLevel2(
   studyProgrammeIds: number[] | undefined,
   userScores: RiasecScores,
   minSimilarity: number = 0.9,
-): Promise<number[]> {
+): Promise<
+  Array<{
+    studiengang_id: string;
+    name: string;
+    similarity: number;
+    is_unique: boolean;
+  }>
+> {
   if (!studyProgrammeIds || studyProgrammeIds.length === 0) {
     console.debug("No studyProgrammeIds provided, returning empty array.");
     return [];
@@ -154,7 +173,7 @@ export async function getFilteredResultsLevel2(
       WHERE similarity >= $8
   ),
 
-  top_30_unique AS (
+  top_40_unique AS (
       SELECT *
       FROM ranked_by_name
       WHERE rn = 1
@@ -168,7 +187,7 @@ export async function getFilteredResultsLevel2(
       r.similarity,
       (r.rn = 1) AS is_unique
   FROM ranked_by_name r
-  JOIN top_30_unique t
+  JOIN top_40_unique t
     ON r.studiengang_name = t.studiengang_name
   ORDER BY
       t.similarity DESC,
