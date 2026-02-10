@@ -59,8 +59,6 @@ const Homescreen: React.FC = () => {
    *
    * @function
    * @async
-   *
-   * @throws Will log an error to the console if retrieving the session fails.
    */
   const handleQuizStart = async () => {
     try {
@@ -172,7 +170,7 @@ const Homescreen: React.FC = () => {
       </Box>
 
       {/* Card */}
-      <GreenCard hideMascot={user ? true : false}>
+      <GreenCard hideMascot={!!user}>
         <Typography variant="subtitle1" sx={{ mb: 3, lineHeight: 1.3 }}>
           {cardQuestion}
         </Typography>

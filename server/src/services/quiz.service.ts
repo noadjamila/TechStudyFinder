@@ -18,24 +18,24 @@ import { StudyProgramme } from "../types/studyProgramme";
  * Saves user quiz results to the database.
  *
  * @param userId the user's ID
- * @param resultIds array of study programme IDs
+ * @param results array of result objects with studiengang_id and optional similarity
  */
 export async function saveQuizResultsService(
   userId: number,
-  resultIds: string[],
+  results: Array<string | { studiengang_id: string; similarity?: number }>,
 ): Promise<void> {
-  await saveUserQuizResults(userId, resultIds);
+  await saveUserQuizResults(userId, results);
 }
 
 /**
  * Retrieves user quiz results from the database.
  *
  * @param userId the user's ID
- * @returns array of study programme IDs or null if no results found
+ * @returns array of result objects with studiengang_id and optional similarity, or null if no results found
  */
 export async function getQuizResultsService(
   userId: number,
-): Promise<string[] | null> {
+): Promise<Array<{ studiengang_id: string; similarity?: number }> | null> {
   return await getUserQuizResults(userId);
 }
 
@@ -82,13 +82,6 @@ export async function filterLevel2(
   );
 
   return await getFilteredResultsLevel2(_studyProgrammeIds, userScores);
-}
-
-export async function filterLevel3(
-  _studyProgrammeIds: number[] | undefined,
-  _answers: any[],
-) {
-  // Implement level 3 filtering logic here
 }
 
 /**

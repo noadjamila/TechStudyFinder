@@ -81,8 +81,8 @@ export default function Settings() {
       if (!success) {
         throw new Error();
       }
-      logout();
       navigate("/");
+      logout();
       setDialogOpen(false);
     } catch (err) {
       setDialogError(

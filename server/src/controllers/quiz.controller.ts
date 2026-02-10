@@ -7,7 +7,6 @@ import { Request, Response } from "express";
 import {
   filterLevel1,
   filterLevel2,
-  filterLevel3,
   getQuestionsLevel2Service,
   getStudyProgrammeByIdService,
   saveQuizResultsService,
@@ -35,8 +34,6 @@ export async function filterLevel(
       result = await filterLevel1(answers);
     } else if (level === 2) {
       result = await filterLevel2(studyProgrammeIds, answers);
-    } else if (level === 3) {
-      result = await filterLevel3(studyProgrammeIds, answers);
     }
 
     return res.status(200).json({
@@ -124,7 +121,13 @@ export async function getStudyProgrammeById(req: Request, res: Response) {
  * @returns success status
  */
 export async function saveQuizResults(
-  req: Request<{}, {}, { resultIds: string[] }>,
+  req: Request<
+    {},
+    {},
+    {
+      resultIds: Array<{ studiengang_id: string; similarity?: number }>;
+    }
+  >,
   res: Response,
 ) {
   const userId = (req.session as any).user?.id;
@@ -152,11 +155,20 @@ export async function saveQuizResults(
     });
   }
 
-  if (!resultIds.every((id) => typeof id === "string")) {
-    return res.status(400).json({
-      success: false,
-      error: "All resultIds must be strings",
-    });
+  // Validate that all elements are objects with studiengang_id
+  for (const item of resultIds) {
+    if (typeof item !== "object" || item === null) {
+      return res.status(400).json({
+        success: false,
+        error: "All resultIds must be objects with studiengang_id",
+      });
+    }
+    if (typeof item.studiengang_id !== "string" || !item.studiengang_id) {
+      return res.status(400).json({
+        success: false,
+        error: "Each result must have a non-empty studiengang_id",
+      });
+    }
   }
 
   try {

@@ -786,7 +786,7 @@ const StudyProgrammeDetailPage: React.FC = () => {
         message={FAVORITES_LOGIN_MESSAGE}
         onLoginClick={() => {
           const intendedDestination = location.pathname;
-          navigate("/login", {
+          navigate("/login-register", {
             state: {
               redirectTo: intendedDestination,
             },

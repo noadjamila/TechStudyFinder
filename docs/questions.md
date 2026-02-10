@@ -1,11 +1,12 @@
-**QUESTION_DOCUMENTATION.md**
-
-**R – Realistic**  
 _Praktische, handwerkliche, technische, mechanische oder landwirtschaftliche Tätigkeiten mit sichtbaren Ergebnissen_
 
 - Würdest du gern mal ein Gerät reparieren?
 - Würdest du gerne mit großen Maschinen arbeiten?
+- Würdest du gerne mit großen Maschinen arbeiten?
 - Interessiert es dich, wie du einen Computer schneller machen kannst?
+- Interessieren dich virtuelle Simulationen? \*
+- Könntest du dir vorstellen, eine Bewässerungsanlage für ein Feld zu entwerfen?
+- Interessieren dich elektrische Anlagen und Stromkreise?
 - Interessieren dich virtuelle Simulationen? \*
 - Könntest du dir vorstellen, eine Bewässerungsanlage für ein Feld zu entwerfen?
 - Interessieren dich elektrische Anlagen und Stromkreise?
@@ -53,7 +54,7 @@ _Führen, überzeugen, verkaufen, organisieren, unternehmerisch handeln_
 **C – Conventional**  
 _Strukturierte, bürokratische, organisatorische Tätigkeiten mit klaren Vorgaben_
 
-- Legt du Wert darauf, deine Woche zu strukturieren und genau zu planen?
+- Legst du Wert darauf, deine Woche genau zu strukturieren und zu planen?
 - Würdest du gerne Kunden und Kundinnen bei Fragen und Problemen unterstützen?
 - Interessiert es dich, Verantwortung dafür zu übernehmen, dass Gehälter richtig und termingerecht ausgezahlt werden?
 - Interessiert es dich, ein Archiv oder eine Datenbank aufzubauen?

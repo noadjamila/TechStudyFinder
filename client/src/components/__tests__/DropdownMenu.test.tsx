@@ -52,7 +52,7 @@ describe("DropMenu", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("displays 'Einloggen' when user is not logged in", async () => {
+  it("displays 'Einloggen/Registrieren' when user is not logged in", async () => {
     mockUseAuth.mockReturnValue({
       user: null,
       isLoading: false,
@@ -63,7 +63,7 @@ describe("DropMenu", () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText("Einloggen")).toBeInTheDocument();
+      expect(screen.getByText("Einloggen/Registrieren")).toBeInTheDocument();
     });
   });
 
@@ -111,7 +111,7 @@ describe("DropMenu", () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText("Einloggen")).toBeInTheDocument();
+      expect(screen.getByText("Einloggen/Registrieren")).toBeInTheDocument();
     });
   });
 });
