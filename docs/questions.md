@@ -2,10 +2,7 @@ _Praktische, handwerkliche, technische, mechanische oder landwirtschaftliche Tä
 
 - Würdest du gern mal ein Gerät reparieren?
 - Würdest du gerne mit großen Maschinen arbeiten?
-- Würdest du gerne mit großen Maschinen arbeiten?
 - Interessiert es dich, wie du einen Computer schneller machen kannst?
-- Interessieren dich virtuelle Simulationen? \*
-- Könntest du dir vorstellen, eine Bewässerungsanlage für ein Feld zu entwerfen?
 - Interessieren dich elektrische Anlagen und Stromkreise?
 - Interessieren dich virtuelle Simulationen? \*
 - Könntest du dir vorstellen, eine Bewässerungsanlage für ein Feld zu entwerfen?
@@ -34,7 +31,7 @@ _Kreativer Ausdruck durch Kunst, Musik, Sprache, Gestaltung_
 **S – Social**  
 _Helfen, lehren, beraten, soziale Interaktion, Empathie_
 
-- Würdest du gerne andere zu unterrichten?
+- Würdest du gerne andere unterrichten?
 - Hast du Interesse daran, die persönliche Entwicklung anderer Menschen zu fördern?
 - Interessiert es dich, einen Workshop oder Kurs zu leiten?
 - Würdest du gerne andere Menschen motivieren und in ihren Aufgaben unterstützen?
