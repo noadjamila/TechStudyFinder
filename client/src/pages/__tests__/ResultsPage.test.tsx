@@ -351,6 +351,55 @@ describe("ResultsPage Component", () => {
       ).toBeInTheDocument();
     });
   });
+
+  it("preserves result order even when database returns programmes in different order", async () => {
+    const { getStudyProgrammesByIds } = await import("../../api/quizApi");
+
+    // Mock bulk fetch to return programmes in reverse order (simulating DB behavior)
+    vi.mocked(getStudyProgrammesByIds).mockImplementation(
+      async (ids: string[]) => {
+        const programmes = ids.map((id) => ({
+          studiengang_id: id,
+          name: `Programme ${id}`,
+          hochschule: "Test University",
+          abschluss: "Bachelor",
+          homepage: null,
+          studienbeitrag: null,
+          beitrag_kommentar: null,
+          anmerkungen: null,
+          regelstudienzeit: null,
+          zulassungssemester: null,
+          zulassungsmodus: null,
+          zulassungsvoraussetzungen: null,
+          zulassungslink: null,
+          schwerpunkte: null,
+          sprachen: null,
+          standorte: null,
+          studienfelder: null,
+          studienform: null,
+          fristen: null,
+        }));
+        // Return in reverse order
+        return programmes.reverse();
+      },
+    );
+
+    renderWithTheme(<ResultsPage />, {
+      pathname: "/results",
+      state: { results: ["1", "2", "3"] },
+    });
+
+    await waitFor(() => {
+      expect(vi.mocked(persist.saveQuizResults)).toHaveBeenCalled();
+    });
+
+    // Verify the saved results maintain the original order (1, 2, 3), not reversed
+    const savedResults = vi.mocked(persist.saveQuizResults).mock.calls[0][0];
+    expect(savedResults[0].studiengang_id).toBe("1");
+    expect(savedResults[1].studiengang_id).toBe("2");
+    expect(savedResults[2].studiengang_id).toBe("3");
+  });
+
   // Tests for saved results retrieval
   describe("Saved Results Retrieval", () => {
     it("fetches saved results from database when user is logged in and no navigation state", async () => {

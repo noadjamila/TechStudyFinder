@@ -130,8 +130,23 @@ const ResultsPage: React.FC = () => {
         // Fetch all programmes in one bulk request
         const fetchedProgrammes = await getStudyProgrammesByIds(idsToFetch);
 
+        // Create a map for quick lookup of fetched programmes by ID
+        const programmeMap = new Map<string, StudyProgramme>();
+        fetchedProgrammes.forEach((prog) => {
+          programmeMap.set(prog.studiengang_id, prog);
+        });
+
+        // Reorder programmes to match idsToFetch order (preserves ranking by similarity)
+        const orderedProgrammes: StudyProgramme[] = [];
+        idsToFetch.forEach((id) => {
+          const programme = programmeMap.get(id);
+          if (programme) {
+            orderedProgrammes.push(programme);
+          }
+        });
+
         // Attach similarity scores to the programmes
-        const validResults: StudyProgramme[] = fetchedProgrammes.map(
+        const validResults: StudyProgramme[] = orderedProgrammes.map(
           (programme) => ({
             ...programme,
             similarity:
