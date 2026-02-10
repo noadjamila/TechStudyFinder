@@ -9,9 +9,10 @@ import {
   getFilteredResultsLevel2,
   saveUserQuizResults,
   getUserQuizResults,
+  getStudyProgrammeById,
+  getStudyProgrammesByIds,
 } from "../repositories/quiz.repository";
 import { RiasecScores } from "../types/riasecScores";
-import { getStudyProgrammeById } from "../repositories/quiz.repository";
 import { StudyProgramme } from "../types/studyProgramme";
 
 /**
@@ -81,7 +82,11 @@ export async function filterLevel2(
     },
   );
 
-  return await getFilteredResultsLevel2(_studyProgrammeIds, userScores);
+  const results = await getFilteredResultsLevel2(
+    _studyProgrammeIds,
+    userScores,
+  );
+  return results;
 }
 
 /**
@@ -97,4 +102,16 @@ export async function getStudyProgrammeByIdService(
   id: string,
 ): Promise<StudyProgramme | undefined> {
   return await getStudyProgrammeById(id);
+}
+
+/**
+ * Retrieves multiple study programmes by their IDs.
+ *
+ * @param ids array of study programme IDs
+ * @returns array of study programmes
+ */
+export async function getStudyProgrammesByIdsService(
+  ids: string[],
+): Promise<StudyProgramme[]> {
+  return await getStudyProgrammesByIds(ids);
 }

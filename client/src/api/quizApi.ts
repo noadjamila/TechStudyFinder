@@ -152,3 +152,29 @@ export async function fetchQuestions() {
     riasec_type: RiasecType;
   }[];
 }
+
+/**
+ * Fetches multiple study programmes by their IDs in a single bulk request.
+ *
+ * @param {string[]} ids - Array of study programme IDs to fetch
+ * @returns {Promise<StudyProgramme[]>} Array of study programmes
+ * @throws {Error} Throws if the network request fails
+ */
+export async function getStudyProgrammesByIds(
+  ids: string[],
+): Promise<StudyProgramme[]> {
+  const res = await fetch("/api/quiz/study-programmes/bulk", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ids }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`HTTP error! status: ${res.status}`);
+  }
+
+  const data = await res.json();
+  return data.studyProgrammes;
+}

@@ -9,6 +9,7 @@ import {
   filterLevel2,
   getQuestionsLevel2Service,
   getStudyProgrammeByIdService,
+  getStudyProgrammesByIdsService,
   saveQuizResultsService,
   getQuizResultsService,
 } from "../services/quiz.service";
@@ -108,6 +109,55 @@ export async function getStudyProgrammeById(req: Request, res: Response) {
       success: false,
       error: "Internal Server Error",
       message: "Error retrieving study programme",
+    });
+  }
+}
+
+/**
+ * Retrieves multiple study programmes by their IDs in bulk.
+ *
+ * @param req request with ids array in body
+ * @param res response object
+ * @returns array of study programmes
+ */
+export async function getStudyProgrammesByIds(req: Request, res: Response) {
+  try {
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids)) {
+      return res.status(400).json({
+        success: false,
+        error: "ids must be an array",
+      });
+    }
+
+    if (ids.length === 0) {
+      return res.status(200).json({
+        success: true,
+        studyProgrammes: [],
+      });
+    }
+
+    // Validate all IDs are strings
+    if (!ids.every((id) => typeof id === "string")) {
+      return res.status(400).json({
+        success: false,
+        error: "All ids must be strings",
+      });
+    }
+
+    const results = await getStudyProgrammesByIdsService(ids);
+
+    return res.status(200).json({
+      success: true,
+      studyProgrammes: results,
+    });
+  } catch (error) {
+    console.error("Error retrieving study programmes", error);
+    return res.status(500).json({
+      success: false,
+      error: "Internal Server Error",
+      message: "Error retrieving study programmes",
     });
   }
 }

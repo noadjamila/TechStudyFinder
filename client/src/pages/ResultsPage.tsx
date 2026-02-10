@@ -9,7 +9,7 @@ import Results from "../components/quiz/Results";
 import { StudyProgramme } from "../types/StudyProgramme.types";
 import MainLayout from "../layouts/MainLayout";
 import { useLocation } from "react-router-dom";
-import { getQuizResults, getStudyProgrammeById } from "../api/quizApi";
+import { getQuizResults, getStudyProgrammesByIds } from "../api/quizApi";
 import NoResultsYet from "../components/quiz/NoResultsYet";
 import {
   loadQuizResults,
@@ -127,29 +127,17 @@ const ResultsPage: React.FC = () => {
           }
         });
 
-        // Fetch programmes
-        const results = await Promise.allSettled(
-          idsToFetch.map((id) => getStudyProgrammeById(id)),
-        );
+        // Fetch all programmes in one bulk request
+        const fetchedProgrammes = await getStudyProgrammesByIds(idsToFetch);
 
-        const validResults: StudyProgramme[] = [];
-        results.forEach((r, i) => {
-          if (r.status === "fulfilled" && r.value) {
-            const programme = r.value;
-            // Attach similarity score if available
-            const enrichedProgramme: StudyProgramme = {
-              ...programme,
-              similarity:
-                similarityMapLocal.get(programme.studiengang_id) ?? null,
-            };
-            validResults.push(enrichedProgramme);
-          } else if (r.status === "rejected") {
-            console.error(
-              `Failed to load study programme ${idsToFetch[i]}:`,
-              r.reason,
-            );
-          }
-        });
+        // Attach similarity scores to the programmes
+        const validResults: StudyProgramme[] = fetchedProgrammes.map(
+          (programme) => ({
+            ...programme,
+            similarity:
+              similarityMapLocal.get(programme.studiengang_id) ?? null,
+          }),
+        );
 
         // Persist to IndexedDB
         try {
