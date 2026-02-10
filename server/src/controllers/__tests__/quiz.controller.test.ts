@@ -4,6 +4,7 @@ import {
   filterLevel,
   getQuestions,
   getStudyProgrammeById,
+  getStudyProgrammesByIds,
   saveQuizResults,
   getQuizResults,
 } from "../quiz.controller";
@@ -452,6 +453,210 @@ describe("Quiz Controller - getStudyProgrammeById", () => {
     expect(jsonMock).toHaveBeenCalledWith({
       success: false,
       error: "Study programme not found",
+    });
+  });
+});
+
+describe("Quiz Controller - getStudyProgrammesByIds", () => {
+  let mockRequest: Partial<Request>;
+  let mockResponse: Partial<Response>;
+  let jsonMock: jest.Mock;
+  let statusMock: jest.Mock;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    jsonMock = jest.fn();
+    statusMock = jest.fn().mockReturnValue({ json: jsonMock });
+
+    mockResponse = {
+      status: statusMock,
+      json: jsonMock,
+    };
+  });
+
+  it("should return 200 with study programmes for valid IDs", async () => {
+    // Arrange
+    const mockProgrammes = [
+      {
+        studiengang_id: "100",
+        name: "Informatik",
+        hochschule: "TU Berlin",
+        abschluss: "Bachelor",
+      },
+      {
+        studiengang_id: "101",
+        name: "Mathematik",
+        hochschule: "LMU München",
+        abschluss: "Master",
+      },
+    ];
+    jest
+      .spyOn(quizService, "getStudyProgrammesByIdsService")
+      .mockResolvedValue(mockProgrammes);
+
+    mockRequest = {
+      body: {
+        ids: ["100", "101"],
+      },
+    };
+
+    // Act
+    await getStudyProgrammesByIds(
+      mockRequest as Request,
+      mockResponse as Response,
+    );
+
+    // Assert
+    expect(quizService.getStudyProgrammesByIdsService).toHaveBeenCalledWith([
+      "100",
+      "101",
+    ]);
+    expect(statusMock).toHaveBeenCalledWith(200);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: true,
+      studyProgrammes: mockProgrammes,
+    });
+  });
+
+  it("should return 400 if ids is not an array", async () => {
+    // Arrange
+    mockRequest = {
+      body: {
+        ids: "not-an-array",
+      },
+    };
+
+    // Act
+    await getStudyProgrammesByIds(
+      mockRequest as Request,
+      mockResponse as Response,
+    );
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(400);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      error: "ids must be an array",
+    });
+  });
+
+  it("should return 200 with empty array when no IDs provided", async () => {
+    // Arrange
+    mockRequest = {
+      body: {
+        ids: [],
+      },
+    };
+
+    // Act
+    await getStudyProgrammesByIds(
+      mockRequest as Request,
+      mockResponse as Response,
+    );
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(200);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: true,
+      studyProgrammes: [],
+    });
+  });
+
+  it("should return 400 if ids contains non-string values", async () => {
+    // Arrange
+    mockRequest = {
+      body: {
+        ids: ["100", 101, "102"],
+      },
+    };
+
+    // Act
+    await getStudyProgrammesByIds(
+      mockRequest as Request,
+      mockResponse as Response,
+    );
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(400);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      error: "All ids must be strings",
+    });
+  });
+
+  it("should return 500 on service error", async () => {
+    // Arrange
+    jest
+      .spyOn(quizService, "getStudyProgrammesByIdsService")
+      .mockRejectedValue(new Error("Database error"));
+
+    mockRequest = {
+      body: {
+        ids: ["100", "101"],
+      },
+    };
+
+    // Act
+    await getStudyProgrammesByIds(
+      mockRequest as Request,
+      mockResponse as Response,
+    );
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(500);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      error: "Internal Server Error",
+      message: "Error retrieving study programmes",
+    });
+  });
+
+  it("should handle large arrays of IDs", async () => {
+    // Arrange
+    const ids = Array.from({ length: 100 }, (_, i) => `id-${i}`);
+    const mockProgrammes = ids.map((id) => ({
+      studiengang_id: id,
+      name: `Programme ${id}`,
+      hochschule: "Test University",
+      abschluss: "Bachelor",
+      homepage: null,
+      studienbeitrag: null,
+      beitrag_kommentar: null,
+      anmerkungen: null,
+      regelstudienzeit: null,
+      zulassungssemester: null,
+      zulassungsmodus: null,
+      zulassungsvoraussetzungen: null,
+      zulassungslink: null,
+      schwerpunkte: null,
+      sprachen: null,
+      standorte: null,
+      studienfelder: null,
+      studienform: null,
+      fristen: null,
+    }));
+    jest
+      .spyOn(quizService, "getStudyProgrammesByIdsService")
+      .mockResolvedValue(mockProgrammes);
+
+    mockRequest = {
+      body: {
+        ids,
+      },
+    };
+
+    // Act
+    await getStudyProgrammesByIds(
+      mockRequest as Request,
+      mockResponse as Response,
+    );
+
+    // Assert
+    expect(statusMock).toHaveBeenCalledWith(200);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: true,
+      studyProgrammes: mockProgrammes,
     });
   });
 });

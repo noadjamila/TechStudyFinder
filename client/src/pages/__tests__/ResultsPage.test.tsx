@@ -27,6 +27,29 @@ vi.mock("../../api/quizApi", () => ({
     studiengang_id: id,
     name: `Test Programme ${id}`,
   })),
+  getStudyProgrammesByIds: vi.fn(async (ids: string[]) =>
+    ids.map((id) => ({
+      studiengang_id: id,
+      name: `Test Programme ${id}`,
+      hochschule: "Test University",
+      abschluss: "Bachelor",
+      homepage: null,
+      studienbeitrag: null,
+      beitrag_kommentar: null,
+      anmerkungen: null,
+      regelstudienzeit: null,
+      zulassungssemester: null,
+      zulassungsmodus: null,
+      zulassungsvoraussetzungen: null,
+      zulassungslink: null,
+      schwerpunkte: null,
+      sprachen: null,
+      standorte: null,
+      studienfelder: null,
+      studienform: null,
+      fristen: null,
+    })),
+  ),
   getQuizResults: vi.fn(async () => null),
 }));
 
@@ -118,6 +141,30 @@ beforeEach(async () => {
         studienform: ["Vollzeit"],
         fristen: null,
       }) as any,
+  );
+  vi.mocked(api.getStudyProgrammesByIds).mockImplementation(
+    async (ids: string[]) =>
+      ids.map((id) => ({
+        studiengang_id: id,
+        name: `Test Programme ${id}`,
+        hochschule: "Test University",
+        abschluss: "Bachelor of Science",
+        homepage: "https://example.com",
+        studienbeitrag: "500 EUR",
+        beitrag_kommentar: "Per Semester",
+        anmerkungen: "Test notes",
+        regelstudienzeit: "6 Semester",
+        zulassungssemester: "WS/SS",
+        zulassungsmodus: "NC",
+        zulassungsvoraussetzungen: "Abitur",
+        zulassungslink: "https://example.com/apply",
+        schwerpunkte: ["AI", "Software Engineering"],
+        sprachen: ["Deutsch", "Englisch"],
+        standorte: ["München"],
+        studienfelder: ["Informatik"],
+        studienform: ["Vollzeit"],
+        fristen: null,
+      })) as any,
   );
 });
 
@@ -255,20 +302,72 @@ describe("ResultsPage Component", () => {
     });
   });
 
-  it("handles individual fetch failures gracefully", async () => {
-    const { getStudyProgrammeById } = await import("../../api/quizApi");
-    vi.mocked(getStudyProgrammeById).mockImplementation((id: string) => {
-      if (id === "1") {
-        return Promise.resolve({
-          studiengang_id: "1",
-          name: "Successful Programme",
+  it("handles fetch with partial data gracefully", async () => {
+    const { getStudyProgrammesByIds } = await import("../../api/quizApi");
+    // Mock bulk fetch to return only some programmes (simulating DB only finding some IDs)
+    vi.mocked(getStudyProgrammesByIds).mockResolvedValue([
+      {
+        studiengang_id: "1",
+        name: "Successful Programme",
+        hochschule: "Test University",
+        abschluss: "Bachelor",
+        homepage: "https://example.com",
+        studienbeitrag: "500 EUR",
+        beitrag_kommentar: null,
+        anmerkungen: null,
+        regelstudienzeit: "6 Semester",
+        zulassungssemester: null,
+        zulassungsmodus: null,
+        zulassungsvoraussetzungen: null,
+        zulassungslink: null,
+        schwerpunkte: null,
+        sprachen: null,
+        standorte: null,
+        studienfelder: null,
+        studienform: null,
+        fristen: null,
+      },
+    ]);
+
+    renderWithTheme(<ResultsPage />);
+
+    await waitFor(() => {
+      // Should display the successful programme
+      expect(screen.getByText("Successful Programme")).toBeInTheDocument();
+    });
+  });
+
+  it("shows error when bulk fetch fails", async () => {
+    const { getStudyProgrammesByIds } = await import("../../api/quizApi");
+    vi.mocked(getStudyProgrammesByIds).mockRejectedValue(
+      new Error("Network error"),
+    );
+
+    renderWithTheme(<ResultsPage />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Unerwarteter Fehler beim Laden der Ergebnisse"),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("preserves result order even when database returns programmes in different order", async () => {
+    const { getStudyProgrammesByIds } = await import("../../api/quizApi");
+
+    // Mock bulk fetch to return programmes in reverse order (simulating DB behavior)
+    vi.mocked(getStudyProgrammesByIds).mockImplementation(
+      async (ids: string[]) => {
+        const programmes = ids.map((id) => ({
+          studiengang_id: id,
+          name: `Programme ${id}`,
           hochschule: "Test University",
           abschluss: "Bachelor",
-          homepage: "https://example.com",
-          studienbeitrag: "500 EUR",
+          homepage: null,
+          studienbeitrag: null,
           beitrag_kommentar: null,
           anmerkungen: null,
-          regelstudienzeit: "6 Semester",
+          regelstudienzeit: null,
           zulassungssemester: null,
           zulassungsmodus: null,
           zulassungsvoraussetzungen: null,
@@ -278,36 +377,29 @@ describe("ResultsPage Component", () => {
           standorte: null,
           studienfelder: null,
           studienform: null,
-        });
-      } else if (id === "2") {
-        return Promise.resolve(null); // 404 - not found
-      } else {
-        return Promise.reject(new Error("Network error")); // 500 error
-      }
-    });
-
-    renderWithTheme(<ResultsPage />);
-
-    await waitFor(() => {
-      // Should display the one successful programme
-      expect(screen.getByText("Successful Programme")).toBeInTheDocument();
-    });
-  });
-
-  it("shows error only when all programmes fail to load", async () => {
-    const { getStudyProgrammeById } = await import("../../api/quizApi");
-    vi.mocked(getStudyProgrammeById).mockRejectedValue(
-      new Error("Network error"),
+          fristen: null,
+        }));
+        // Return in reverse order
+        return programmes.reverse();
+      },
     );
 
-    renderWithTheme(<ResultsPage />);
+    renderWithTheme(<ResultsPage />, {
+      pathname: "/results",
+      state: { results: ["1", "2", "3"] },
+    });
 
     await waitFor(() => {
-      expect(
-        screen.getByText("Fehler beim Laden der Studiengänge"),
-      ).toBeInTheDocument();
+      expect(vi.mocked(persist.saveQuizResults)).toHaveBeenCalled();
     });
+
+    // Verify the saved results maintain the original order (1, 2, 3), not reversed
+    const savedResults = vi.mocked(persist.saveQuizResults).mock.calls[0][0];
+    expect(savedResults[0].studiengang_id).toBe("1");
+    expect(savedResults[1].studiengang_id).toBe("2");
+    expect(savedResults[2].studiengang_id).toBe("3");
   });
+
   // Tests for saved results retrieval
   describe("Saved Results Retrieval", () => {
     it("fetches saved results from database when user is logged in and no navigation state", async () => {
@@ -481,9 +573,10 @@ describe("ResultsPage Component", () => {
       await vi.waitFor(() => {
         // Should NOT call getQuizResults because navigation state exists
         expect(api.getQuizResults).not.toHaveBeenCalled();
-        // Should fetch programmes from navigation state IDs
-        expect(api.getStudyProgrammeById).toHaveBeenCalledWith("1");
-        expect(api.getStudyProgrammeById).toHaveBeenCalledWith("2");
+        // Should fetch programmes using bulk API
+        expect(api.getStudyProgrammesByIds).toHaveBeenCalledWith(
+          expect.arrayContaining(["1", "2"]),
+        );
       });
     });
   });

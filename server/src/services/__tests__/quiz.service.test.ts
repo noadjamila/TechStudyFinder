@@ -3,6 +3,7 @@ import {
   filterLevel1,
   filterLevel2,
   getStudyProgrammeByIdService,
+  getStudyProgrammesByIdsService,
   saveQuizResultsService,
   getQuizResultsService,
 } from "../quiz.service";
@@ -360,6 +361,122 @@ describe("Quiz Service - getStudyProgrammeByIdService", () => {
     // Assert
     // Verify the service is a pure pass-through to the repository
     expect(mockGetStudyProgramme).toHaveBeenCalledWith(testId);
+  });
+});
+
+describe("Quiz Service - getStudyProgrammesByIdsService", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should call repository with IDs and return study programmes", async () => {
+    // Arrange
+    const ids = ["100", "101", "102"];
+    const mockProgrammes = [
+      {
+        studiengang_id: "100",
+        name: "Informatik",
+        hochschule: "TU Berlin",
+        abschluss: "Bachelor",
+      },
+      {
+        studiengang_id: "101",
+        name: "Mathematik",
+        hochschule: "LMU München",
+        abschluss: "Master",
+      },
+      {
+        studiengang_id: "102",
+        name: "Physik",
+        hochschule: "Uni Hamburg",
+        abschluss: "Bachelor",
+      },
+    ];
+    const mockGetStudyProgrammes = jest
+      .spyOn(quizRepository, "getStudyProgrammesByIds")
+      .mockResolvedValue(mockProgrammes);
+
+    // Act
+    const result = await getStudyProgrammesByIdsService(ids);
+
+    // Assert
+    expect(mockGetStudyProgrammes).toHaveBeenCalledWith(ids);
+    expect(mockGetStudyProgrammes).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(mockProgrammes);
+    expect(result.length).toBe(3);
+  });
+
+  it("should return empty array when no IDs provided", async () => {
+    // Arrange
+    const ids: string[] = [];
+    const mockGetStudyProgrammes = jest
+      .spyOn(quizRepository, "getStudyProgrammesByIds")
+      .mockResolvedValue([]);
+
+    // Act
+    const result = await getStudyProgrammesByIdsService(ids);
+
+    // Assert
+    expect(mockGetStudyProgrammes).toHaveBeenCalledWith(ids);
+    expect(result).toEqual([]);
+  });
+
+  it("should handle single ID", async () => {
+    // Arrange
+    const ids = ["200"];
+    const mockProgramme = [
+      {
+        studiengang_id: "200",
+        name: "Chemie",
+        hochschule: "Uni Köln",
+        abschluss: "Bachelor",
+      },
+    ];
+    const mockGetStudyProgrammes = jest
+      .spyOn(quizRepository, "getStudyProgrammesByIds")
+      .mockResolvedValue(mockProgramme);
+
+    // Act
+    const result = await getStudyProgrammesByIdsService(ids);
+
+    // Assert
+    expect(mockGetStudyProgrammes).toHaveBeenCalledWith(ids);
+    expect(result).toEqual(mockProgramme);
+  });
+
+  it("should propagate repository errors", async () => {
+    // Arrange
+    const ids = ["300", "301"];
+    const mockError = new Error("Database connection error");
+    jest
+      .spyOn(quizRepository, "getStudyProgrammesByIds")
+      .mockRejectedValue(mockError);
+
+    // Act & Assert
+    await expect(getStudyProgrammesByIdsService(ids)).rejects.toThrow(
+      "Database connection error",
+    );
+  });
+
+  it("should handle large arrays of IDs", async () => {
+    // Arrange
+    const ids = Array.from({ length: 100 }, (_, i) => `id-${i}`);
+    const mockProgrammes = ids.map((id) => ({
+      studiengang_id: id,
+      name: `Programme ${id}`,
+      hochschule: "Test University",
+      abschluss: "Bachelor",
+    }));
+    const mockGetStudyProgrammes = jest
+      .spyOn(quizRepository, "getStudyProgrammesByIds")
+      .mockResolvedValue(mockProgrammes);
+
+    // Act
+    const result = await getStudyProgrammesByIdsService(ids);
+
+    // Assert
+    expect(mockGetStudyProgrammes).toHaveBeenCalledWith(ids);
+    expect(result.length).toBe(100);
   });
 });
 

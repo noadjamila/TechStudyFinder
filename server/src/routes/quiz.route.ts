@@ -8,6 +8,7 @@ import {
   filterLevel,
   getQuestions,
   getStudyProgrammeById,
+  getStudyProgrammesByIds,
   saveQuizResults,
   getQuizResults,
 } from "../controllers/quiz.controller";
@@ -19,6 +20,8 @@ router.post("/filter", filterLevel);
 router.get("/level/:levelId", getQuestions);
 
 router.get("/study-programme/:id", getStudyProgrammeById);
+
+router.post("/study-programmes/bulk", getStudyProgrammesByIds);
 
 router.post("/results", saveQuizResults);
 

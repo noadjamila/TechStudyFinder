@@ -236,3 +236,25 @@ export async function getStudyProgrammeById(
 
   return result.rows[0];
 }
+
+/**
+ * Retrieves multiple study programmes by their IDs in a single query.
+ * This is much more efficient than calling getStudyProgrammeById multiple times.
+ *
+ * @param ids array of study programme IDs
+ * @returns array of study programme data
+ */
+export async function getStudyProgrammesByIds(
+  ids: string[],
+): Promise<StudyProgramme[]> {
+  if (ids.length === 0) {
+    return [];
+  }
+
+  const result = await pool.query(
+    "SELECT * FROM studiengang_full_view WHERE studiengang_id = ANY($1::text[])",
+    [ids],
+  );
+
+  return result.rows;
+}

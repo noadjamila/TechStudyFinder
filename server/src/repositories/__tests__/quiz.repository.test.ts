@@ -2,6 +2,7 @@
 import {
   getFilteredResultsLevel1,
   getStudyProgrammeById,
+  getStudyProgrammesByIds,
   saveUserQuizResults,
   getUserQuizResults,
 } from "../quiz.repository";
@@ -219,6 +220,130 @@ describe("Quiz Repository - getStudyProgrammeById", () => {
       [specialId],
     );
     expect(result).toEqual(mockProgramme);
+  });
+});
+
+describe("Quiz Repository - getStudyProgrammesByIds", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should retrieve multiple study programmes by IDs", async () => {
+    // Arrange
+    const ids = ["100", "101", "102"];
+    const mockProgrammes = [
+      {
+        studiengang_id: "100",
+        name: "Informatik",
+        hochschule: "TU Berlin",
+        abschluss: "Bachelor",
+      },
+      {
+        studiengang_id: "101",
+        name: "Mathematik",
+        hochschule: "LMU München",
+        abschluss: "Master",
+      },
+      {
+        studiengang_id: "102",
+        name: "Physik",
+        hochschule: "Uni Hamburg",
+        abschluss: "Bachelor",
+      },
+    ];
+    (pool.query as jest.Mock).mockResolvedValue({ rows: mockProgrammes });
+
+    // Act
+    const result = await getStudyProgrammesByIds(ids);
+
+    // Assert
+    expect(pool.query).toHaveBeenCalledWith(
+      "SELECT * FROM studiengang_full_view WHERE studiengang_id = ANY($1::text[])",
+      [ids],
+    );
+    expect(result).toEqual(mockProgrammes);
+    expect(result.length).toBe(3);
+  });
+
+  it("should return empty array when no IDs provided", async () => {
+    // Arrange
+    const ids: string[] = [];
+
+    // Act
+    const result = await getStudyProgrammesByIds(ids);
+
+    // Assert
+    expect(pool.query).not.toHaveBeenCalled();
+    expect(result).toEqual([]);
+  });
+
+  it("should handle single ID", async () => {
+    // Arrange
+    const ids = ["200"];
+    const mockProgramme = [
+      {
+        studiengang_id: "200",
+        name: "Chemie",
+        hochschule: "Uni Köln",
+        abschluss: "Bachelor",
+      },
+    ];
+    (pool.query as jest.Mock).mockResolvedValue({ rows: mockProgramme });
+
+    // Act
+    const result = await getStudyProgrammesByIds(ids);
+
+    // Assert
+    expect(pool.query).toHaveBeenCalledWith(
+      "SELECT * FROM studiengang_full_view WHERE studiengang_id = ANY($1::text[])",
+      [ids],
+    );
+    expect(result).toEqual(mockProgramme);
+  });
+
+  it("should handle database query failure", async () => {
+    // Arrange
+    const ids = ["300", "301"];
+    const mockError = new Error("Database connection error");
+    (pool.query as jest.Mock).mockRejectedValue(mockError);
+
+    // Act & Assert
+    await expect(getStudyProgrammesByIds(ids)).rejects.toThrow(
+      "Database connection error",
+    );
+  });
+
+  it("should return empty array when no programmes found", async () => {
+    // Arrange
+    const ids = ["999", "888"];
+    (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
+
+    // Act
+    const result = await getStudyProgrammesByIds(ids);
+
+    // Assert
+    expect(result).toEqual([]);
+    expect(result.length).toBe(0);
+  });
+
+  it("should handle large arrays of IDs", async () => {
+    // Arrange
+    const ids = Array.from({ length: 100 }, (_, i) => `id-${i}`);
+    const mockProgrammes = ids.map((id) => ({
+      studiengang_id: id,
+      name: `Programme ${id}`,
+    }));
+    (pool.query as jest.Mock).mockResolvedValue({ rows: mockProgrammes });
+
+    // Act
+    const result = await getStudyProgrammesByIds(ids);
+
+    // Assert
+    expect(pool.query).toHaveBeenCalledWith(
+      "SELECT * FROM studiengang_full_view WHERE studiengang_id = ANY($1::text[])",
+      [ids],
+    );
+    expect(result.length).toBe(100);
   });
 });
 
