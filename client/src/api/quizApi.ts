@@ -163,7 +163,7 @@ export async function fetchQuestions() {
 export async function getStudyProgrammesByIds(
   ids: string[],
 ): Promise<StudyProgramme[]> {
-  const res = await fetch("/api/quiz/study-programmes/bulk", {
+  const res = await fetch(`${API_BASE_URL}/quiz/study-programmes/bulk`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

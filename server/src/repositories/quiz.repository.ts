@@ -252,7 +252,7 @@ export async function getStudyProgrammesByIds(
   }
 
   const result = await pool.query(
-    "SELECT * FROM studiengang_full_view WHERE studiengang_id = ANY($1)",
+    "SELECT * FROM studiengang_full_view WHERE studiengang_id = ANY($1::text[])",
     [ids],
   );
 

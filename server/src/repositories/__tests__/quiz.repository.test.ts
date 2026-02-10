@@ -258,7 +258,7 @@ describe("Quiz Repository - getStudyProgrammesByIds", () => {
 
     // Assert
     expect(pool.query).toHaveBeenCalledWith(
-      "SELECT * FROM studiengang_full_view WHERE studiengang_id = ANY($1)",
+      "SELECT * FROM studiengang_full_view WHERE studiengang_id = ANY($1::text[])",
       [ids],
     );
     expect(result).toEqual(mockProgrammes);
@@ -295,7 +295,7 @@ describe("Quiz Repository - getStudyProgrammesByIds", () => {
 
     // Assert
     expect(pool.query).toHaveBeenCalledWith(
-      "SELECT * FROM studiengang_full_view WHERE studiengang_id = ANY($1)",
+      "SELECT * FROM studiengang_full_view WHERE studiengang_id = ANY($1::text[])",
       [ids],
     );
     expect(result).toEqual(mockProgramme);
@@ -340,7 +340,7 @@ describe("Quiz Repository - getStudyProgrammesByIds", () => {
 
     // Assert
     expect(pool.query).toHaveBeenCalledWith(
-      "SELECT * FROM studiengang_full_view WHERE studiengang_id = ANY($1)",
+      "SELECT * FROM studiengang_full_view WHERE studiengang_id = ANY($1::text[])",
       [ids],
     );
     expect(result.length).toBe(100);
