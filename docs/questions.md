@@ -13,7 +13,7 @@ _Analytische, forschende, wissenschaftliche Tätigkeiten; komplexe oder theoreti
 - Interessiert es dich, an neuen Medikamenten für Krankheiten zu forschen?
 - Löst du gerne Rätsel durch logisches Denken?
 - Interessiert es dich, menschliches Verhalten wissenschaftlich zu analysieren?
-- Interessiert es dich, warum Dinge auf den Boden fallen und nicht schweben?
+- Interessiert dich, warum Dinge auf den Boden fallen und nicht schweben?
 - Interessieren dich chemische Reaktionen oder das Testen neuer Materialien?
 - Interessiert es dich, herauszufinden, wie ein Social Media Algorithmus funktioniert?
 
