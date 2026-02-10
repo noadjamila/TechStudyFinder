@@ -35,17 +35,38 @@ export default function CardStack({
         },
         mx: "auto",
         display: "flex",
-        justifyContent: "flex-end",
+        justifyContent: currentIndex === totalCards ? "flex-start" : "flex-end",
       }}
     >
-      {/* Single faded card */}
+      {/* Faded card on left (previous card) - shown when not on first card */}
+      {currentIndex > 1 && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 10,
+            left: 0,
+            alignSelf: "flex-end",
+            width: "80%",
+            height: "90%",
+            borderRadius: 2,
+            bgcolor: theme.palette.decorative.green,
+            opacity: 0.4,
+            transform: "scale(0.97)",
+            zIndex: 0,
+            boxShadow: 8,
+          }}
+        />
+      )}
+
+      {/* Faded card on right (next card) - shown when not on last card */}
       {currentIndex < totalCards && (
         <Box
           sx={{
             position: "absolute",
             top: 10,
+            right: 0,
             alignSelf: "flex-end",
-            width: currentIndex > 1 ? "100%" : "80%",
+            width: "80%",
             height: "90%",
             borderRadius: 2,
             bgcolor: theme.palette.decorative.green,
