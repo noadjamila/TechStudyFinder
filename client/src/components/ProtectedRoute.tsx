@@ -10,10 +10,10 @@ import { CircularProgress } from "@mui/material";
 
 /**
  * Protected route component that requires authentication.
- * Redirects to error page with 401 if user is not logged in.
+ * Redirects to home page if user is not logged in.
  *
  * @param props.children - The component to render if user is authenticated
- * @returns The protected component or redirect to error page
+ * @returns The protected component or redirect to home page
  */
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -23,16 +23,7 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
   }
 
   if (!user) {
-    return (
-      <Navigate
-        to="/error"
-        replace
-        state={{
-          code: 401,
-          message: "Hier hast du nichts verloren!\nBitte melde dich an.",
-        }}
-      />
-    );
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;

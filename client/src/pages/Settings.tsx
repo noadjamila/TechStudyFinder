@@ -81,9 +81,14 @@ export default function Settings() {
       if (!success) {
         throw new Error();
       }
-      navigate("/");
-      logout();
       setDialogOpen(false);
+      // Navigate and logout immediately without waiting
+      // This prevents auth errors on the current page
+      setTimeout(() => {
+        logout();
+        navigate("/");
+        console.debug("navigated from correct");
+      }, 0);
     } catch (err) {
       setDialogError(
         err instanceof Error

@@ -94,11 +94,12 @@ export default function DropMenu({
 
   const handleConfirmLogout = async () => {
     setIsLogoutOpen(false);
-    navigate("/");
 
     try {
       await logout();
       sessionStorage.setItem("showLogoutConfirmation", "true");
+      navigate("/");
+      console.debug("navigated from correct");
     } catch (error) {
       console.error("Logout failed:", error);
     }
