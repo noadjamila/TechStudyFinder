@@ -99,7 +99,6 @@ export default function DropMenu({
       await logout();
       sessionStorage.setItem("showLogoutConfirmation", "true");
       navigate("/");
-      console.debug("navigated from correct");
     } catch (error) {
       console.error("Logout failed:", error);
     }

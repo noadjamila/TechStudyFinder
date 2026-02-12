@@ -87,7 +87,6 @@ export default function Settings() {
       setTimeout(() => {
         logout();
         navigate("/");
-        console.debug("navigated from correct");
       }, 0);
     } catch (err) {
       setDialogError(
